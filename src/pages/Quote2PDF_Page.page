@@ -1,0 +1,1218 @@
+<apex:page standardController="Quote" renderas="pdf" showHeader="false"
+    extensions="ExtensionControllerQuote" action="{!init}">
+    <apex:messages />
+    <head>
+<style type="text/css">
+@page {
+    size: 8.27in 11.69in;
+    font-family: Verdana, Sans-serif;
+    font-size: 9px;
+    margin-top: 2.2cm;
+    margin-bottom: 1.6cm;
+    margin-left: 2.4cm;
+    margin-right: 0.7cm;
+    /* Put page numbers in the bottom left corner of each page in the pdf document.*/
+    @bottom-right { 
+        content : "Seite " counter( page);
+        font-family: Verdana, Sans-serif;
+        font-size: 7pt;
+        line-height: 10%;
+    }
+
+    @top-left {
+        content: element(header_left);
+    }
+
+}
+.header_left {
+    text-align: left;
+    position: running(header_left);
+    top: 90px;
+    left: 7px;
+}
+
+.OrgAdress {
+    font-family: Verdana, Sans-serif;
+    font-size: 5pt;
+}
+
+.OrgInfo {
+    font-family: Verdana, Sans-serif;
+    font-size: 7pt;
+    line-height: 10%;
+}
+
+.AccAdress {
+    font-family: Verdana, Sans-serif;
+    font-size: 10pt;
+}
+
+.Text {
+    font-family: Verdana, Sans-serif;
+    font-size: 9pt;
+}
+
+.Headlines {
+    font-family: Verdana, Sans-serif;
+    font-size: 9pt;
+    line-height: 9pt;
+    font-weight: bold;
+}
+
+.Headlines a:link,.Headlines a:visited {
+    color: #000;
+    font-family: Verdana, Sans-serif;
+    font-size: 9pt;
+    font-weight: bold;
+    text-decoration: none;
+}
+</style>
+    </head>
+    <!-- First Page Header -->
+    <c:PDFHeaderFooter type="header" position="left">
+    <div style="position: absolute; top: 90px; left: 7px">
+    <img src='{!URLFOR($Resource.YOUR_SL_Logo_quote)}' width="3.0cm" height="0.59cm" title="logo" alt="" />
+        </div>
+    </c:PDFHeaderFooter>
+
+
+
+        <!-- All Pages Header -->
+    <c:PDFHeaderFooter type="header" position="left">
+    <div style="position: absolute; top: 45px; left: 7px">
+    <img src='{!URLFOR($Resource.YOUR_SL_Logo_quote)}' width="3.0cm" height="0.59cm" title="logo" alt="" />
+        </div>
+    </c:PDFHeaderFooter>
+
+
+
+
+    <!--  Anschreiben -->
+    <div style="page-break-after: always">
+        <table border="0" cellspacing="0" cellpadding="0" width="100%" id="Anschreiben">
+            <tr>
+                <td align="left" valign="top" height="0.59cm">
+                    <br /> <br /> <br /><br /> <br />
+                    <apex:outputPanel styleClass="OrgAdress" style="white-space:pre;">{!$Organization.Name}      {!$Organization.Street}      {!$Organization.PostalCode} {!$Organization.City}      {!$Organization.Country}<br />
+                    </apex:outputPanel> 
+                    <apex:outputPanel styleClass="AccAdress">
+                    {!Quote.Opportunity.Account.Name} <br />
+                    z. H. {!Quote.Contact.Salutation} {!Quote.Contact.LastName} <br />
+                    {!Quote.Opportunity.Account.BillingStreet} <br />
+                    {!Quote.Opportunity.Account.BillingPostalCode} {!Quote.Opportunity.Account.BillingCity}<br />
+                    {!Quote.Opportunity.Account.BillingCountry} <br />
+                    </apex:outputPanel>
+                </td>
+                <td align="left" valign="top" width="50px"></td>
+                <td align="left" valign="top" height="275px" width="155px">
+                    <apex:outputPanel styleClass="OrgInfo">
+                    <p
+                        style="font-family: Verdana, Sans-serif; font-size: 7pt; line-height: 120%; margin-top: 0px; margin-bottom: 0px">
+                        {!$Organization.Name}<br /> <br /> {!$Organization.Street}<br />
+                        {!$Organization.PostalCode} {!$Organization.City}<br />
+                        {!$Organization.Country}
+                    </p>
+                    <table border="0" cellspacing="0" cellpadding="0" id="Phonedetails">
+                        <tr>
+                            <td align="left" valign="top">
+                                <p
+                                    style="font-family: Verdana, Sans-serif; font-size: 7pt; line-height: 120%; margin-top: 0px; margin-bottom: 0px">
+                                    Phone&nbsp;&nbsp;<br /> 
+                                    Fax
+                                </p>
+                            </td>
+                            <td align="left" valign="top">
+                                <p
+                                    style="font-family: Verdana, Sans-serif; font-size: 7pt; line-height: 120%; margin-top: 0px; margin-bottom: 0px">
+                                    {!$Organization.Fax}<br /> 
+                                    {!$Organization.Phone}
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                    <p
+                        style="font-family: Verdana, Sans-serif; font-size: 7pt; line-height: 120%;">
+                        www.yoursl.de<br /> 
+                        info@yoursl.de
+                    </p>
+                    </apex:outputPanel>
+                </td>
+            </tr>
+            <tr>
+                <td align="left" valign="top">
+                <apex:outputPanel styleClass="Headlines">
+                    <apex:OutputField value="{!Quote.Subject__c}" />
+                    </apex:outputPanel> 
+                    <apex:outputPanel >
+                    <p
+                        style="font-family: Verdana, Sans-serif; font-size: 9pt; line-height: 120%; margin-top: 0px; margin-bottom: 0px">
+                        <br /> <br /> 
+                        {!Quote.Contact.Letter_Salutation__c}
+                        <br /> <br />
+                        <apex:OutputField value="{!Quote.Covering_Letter_Text__c}" />
+                        <br /> <br /> <br /> 
+                        Mit freundlichen Grüßen
+                        <br /> <br /> <br /><br /> <br /> <br /> 
+                        {!Quote.Sales_Representative__c}<br />
+                        {!Quote.SalesRep_Title__c}
+                    </p>
+                    </apex:outputPanel>
+                </td>
+                        <td align="left" valign="top">
+                </td>
+                <td align="left" valign="top" height="475px">
+                <apex:outputText styleClass="OrgInfo">
+                    <p
+                        style="font-family: Verdana, Sans-serif; font-size: 7pt; line-height: 120%; margin-top: 0px; margin-bottom: 0px">
+                        Date:&nbsp;{!DAY(TODAY())}.{!MONTH(TODAY())}.{!YEAR(TODAY())}<br />
+                        Customer-No.:&nbsp;<apex:OutputField value="{!Quote.Opportunity.Account.Kunden_Nummer__c}" /><br /> 
+                        Quotation-No.:&nbsp;<apex:OutputField value="{!Quote.QuoteNumber}" /><br /> <br /> 
+                        Contact:&nbsp;<apex:OutputField value="{!Quote.Sales_Representative__c}" /><br /> 
+                        Email:&nbsp;<apex:OutputField value="{!Quote.SalesRep_Email__c}" /><br /> 
+                        Tel.:&nbsp;<apex:OutputField value="{!Quote.SalesRep_Phone__c}" /><br />
+                    </p>
+                    </apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td align="left" valign="top">
+                    <p
+                        style="font-family: Verdana, Sans-serif; 
+                        font-size: 9pt; font-weight: bold; line-height: 120%; 
+                        margin-top: 0px; margin-bottom: 0px">
+                        <apex:outputtext value="Anlagen:" rendered="{!IF(OR( Quote.AGB__c, Quote.delivery_terms__c ),true,false)}" />
+                    </p>
+                    <p
+                        style="font-family: Verdana, Sans-serif; font-size: 9pt; line-height: 120%; margin-top: 0px; margin-bottom: 0px">
+                        <apex:outputtext value="Liefer- und Zahlungsbedingungen" rendered="{!IF(Quote.delivery_terms__c=true,true,false)}" />
+                        <apex:outputtext value="<br />" rendered="{!IF(Quote.delivery_terms__c=true,true,false)}" escape="false" />
+                        <apex:outputtext value="AGB" rendered="{!IF(Quote.AGB__c=true,true,false)}" />
+                        <br />
+                    </p>
+                </td>
+                        <td align="left" valign="top">
+                </td>
+                <td align="left" valign="top">
+                    <p
+                        style="font-family: Verdana, Sans-serif; font-size: 7pt; line-height: 120%; margin-top: 0px; margin-bottom: 0px">
+                        Intern. Bank Account Number<br /> IBAN DE92700202700667990343<br />
+                        BIC HYVEDEMMXXX<br /> Hypovereinsbank<br /> BLZ 700 20 270<br />
+                        KTO 667990343<br /> <br /> <br /> Commercial Register<br />
+                        Amtsgericht Berlin-Charlottenburg<br /> HRB 113890 B<br /> <br />
+                        <br /> VAT Identification Number<br /> DE 253969837<br /> <br />
+                        <br /> Managing Partner<br /> Thorsten Köhler
+                    </p>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+
+
+
+
+
+    <!-- Gliederung und Lösungsansätze -->
+    <div style="page-break-after: always">
+    <apex:outputPanel styleClass="Text">
+        <table border="0" cellspacing="0" cellpadding="0" width="100%" id="Lieferbedingungen">
+            <tr>
+                <td align="left" valign="top">
+                    <p style="font-family: Verdana, Sans-serif; font-size: 9pt; line-height: 120%; margin-top: 0px; margin-bottom: 0px">
+                   
+<apex:outputText value="Gliederung" style="font-weight:bold" rendered="{!LEN(Quote.QuoteGliederung__c) > 1}"/> <br /> <br />
+<apex:OutputField value="{!Quote.QuoteGliederung__c}" rendered="{!LEN(Quote.QuoteGliederung__c) > 1}"/> <br /> <br />  
+
+<apex:outputText value="Über YOUR SL" style="font-weight:bold" rendered="{!LEN(Quote.Quote_Ueber_YOUR_SL__c) > 1}"/> <br /> <br />
+<apex:OutputField value="{!Quote.Quote_Ueber_YOUR_SL__c}" rendered="{!LEN(Quote.Quote_Ueber_YOUR_SL__c) > 1}"/> <br /> <br />
+
+<apex:outputText value="Ausgangssituation" style="font-weight:bold" rendered="{!LEN(Quote.QuoteAusgangssituation__c) > 1}"/> <br /> <br />
+<apex:OutputField value="{!Quote.QuoteAusgangssituation__c}" rendered="{!LEN(Quote.QuoteAusgangssituation__c) > 1}"/> <br /> <br />
+
+<apex:outputText value="Lösungsansatz" style="font-weight:bold" rendered="{!LEN(Quote.QuoteLoesungsansatz__c) > 1}"/> <br /> <br />
+<apex:OutputField value="{!Quote.QuoteLoesungsansatz__c}" rendered="{!LEN(Quote.QuoteLoesungsansatz__c) > 1}"/> <br /> <br />
+
+<apex:outputText value="Nutzen" style="font-weight:bold" rendered="{!LEN(Quote.QuoteNutzen__c) > 1}" /> <br /> <br />
+<apex:OutputField value="{!Quote.QuoteNutzen__c}" rendered="{!LEN(Quote.QuoteNutzen__c) > 1}"/> <br /> <br />
+
+                    </p>
+                </td>
+            </tr>
+        </table>
+    </apex:outputPanel>
+    </div>
+
+
+
+    <!-- Kostenkalkulation / Angebot -->
+    <div style="page-break-after: always;">
+    <apex:outputPanel styleClass="Text">
+    <p style="font-family: Verdana, Sans-serif; font-size: 8pt; line-height: 120%; margin-top: 0px; margin-bottom: 0px">
+                <strong>Angebot</strong>
+    </p>
+    <br />
+        <table border="0" cellspacing="0" cellpadding="0" width="585px" id="tableproductsheadline">
+            <tr>
+                <td align="left" valign="top" width="35px">
+                    <strong>Pos.</strong>
+                </td>
+                <td align="right" valign="top" width="30px">
+                    <strong>Anz.</strong>
+                </td>
+                <td align="right" valign="top" width="10px">
+                </td>
+                <td align="left" valign="top" width="50px">
+                    <strong>Einheit</strong>
+                </td>
+                <td align="left" valign="top" width="280px">
+                    <strong>Beschreibung</strong>
+                </td>
+                <td align="right" valign="top" width="90px">
+                    <strong>Einzelpreis</strong>
+                </td>
+                <td align="right" valign="top" width="90px">
+                    <strong>Gesamtpreis</strong>
+                </td>
+            </tr>
+        </table>
+<!--     <apex:repeat value="{!quotePhases}" var="phase"> -->
+<!--         <p -->
+<!--             style="font-family: Verdana, Sans-serif; font-size: 9pt; line-height: 120%; margin-top: 0px; margin-bottom: 0px"> -->
+<!--             <br />  -->
+<!--             <strong>{!phase.quotePhase.QuotePhaseName_Formula__c} </strong> -->
+<!--             <br /> <br /> -->
+<!--             {!phase.quotePhase.Description_of_PhaseLevel__c} -->
+<!--             <br /> <br /> -->
+<!--                 </p> -->
+    <apex:repeat value="{!QuoteLineItemsSorted}" var="line">
+        <table border="0" cellspacing="0" cellpadding="0" width="585px" id="tableproducts">
+            <tr>
+                <td align="left" valign="top" width="35px">
+                    <p 
+                        style="font-family: Verdana, Sans-serif; font-size: 9pt; line-height: 120%; margin-top: 0px; margin-bottom: 0px">
+                        <strong>
+                        <apex:outputText value="{0, number, ###,00}">
+                        <apex:param value="{!line.Sort_Order__c}"/>
+                        </apex:outputText>
+                        </strong>
+                    </p>
+                </td>
+                <td align="right" valign="top" width="30px">
+                    <p
+                        style="font-family: Verdana, Sans-serif; font-size: 9pt; line-height: 120%; margin-top: 0px; margin-bottom: 0px">
+                        {!SUBSTITUTE(TEXT(line.Quantity), ".", ",")}
+                    </p>
+                </td>
+                <td align="right" valign="top" width="10px">
+                </td>
+                <td align="left" valign="top" width="50px">
+                    <p 
+                        style="font-family: Verdana, Sans-serif; font-size: 9pt; line-height: 120%; margin-top: 0px; margin-bottom: 0px">
+                        {!line.Einheit__c}
+                    </p>
+                </td>
+                <td align="left" valign="top" width="280px">
+                    <p 
+                        style="font-family: Verdana, Sans-serif; font-size: 9pt; line-height: 120%; margin-top: 0px; margin-bottom: 0px">
+                        <strong>{!line.PricebookEntry.Name}</strong><br /> <br />
+                        <apex:OutputField value="{!line.Description}" rendered="{!IF(ISBLANK(line.Description)=true,'false','true')}" /><br /> <br />
+
+                        {!line.Product_lineitem_description__c}<br /> <br />
+                    </p>
+                </td>
+                <td align="right" valign="top" width="90px">
+                    <p
+                        style="font-family: Verdana, Sans-serif; font-size: 9pt; line-height: 120%; margin-top: 0px; margin-bottom: 0px">
+                        <apex:OutputField value="{!line.UnitPrice}" />
+                    </p>
+                    <p  style="font-size: 4pt">
+                        <apex:OutputField value="{!line.QLI_Explanation_of_Singleprice__c}" style="font-size: 4pt" />
+                    </p>
+                </td>
+                <td align="right" valign="top" width="90px">
+                    <p
+                        style="font-family: Verdana, Sans-serif; font-size: 9pt; line-height: 120%; margin-top: 0px; margin-bottom: 0px">
+                        <apex:OutputField value="{!line.TotalPrice}" />
+                    </p>
+                </td>
+            </tr>
+        </table>
+    </apex:repeat>
+<!--         <table border="0" cellspacing="0" cellpadding="0" width="585px" id="LineItemsSum"> -->
+<!--             <tr> -->
+<!--                 <td align="right" colspan="6"> -->
+<!--                     <p -->
+<!--                         style="font-family: Verdana, Sans-serif; font-size: 9pt; line-height: 120%; margin-top: 0px; margin-bottom: 0px"> -->
+<!--                         <b>{!phase.quotePhase.QuotePhaseName_Formula__c} Summe :</b>&nbsp;<apex:OutputField value="{!phase.quotePhase.Sum_of_Phases__c}" />  -->
+<!--                     </p> -->
+<!--                 </td> -->
+<!--             </tr> -->
+<!--         </table> -->
+<!--     </apex:repeat> -->
+        <table border="0" cellspacing="0" cellpadding="0" width="585px" id="LineItemsSum">
+            <tr>
+                <td align="right" colspan="6">
+                    <p
+                        style="font-family: Verdana, Sans-serif; font-size: 9pt; line-height: 120%; margin-top: 0px; margin-bottom: 0px">
+                        <b>Summe:</b>&nbsp;<apex:OutputField value="{!Quote.TotalPrice}" /> 
+                    </p>
+                </td>
+            </tr>
+        </table>
+    </apex:outputPanel>
+    </div>
+
+
+
+
+
+
+    <!--  Kostenaufstellung -->
+    <div style="page-break-after: always;">
+    <apex:outputPanel styleClass="Text">
+        <p
+            style="font-family: Verdana, Sans-serif; font-size: 8pt; line-height: 120%; margin-top: 0px; margin-bottom: 0px">
+            <strong>Kostenaufstellung</strong>
+        </p>
+        <br />
+    <table border="0" cellspacing="0" cellpadding="0" width="585px" id="tableproductsheadline">
+        <tr>
+            <td align="left" valign="top" width="35px">
+                <strong>Pos.</strong>
+            </td>
+            <td align="right" valign="top" width="30px">
+                <strong>Anz.</strong>
+            </td>
+            <td align="right" valign="top" width="10px">
+            </td>
+            <td align="left" valign="top" width="50px">
+                <strong>Einheit</strong>
+            </td>
+            <td align="left" valign="top" width="280px">
+                <strong>Beschreibung</strong>
+            </td>
+            <td align="right" valign="top" width="90px">
+                <strong>Einzelpreis</strong>
+            </td>
+            <td align="right" valign="top" width="90px">
+            <strong>Gesamtpreis</strong>
+            </td>
+        </tr>
+    </table>
+
+<!--     <apex:repeat value="{!quotePhases}" var="phase"> -->
+<!--         <p -->
+<!--             style="font-family: Verdana, Sans-serif; font-size: 9pt; line-height: 120%; margin-top: 0px; margin-bottom: 0px"> -->
+<!--             <br />  -->
+<!--             <strong>{!phase.quotePhase.QuotePhaseName_Formula__c}</strong> -->
+<!--             <br /> <br /> -->
+<!--                 </p> -->
+    <apex:repeat value="{!QuoteLineItemsSorted}" var="line">
+    <table border="0" cellspacing="0" cellpadding="0" width="585px" id="tableproducts">
+        <tr>
+            <td align="left" valign="top" width="35px">
+                <p
+                    style="font-family: Verdana, Sans-serif; font-size: 9pt; line-height: 120%; margin-top: 0px; margin-bottom: 0px">
+                    <strong>
+                    <apex:outputText value="{0, number, ###,00}">
+                    <apex:param value="{!line.Sort_Order__c}"/>
+                    </apex:outputText>
+                    </strong>
+                </p>
+            </td>
+            <td align="right" valign="top" width="30px">
+                <p
+                    style="font-family: Verdana, Sans-serif; font-size: 9pt; line-height: 120%; margin-top: 0px; margin-bottom: 0px">
+                    {!SUBSTITUTE(TEXT(line.Quantity), ".", ",")}
+                </p>
+            </td>
+            <td align="right" valign="top" width="10px">
+            </td>
+            <td align="left" valign="top" width="50px">
+                <p
+                    style="font-family: Verdana, Sans-serif; font-size: 9pt; line-height: 120%; margin-top: 0px; margin-bottom: 0px">
+                    {!line.Einheit__c}
+                </p>
+            </td>
+            <td align="left" valign="top" width="280px">
+                <p
+                    style="font-family: Verdana, Sans-serif; font-size: 9pt; line-height: 120%; margin-top: 0px; margin-bottom: 0px">
+                    {!line.PricebookEntry.Name}<br /> <br />
+                </p>
+            </td>
+            <td align="right" valign="top" width="90px">
+                <p
+                    style="font-family: Verdana, Sans-serif; font-size: 9pt; line-height: 120%; margin-top: 0px; margin-bottom: 0px">
+                    <apex:OutputField value="{!line.UnitPrice}" />
+                </p>
+            </td>
+            <td align="right" valign="top" width="90px">
+                <p
+                    style="font-family: Verdana, Sans-serif; font-size: 9pt; line-height: 120%; margin-top: 0px; margin-bottom: 0px">
+                    <apex:OutputField value="{!line.TotalPrice}" />
+                </p>
+            </td>
+        </tr>
+    </table>
+    </apex:repeat>
+<!--     <table border="0" cellspacing="0" cellpadding="0" width="585px" id="LineItemsSum"> -->
+<!--         <tr> -->
+<!--             <td align="right" colspan="6"> -->
+<!--                 <p -->
+<!--                         style="font-family: Verdana, Sans-serif; font-size: 9pt; line-height: 120%; margin-top: 0px; margin-bottom: 0px"> -->
+<!--                         <b>Summe:</b>&nbsp;<apex:OutputField value="{!phase.quotePhase.Sum_of_Phases__c}" />  -->
+<!--                 </p> -->
+<!--             </td> -->
+<!--         </tr> -->
+<!--     </table> -->
+<!--     </apex:repeat> -->
+    <table border="0" cellspacing="0" cellpadding="0" width="585px" id="LineItemsSum">
+        <tr>
+            <td align="right" colspan="6">
+                <p
+                        style="font-family: Verdana, Sans-serif; font-size: 9pt; line-height: 120%; margin-top: 0px; margin-bottom: 0px">
+                        <b>Summe:</b>&nbsp;<apex:OutputField value="{!Quote.TotalPrice}" /> 
+                </p>
+            </td>
+        </tr>
+    </table>
+    </apex:outputPanel>
+    
+    </div>
+
+    <!--  Delivery Terms -->
+    
+    <div style="page-break-after: always;">
+    <apex:outputPanel styleClass="Text" rendered="{!IF(Quote.delivery_terms__c=true,true,false)}">
+        <apex:outputtext >
+			<table border="0" cellspacing="0" cellpadding="0" width="100%" id="Lieferbedingungen">
+				<tr>
+					<td align="left" valign="top">
+						<p
+							style="font-family: Verdana, Sans-serif; font-size: 9pt; line-height: 120%; margin-top: 0px; margin-bottom: 0px">
+							<strong>Lieferbedingungen</strong><br /> <br /> 
+							Es gelten die allgemeinen Geschäftsbedingungen der YOUR SL GmbH und die Lizenzvereinbarungen der Hersteller. Die Preise verstehen sich zuzüglich der gesetzlichen Mehrwertsteuer sowie Reisekosten und Auslagen.
+						</p>
+			        </td>
+					<td align="left" valign="top" width="50px">
+					</td>
+					<td align="left" valign="top" width="155px">
+					</td>
+				</tr>
+			</table>
+			<br /> <br /> <br />
+		</apex:outputtext>
+		<apex:outputtext rendered="{!IF(ISBLANK(Quote.QuoteReise_und_Uebernachtungskosten__c)=false,'false','true')}">								
+						<p
+							style="font-family: Verdana, Sans-serif; font-size: 9pt; line-height: 120%; margin-top: 0px; margin-bottom: 0px">
+							<strong>Reise- und Übernachtungskosten</strong>
+						</p> <br /> <br /> 
+							<apex:OutputField value="{!Quote.QuoteReise_und_Uebernachtungskosten__c}" rendered="{!IF(ISBLANK(Quote.QuoteReise_und_Uebernachtungskosten__c)=true,'false','true')}" />
+						<p 
+							style="font-family:Verdana,Sans-serif; font-size:9pt; line-height:120%; margin-top:0px; margin-bottom:0px">
+							Anfallende Reise- und Übernachtungskosten werden wie folgt angesetzt:<br/><br/>
+						</p>
+						<table border="0" cellspacing="0" cellpadding="0" width="100%" id="Lieferbedingungen">
+							<tr>
+								<td ALIGN="center" VALIGN="top" width="50px">
+									<p 
+										style="font-family:Verdana,Sans-serif; font-size:9pt; line-height:120%; margin-top:0px; margin-bottom:0px">
+										•<br/>•<br/><br/>•<br/>•<br/><br/>•<br/>
+									</p>
+								</td> 
+								<td ALIGN="left" VALIGN="top">
+									<p 
+										style="font-family:Verdana,Sans-serif; font-size:9pt; line-height:120%; margin-top:0px; margin-bottom:0px">
+										Pkw: 0,40 Euro/km<br/>
+										Flugzeug: Economy-Class Lufthansa oder vergleichbare <br/>
+										Fluggesellschaft<br/>
+										Bei Entfernungen ab 400 km Anreise mit dem Flugzeug<br/>
+										Übernachtungskosten sind auf 150,- EUR einschließlich<br/>
+										USt./Übernachtung begrenzt<br/>
+										Die Reisezeit berechnen wir mit einem halben Stundensatz<br/>
+									</p>
+								</td>
+							</tr>
+						</table>
+						<p 
+							style="font-family:Verdana,Sans-serif; font-size:9pt; line-height:120%; margin-top:0px; margin-bottom:0px">
+							<br/>
+							Unter Reisen fallen alle Fahrten, die über das Berliner Stadtgebiet hinausgehen. Standort des Reisebeginns ist die Adresse der YOUR SL GmbH in Berlin.
+						</p>
+        </apex:outputText>
+		<apex:outputText >
+                    <br /> <br />
+        </apex:outputText>
+		<apex:outputtext rendered="{!IF(ISBLANK(Quote.QuoteAuftragsabwicklung__c)=false,'false','true')}">
+				<p 
+                    style="font-family:Verdana,Sans-serif; font-size:9pt; line-height:120%; margin-top:0px; margin-bottom:0px">
+                    <strong>Auftragsabwicklung</strong>
+                    <br /> <br />
+        
+		
+                    Durch die Auftragserteilung des Kunden werden Termine für<br/>
+                    Workshops/Trainings/Arbeiten mit dem Kunden verbindlich eingeplant.<br/>
+                    Nachträgliche Änderungen/Verschiebungen der Termine seitens des<br/>
+                    Kunden werden mit einer Arbeitsausfallpauschale in Höhe von 50% des<br/>
+                    Netto-Tagessatzes pro verschobenen Projekttag erhoben, maximal<br/>
+                    jedoch die Gesamtzahl der angebotenen Manntage dieses Angebots.
+				</p>
+        </apex:outputText>
+		<apex:outputtext rendered="{!IF(ISBLANK(Quote.QuoteZahlungsbedingungen__c)=false,'false','true')}">
+                <p 
+                    style="font-family:Verdana,Sans-serif; font-size:9pt; line-height:120%; margin-top:0px; margin-bottom:0px">
+				<br /> <br /> <br />
+                    <strong>Zahlungsbedingungen</strong><br /> <br />
+                    
+                    Bei Beauftragung wird eine Zahlung in Höhe von 25% der Auftragssumme<br/>
+                    fällig, zahlbar sofort. Danach rechnen wir nach tatsächlichem und nachge-<br/>
+                    wiesenem Aufwand jeweils am Monatsende mit einem Zahlungsziel von<br/>
+                    10 Tagen netto ab.<br/>
+                    <br/> 
+                    Alle anfallenden Spesen sowie zusätzliche Arbeiten, die über das Angebot<br/>
+                    hinausgehen, werden gesondert nach Aufwand in Rechnung gestellt. Die<br/>
+                    Aufschläge für Samstagsarbeit betragen 25%, für Sonn- und Feiertage <br/>
+                    jeweils 50%.<br/>
+                    <br/>
+                    An die angebotene Position „Phase 01: Anforderungsmanagement“ <br/> 
+                    sehen wir uns 4 Wochen gebunden. Für die Auftragserteilung genügt<br/>
+                    eine unterzeichnete Kopie per Fax an +49 30 692051349.
+				</p>
+        </apex:outputText>
+		<apex:outputText >
+                    <br /> <br /> <br /><br /> <br /> <br />
+                <table border="0" cellspacing="0" cellpadding="0" width="100%" id="Lieferbedingungen">
+                    <tr>
+                        <td align="left" valign="top" width="90px">
+                            <p
+                                style="font-family: Verdana, Sans-serif; font-size: 9pt; line-height: 120%; margin-top: 0px; margin-bottom: 0px">
+                                Ort, Datum<br /> <br /> <br /> <br /> <br />
+                                Unterschrift<br /> <br /> <br /> Name, Position
+                            </p>
+                        </td>
+                        <td align="left" valign="top">
+                            <p
+                                style="font-family: Verdana, Sans-serif; font-size: 9pt; line-height: 120%; margin-top: 0px; margin-bottom: 0px">
+                                ___________________________________________<br /> <br /> <br />
+                                <br /> <br /> ___________________________________________<br />
+                                <br /> <br /> ___________________________________________
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+			</apex:outputText>
+    </apex:outputPanel>
+</div>
+
+    
+<c:AGB_deutsch rendered="{!IF(Quote.AGB__c=true,true,false)}" />
+
+<!--      AGBs in Deutsch -->
+<!--         <apex:outputtext rendered="{!IF(Quote.AGB__c=true,true,false)}"> -->
+<!--             <div style="page-break-after: always;"> -->
+<!--                 <apex:outputPanel > -->
+
+
+<!--                 <table border="0" cellspacing="0" cellpadding="0" width="600px" -->
+<!--                     id="AGB.de"> -->
+<!--                     <tr> -->
+<!--                         <td align="left" valign="top" width="292px"> -->
+
+<!--                             <p -->
+<!--                                 style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px"> -->
+<!--                                 <strong>Allgemeine Verkaufs- und Lieferbedingungen der -->
+<!--                                     YOUR SL GmbH</strong><br /> <br /> <strong>1. Geltungsbereich</strong><br /> -->
+<!--                                 <br /> -->
+<!--                             </p> -->
+
+<!--                             <p -->
+<!--                                 style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify"> -->
+<!--                                 Soweit nicht ausdrücklich und schriftlich anders bestimmt, -->
+<!--                                 liegen diese Bedingungen allen Angeboten zugrunde, die von der -->
+<!--                                 YOUR SL GmbH abgegeben werden. Aufträge von Bestellern, denen -->
+<!--                                 diese Bedingungen bekannt sind, gelten als zu diesen Bedingungen -->
+<!--                                 erteilt, sofern nicht ausdrücklich und schriftlich anders -->
+<!--                                 bestimmt.</p> -->
+
+<!--                             <p -->
+<!--                                 style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px"> -->
+<!--                                 <br /> <strong>2. Zustandekommen des Vertrages</strong><br /> -->
+<!--                                 <br /> -->
+<!--                             </p> -->
+
+<!--                             <p -->
+<!--                                 style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify"> -->
+<!--                                 Die Angebote von der YOUR SL GmbH sind freibleibend, sofern sie -->
+<!--                                 im Angebotstext nicht ausdrücklich als bindend bezeichnet sind. -->
+<!--                                 Ein Vertrag kommt erst durch schriftliche Annahme einer -->
+<!--                                 Bestellung durch die YOUR SL GmbH (Auftragsbestätigung) oder -->
+<!--                                 durch Ausführung des Auftrags, z.B. Auslieferung, Übermittlung, -->
+<!--                                 Download oder Freischaltung zustande. Für den Vertragsinhalt ist -->
+<!--                                 die schriftliche Auftragsbestätigung maßgebend, sofern eine -->
+<!--                                 solche erfolgt.</p> -->
+
+<!--                             <p -->
+<!--                                 style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify"> -->
+<!--                                 <br /> Mündliche Nebenabreden bedürfen zu ihrer Wirksamkeit -->
+<!--                                 schriftlicher Bestätigung, die nur von der YOUR SL GmbH erteilt -->
+<!--                                 werden kann. Die YOUR SL GmbH behält sich vor, Irrtümer in ihren -->
+<!--                                 Angeboten, Rechnungen und Mitteilungen, wie z. B. Schreib- und -->
+<!--                                 Rechenfehler und die aus ihnen abgeleiteten Ergebnisse, -->
+<!--                                 jederzeit zu berichtigen. Eigenschaften und Funktionen der -->
+<!--                                 abgebildeten Produkte und Leistungen in den Broschüren bzw. auf -->
+<!--                                 den Webseiten gelten dann als zugesicherte Eigenschaft im Sinne -->
+<!--                                 von § 463 BGB, wenn diese ausdrücklich und schriftlich im -->
+<!--                                 Vertrag oder in der Auftragsbestätigung zugesichert wurden. -->
+<!--                             </p> -->
+
+<!--                             <p -->
+<!--                                 style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px"> -->
+<!--                                 <br /> <strong>3. Lieferung und Gefahrübergang</strong><br /> -->
+<!--                                 <br /> -->
+<!--                             </p> -->
+
+<!--                             <p -->
+<!--                                 style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify"> -->
+<!--                                 Die angegebenen Lieferzeiten beginnen mit dem Datum der -->
+<!--                                 Auftragsbestätigung. Lieferzeitangaben erfolgen nach bestem -->
+<!--                                 Wissen, begründen jedoch keine Verbindlichkeit. Auch bei -->
+<!--                                 ausdrücklich garantierten Lieferterminen entbinden die YOUR SL -->
+<!--                                 GmbH höhere Gewalt, Streiks, Aussperrungen oder von der YOUR SL -->
+<!--                                 GmbH nicht verschuldete Lieferverzögerungen der Zubringerfirmen -->
+<!--                                 von jeglicher Haftung. Teillieferungen und Teilrechnungen für -->
+<!--                                 funktionsfähige Einheiten sind zulässig. Die Gefahr geht bei der -->
+<!--                                 Auslieferung des Kaufgegenstandes aus dem Werk auf den Besteller -->
+<!--                                 über. Die Transportkosten von Hauptlieferung und eventueller -->
+<!--                                 Teillieferung trägt grundsätzlich der Käufer.</p> -->
+
+<!--                             <p -->
+<!--                                 style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px"> -->
+<!--                                 <br /> <strong>4. Preise</strong><br /> <br /> -->
+<!--                             </p> -->
+
+<!--                             <p -->
+<!--                                 style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify"> -->
+<!--                                 Alle Preise verstehen sich in Euro und gelten jeweils für -->
+<!--                                 Lieferung ab Werk. Eine Änderung der Kostenlage berechtigt die -->
+<!--                                 YOUR SL GmbH zur Preisanpassung, falls zwischen dem Datum der -->
+<!--                                 Auftragsbestätigung und dem vorgesehenen Liefertermin mehr als 2 -->
+<!--                                 Monate liegen. Alle Preise verstehen sich zuzüglich -->
+<!--                                 Verpackungs-, Transport-, Transportversicherungskosten, -->
+<!--                                 Reisekosten und Auslagen sowie der Umsatzsteuer/gesetzlichen -->
+<!--                                 Mehrwertsteuer.</p> -->
+
+<!--                             <p -->
+<!--                                 style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px"> -->
+<!--                                 <br /> <strong>5. Zahlung und Eigentumsvorbehalt</strong><br /> -->
+<!--                                 <br /> -->
+<!--                             </p> -->
+
+<!--                             <p -->
+<!--                                 style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify"> -->
+<!--                                 Sämtliche Lieferungen erfolgen ausschließlich unter erweitertem -->
+<!--                                 Eigentumsvorbehalt. Rechnungen über Waren- und elektronisch -->
+<!--                                 übertragene Lieferungen sind ohne jeden Abzug sofort netto -->
+<!--                                 fällig. Schecks werden nicht entgegengenommen, Zahlungen mit -->
+<!--                                 Kartensystemen, wie z. B. MasterCard und Visa werden akzeptiert. -->
+<!--                                 Die YOUR SL GmbH behält sich das Eigentum an den -->
+<!--                                 Liefergegenständen so lange vor, bis sämtliche Forderungen der -->
+<!--                                 YOUR SL GmbH aus Geschäften mit dem Besteller restlos beglichen -->
+<!--                                 sind. Erfolgt die Zahlung des Kaufpreises nicht wie vereinbart, -->
+<!--                                 behält sich die YOUR SL GmbH die Geltendmachung von -->
+<!--                                 Verzugszinsen vor, die – sofern nicht ein höherer Verzugsschaden -->
+<!--                                 nachgewiesen wird – in Höhe von 3% über dem jeweiligen -->
+<!--                                 Diskontsatz der Europäischen Zentralbank berechnet werden.</p> -->
+
+<!--                             <p -->
+<!--                                 style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify"> -->
+<!--                                 <br /> Die YOUR SL GmbH ist nach Ablauf eines Monats ab -->
+<!--                                 Eintritt des Verzugs berechtigt, die Liefergegenstände -->
+<!--                                 zurückzufordern und vom Vertrag zurückzutreten. Rechnungen sind -->
+<!--                                 für die YOUR SL GmbH in spesenfreier Weise zu begleichen. Dies -->
+<!--                                 gilt insbesondere für Zahlungen aus dem Ausland. Wird bei -->
+<!--                                 vereinbartem Lastschrifteinzug oder Scheckzahlung eine -->
+<!--                                 Lastschrift oder ein Scheck nicht eingelöst oder wurde das -->
+<!--                                 individuelle Kundenkreditlimit überzogen, so erfolgen alle -->
+<!--                                 weiteren Lieferungen – auch Rückstandsauflösungen – nur gegen -->
+<!--                                 Nachnahme / Barzahlung. -->
+<!--                             </p> -->
+
+<!--                             <p -->
+<!--                                 style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify"> -->
+<!--                                 <br /> Dies berechtigt den Kunden nicht zur -->
+<!--                                 Annahmeverweigerung, im Übrigen bleibt der Kaufvertrag bestehen. -->
+<!--                                 Noch ausstehende Lieferungen werden bis zur endgültigen -->
+<!--                                 Bezahlung aller im Verzug befindlichen Rechnungen -->
+<!--                                 zurückgehalten. Der Käufer ist nicht berechtigt, wegen -->
+<!--                                 Gewährleistungsansprüchen Zahlungen zurückzuhalten oder wegen -->
+<!--                                 nicht anerkannter Gegenforderungen den Kaufpreis anzurechnen. -->
+<!--                             </p> -->
+
+<!--                             <p -->
+<!--                                 style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px"> -->
+<!--                                 <br /> <strong>6. Gewährleistung</strong><br /> <br /> -->
+<!--                             </p> -->
+
+<!--                             <p -->
+<!--                                 style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify"> -->
+<!--                                 Die YOUR SL GmbH gewährleistet, dass der Kaufgegenstand im -->
+<!--                                 Zeitpunkt des Gefahrübergangs frei von Sachmängeln ist. Die -->
+<!--                                 Mängelansprüche verfallen nach 3 Monaten. Die Frist beginnt mit -->
+<!--                                 der Übergabe der Kaufsache an Sie. Treten während dieser Frist -->
+<!--                                 Fehler an der Kaufsache, auf die den Wert und die Tauglichkeit -->
+<!--                                 nicht nur unerheblich beeinträchtigen, wird die YOUR SL GmbH -->
+<!--                                 diese Fehler nach Eingang der Fehlermeldung unverzüglich -->
+<!--                                 beheben. Voraussetzung für die Fehlerbehebung ist, dass die -->
+<!--                                 Fehlerauswirkungen reproduzierbar sind, von Ihnen ausreichend -->
+<!--                                 beschrieben wurden und der Fehler<br /> <br /> -->
+
+
+<!--                             </p></td> -->
+<!--                         <td align="left" valign="top"></td> -->
+<!--                         <td align="left" valign="top" width="292px"> -->
+
+<!--                             <p -->
+<!--                                 style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px"> -->
+<!--                             </p> -->
+
+<!--                             <p -->
+<!--                                 style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify"> -->
+<!--                                 der YOUR SL GmbH unverzüglich gemeldet wurde. Die Gewährleistung -->
+<!--                                 erfolgt durch Nachbesserung, die nach Wahl der YOUR SL GmbH auch -->
+<!--                                 in Form der unentgeltlichen Lieferung erfolgen kann. Zum Zwecke -->
+<!--                                 der Nachbesserung übernimmt die YOUR SL GmbH die Ihnen -->
+<!--                                 entstehenden erforderlichen Aufwendungen. Bei Fehlschlagen der -->
+<!--                                 Nachbesserung wird Ihnen das Recht vorbehalten, nach Ihrer Wahl -->
+<!--                                 zu mindern oder vom Vertrag zurückzutreten. Es gilt die -->
+<!--                                 gesetzliche Garantiezeit (ausgenommen bei Eingriff an den -->
+<!--                                 Gegenständen, unüblicher oder außergewöhnlicher Gebrauch, -->
+<!--                                 Verschleißartikel sowie alle Gebraucht-, Vorführ- und -->
+<!--                                 Messegeräte). Erkennbare Mängel müssen unverzüglich nach -->
+<!--                                 Lieferung, spätestens nach 2 Tagen, verborgene Mängel -->
+<!--                                 unverzüglich nach Entdeckung schriftlich gerügt werden. -->
+<!--                                 Transportschäden sind keine Garantiefälle, hier haftet i. d. R. -->
+<!--                                 der Transporteur.</p> -->
+
+<!--                             <p -->
+<!--                                 style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify"> -->
+<!--                                 <br /> Es gilt der Zustand der Ware, in dem diese die YOUR SL -->
+<!--                                 GmbH erreicht. Bei berechtigter, fristgerechter Mängelrüge -->
+<!--                                 erhält der Käufer nach Wahl der YOUR SL GmbH Nachbesserung, -->
+<!--                                 Umtausch oder Warengutschrift. Ein weitergehender Schadensersatz -->
+<!--                                 ist in jedem Fall ausgeschlossen. Die Garantiezeit wird durch -->
+<!--                                 eine Garantieleistung nicht verlängert, auch nicht für ersetzte -->
+<!--                                 und reparierte Teile. Rücksendungen an die YOUR SL GmbH sind -->
+<!--                                 grundsätzlich vorher mit der Serviceabteilung abzusprechen. -->
+<!--                             </p> -->
+
+<!--                             <p -->
+<!--                                 style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify"> -->
+<!--                                 <br /> Rücksendungen erfolgen auf Gefahr des Käufers, sind -->
+<!--                                 sorgfältig zu verpacken – damit auf dem Transportweg keine -->
+<!--                                 Beschädigungen auftreten können – und frei Haus an die YOUR SL -->
+<!--                                 GmbH zurückzusenden. Wird die Ware „unfrei“ zurückgeschickt, so -->
+<!--                                 hat YOUR SL GmbH das Recht, die Annahme zu verweigern oder die -->
+<!--                                 verauslagten Gebühren zu berechnen. -->
+<!--                             </p> -->
+
+<!--                             <p -->
+<!--                                 style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify"> -->
+<!--                                 <br /> Rücksendungen von Transportschäden gehen zu Lasten des -->
+<!--                                 Absenders. Reparatursendungen, die nicht unter die -->
+<!--                                 Gewährleistung fallen, werden gegen Berechnung ausgeführt. Die -->
+<!--                                 Erstellung eines Kostenvoranschlages ist gebührenpflichtig, auch -->
+<!--                                 wenn die Reparatur danach auf Kundenwunsch nicht durchgeführt -->
+<!--                                 werden soll. Bei Rücksendungen von Ware, die keinen Fehler -->
+<!--                                 zeigt, werden ebenfalls die entsendenden Prüfkosten in Rechnung -->
+<!--                                 gestellt. -->
+<!--                             </p> -->
+
+<!--                             <p -->
+<!--                                 style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px"> -->
+<!--                                 <br /> <strong>7. Rücktrittsrecht, Schadenersatz und -->
+<!--                                     Zurückbehaltungsrecht</strong><br /> <br /> -->
+<!--                             </p> -->
+
+<!--                             <p -->
+<!--                                 style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify"> -->
+<!--                                 Der Besteller kann vom Vertrag zurücktreten, wenn die YOUR SL -->
+<!--                                 GmbH mit der Lieferung oder Herstellung der bestellten Ware über -->
+<!--                                 eine vom Besteller gesetzte angemessene Nachfrist hinaus im -->
+<!--                                 Verzuge ist und dem Besteller ein längeres Zuwarten nach Treu -->
+<!--                                 und Glauben nicht zugemutet werden kann. Für Schäden ist die -->
+<!--                                 Haftung ausgeschlossen, sofern der Schadenseintritt nicht auf -->
+<!--                                 einer grob fahrlässigen Pflichtverletzung der YOUR SL GmbH oder -->
+<!--                                 auf einer vorsätzlichen oder grob fahrlässigen Pflichtverletzung -->
+<!--                                 eines gesetzlichen Vertreters von YOUR SL GmbH beruht.</p> -->
+
+<!--                             <p -->
+<!--                                 style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify"> -->
+<!--                                 <br /> Auf Grund gesetzlicher Zurückhaltungsrechte dürfen -->
+<!--                                 fällige Zahlungen vom Besteller nur in einem Umfang -->
+<!--                                 zurückgehalten werden, der in angemessenem Verhältnis zu dem -->
+<!--                                 Wert der von der YOUR SL GmbH noch nicht vertragsgemäß -->
+<!--                                 erbrachten Teile der Lieferung steht, die deswegen vom Besteller -->
+<!--                                 noch nicht genutzt werden können. Ein Widerruf des Vertrages -->
+<!--                                 nach § 355 Abs. 1 BGB ist gem. §3 Abs.1 FernAbsG bzw. § 312d Abs -->
+<!--                                 1 BGB nach Ablauf einer Frist von 2 Wochen nach Eingang der -->
+<!--                                 ersten Sendung ausgeschlossen. Der Widerruf muss keine -->
+<!--                                 Begründung enthalten und schriftlich, auf einem dauerhaften -->
+<!--                                 Datenträger oder durch Rücksendung der Sache erfolgen. -->
+<!--                             </p> -->
+
+<!--                             <p -->
+<!--                                 style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify"> -->
+<!--                                 <br /> Zur Fristwahrung genügt die rechtzeitige Absendung des -->
+<!--                                 Widerrufs an uns. Von dem Widerruf sind Waren und -->
+<!--                                 Dienstleistungen nach §3 Abs. 2 FernAbsG bzw. § 312d Abs. 4.2 -->
+<!--                                 BGB ausgeschlossen. Im Falle der Geltendmachung des -->
+<!--                                 Widerrufsrechtes des Verbrauchers ist die YOUR SL GmbH -->
+<!--                                 verpflichtet, den bereits gezahlten Kaufpreis wieder -->
+<!--                                 zurückzuerstatten; der Käufer hat in diesem Fall keine -->
+<!--                                 Lizenzrechte bzw. Nutzungsrechte an überlassenen Daten, -->
+<!--                                 Trademarks oder überlassener Software und verpflichtet sich, -->
+<!--                                 diese zeitgleich zum Widerruf des Kaufvertrages zu löschen. Nach -->
+<!--                                 Eingang Ihres Widerrufs sind wir verpflichtet, eventuelle -->
+<!--                                 Zahlungen zurückzuerstatten und der Käufer ist verpflichtet, -->
+<!--                                 unsere Lieferung auf unsere Kosten und Gefahr zurückzusenden. -->
+<!--                                 Die Rücksendung hat grundsätzlich per Einschreiben-Rückschein zu -->
+<!--                                 erfolgen. Der Empfänger hat die Lieferung sofort auf -->
+<!--                                 Transportschäden zu untersuchen und etwaige Schäden sofort, -->
+<!--                                 schriftlich der YOUR SL GmbH und der Transportgesellschaft zu -->
+<!--                                 melden. -->
+<!--                             </p> -->
+
+<!--                             <p -->
+<!--                                 style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify"> -->
+<!--                                 <br /> Der Empfänger ist selbst für die Einhaltung der -->
+<!--                                 Meldefrist der jeweiligen Transportgesellschaft verantwortlich. -->
+<!--                                 Eine verspätete Meldung bewirkt fast immer die Ablehnung von -->
+<!--                                 Schadensersatzansprüchen durch die Transportgesellschaft. Die -->
+<!--                                 YOUR SL GmbH übernimmt die Abwicklung mit der -->
+<!--                                 Transportversicherung – soweit abgeschlossen – und lässt dem -->
+<!--                                 Käufer deren Leistung zukommen. Für zerbrochene oder beschädigte -->
+<!--                                 Verpackungen oder Umverpackungen übernehmen die meisten -->
+<!--                                 Transporteure, die Transportversicherung und auch die YOUR SL -->
+<!--                                 GmbH keine Haftung. -->
+<!--                             </p> -->
+
+<!--                             <p -->
+<!--                                 style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px"> -->
+<!--                                 <br /> <strong>8. Teilnichtigkeit</strong><br /> <br /> -->
+<!--                             </p> -->
+
+<!--                             <p -->
+<!--                                 style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify"> -->
+<!--                                 Sollte eine Bestimmung dieser Geschäftsbedingungen oder einer -->
+<!--                                 sonstigen Vereinbarung unwirksam sein, so wird die Wirksamkeit -->
+<!--                                 von allen anderen Bestimmungen nicht berührt, an Stelle der -->
+<!--                                 unwirksamen Bestimmungen tritt eine dem Sinn der Bestimmung am -->
+<!--                                 nächsten liegende.</p> -->
+
+<!--                             <p -->
+<!--                                 style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px"> -->
+<!--                                 <br /> <strong>9. Erfüllungsort und Gerichtsstand</strong><br /> -->
+<!--                                 <br /> -->
+<!--                             </p> -->
+
+<!--                             <p -->
+<!--                                 style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify"> -->
+<!--                                 Erfüllungsort und Gerichtsstand ist Berlin. Anzuwenden ist das -->
+<!--                                 Recht der Bundesrepublik Deutschland.</p></td> -->
+
+<!--                     </tr> -->
+<!--                 </table>                     -->
+<!--                 </apex:outputText> -->
+<!--             </apex:outputPanel> -->
+
+<!--             </div> -->
+
+
+
+    <!--  AGBs in Englisch-->,
+	<apex:outputPanel >
+            <apex:outputText >
+                <table border="0" cellspacing="0" cellpadding="0" width="600px" id="AGB.en">
+                        <tr>
+                            <td align="left" valign="top" width="292px">
+
+                                <p
+                                    style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px">
+                                    <strong>General Sales and Delivery Conditions of YOUR
+                                        SL GmbH</strong><br /> <br /> <strong>1. Scope of
+                                        Application</strong><br /> <br />
+
+
+                                </p>
+                                <p
+                                    style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify">
+                                    Unless expressly stated otherwise in writing, these conditions
+                                    shall apply to all offers made by YOUR SL GmbH. They shall
+                                    apply to orders from customers to whom these conditions have
+                                    been made known, unless expressly stated otherwise in writing.
+
+
+                                </p>
+                                <p
+                                    style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px">
+                                    <br /> <strong>2. Realization of Contract</strong><br /> <br />
+
+
+                                </p>
+                                <p
+                                    style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify">
+                                    Offers made by YOUR SL GmbH are not binding, unless they are
+                                    expressly declared as such in the written offer. A contract
+                                    shall only come into force when YOUR SL GmbH has accepted an
+                                    order in writing (confirmation of order) or when the order has
+                                    been fulfilled. The content of the contract shall be determined
+                                    by the written confirmation of order, where such exists. Spoken
+                                    agreements shall only be deemed valid if they are confirmed in
+                                    writing. Such confirmation may only be issued by YOUR SL GmbH.
+                                    YOUR SL GmbH reserves the right to rectify at any time any
+                                    errors made in an offer, invoice or communication, such as
+                                    errors in typing or calculations and the results deriving
+                                    therefrom. The properties and performance of products and
+                                    services as printed in brochures or described on the websites
+                                    shall only be deemed to be „guaranteed features“ in the sense
+                                    of §463 BGB (German Civil Code) if an express written
+                                    undertaking is included in the contract or confirmation of
+                                    order.</p>
+
+                                <p
+                                    style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px">
+                                    <br /> <strong>3. Delivery and Passage of Risk</strong><br />
+
+
+
+                                    <br />
+                                </p>
+                                <p
+                                    style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify">
+                                    The delivery time stated commences with the date given on the
+                                    confirmation of order. Delivery dates are quoted to the best
+                                    knowledge and belief of YOUR SL GmbH, but are not binding. Even
+                                    when the delivery date is expressly guarantee, YOUR SL GmbH
+                                    shall be exempt from all liability if delivery is delayed as a
+                                    result of an act of God, strike, lockout or delay on the part
+                                    of the delivery firm for which YOUR SL GmbH is not responsible.
+                                    Part deliveries and partial invoices for units supplied in
+                                    workable condition are permissible. Risk passes to the customer
+                                    when the goods leave the factory.</p>
+
+                                <p
+                                    style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px">
+                                    <br /> <strong>4. Prices</strong><br /> <br />
+
+
+                                </p>
+                                <p
+                                    style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify">
+                                    All prices are given in currency printed on the opposite site
+                                    (Euro) and denote the price of delivery ex works. In the case
+                                    of a change in costs, YOUR SL GmbH may adjust prices if the
+                                    period between the date given on the confirmation of order and
+                                    the proposed date of delivery exceeds 2 months. All prices are
+                                    excluding packing, transport, transport insurance, travel
+                                    expenses, other expenses and VAT.</p>
+
+                                <p
+                                    style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px">
+                                    <br /> <strong>5. Payment and Retention of Title of
+                                        Ownership</strong><br /> <br />
+
+
+                                </p>
+                                <p
+                                    style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify">
+                                    Bills for goods and for items delivered electronically shall be
+                                    payable immediately and in full. Checks wil not be accepted,
+                                    payment by credit cards such as MasterCard and Visa is
+                                    accepted. Goods delivered remain the property of YOUR SL GmbH
+                                    until such times as all claims of YOUR SL GmbH arising from
+                                    transactions with the customer have been paid in full. If the
+                                    purchase price is not paid as agreed, YOUR SL GmbH reserves the
+                                    right to apply default interest at a rate 3% above the current
+                                    discount rate of the European Central Bank, unless a higher
+                                    level of damage caused by default can be proven. YOUR SL GmbH
+                                    is entitled to demand return of goods and to withdraw from the
+                                    contract one month after default begins. The payment method
+                                    used to settle invoices must not incur any additional charges
+                                    for YOUR SL GmbH. This applies in particular to cross-border
+                                    payments. If payment by direct debit or check has been agreed
+                                    and a direct debit or check is not honored or if a customer
+                                    credit limit is exceeded, all subsequent deliveries – including
+                                    backorders – shall be made solely on a cash on delivery/cash
+                                    payment basis. This does not entitle the customer to refuse
+                                    acceptance of delivery and the contract of purchase shall
+                                    continue to apply. Any outstanding deliveries shall be withheld
+                                    until final payment of all overdue invoices. The buyer shall
+                                    not be entitled to withhold payments on account of claims made
+                                    under the warranty or to deduct unrecognized counter claims
+                                    from the purchase price.</p>
+
+                                <p
+                                    style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px">
+                                    <br /> <strong>6. Warranty</strong><br /> <br />
+
+
+                                </p>
+                                <p
+                                    style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify">
+                                    YOUR SL GmbH warrants that the goods shall be exempt from fault
+                                    at the time of passing of the risk. Claims arising from faults
+                                    after a three month period are null and void. The period begins
+                                    with the transfer of the goods to the customer. Should, within
+                                    this time period any faults in the goods arise which vastly
+                                    impair their value or suitability, YOUR SL GmbH will
+                                    immediately remedy these faults after receipt of the problem
+                                    definition. A remedy implicitly requires a reproducible
+                                    problem, sufficiently described and directly reported to YOUR
+                                    SL GmbH by the customer. Upon the sole discretion of YOUR SL
+                                    GmbH, the warranty will be effected in that subsequent
+                                    improvement to the goods will be made or the customer will
+                                    receive fully-functional goods delivered free of charge. YOUR
+                                    SL<br /> <br />
+                                </p></td>
+                            <td align="left" valign="top"></td>
+                            <td align="left" valign="top" width="292px">
+
+                                <p
+                                    style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px">
+
+                                </p>
+                                <p
+                                    style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify">
+                                    GmbH will reimburse all expenses that the customer may bear in
+                                    order to remedy the faults. In case of failure of subsequent
+                                    improvement the customer reserve the right of option to either
+                                    debase or to withdraw from the contract. The statutory warranty
+                                    period applies (with the exception of cases involving
+                                    intervention in the items, unusual or exceptional use, items
+                                    subject to wear and tear and all second hand, demonstration and
+                                    trade show equipment). Any visible faults must be notified in
+                                    writing immediately after delivery, at the latest within 2
+                                    days, hidden faults must be notified in writing as soon as they
+                                    are detected. The warranty does not apply to damages incurred
+                                    in transit, the carrier is generally liable in such cases.</p>
+
+                                <p
+                                    style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify">
+                                    <br /> The condition of the goods is deemed to be their
+                                    condition on arrival at YOUR SL GmbH. In the event of justified
+                                    claims made within the appropriate period, YOUR SL GmbH shall
+                                    rectify the defects, exchange the goods or issue the buyer with
+                                    a credit note, at its discretion. Additional damages are
+                                    excluded in all cases. The warranty period shall not be
+                                    extended by services provided under the guarantee, even where
+                                    parts are replaced or repaired. As a rule, returns to YOUR SL
+                                    GmbH must be agreed in advance with the service department.
+                                    Returns shall be sent at the buyer’s risk, packed with care –
+                                    to ensure that no damages are sustained in transit – and
+                                    returned to YOUR SL GmbH freight paid. If the buyer returns
+                                    goods, freight unpaid, YOUR SL GmbH shall be entitled to refuse
+                                    to accept the consignment or to invoice the charges thus
+                                    incurred. Return consignments of goods damaged in transit shall
+                                    be sent at the consignor’s cost. The cost of carrying out
+                                    remedial work on goods returned for repairs not covered by the
+                                    warranty shall be invoiced to the customer. Cost estimate
+                                    preparation charges shall be invoiced to the customer, even if
+                                    the customer subsequently decides against proceeding with the
+                                    repair. The costs incurred in checking consignments of returned
+                                    goods in which no defects are found shall also be invoiced to
+                                    the customer.
+
+
+                                </p>
+                                <p
+                                    style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px">
+                                    <br /> <strong>7. Right of Withdrawal, Compensation
+                                        and Right of Retention</strong><br /> <br />
+                                </p>
+                                <p
+                                    style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify">
+                                    The customer may withdraw from the contract if YOUR SL GmbH is
+                                    in default of a reasonable period of grace set by the customer
+                                    for delivery or production of the goods ordered and if the
+                                    customer cannot in good faith be expected to wait any longer.
+                                    Liability is debarred for all harms unless arising from a
+                                    grossly negligent breach of duty of YOUR SL GmbH or of a
+                                    willful or grossly negligent breach of duty of a legal agent of
+                                    YOUR SL GmbH. In compliance with statutory rights of retention,
+                                    payments owed by the customer may only be withheld to a value
+                                    which reasonably reflects the value of those parts of the order
+                                    not yet delivered by YOUR SL GmbH in accordance with the
+                                    contract, and which therefore cannot yet be used by the
+                                    customer. Revocation of the contract according to § 355
+                                    paragraph 1 of the BGB (German Civil Code) is excluded after a
+                                    period of 2 weeks from receipt of the first consignment
+                                    according to §3 paragraph 1 of the FernAbsG (German distance
+                                    contracts act) and § 312d paragraph 1 of the BGB.</p>
+
+                                <p
+                                    style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify">
+                                    <br /> Revocation need not include any justification and must
+                                    be made in writing on a permanent data carrier or by returning
+                                    the item. To comply with the deadline, the buyer must simply
+                                    ensure that the revocation is sent to us within the time limit.
+                                    Goods and services according to §3 paragraph 2 of the FernAbsG
+                                    and § 312d paragraph 4.2 of the BGB are excluded from
+                                    revocation. If the buyer exercises this right of revocation,
+                                    YOUR SL GmbH shall be obliged to refund the purchase price
+                                    paid; in this case, the buyer has no licensing rights or rights
+                                    of use to the data, trademarks or software surrendered and
+                                    undertakes to delete these when the contract of purchase is
+                                    revoked. On receipt of your revocation, we shall be obliged to
+                                    refund any payments made and the buyer shall be obliged to send
+                                    back our consignment at our cost and risk. As a rule, the
+                                    return consignment shall be sent via registered mail-return
+                                    receipt.
+
+
+                                </p>
+                                <p
+                                    style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify">
+                                    <br /> The recipient must inspect the delivery for transport
+                                    damages immediately and notify YOUR SL GmbH and the transport
+                                    company immediately in writing if any defects are detected. The
+                                    recipient is responsible for complying with the carrier’s
+                                    notification period. Claims submitted after this period are
+                                    normally refused by the carrier. YOUR SL GmbH shall be
+                                    responsible for arranging transport insurance – where
+                                    applicable – and shall accord the buyer the benefit of this
+                                    service. Most carriers, transport insurance policies and YOUR
+                                    SL GmbH do not accept liability for broken or damaged packaging
+                                    or outer packaging.
+                                </p>
+                                <p
+                                    style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px">
+                                    <br /> <strong>8. Invalidity of one provision</strong><br />
+                                    <br />
+                                </p>
+                                <p
+                                    style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify">
+                                    The invalidity or inoperativeness of one or more provisions of
+                                    this Agreement does not affect the validity of the rest of the
+                                    Agreement and the remaining other provisions shall thereby
+                                    remain unaffected. An invalid provision shall be replaced by a
+                                    provision that approaches the interests intended by the
+                                    parties.</p>
+
+                                <p
+                                    style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px">
+                                    <br /> <strong>9. Place of Performance and
+                                        jurisdiction</strong><br /> <br />
+
+
+                                </p>
+                                <p
+                                    style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify">
+                                    The place of performance is Berlin. The law of the Federal
+                                    Republic of Germany shall apply.
+								</p>
+							</td>
+                        </tr>
+                    </table>
+     	</apex:outputtext> <!-- last outputtext -->
+	</apex:outputPanel>
+</apex:page>

@@ -1,0 +1,122 @@
+<apex:page standardController="TimeEntry__c" extensions="TimeEntry4FreelancerEditExtension" showHeader="false">
+    <br/>
+    <br/>
+    
+    <p>
+    <img align="middle" id="logo-image" src="http://yoursl.de/de/wp-content/uploads/2012/11/your_sl_logo_skyblue_white_rgb_150.png" alt="YOUR SL | Salesforce Platinum Partner in Berlin |" hspace=""/>
+    
+    <br/>
+    <!--apex:sectionHeader title="Time Sheet Entry {!objTimeEntry.Name}"  /-->
+    </p>
+    <style type="text/css">
+        .myClass { width: 400px; height:150px; }
+        
+        
+    #dhtmltooltip{
+        position: absolute;
+        width: 150px;
+        border: 0px;
+        padding: 2px;
+        background-color: lightyellow;
+        visibility: hidden;
+        z-index: 10;
+        /*Remove below line to remove shadow. Below line should always appear last within this CSS*/
+        filter: progid:DXImageTransform.Microsoft.Shadow(color=gray,direction=135);
+    }   
+    </style>
+    
+    <script type="text/javascript">
+        function ddrivetip(thetext, thecolor, thewidth){
+                    if (ns6||ie){
+                        if (typeof thewidth!="undefined") tipobj.style.width=thewidth+"px"
+                            if (typeof thecolor!="undefined" && thecolor!="") 
+                                tipobj.style.backgroundColor=thecolor
+                                tipobj.innerHTML=thetext
+                                tipobj.style.top = "30px"
+                                enabletip=true
+                                return false
+                        }
+                    }
+    </script>
+    
+    <apex:pagemessages id="messages"/>
+    <apex:form id="theform">
+     <apex:pageBlock id="pageblockforview" rendered="{!bIsView}">
+        <apex:pageBlockSection title="Time Sheet Entry {!objTimeEntry.Name}" columns="1">
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Contact" />
+                <apex:outputField value="{!objTimeEntry.Contact__r.Name}" id="idContactview"/> 
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+               <apex:outputLabel value="Opportunity" for="Opportunity"/>
+               <apex:outputField value="{!objTimeEntry.Opportunity__r.Name}" id="idOpportunityview"/> 
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+               <apex:outputLabel value="Task" for="Task"/>
+               <apex:outputField value="{!objTimeEntry.Opportunity_Product_Name__c}" id="idOpportunityLineItemview"/> 
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem helpText="Date can not be earlier than 3 days ago" >
+                <apex:outputLabel value="Date" for="Date"/>
+                <apex:outputField label="Date" value="{!objTimeEntry.Date__c}" />
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Time"/>
+                <apex:outputField value="{!objTimeEntry.Time__c}"/>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Billable"/>
+                <apex:outputField value="{!objTimeEntry.Billable__c}"/>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Description"/>
+                <apex:outputField value="{!objTimeEntry.Description__c}"/>
+            </apex:pageBlockSectionItem>    
+        </apex:pageBlockSection> 
+        <apex:pageBlockButtons location="bottom">
+                <apex:commandButton action="{!addNewTime}" value="Add new Time Entry"/>
+                <apex:commandButton action="{!myEdit}"  value="Edit"/>
+                <apex:commandButton action="{!myDelete}" value="Delete"/>
+        </apex:pageBlockButtons>           
+     </apex:pageBlock>
+     </apex:form>
+     <apex:form >
+     <!--      Pageblock for edit       -->
+         <apex:pageBlock id="pageblockforedit" rendered="{!bIsEdit}" >
+        <apex:pageBlockSection title="Time Sheet Entry {!objTimeEntry.Name}" columns="1">
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Contact" />
+                <apex:outputText value="{!objTimeEntry.Contact__r.Name}" id="idContact"/> 
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+               <apex:outputLabel value="Opportunity" for="Opportunity"/>
+               <apex:outputText value="{!objTimeEntry.Opportunity__r.Name}" id="idOpportunity"/> 
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+               <apex:outputLabel value="Task" for="Task"/>
+               <apex:outputText value="{!objTimeEntry.Opportunity_Product_Name__c}" id="idOpportunityLineItem"/> 
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem helpText="Date can not be earlier than 3 days ago" >
+                <apex:outputLabel value="Date" for="Date"/>
+                <apex:inputField label="Date" value="{!objTimeEntry.Date__c}" />
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Time"/>
+                <apex:inputField value="{!objTimeEntry.Time__c}"/>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Billable"/>
+                <apex:inputField value="{!objTimeEntry.Billable__c}"/>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Description"/>
+                <apex:inputField value="{!objTimeEntry.Description__c}"/>
+            </apex:pageBlockSectionItem>    
+        </apex:pageBlockSection>
+        <apex:pageBlockButtons location="bottom" >
+                <apex:commandButton action="{!mySave}" value="Save"/>
+                <apex:commandButton action="{!myDelete}" value="Delete"/>
+                <apex:commandButton action="{!myCancelEdit}" value="Cancel"/>
+        </apex:pageBlockButtons>               
+     </apex:pageBlock>
+    </apex:form>  
+</apex:page>

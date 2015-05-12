@@ -1,0 +1,222 @@
+<apex:page standardStylesheets="false" showHeader="true" controller="GanttChart" tabstyle="Campaign" >
+<apex:sectionHeader title="" subtitle="YOUR SL Marketing Events Calendar" id="secHeader"/>
+<!-- *********************************************************** -->
+<!-- Created by: Alexander Faust  -->
+<!-- Controller: GanttChart is used to provide selectOptions in selectList "filterOptions"  -->
+<!--             and sSelectedFilter to filter output of createGanttChart javascript function -->
+<!-- Visualforce Page Access: no limitations -->
+<!-- Last modified by: Alexander Faust
+<!-- Last modified date: 07.11.2012 -->
+<!-- Lastest changes: -chart width = 100%;link to campaign onClick;default percentage 0%;bugfix for collapsing items;renamed filter;removed branding;bugfix for &ndash;queries ORDER BY StartDate;changed date format in view 'week' -->
+<!-- *********************************************************** -->
+<script language="JavaScript" type="text/javascript">
+    // creates gantt chart onLoad        
+    window.onload = function() { 
+        //alert(getSalesforceURL(parent.location.href));
+        createGanttChart();
+    }
+</script>
+<apex:form id="theForm">    
+    <apex:pageBlock id="theBlock">
+        
+     <div id="filterOptions" align="left">
+        <!--selectList to filter output of gantt chart. onChange will redraw the gantt chart with chosen filter option -->
+        <apex:selectList id="filterOptions" value="{!sSelectedFilter}" size="1" onchange="createGanttChart(this.value)">
+                    <apex:selectOptions value="{!FilterOptions}"/>
+        </apex:selectList>
+     </div> 
+     <br/>  
+       
+    <!-- div containing the chart -->
+    <div id="GanttDiv" />
+    
+   </apex:pageBlock>
+    
+    
+    <!-- script tag containing some utility functions -->
+    <script id="utility" language="JavaScript" type="text/javascript"> 
+        
+        var globalIdCounter = 0;
+        function uniqueId(){
+            globalIdCounter++;
+            var myDate = new Date();
+            return myDate.getTime().toString(16)+globalIdCounter;
+        }
+        
+        function getSalesforceURL(currentURL){
+            var parts = currentURL.split('.');
+            
+            return 'https://'+parts[1]+'.salesforce.com/';
+            
+        }
+    
+        //Date method to format date for chart object  
+        Date.prototype.toChartFormat = function(){
+          var dd=this.getDate();
+          
+          if(dd<10)
+              dd='0'+dd;
+          var mm=this.getMonth()+1;
+          if(mm<10)
+              mm='0'+mm;
+          
+          var yyyy=this.getFullYear();
+
+          return String(mm+"/"+dd+"/"+yyyy);
+        }//END Date.prototype.toChartFormat
+        
+        Date.prototype.toChartFormatBlusOneDay = function(){
+          var dd=this.getDate();
+          
+              dd=1+dd;
+          var mm=this.getMonth()+1;
+
+          var yyyy=this.getFullYear();
+
+          return String(mm+"/"+dd+"/"+yyyy);
+        }
+        //END Date.prototype.toChartFormat
+        
+        //Date method to format date for SQOL query
+        Date.prototype.toQueryFormat = function(){
+          var dd=this.getDate();
+          if(dd<10)dd='0'+dd;
+          var mm=this.getMonth()+1;
+          if(mm<10)mm='0'+mm;
+          var yyyy=this.getFullYear();
+          return String(yyyy+"-"+mm+"-"+dd);
+        }//END Date.prototype.toChartFormat
+    </script>
+    
+    <!-- script tag containing the actual createGanttChart function -->
+    <script id="ganttChart" language="JavaScript" type="text/javascript">
+        //including script and css of static ressource "Gantt"
+        <apex:includeScript value="{!URLFOR($Resource.GanttFiexedBug)}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.Gantt, 'jsgantt.css')}"/>
+        //inluding ajax toolkit 
+        <apex:includeScript value="/soap/ajax/22.0/connection.js" />
+            var g; //Global variable to run script. DONT CHANGE ITS NAME!
+         createGanttChart = function(filter){
+            var queryResult;
+            var queryResult1;
+            //setting session ID
+            sforce.connection.sessionId = "{!$Api.Session_ID}";
+
+            switch (filter){ //different queries depending on filter option
+
+case '2014HY2':queryResult=sforce.connection.query("SELECT Id,Name,Status, StartDate, EndDate,(SELECT Id,ActivityDate,Subject FROM Tasks WHERE Status != 'Abgeschlossen' AND Is_Marketing_Plan__c = True ORDER BY ActivityDate) FROM Campaign WHERE Status != 'Cancelled' AND StartDate >="+new Date('2014-07-01').toQueryFormat()+" AND StartDate <="+new Date('2014-12-31').toQueryFormat()+" ORDER BY StartDate");queryResult1=sforce.connection.query("SELECT Id,Name,Status, StartDate, EndDate,(SELECT ActivityDate,EndDateTime,Id,StartDateTime,Subject FROM Events Where Is_Marketing_Plan__c = True ORDER BY ActivityDate) FROM Campaign WHERE Status != 'Cancelled' AND (Type = 'Internal' OR Type = 'CI/CD' OR Type = 'Advertisement' OR Type = 'Other') AND StartDate >="+new Date('2014-07-01').toQueryFormat()+" AND StartDate <="+new Date('2014-12-31').toQueryFormat()+" ORDER BY StartDate");
+            break;
+case '2015HY1':queryResult=sforce.connection.query("SELECT Id,Name,Status, StartDate, EndDate,(SELECT Id,ActivityDate,Subject FROM Tasks WHERE Status != 'Abgeschlossen' AND Is_Marketing_Plan__c = True ORDER BY ActivityDate) FROM Campaign WHERE Status != 'Cancelled' AND StartDate >="+new Date('2015-01-01').toQueryFormat()+" AND StartDate <="+new Date('2015-06-30').toQueryFormat()+" ORDER BY StartDate");queryResult1=sforce.connection.query("SELECT Id,Name,Status, StartDate, EndDate,(SELECT ActivityDate,EndDateTime,Id,StartDateTime,Subject FROM Events Where Is_Marketing_Plan__c = True ORDER BY ActivityDate) FROM Campaign WHERE Status != 'Cancelled' AND (Type = 'Internal' OR Type = 'CI/CD' OR Type = 'Advertisement' OR Type = 'Other') AND StartDate >="+new Date('2015-01-01').toQueryFormat()+" AND StartDate <="+new Date('2015-06-30').toQueryFormat()+" ORDER BY StartDate");
+            break;
+case '2015HY2':queryResult=sforce.connection.query("SELECT Id,Name,Status, StartDate, EndDate,(SELECT Id,ActivityDate,Subject FROM Tasks WHERE Status != 'Abgeschlossen' AND Is_Marketing_Plan__c = True ORDER BY ActivityDate) FROM Campaign WHERE Status != 'Cancelled' AND StartDate >="+new Date('2015-07-01').toQueryFormat()+" AND StartDate <="+new Date('2015-12-31').toQueryFormat()+" ORDER BY StartDate");queryResult1=sforce.connection.query("SELECT Id,Name,Status, StartDate, EndDate,(SELECT ActivityDate,EndDateTime,Id,StartDateTime,Subject FROM Events Where Is_Marketing_Plan__c = True ORDER BY ActivityDate) FROM Campaign WHERE Status != 'Cancelled' AND (Type = 'Internal' OR Type = 'CI/CD' OR Type = 'Advertisement' OR Type = 'Other') AND StartDate >="+new Date('2015-07-01').toQueryFormat()+" AND StartDate <="+new Date('2015-12-31').toQueryFormat()+" ORDER BY StartDate");
+            break;
+case '2016HY1':queryResult=sforce.connection.query("SELECT Id,Name,Status, StartDate, EndDate,(SELECT Id,ActivityDate,Subject FROM Tasks WHERE Status != 'Abgeschlossen' AND Is_Marketing_Plan__c = True ORDER BY ActivityDate) FROM Campaign WHERE Status != 'Cancelled' AND StartDate >="+new Date('2016-01-01').toQueryFormat()+" AND StartDate <="+new Date('2016-06-30').toQueryFormat()+" ORDER BY StartDate");queryResult1=sforce.connection.query("SELECT Id,Name,Status, StartDate, EndDate,(SELECT ActivityDate,EndDateTime,Id,StartDateTime,Subject FROM Events Where Is_Marketing_Plan__c = True ORDER BY ActivityDate) FROM Campaign WHERE Status != 'Cancelled' AND (Type = 'Internal' OR Type = 'CI/CD' OR Type = 'Advertisement' OR Type = 'Other') AND StartDate >="+new Date('2016-01-01').toQueryFormat()+" AND StartDate <="+new Date('2016-06-30').toQueryFormat()+" ORDER BY StartDate");
+            break;
+case '2016HY2':queryResult=sforce.connection.query("SELECT Id,Name,Status, StartDate, EndDate,(SELECT Id,ActivityDate,Subject FROM Tasks WHERE Status != 'Abgeschlossen' AND Is_Marketing_Plan__c = True ORDER BY ActivityDate) FROM Campaign WHERE Status != 'Cancelled' AND StartDate >="+new Date('2016-07-01').toQueryFormat()+" AND StartDate <="+new Date('2016-12-31').toQueryFormat()+" ORDER BY StartDate");queryResult1=sforce.connection.query("SELECT Id,Name,Status, StartDate, EndDate,(SELECT ActivityDate,EndDateTime,Id,StartDateTime,Subject FROM Events Where Is_Marketing_Plan__c = True ORDER BY ActivityDate) FROM Campaign WHERE Status != 'Cancelled' AND (Type = 'Internal' OR Type = 'CI/CD' OR Type = 'Advertisement' OR Type = 'Other') AND StartDate >="+new Date('2016-07-01').toQueryFormat()+" AND StartDate <="+new Date('2016-12-31').toQueryFormat()+" ORDER BY StartDate");
+            break;
+
+case 'alle Kampagnen':queryResult=sforce.connection.query("SELECT Id,Name,Status, StartDate, EndDate,(SELECT Id,ActivityDate,Subject FROM Tasks WHERE Status != 'Abgeschlossen' AND Is_Marketing_Plan__c = True ORDER BY ActivityDate) FROM Campaign WHERE Status != 'Cancelled' AND  ORDER BY StartDate");break;
+default : queryResult=sforce.connection.query("SELECT Id,Name,Status, StartDate, EndDate,(SELECT Id,ActivityDate,Subject FROM Tasks WHERE Status != 'Abgeschlossen' AND Is_Marketing_Plan__c = True ORDER BY ActivityDate) FROM Campaign WHERE Status != 'Cancelled' AND StartDate >="+new Date('2015-03-01').toQueryFormat()+" AND StartDate <="+new Date('2015-12-31').toQueryFormat()+" ORDER BY StartDate");queryResult1=sforce.connection.query("SELECT Id,Name,Status, StartDate, EndDate,(SELECT ActivityDate,EndDateTime,Id,StartDateTime,Subject FROM Events Where Is_Marketing_Plan__c = True ORDER BY ActivityDate) FROM Campaign WHERE Status != 'Cancelled' AND (Type = 'Internal' OR Type = 'CI/CD' OR Type = 'Advertisement' OR Type = 'Other') AND StartDate >="+new Date('2015-03-01').toQueryFormat()+" AND StartDate <="+new Date('2015-12-31').toQueryFormat()+" ORDER BY StartDate");
+
+            }
+            //create chart object all entries shown on page are items added to this object
+            //define where to draw the chart in second parameter
+            g = new JSGantt.GanttChart('g',document.getElementById('GanttDiv'), 'day');      
+            g.setShowRes(0); // Show/Hide Responsible (0/1)
+            g.setShowDur(1); // Show/Hide Duration (0/1)
+            g.setShowComp(0); // Show/Hide % Complete(0/1)
+            g.setCaptionType('Caption');  // Set to Show Caption (None,Caption,Resource,Duration,Complete)
+            g.setShowStartDate(1); // Show/Hide Start Date(0/1)
+            g.setShowEndDate(1); // Show/Hide End Date(0/1)
+            g.setDateInputFormat('mm/dd/yyyy')  // Set format of input dates ('mm/dd/yyyy', 'dd/mm/yyyy', 'yyyy-mm-dd')
+            g.setDateDisplayFormat('dd/mm/yyyy') // Set format to display dates ('mm/dd/yyyy', 'dd/mm/yyyy', 'yyyy-mm-dd')
+            g.setFormatArr("day","week","month") // Set format options (up to 4 : "minute","hour","day","week","month","quarter")
+            
+            
+            if(queryResult.size == 0){alert('Filteroption lieferte keine Ergebnisse!');}
+            
+            //getting queryIterator out of queryResult                        
+            var cit = new sforce.QueryResultIterator(queryResult);
+            var cit1 = new sforce.QueryResultIterator(queryResult1);
+            var i = 1;// track dependencies
+
+
+            
+            i = 1;// track dependencies
+
+            //iterating over all campaigns
+            while(cit1.hasNext()){
+               
+                
+                 var campaign = cit1.next();
+                //Template : TaskItem(pID, pName, pStart, pEnd, pColor, pLink, pMile, pRes, pComp, pGroup, pParent, pOpen, pDepend)
+                
+                //creating wrapper object containing basic campaign information
+                //var campWrapper = new JSGantt.TaskItem(i, campaign.Name, '',  '', '00ff00','' , 0, '', 100, 1, 0, detailFlag);
+                //-----------------------------------------------------------------------
+                /*var strCampName = '';
+                
+                if(campaign.Name.length > 65){
+                    for(i = 0; i < campaign.Name.length;i++){
+                    strCampName += campaign.Name[i];
+                        if(i%65 == 0){
+                            strCampName+= '<br/>';
+                        }
+                    }
+                }else{
+                    strCampName = campaign.Name;
+                }*/
+                //------------------------------------------------------------------------------
+                //var campWrapper = new JSGantt.TaskItem(i, campaign.Name +' '+campaign.Status.toUpperCase() + , '',  '', '00ff00',getSalesforceURL(parent.location.href)+campaign.Id , 0, '', 100, 1, 0, 0);
+                //var campWrapper = new JSGantt.TaskItem(i, campaign.Name +' ('+campaign.Status + ')', '',  '', 'febf2d',getSalesforceURL(parent.location.href)+campaign.Id , 0, '', 100, 1, 0, 0);
+                var campWrapper = new JSGantt.TaskItem(i, campaign.Name, '',  '', 'febf2d',getSalesforceURL(parent.location.href)+campaign.Id , 0, '', 100, 1, 0, 0);
+                                
+
+                //adding the wrapper objects to chart object
+                g.AddTaskItem(campWrapper);
+                
+
+
+                if(campaign.Events != null){
+
+                    var events_it = new sforce.QueryResultIterator(campaign.Events);
+                    //iterate over subtasks
+                    while(events_it.hasNext()){
+                        var task = events_it.next();
+                        
+                        //create taskwrapper object containing the detail information of the subtask and add it to chart object
+                       
+                        var taskWrapper = new JSGantt.TaskItem(uniqueId(), task.Subject, new Date(task.StartDateTime).toChartFormat(), new Date(task.EndDateTime).toChartFormat(), 'febf2d', getSalesforceURL(parent.location.href)+task.Id, 0, '', 0, 0, i, 1);
+
+                        g.AddTaskItem(taskWrapper);
+                        
+                    }//END while(task_it.hasNext()
+                }//END if(campaign.Tasks != null)
+                //creating wrapper object for a subtask containing the detail information of campaign
+                
+                
+                
+                if(new Date(campaign.StartDate).toChartFormat() == new Date(campaign.EndDate).toChartFormat()){  
+                            
+                var taskWrapper = new JSGantt.TaskItem(uniqueId(), 'Event', new Date(campaign.StartDate).toChartFormat(), new Date(campaign.EndDate).toChartFormat(), '94d159', getSalesforceURL(parent.location.href)+campaign.Id, 0, '', 0, 0, i, 1);
+                g.AddTaskItem(taskWrapper);
+                }else{
+                
+                var taskWrapper = new JSGantt.TaskItem(uniqueId(), 'Event', new Date(campaign.StartDate).toChartFormat(), new Date(campaign.EndDate ).toChartFormat(), '94d159', getSalesforceURL(parent.location.href)+campaign.Id, 0, '', 0, 0, i, 1);
+                g.AddTaskItem(taskWrapper);
+                }        
+
+
+
+                i++;
+                
+
+            }//END while(cit.hasNext()                
+            
+            g.Draw();//create the chart
+        }//END createGanttChart
+    </script>
+
+
+</apex:form>
+</apex:page>

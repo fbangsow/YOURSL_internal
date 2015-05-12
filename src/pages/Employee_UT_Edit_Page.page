@@ -1,0 +1,231 @@
+<apex:page id="pageEmployee_UT" standardController="Employee_Utilization__c" extensions="Employee_Utilization_Edit_Extension" showHeader="false">
+		<!-- *********************************************************** -->
+	<!-- Created by: Chris Sandra Schautt  -->
+	<!-- standardcontroller and extension "Employee_Utilization:Edit:Extension"  -->
+	<!-- Visualforce Page Access: no limitations/Profilenames-->
+	<!-- Last modified by:  Chris Sandra Schautt-->
+	<!-- Last modified date: 28.03.2013 -->
+	<!-- *********************************************************** --> 
+	<apex:sectionHeader title="" subtitle="Add Employee Utilization" id="secHeader"/>
+	<script>function setFocusOnLoad() {}</script>
+	
+	<apex:messages id="messages" />
+	<apex:form id="theform">
+	 <apex:pageMessages />
+	<apex:pageBlock title="Add Employee Utilization" id="pageblock1">
+		<apex:pageBlockButtons location="bottom">
+			<apex:commandButton action="{!save1}" value="Save" rerender="true" id="saveBtn"/>
+			<apex:commandButton action="{!cancel}" value="Cancel" id="cancelBtn"/>
+		</apex:pageBlockButtons>
+		<!-- *********************************************************** --> 
+		<!-- table with the contacts who are PSO Member, the kalenderweek and the maximum available hours in the week--> 
+		<!-- *********************************************************** --> 
+			<table>
+				<tr>
+						<td align="left" valign="middle" width="100" height="35"><b>Contact:</b></td>	
+						<td align="left" valign="top" width="100" height="35">
+						<apex:pageBlockSection id="pbs1" columns="1">
+							<apex:pageBlockSectionItem >
+				       		<apex:selectList id="selectedContactList22" value="{!selectedContact}" size="1" >
+				           		<apex:selectOptions id="contactItem" value="{!selectedContactList}"/>
+				       		</apex:selectList>
+				       		</apex:pageBlockSectionItem>
+						</apex:pageBlockSection>
+						</td>
+				</tr>
+				<tr>
+					
+					<td align="left" valign="middle" width="100" height="35"><b>Kalender Week:</b></td>	
+					<td align="left" valign="top" width="100" height="35">
+						<apex:pageBlockSection id="pbs2" columns="1">
+							<apex:pageBlockSectionItem >
+				       		<apex:selectList id="selectedKW" value="{!selectedDate}" size="1">
+				           		<apex:selectOptions id="dateItem" value="{!selectedDateList}"/>
+				       		</apex:selectList>
+				       		</apex:pageBlockSectionItem>
+						</apex:pageBlockSection>
+					</td>
+				</tr>
+				<tr>
+					<td align="left" valign="middle" width="100" height="35"><b>Maximum available hours:</b></td>
+					<td align="left" valign="top" width="100" height="35">
+						<apex:pageBlockSection id="pbs3" columns="1">
+							<apex:pageBlockSectionItem >
+				       		<apex:inputField id="maxhours" value="{!thisEmUtObj.Maximum_hours_in_week__c}"/>
+				       		</apex:pageBlockSectionItem>
+						</apex:pageBlockSection>
+					</td>
+				</tr>
+			</table>
+		
+		<!-- *********************************************************** --> 
+		<!-- table with the fieldvalues planded billable and unbillable on Monday-Friday --> 
+		<!-- *********************************************************** --> 
+				<table>
+						<tr>
+							<td align="right" valign="top" width="100" height="35"></td>
+							<td align="center" valign="middle" width="100" height="35"><b> Planned billable hours: </b></td>
+							<td align="center" valign="middle" width="100" height="35"><b> Billable Projects: </b> </td>
+							<td align="left" valign="middle" width="100" height="35"><b> Planned unbillable hours: </b></td>
+							<td align="center" valign="middle" width="100" height="35"><b> Unbillable Projects: </b> </td>
+						</tr>
+						<tr>
+							<td align="left" valign="middle"  width="100" height="35"><b>Monday:</b></td>	
+							<td align="left" valign="top" width="100" height="35">
+							<apex:pageBlockSection id="pbs4" columns="1">
+								<apex:pageBlockSectionItem >
+									<apex:inputField id="PlanedMondey" value="{!thisEmUtObj.Planed_Monday__c}"/>
+								</apex:pageBlockSectionItem>
+								</apex:pageBlockSection>
+							</td>
+							<td align="left" valign="top" width="100" height="35">
+							<apex:pageBlockSection id="pbs5" columns="1">
+								<apex:pageBlockSectionItem >
+									<apex:inputField id="ProjectMondey" value="{!thisEmUtObj.Project_on_Monday__c}"/>
+								</apex:pageBlockSectionItem>
+								</apex:pageBlockSection>
+							</td>
+							<td align="left" valign="top" width="100" height="35">
+							<apex:pageBlockSection id="pbs44" columns="1">
+								<apex:pageBlockSectionItem >
+									<apex:inputField id="PlanedMondeyunbillable" value="{!thisEmUtObj.Planed_unbillable_hours_on_Monday__c}"/>
+								</apex:pageBlockSectionItem>
+								</apex:pageBlockSection>
+							</td>
+							<td align="left" valign="top" width="100" height="35">
+							<apex:pageBlockSection id="pbs55" columns="1">
+								<apex:pageBlockSectionItem >
+									<apex:inputField id="ProjectMondeyunbillable" value="{!thisEmUtObj.Unbillable_Project_on_Monday__c}"/>
+								</apex:pageBlockSectionItem>
+								</apex:pageBlockSection>
+							</td>
+						</tr>
+						<tr>
+							<td align="left" valign="middle"  width="100" height="35"><b>Tuesday:</b></td>
+							<td align="left" valign="top" width="100" height="35">
+								<apex:pageBlockSection >
+								<apex:pageBlockSectionItem >
+									<apex:inputField id="PlanedTuesday" value="{!thisEmUtObj.Planed_Tuesday__c}"/>
+								</apex:pageBlockSectionItem>
+								</apex:pageBlockSection>
+							</td>
+							<td align="left" valign="top" width="100" height="35">
+								<apex:pageBlockSection >
+								<apex:pageBlockSectionItem >
+									<apex:inputField id="ProjectTuesday" value="{!thisEmUtObj.Project_on_Tuesday__c}"/>
+								</apex:pageBlockSectionItem>
+								</apex:pageBlockSection>
+							</td>
+							<td align="left" valign="top" width="100" height="35">
+								<apex:pageBlockSection >
+								<apex:pageBlockSectionItem >
+									<apex:inputField id="PlanedTuesdayUnbillable" value="{!thisEmUtObj.Planed_unbillable_hours_on_Thursday__c}"/>
+								</apex:pageBlockSectionItem>
+								</apex:pageBlockSection>
+							</td>
+							<td align="left" valign="top" width="100" height="35">
+								<apex:pageBlockSection >
+								<apex:pageBlockSectionItem >
+									<apex:inputField id="ProjectTuesdayunbillable" value="{!thisEmUtObj.Unbillable_Project_on_Thursday__c}"/>
+								</apex:pageBlockSectionItem>
+								</apex:pageBlockSection>
+							</td>
+						</tr>
+						<tr>
+							<td align="left" valign="middle"  width="100" height="35"><b>Wednesday:</b></td>
+							<td align="left" valign="top" width="100" height="35">
+								<apex:pageBlockSection >
+									<apex:pageBlockSectionItem >
+										<apex:inputField id="PlanedWednesday" value="{!thisEmUtObj.Planed_Wednesday__c}"/>
+									</apex:pageBlockSectionItem>
+								</apex:pageBlockSection>
+							</td>
+							<td align="left" valign="top" width="100" height="35">
+								<apex:pageBlockSection >
+									<apex:pageBlockSectionItem >
+										<apex:inputField id="ProjectWednesday" value="{!thisEmUtObj.Project_on_Wednesday__c}"/>
+									</apex:pageBlockSectionItem>
+								</apex:pageBlockSection>
+							</td>
+							<td align="left" valign="top" width="100" height="35">
+								<apex:pageBlockSection >
+									<apex:pageBlockSectionItem >
+										<apex:inputField id="PlanedWednesdayUnbillable" value="{!thisEmUtObj.Planed_unbillable_hours_on_Wednesday__c}"/>
+									</apex:pageBlockSectionItem>
+								</apex:pageBlockSection>
+							</td>
+							<td align="left" valign="top" width="100" height="35">
+								<apex:pageBlockSection >
+									<apex:pageBlockSectionItem >
+										<apex:inputField id="ProjectWednesdayunbillable" value="{!thisEmUtObj.Unbillable_Project_on_Wednesday__c}"/>
+									</apex:pageBlockSectionItem>
+								</apex:pageBlockSection>
+							</td>
+						</tr>
+						<tr>
+							<td align="left" valign="middle"  width="100" height="35"><b>Thursday:</b></td>
+							<td align="left" valign="top" width="100" height="35">
+								<apex:pageBlockSection >
+									<apex:pageBlockSectionItem >
+										<apex:inputField id="PlanedThursday" value="{!thisEmUtObj.Planed_Thursday__c}"/>
+									</apex:pageBlockSectionItem>
+								</apex:pageBlockSection>
+							</td>
+							<td align="left" valign="top" width="100" height="35">
+								<apex:pageBlockSection >
+									<apex:pageBlockSectionItem >
+										<apex:inputField id="ProjectThursday" value="{!thisEmUtObj.Project_on_Thursday__c}"/>
+									</apex:pageBlockSectionItem>
+								</apex:pageBlockSection>
+							</td>
+							<td align="left" valign="top" width="100" height="35">
+								<apex:pageBlockSection >
+									<apex:pageBlockSectionItem >
+										<apex:inputField id="PlanedThursdayUnbillable" value="{!thisEmUtObj.Planed_unbillable_hours_on_Thursday__c}"/>
+									</apex:pageBlockSectionItem>
+								</apex:pageBlockSection>
+							</td>
+							<td align="left" valign="top" width="100" height="35">
+								<apex:pageBlockSection >
+									<apex:pageBlockSectionItem >
+										<apex:inputField id="ProjectThursdayUnbillable" value="{!thisEmUtObj.Unbillable_Project_on_Thursday__c}"/>
+									</apex:pageBlockSectionItem>
+								</apex:pageBlockSection>
+							</td>
+						</tr>
+						<tr>
+							<td align="left" valign="middle"  width="100" height="35"><b>Friday:</b></td>
+							<td align="left" valign="top" width="100" height="35">
+								<apex:pageBlockSection >
+									<apex:pageBlockSectionItem >
+										<apex:inputField id="PlanedFriday" value="{!thisEmUtObj.Planed_Friday__c}"/>				
+									</apex:pageBlockSectionItem>
+								</apex:pageBlockSection>
+							</td>
+							<td align="left" valign="top" width="100" height="35">
+								<apex:pageBlockSection >
+									<apex:pageBlockSectionItem >
+										<apex:inputField id="ProjectFriday" value="{!thisEmUtObj.Project_on_Friday__c}"/>				
+									</apex:pageBlockSectionItem>
+								</apex:pageBlockSection>
+							</td>
+							<td align="left" valign="top" width="100" height="35">
+								<apex:pageBlockSection >
+									<apex:pageBlockSectionItem >
+										<apex:inputField id="PlanedFridayunbillable" value="{!thisEmUtObj.Planed_unbillable_hours_on_Friday__c}"/>				
+									</apex:pageBlockSectionItem>
+								</apex:pageBlockSection>
+							</td>
+							<td align="left" valign="top" width="100" height="35">
+								<apex:pageBlockSection >
+									<apex:pageBlockSectionItem >
+										<apex:inputField id="ProjectFridayUnbillable" value="{!thisEmUtObj.Unbillable_Project_on_Friday__c}"/>				
+									</apex:pageBlockSectionItem>
+								</apex:pageBlockSection>
+							</td>
+						</tr>
+				</table>
+				
+	</apex:pageBlock>
+	</apex:form>
+</apex:page>

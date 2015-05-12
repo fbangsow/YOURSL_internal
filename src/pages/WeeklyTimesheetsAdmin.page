@@ -1,0 +1,40 @@
+<apex:page controller="WeeklyTimesheetsAdminCont">
+	<apex:pageMessages />
+ 	<apex:form > 
+ 			<br/>
+		<br/>
+		<br/>
+		<br/>
+		<apex:pageBlock >
+
+		User&nbsp;&nbsp;
+    	<apex:selectList size="1" value="{!User}">
+			<apex:selectOptions value="{!Users}"/>
+		</apex:selectList>
+		<br/><br/>
+		<table>
+			<tr><td>Start</td><td>End</td></tr>
+			<tr><td><apex:inputField value="{!oppStart.CloseDate}" /></td><td><apex:inputField value="{!oppEnd.CloseDate}" /></td></tr>
+		</table>
+		<br/>
+		<apex:commandButton value="Show Timesheets" action="{!showTimeSheets}"/>
+		<br/>
+		<br/>
+
+    	<apex:pageBlockTable value="{!weeklyTimeSheets}" var="wts" >
+    		<apex:column headerValue="Weekly Sheet Name">
+                <apex:outputLink value="{!URLFOR($Action.Time_Bong__c.View, wts.ID)}">{!wts.name}</apex:outputLink>
+            </apex:column>
+            <apex:column headerValue="Start Date" Value="{!wts.Start_Date__c}"/>
+            <apex:column headerValue="End Date" Value="{!wts.End_Date__c}"/>
+            <apex:column headerValue="Total hours worked (billable)" Value="{!wts.Total_hours_worked_billable__c}"/>
+            <apex:column headerValue="Total hours worked (non billable)" Value="{!wts.Total_hours_worked_non_billable__c}"/>
+            <apex:column headerValue="Days overdue" Value="{!wts.Days_overdue__c}"/>
+            <apex:column headerValue="Approved" Value="{!wts.Approved__c}"/>
+    	</apex:pageBlockTable>
+	    </apex:pageBlock>
+	</apex:form>
+	<script type="text/javascript">
+	function setFocus() {}
+	</script>
+</apex:page>

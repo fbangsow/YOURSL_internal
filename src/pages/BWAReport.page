@@ -1,0 +1,103 @@
+<apex:page controller="BWAReportCont">
+<style type="text/css">
+.tdAll {
+	border-color: black;
+	border-style: solid;
+	border-width: 1px;
+    text-align: right; 
+}
+.tdRtUpLt {
+	border-color: black;
+	border-style: solid;
+	border-width: 1px 1px 0 1px;
+    text-align: right; 
+}
+.tdLt {
+	border-color: black;
+	border-style: solid;
+	border-width: 0 0 0 1px;
+    text-align: right; 
+}
+.tdRt {
+	border-color: black;
+	border-style: solid;
+	border-width: 0 1px 0 0;
+    text-align: right; 
+}
+.tdBt {
+	border-color: black;
+	border-style: solid;
+	border-width: 0 0 1px 0;
+    text-align: right; 
+}
+.tdLtBt {
+	border-color: black;
+	border-style: solid;
+	border-width: 0 0 1px 1px;
+    text-align: right; 
+}
+.tdRtBt {
+	border-color: black;
+	border-style: solid;
+	border-width: 0 1px 1px 0;
+    text-align: right; 
+}
+.tdNone {
+	border-width: 0;
+    text-align: right; 
+}
+.textTd {
+	text-align: left; 
+}
+</style>
+
+<apex:pageMessages />
+
+<apex:form >
+	<table>
+		<tr><td>From</td><td>To</td></tr>
+		<tr><td><apex:inputField value="{!oppStart.CloseDate}" /></td><td><apex:inputField value="{!oppEnd.CloseDate}" /></td></tr>
+	</table>
+	<br/>
+	<apex:commandButton value="Run Report" action="{!runReport}"/>
+	<br/>
+	<br/>
+</apex:form>
+
+<div id="reportDiv" style="display: none;">
+<table  cellspacing="0" style="border-collapse:collapse; background-color: #ECECEC; table-layout:fixed;">
+	<tr><td class="tdAll textTd">Bezeichnung<br/><br/></td><td class="tdAll textTd">Sum in Euro</td><td class="tdAll textTd">% of revenue</td></tr>
+	
+	<tr><td class="tdAll textTd">Umsatzerlöse / Revenue<br/><br/></td><td class="tdAll">{!totalUmsatzErloeseStr} €</td><td class="tdAll">{!totalUmsatzErloesePercStr}</td></tr>
+	
+	<tr><td class="tdAll textTd">Fremdleistung / Third party service cost<br/><br/></td><td class="tdAll">{!totalFremdLeistungStr} €</td><td class="tdAll">{!totalFremdLeistungPercStr}</td></tr>
+	
+	<tr><td class="tdAll textTd">Rohertrag / Margin<br/><br/></td><td class="tdAll">{!totalRohertragStr} €</td><td class="tdAll">{!totalRohertragPercStr}</td></tr>
+	
+	
+	<!-- 
+	<tr><td colspan="3" class="tdRtUpLt textTd">Kostenarten:</td></tr>
+	<tr><td class="tdLt textTd">&nbsp;&nbsp;Telefon (4920)</td><td class="tdNone">{!round(totalTelefon, 2)}</td><td class="tdRt">{!round(totalTelefonPerc, 2)}</td></tr>
+	<tr><td class="tdLtBt textTd">&nbsp;&nbsp;Miete (4210)<br/><br/></td><td class="tdBt">{!round(totalMiete, 2)}</td><td class="tdRtBt">{!round(totalMietePerc, 2)}</td></tr>
+	-->
+	
+	<tr><td class="tdAll textTd"><a href="https://eu1.salesforce.com/00OD0000005R0tm" target="_blank">Gesamtkosten / Cost</a><br/><br/></td><td class="tdAll">{!totalKostenartStr} €</td><td class="tdAll">{!totalKostenartPercStr}</td></tr>
+	
+	<tr><td class="tdAll textTd">Betriebsergebnis / EBITDA<br/><br/></td><td class="tdAll">{!betriebsErgebnisStr} €</td><td class="tdAll">{!betriebsErgebnisPercStr}</td></tr>
+	
+	
+</table>
+
+<br/><br/>
+<a href="https://eu1.salesforce.com/01ZD0000000xHnz" target="_blank" style="color: blue;">Dashboard</a>
+</div>
+
+<script type="text/javascript">
+	function setFocus() {}
+	
+	var showReport = {!showReport};
+	if(showReport == true) {
+		document.getElementById('reportDiv').style.display = '';
+	}
+</script>
+</apex:page>

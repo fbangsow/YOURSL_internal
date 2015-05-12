@@ -1,0 +1,225 @@
+<apex:page id="thePage" Controller="Employee_Utilization_Controller" tabStyle="Employee_Utilization__c" >
+	<!-- *********************************************************** -->
+	<!-- Created by: Chris Sandra Schautt  -->
+	<!-- Custom Controller "Employee_Utilization_Controller" due to no standard controller operations  -->
+	<!-- Visualforce Page Access: no limitations/Profilenames-->
+	<!-- Last modified by:  Chris Sandra Schautt-->
+	<!-- Last modified date: 28.03.2013 -->
+	<!-- *********************************************************** --> 
+	<script>function setFocusOnLoad() {}</script>
+	
+	<script type="text/javascript">
+	window.onload = new function() { maxAuslastung(); };
+	function maxAuslastung(){
+		
+		if (document.getElementById("statusAuslastung1").firstChild.nodeValue <= '60'){
+			document.getElementById("statusAuslastung1").style.backgroundColor = '#FFBFAF';
+		} else if((document.getElementById("statusAuslastung1").firstChild.nodeValue > '60') && (document.getElementById("statusAuslastung1").firstChild.nodeValue < '80')){
+			document.getElementById("statusAuslastung1").style.backgroundColor = '#FFFF99';
+		} else if(document.getElementById("statusAuslastung1").firstChild.nodeValue >= '80'){
+			document.getElementById("statusAuslastung1").style.backgroundColor = '#CCFF99';		
+		}else{
+		}
+		if (document.getElementById("statusAuslastung2").firstChild.nodeValue <= '60') {
+			document.getElementById("statusAuslastung2").style.backgroundColor = '#FFBFAF';
+		} else if((document.getElementById("statusAuslastung2").firstChild.nodeValue > '60')&& (document.getElementById("statusAuslastung1").firstChild.nodeValue < '80')){
+			document.getElementById("statusAuslastung2").style.backgroundColor = '#FFFF99';
+		} else if(document.getElementById("statusAuslastung2").firstChild.nodeValue >= '80'){
+			document.getElementById("statusAuslastung2").style.backgroundColor = '#CCFF99';		
+		}
+	}
+	
+	
+	</script>
+	<style>
+	
+	 .headerRow .myClass{width:0.01pt;background-color:#778899 !important;background-image:none !important;color:#778899;}
+	
+	
+	#dhtmltooltip{
+	position: absolute;
+	width: 150px;
+	border: 0px;
+	padding: 2px;
+	background-color: lightblue;
+	visibility: hidden;
+	z-index: 10;
+	/*Remove below line to remove shadow. Below line should always appear last within this CSS*/
+	filter: progid:DXImageTransform.Microsoft.Shadow(color=gray,direction=135);
+}
+
+	
+</style>
+	<apex:sectionHeader title="({!startDate} - {!fridayDate})" subtitle="PSO Auslastung KW {!kalenderWeek}" id="secHeader" />
+	<apex:messages id="error" />
+	<apex:form id="theForm">
+	<body onload="maxAuslastung()"/>
+	  <apex:pageBlock id="PageblockDate" title=" " >
+	  	 <apex:pageBlockButtons >
+                <apex:commandButton action="{!myRefresh}" value="Update" onclick="maxAuslastung()"/>
+                 <apex:commandButton action="{!myCancel}" value="Cancel" onclick="maxAuslastung()"/>
+         </apex:pageBlockButtons>
+	     <apex:pageBlockSection columns="1" >
+	 	 	<apex:inputField value="{!thisEmUtObj.Date_Monday__c}" label="Please select  a startdate:" id="Date" />
+	 	 </apex:pageBlockSection>
+	  
+	  </apex:pageBlock>
+        <apex:pageBlock id="PageblockEmployeeUtilization"  >
+       
+            <apex:pageBlockSection columns="1"  title="Geplante vs. Gebuchte Stunden ">
+                <apex:pageBlockTable id="TableAuslatung"  value="{!listEmUt}" var="item" style="width:2200pt;" >
+                
+                    <apex:column id="L1TablePSORessourceName" value="{!item.PSO_Ressource__c}" headerValue="PSO Ressource" style="width:200px"/>
+                    <apex:column id="L2TableProjectMonday" value="{!item.Project_on_Monday__c}" headerValue="{!projectMonday}" style="width:100pt"/>
+                    <apex:column id="L3TablePlanedMondey" value="{!item.Planed_Monday__c}" headerValue="{!planedMonday}" style="{!IF(item.Planed_Monday__c >6,'width:30pt;background-color:#CCFF99',IF((item.Planed_Monday__c <= 6 && item.Planed_Monday__c > 4),'width:30pt;background-color:#FFFF99',IF(item.Planed_Monday__c <= 4,'width:30pt;background-color:#FFBFAF','width:30pt')))}"/>
+                    <apex:column id="L4TableBilledMondey" value="{!item.Billed_on_Monday__c}" headerValue="{!billedMonday}" style="width:30pt"/>
+                    <apex:column id="L202TableProjectMonday" value="{!item.Unbillable_Project_on_Monday__c}" headerValue="Projekt " style="width:100pt"/>
+                    <apex:column id="L5TableComletMonday" value="{!item.Planed_unbillable_hours_on_Monday__c}" headerValue="{!unbillableMonday}" style="width:40pt"/>
+                    <apex:column id="L6leer1" value="{!leer}" headerValue="" headerClass="myClass" style="width:0.01pt;background-color:#778899"/>
+                    
+                    <apex:column id="L7TableProjectTuesday" value="{!item.Project_on_Tuesday__c}" headerValue="{!projectTuesday}" style="width:100pt"/>
+                    <apex:column id="L8TablePlanedTuesday" value="{!item.Planed_Tuesday__c}" headerValue="{!planedTuesday}" style="{!IF(item.Planed_Tuesday__c >6,'width:30pt;background-color:#CCFF99',IF(item.Planed_Tuesday__c <= 6 && item.Planed_Tuesday__c > 4,'width:30pt;background-color:#FFFF99',IF(item.Planed_Tuesday__c <= 4,'width:30pt;background-color:#FFBFAF','width:30pt')))}"/>
+                    <apex:column id="L9TableBilledTuesday" value="{!item.Billed_on_Tuesday__c}" headerValue="{!billedTuesday}" style="width:30pt"/>
+                    <apex:column id="L707TableProjectTuesday" value="{!item.Unbillable_Project_on_Tuesday__c}" headerValue="Projekt " style="width:100pt"/>
+                    <apex:column id="L10TableCompletTuesday" value="{!item.Planed_unbillable_hours_on_Tuesday__c}" headerValue="{!unbillableTuesday}" style="width:40pt"/>
+					<apex:column id="L11leer2" value="{!leer}" headerValue="" headerClass="myClass" style="width:0.01pt;background-color:#778899"/>
+                    
+                    <apex:column id="L12TableProjectWednesday" value="{!item.Project_on_Wednesday__c}" headerValue="{!projectWednesday}" style="width:100pt"/>                    
+                    <apex:column id="L13TablePlanedWednesday" value="{!item.Planed_Wednesday__c}" headerValue=" {!planedWednesday}" style="{!IF(item.Planed_Wednesday__c >6,'width:30pt;background-color:#CCFF99',IF(item.Planed_Wednesday__c <= 6 && item.Planed_Wednesday__c > 4,'width:30pt;background-color:#FFFF99',IF(item.Planed_Wednesday__c <= 4,'width:30pt;background-color:#FFBFAF','width:30pt')))}"/>
+                    <apex:column id="L14TableBilledWednesday" value="{!item.Billed_on_Wednesday__c}" headerValue="{!billedWednesday}" style="width:30pt"/>
+                    <apex:column id="L12012TableProjectWednesday" value="{!item.Unbillable_Project_on_Wednesday__c}" headerValue="Projekt " style="width:100pt"/> 
+                    <apex:column id="L15TableCompletWednesday" value="{!item.Planed_unbillable_hours_on_Wednesday__c}" headerValue="{!unbillableWednesday}" style="width:40pt"/>
+                    <apex:column id="L16leer3" value="{!leer}" headerValue="" headerClass="myClass" style="width:0.01pt;background-color:#778899"/>
+                    
+                    <apex:column id="L17TableProjectThursday" value="{!item.Project_on_Thursday__c}" headerValue="{!projectThursday}" style="width:100pt"/>                    
+                    <apex:column id="L18TablePlanedThursday" value="{!item.Planed_Thursday__c}" headerValue="{!planedThursday}" style="{!IF(item.Planed_Thursday__c >6,'width:30pt;background-color:#CCFF99',IF(item.Planed_Thursday__c <= 6 && item.Planed_Thursday__c > 4,'width:30pt;background-color:#FFFF99',IF(item.Planed_Thursday__c <= 4,'width:30pt;background-color:#FFBFAF','width:30pt')))}"/>
+                    <apex:column id="L19TableBilledThursday" value="{!item.Billed_on_Thursday__c}" headerValue="{!billedThursday}" style="width:30pt"/>
+                    <apex:column id="L17017TableProjectThursday" value="{!item.Unbillable_Project_on_Thursday__c}" headerValue="Projekt " style="width:100pt"/>
+                    <apex:column id="L20TableCompletThursday" value="{!item.Planed_unbillable_hours_on_Thursday__c}" headerValue="{!unbillableThursday}" style="width:40pt"/>
+					<apex:column id="L21leer4" value="{!leer}" headerValue="" headerClass="myClass" style="width:0.01pt;background-color:#778899"/>
+                    
+                    <apex:column id="L22TableProjectFriday" value="{!item.Project_on_Friday__c}" headerValue="{!projectFriday}" style="width:100pt"/>                    
+                    <apex:column id="L23TablePlanedFriday" value="{!item.Planed_Friday__c}" headerValue="{!planedFriday}" style="{!IF(item.Planed_Friday__c >6,'width:30pt;background-color:#CCFF99',IF(item.Planed_Friday__c <= 6 && item.Planed_Friday__c > 4,'width:30pt;background-color:#FFFF99',IF(item.Planed_Friday__c <= 4,'width:30pt;background-color:#FFBFAF','width:30pt')))}"/>
+                    <apex:column id="L24TableBilledFriday" value="{!item.Billed_on_Friday__c}" headerValue="{!billedFriday}" style="width:30pt"/>
+                    <apex:column id="L22022TableProjectFriday" value="{!item.Unbillable_Project_on_Friday__c}" headerValue="Projekt " style="width:100pt"/>                    
+                    <apex:column id="L25TableCompletFriday" value="{!item.Planed_unbillable_hours_on_Friday__c}" headerValue="{!unbillableFriday}" style="width:40pt"/>
+                    <apex:column id="L26leer5" value="{!leer}" headerValue="" headerClass="myClass" style="width:0.01pt;background-color:#778899"/>
+                    
+                    <apex:column id="L27TablePlanedWeek" value="{!item.Planed_Week__c}" headerValue="{!planedKWday} " style="width:70pt"/>
+                    <apex:column id="L28TableBilledWeek" value="{!item.Billed_Hour_in_Week__c}" headerValue="{!billedKWday} " style="width:70pt"/>
+                	<apex:column id="L28TableUtilizationWeek" value="{!item.Weekly_Auslastung__c }" headerValue="Utilization " style="width:70pt"/>
+                	
+                </apex:pageBlockTable>
+			</apex:pageBlockSection>
+		</apex:pageBlock>
+        <apex:pageBlock id="PageblockSum" >
+            <apex:pageBlockSection columns="1" title="Realisierung" >
+              	<apex:pageBlockTable id="SummenTabelle"  value="{!sumname}" var="item" style="width:2200pt;">
+                	<apex:column id="L1SumName" value="{!sumname}" headerValue="Summe" style="width:200px"/>
+                    <apex:column id="L2Projectleer1" value="{!leer}" headerValue="" style="width:100pt;background-color:#F0FFFF"/>
+                    <apex:column id="L3SumPlanedMondey" value="{!sumplanedMonday}" headerValue="{!planedMonday}" style="width:30pt"/>
+                    <apex:column id="L4SumBilledMondey" value="{!sumbilledMonday}" headerValue="{!billedMonday}" style="width:30pt"/>
+                    <apex:column id="L202Projectleer1" value="{!leer}" headerValue="" style="width:100pt;background-color:#F0FFFF"/>
+                    <apex:column id="L5SumComletMonday" value="{!sumunbillableMonday}" headerValue="{!unbillableMonday}" style="width:40pt"/>
+                    <apex:column id="L6leer7" value="{!leer}" headerValue="" headerClass="myClass" style="width:0.01pt;background-color:#778899"/>
+                    
+                    <apex:column id="L7Projectleer2" value="{!leer}" headerValue="" style="width:100pt;background-color:#F0FFFF"/>
+                    <apex:column id="L8SumPlanedTuesday" value="{!sumplanedTuesday}" headerValue="{!planedTuesday}" style="width:30pt"/>
+                    <apex:column id="L9SumBilledTuesday" value="{!sumbilledTuesday}" headerValue="{!billedTuesday}" style="width:30pt"/>
+                    <apex:column id="L707Projectleer2" value="{!leer}" headerValue="" style="width:100pt;background-color:#F0FFFF"/>                    
+                    <apex:column id="L10SumCompletTuesday" value="{!sumunbillableTuesday}" headerValue="{!unbillableTuesday}" style="width:40pt"/>
+                    <apex:column id="L11leer8" value="{!leer}" headerValue="" headerClass="myClass" style="width:0.01pt;background-color:#778899"/>
+                    
+                    <apex:column id="L12Projectleer3" value="{!leer}" headerValue="" style="width:100pt;background-color:#F0FFFF"/>
+                    <apex:column id="L13SumPlanedWednesday" value="{!sumplanedWednesday}" headerValue=" {!planedWednesday}" style="width:30pt"/>
+                    <apex:column id="L14SumBilledWednesday" value="{!sumbilledWednesday}" headerValue="{!billedWednesday}" style="width:30pt"/>
+                    <apex:column id="L12012Projectleer3" value="{!leer}" headerValue="" style="width:100pt;background-color:#F0FFFF"/>                    
+                    <apex:column id="L15SumCompletWednesday" value="{!sumunbillableWednesday}" headerValue="{!unbillableWednesday}" style="width:40pt"/>
+                    <apex:column id="L16leer8" value="{!leer}" headerValue="" headerClass="myClass" style="width:0.01pt;background-color:#778899"/>
+
+                    <apex:column id="L17Projectleer4" value="{!leer}" headerValue="" style="width:100pt;background-color:#F0FFFF"/>
+                    <apex:column id="L18SumPlanedThursday" value="{!sumplanedThursday}" headerValue="{!planedThursday}" style="width:30pt"/>
+                    <apex:column id="L19SumBilledThursday" value="{!sumbilledThursday}" headerValue="{!billedThursday}" style="width:30pt"/>
+                    <apex:column id="L17017Projectleer4" value="{!leer}" headerValue="" style="width:100pt;background-color:#F0FFFF"/>                    
+                    <apex:column id="L20SumCompletThursday" value="{!sumunbillableThursday}" headerValue="{!unbillableThursday}" style="width:40pt"/>
+                    <apex:column id="L216leer9" value="{!leer}" headerValue="" headerClass="myClass" style="width:0.01pt;background-color:#778899"/>
+                    
+                    <apex:column id="L22Projectleer5" value="{!leer}" headerValue="" style="width:100pt;background-color:#F0FFFF"/>                    
+                    <apex:column id="L23SumPlanedFriday" value="{!sumplanedFriday}" headerValue="{!planedFriday}" style="width:30pt"/>
+                    <apex:column id="L24SumBilledFriday" value="{!sumbilledFriday}" headerValue="{!billedFriday}" style="width:30pt"/>
+                    <apex:column id="L25SumcompletFriday" value="{!sumunbillableFriday}" headerValue="{!unbillableFriday}" style="width:40pt"/>
+                    <apex:column id="L22022Projectleer5" value="{!leer}" headerValue="" style="width:100pt;background-color:#F0FFFF"/>
+                    <apex:column id="L26leer10" value="{!leer}" headerValue="" headerClass="myClass" style="width:0.01pt;background-color:#778899"/>
+                    
+                    <apex:column id="L27SumPlanedWeek" value="{!sumPlanedweek}" headerValue="{!planedKWday} " style="width:70pt"/>
+                    <apex:column id="L28SumBilledWeek" value="{!sumBilledweek}" headerValue="{!billedKWday} " style="width:70pt"/>
+                    <apex:column id="L202Utilizationleer1" value="{!leer}" headerValue="" style="width:70pt;background-color:#F0FFFF"/>
+                  </apex:pageBlockTable>
+                  <!-- 
+                  <apex:pageBlockTable id="SummenTabelle2"  value="{!sumname}" var="item" style="width:2100pt;">
+                	<apex:column id="L1SumName2" value="{!sumname}" headerValue="Summe" style="width:200px"/>
+                	
+                    <apex:column id="L2Projectleer6" value="{!leer}" headerValue="" style="width:100pt;background-color:#F0FFFF"/>                	
+                    <apex:column id="L3SumeBilledMonday2" value="{!sumbilledMonday}" headerValue="{!billedMonday}" style="width:100pt"/>
+                    <apex:column id="L4maxMonday2" value="{!maxMonday}" headerValue="Maximum h" style="width:70pt"/>
+                    <apex:column id="L5maxComletMonday2" value="{!maxcompletMonday}%" headerValue="{!unbillableMonday}" style="{!IF(maxcompletMonday >= 80,'width:70pt;background-color:#CCFF99',IF(maxcompletMonday < 80 && maxcompletMonday > 70,'width:70pt;background-color:#FFFF99',IF(maxcompletMonday <= 70,'width:70pt;background-color:#FFBFAF','width:70pt')))}"/>
+                    <apex:column id="L6leer11" value="{!leer}" headerValue="" headerClass="myClass" style="width:0.01pt;background-color:#778899"/>
+                   
+                    <apex:column id="L7Projectleer7" value="{!leer}" headerValue="" style="width:100pt;background-color:#F0FFFF"/>                   
+                    <apex:column id="L8SumPlanedTuesday2" value="{!sumbilledTuesday}" headerValue="{!billedTuesday}" style="width:100pt"/>
+                    <apex:column id="L9maxTuesday2" value="{!maxTuesday}" headerValue="Maximum h" style="width:70pt"/>
+                    <apex:column id="L10maxCompletTuesda2" value="{!maxcompletTuesday}%" headerValue="{!unbillableTuesday}" style="{!IF(maxcompletTuesday >= 80,'width:70pt;background-color:#CCFF99',IF(maxcompletTuesday < 80 && maxcompletTuesday > 70,'width:70pt;background-color:#FFFF99',IF(maxcompletTuesday <= 70,'width:70pt;background-color:#FFBFAF','width:70pt')))}"/>
+                    <apex:column id="L11leer12" value="{!leer}" headerValue="" headerClass="myClass" style="width:0.01pt;background-color:#778899"/>
+
+                    <apex:column id="L12Projectleer8" value="{!leer}" headerValue="" style="width:100pt;background-color:#F0FFFF"/>
+                    <apex:column id="L13SumPlanedWednesday2" value="{!sumbilledWednesday}" headerValue=" {!billedWednesday}" style="width:100pt"/>
+                    <apex:column id="L14maxWednesday2" value="{!maxWednesday}" headerValue="Maximum h" style="width:70pt"/>
+                    <apex:column id="L15maxCompletWednesday2" value="{!maxcompletWednesday}%" headerValue="{!unbillableWednesday}" style="{!IF(maxcompletWednesday >= 80,'width:70pt;background-color:#CCFF99',IF(maxcompletWednesday < 80 && maxcompletWednesday > 70,'width:70pt;background-color:#FFFF99',IF(maxcompletWednesday <= 70,'width:70pt;background-color:#FFBFAF','width:70pt')))}"/>
+                    <apex:column id="L16leer13" value="{!leer}" headerValue="" headerClass="myClass" style="width:0.01pt;background-color:#778899"/>
+
+                    <apex:column id="L17Projectleer9" value="{!leer}" headerValue="" style="width:100pt;background-color:#F0FFFF"/>
+                    <apex:column id="L18SumPlanedThursday2" value="{!sumbilledThursday}" headerValue="{!billedThursday}" style="width:100pt"/>
+                    <apex:column id="L19maxThursday2" value="{!maxThursday}" headerValue="Maximum h" style="width:70pt"/>
+                    <apex:column id="L20maxCompletThursday2" value="{!maxcompletThursday}%" headerValue="{!unbillableThursday}" style="{!IF(maxcompletThursday >= 80,'width:70pt;background-color:#CCFF99',IF(maxcompletThursday < 80 && maxcompletThursday > 70,'width:70pt;background-color:#FFFF99',IF(maxcompletThursday <= 70,'width:70pt;background-color:#FFBFAF','width:70pt')))}"/>
+                    <apex:column id="L21leer14" value="{!leer}" headerValue="" headerClass="myClass" style="width:0.01pt;background-color:#778899"/>
+
+                    <apex:column id="L22Projectleer10" value="{!leer}" headerValue="" style="width:100pt;background-color:#F0FFFF"/>
+                    <apex:column id="L23SumPlanedFriday2" value="{!sumbilledFriday}" headerValue="{!billedFriday}" style="width:100pt"/>
+                    <apex:column id="L24maxFriday2" value="{!maxFriday}" headerValue="Maximum h" style="width:70pt"/>
+                    <apex:column id="L25maxcompletFriday2" value="{!maxcompletFriday}%" headerValue="{!unbillableFriday}" style="{!IF(maxcompletFriday >= 80,'width:70pt;background-color:#CCFF99',IF(maxcompletFriday < 80  && maxcompletFriday > 70,'width:70pt;background-color:#FFFF99',IF(maxcompletFriday <= 70,'width:70pt;background-color:#FFBFAF','width:70pt')))}"/>
+                    <apex:column id="L26leer15" value="{!leer}" headerValue="" headerClass="myClass" style="width:0.01pt;background-color:#778899"/>
+                    
+                    <apex:column id="L27SumPlanedWeek2" value="{!sumPlanedweek}" headerValue="{!planedKWday} " style="width:70pt"/>
+                    <apex:column id="L28SumBilledWeek2" value="{!maxWertPlaned}" headerValue="Maximum h " style="width:70pt"/>
+                  </apex:pageBlockTable>
+                   -->
+            </apex:pageBlockSection>
+            </apex:pageBlock>
+            <apex:pageBlock >
+            	<apex:pageBlockSection title="Auswertung" columns="7">
+     			<table border="0" with="600">
+     				<tr>
+     					<td align="left"  width="300" height="35"></td>
+     					<td align="center"  width="100" height="35"> <b>Planed KW{!kalenderWeek} </b> </td>
+     					<td align="center"  width="100" height="35"> <b> Billed KW{!kalenderWeek} </b> </td>
+     				</tr>
+     				<tr>
+   						<td align="left"  width="300" height="35"><b>Summe:</b> </td>
+    					<td align="center"  width="150" height="35"> <b>{!sumPlanedweek}</b></td>
+    					<td align="center"  width="150" height="35"> <b>{!sumBilledweek}</b></td>
+ 				 	</tr>
+ 				 	<tr>
+   						<td align="left"  width="300" height="35"><b>Mögliche maximale Auslastung:</b> </td>
+    					<td align="center"  width="150" height="35"> <b>{!maxWertPlaned}</b></td>
+    					<td align="center"  width="150" height="35"> <b>{!maxwertBilled}</b> </td>
+ 				 	</tr>
+ 				 	<tr>
+   						<td align="left"  width="300" height="35"><b>Auslastung Status:</b> </td>
+   						<td id="statusAuslastung1" align="center"  width="150" height="35"> <b> {!auslastungPlened} % </b> </td>
+    					<td id="statusAuslastung2" align="center"  width="150" height="35"> <b> {!auslastungBilled} % </b> </td>
+    				</tr>
+     			</table>
+     		</apex:pageBlockSection>
+     	</apex:pageBlock>  	
+   </apex:form>
+</apex:page>

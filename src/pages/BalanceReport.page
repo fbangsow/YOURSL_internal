@@ -1,0 +1,209 @@
+<apex:page controller="BalanceReportCont">
+
+<style type="text/css">
+.tdAll {
+    border-color: black;
+    border-style: solid;
+    border-width: 1px;
+    text-align: right; 
+}
+.tdRtUpLt {
+    border-color: black;
+    border-style: solid;
+    border-width: 1px 1px 0 1px;
+    text-align: right; 
+}
+.tdLt {
+    border-color: black;
+    border-style: solid;
+    border-width: 0 0 0 1px;
+    text-align: right; 
+}
+.tdRt {
+    border-color: black;
+    border-style: solid;
+    border-width: 0 1px 0 0;
+    text-align: right; 
+}
+.tdBt {
+    border-color: black;
+    border-style: solid;
+    border-width: 0 0 1px 0;
+    text-align: right; 
+}
+.tdLtBt {
+    border-color: black;
+    border-style: solid;
+    border-width: 0 0 1px 1px;
+    text-align: right; 
+}
+.tdRtBt {
+    border-color: black;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    text-align: right; 
+}
+.tdNone {
+    border-width: 0;
+    text-align: right; 
+}
+.textTd {
+    text-align: left; 
+}
+</style>
+
+<apex:pageMessages />
+
+<apex:form >
+    <table>
+        <tr><td>From</td><td>To</td></tr>
+        <tr><td><apex:inputField value="{!oppStart.CloseDate}" /></td><td><apex:inputField value="{!oppEnd.CloseDate}" /></td></tr>
+    </table>
+    <br/>
+    <apex:commandButton value="Run Report" action="{!runReport}"/>
+    <br/>
+    <br/>
+</apex:form>
+
+<div id="reportDiv" style="display: none;">
+    
+    <!-- 
+    <apex:pageBlock id="block1">
+        <apex:pageBlockTable value="{!infosList}" var="info">
+            <apex:column headervalue="January" value="{!info.numStr1]"/>
+            <apex:column headervalue="January" value="{!info.percStr1]"/>
+        </apex:pageBlockTable>
+    </apex:pageBlock>
+    -->
+    
+    <table  cellspacing="0" style="border-collapse:collapse; background-color: #ECECEC; table-layout:fixed;">
+    
+    <tr>
+        <td class="tdAll textTd">&nbsp;</td>
+        <td class="tdAll textTd" colspan="2">July</td>
+        <td class="tdAll textTd" colspan="2">August</td>
+        <td class="tdAll textTd" colspan="2">September</td>
+        <td class="tdAll textTd" colspan="2">October</td>
+        <td class="tdAll textTd" colspan="2">November</td>
+        <td class="tdAll textTd" colspan="2">December</td>
+        <td class="tdAll textTd" colspan="2">January</td>
+        <td class="tdAll textTd" colspan="2">February</td>
+        <td class="tdAll textTd" colspan="2">March</td>
+        <td class="tdAll textTd" colspan="2">April</td>
+        <td class="tdAll textTd" colspan="2">May</td>
+        <td class="tdAll textTd" colspan="2">June</td>
+        <td class="tdAll textTd" colspan="2">Year Total</td>
+    </tr>
+    <tr>
+        <td class="tdAll textTd">&nbsp;</td>
+        <td class="tdAll textTd">Sum in Euro</td><td class="tdAll textTd">% of revenue</td>
+        <td class="tdAll textTd">Sum in Euro</td><td class="tdAll textTd">% of revenue</td>
+        <td class="tdAll textTd">Sum in Euro</td><td class="tdAll textTd">% of revenue</td>
+        <td class="tdAll textTd">Sum in Euro</td><td class="tdAll textTd">% of revenue</td>
+        <td class="tdAll textTd">Sum in Euro</td><td class="tdAll textTd">% of revenue</td>
+        <td class="tdAll textTd">Sum in Euro</td><td class="tdAll textTd">% of revenue</td>
+        <td class="tdAll textTd">Sum in Euro</td><td class="tdAll textTd">% of revenue</td>
+        <td class="tdAll textTd">Sum in Euro</td><td class="tdAll textTd">% of revenue</td>
+        <td class="tdAll textTd">Sum in Euro</td><td class="tdAll textTd">% of revenue</td>
+        <td class="tdAll textTd">Sum in Euro</td><td class="tdAll textTd">% of revenue</td>
+        <td class="tdAll textTd">Sum in Euro</td><td class="tdAll textTd">% of revenue</td>
+        <td class="tdAll textTd">Sum in Euro</td><td class="tdAll textTd">% of revenue</td>
+        <td class="tdAll textTd">Sum in Euro</td><td class="tdAll textTd">% of revenue</td>
+    </tr>
+    <tr>
+        <td class="tdAll textTd">Umsatzerlöse / Revenue</td>
+        <td class="tdAll">{!infoRevenue.numStr7} €</td><td class="tdAll">{!infoRevenue.percStr7}</td>
+        <td class="tdAll">{!infoRevenue.numStr8} €</td><td class="tdAll">{!infoRevenue.percStr8}</td>
+        <td class="tdAll">{!infoRevenue.numStr9} €</td><td class="tdAll">{!infoRevenue.percStr9}</td>
+        <td class="tdAll">{!infoRevenue.numStr10} €</td><td class="tdAll">{!infoRevenue.percStr10}</td>
+        <td class="tdAll">{!infoRevenue.numStr11} €</td><td class="tdAll">{!infoRevenue.percStr11}</td>
+        <td class="tdAll">{!infoRevenue.numStr12} €</td><td class="tdAll">{!infoRevenue.percStr12}</td>
+        <td class="tdAll">{!infoRevenue.numStr1} €</td><td class="tdAll">{!infoRevenue.percStr1}</td>
+        <td class="tdAll">{!infoRevenue.numStr2} €</td><td class="tdAll">{!infoRevenue.percStr2}</td>
+        <td class="tdAll">{!infoRevenue.numStr3} €</td><td class="tdAll">{!infoRevenue.percStr3}</td>
+        <td class="tdAll">{!infoRevenue.numStr4} €</td><td class="tdAll">{!infoRevenue.percStr4}</td>
+        <td class="tdAll">{!infoRevenue.numStr5} €</td><td class="tdAll">{!infoRevenue.percStr5}</td>
+        <td class="tdAll">{!infoRevenue.numStr6} €</td><td class="tdAll">{!infoRevenue.percStr6}</td>
+        <td class="tdAll">{!infoRevenue.sumNumsStr} €</td><td class="tdAll">{!infoRevenue.sumPercStr}</td>
+    </tr>
+    <tr>
+        <td class="tdAll textTd">Fremdleistung / Third party service cost</td>
+        <td class="tdAll">{!infoThirdParty.numStr7} €</td><td class="tdAll">{!infoThirdParty.percStr7}</td>
+        <td class="tdAll">{!infoThirdParty.numStr8} €</td><td class="tdAll">{!infoThirdParty.percStr8}</td>
+        <td class="tdAll">{!infoThirdParty.numStr9} €</td><td class="tdAll">{!infoThirdParty.percStr9}</td>
+        <td class="tdAll">{!infoThirdParty.numStr10} €</td><td class="tdAll">{!infoThirdParty.percStr10}</td>
+        <td class="tdAll">{!infoThirdParty.numStr11} €</td><td class="tdAll">{!infoThirdParty.percStr11}</td>
+        <td class="tdAll">{!infoThirdParty.numStr12} €</td><td class="tdAll">{!infoThirdParty.percStr12}</td>
+        <td class="tdAll">{!infoThirdParty.numStr1} €</td><td class="tdAll">{!infoThirdParty.percStr1}</td>
+        <td class="tdAll">{!infoThirdParty.numStr2} €</td><td class="tdAll">{!infoThirdParty.percStr2}</td>
+        <td class="tdAll">{!infoThirdParty.numStr3} €</td><td class="tdAll">{!infoThirdParty.percStr3}</td>
+        <td class="tdAll">{!infoThirdParty.numStr4} €</td><td class="tdAll">{!infoThirdParty.percStr4}</td>
+        <td class="tdAll">{!infoThirdParty.numStr5} €</td><td class="tdAll">{!infoThirdParty.percStr5}</td>
+        <td class="tdAll">{!infoThirdParty.numStr6} €</td><td class="tdAll">{!infoThirdParty.percStr6}</td>
+        <td class="tdAll">{!infoThirdParty.sumNumsStr} €</td><td class="tdAll">{!infoThirdParty.sumPercStr}</td>
+    </tr>
+    <tr>
+        <td class="tdAll textTd">Rohertrag / Margin</td>
+        <td class="tdAll">{!infoMargin.numStr7} €</td><td class="tdAll">{!infoMargin.percStr7}</td>
+        <td class="tdAll">{!infoMargin.numStr8} €</td><td class="tdAll">{!infoMargin.percStr8}</td>
+        <td class="tdAll">{!infoMargin.numStr9} €</td><td class="tdAll">{!infoMargin.percStr9}</td>
+        <td class="tdAll">{!infoMargin.numStr10} €</td><td class="tdAll">{!infoMargin.percStr10}</td>
+        <td class="tdAll">{!infoMargin.numStr11} €</td><td class="tdAll">{!infoMargin.percStr11}</td>
+        <td class="tdAll">{!infoMargin.numStr12} €</td><td class="tdAll">{!infoMargin.percStr12}</td>
+        <td class="tdAll">{!infoMargin.numStr1} €</td><td class="tdAll">{!infoMargin.percStr1}</td>
+        <td class="tdAll">{!infoMargin.numStr2} €</td><td class="tdAll">{!infoMargin.percStr2}</td>
+        <td class="tdAll">{!infoMargin.numStr3} €</td><td class="tdAll">{!infoMargin.percStr3}</td>
+        <td class="tdAll">{!infoMargin.numStr4} €</td><td class="tdAll">{!infoMargin.percStr4}</td>
+        <td class="tdAll">{!infoMargin.numStr5} €</td><td class="tdAll">{!infoMargin.percStr5}</td>
+        <td class="tdAll">{!infoMargin.numStr6} €</td><td class="tdAll">{!infoMargin.percStr6}</td>
+        <td class="tdAll">{!infoMargin.sumNumsStr} €</td><td class="tdAll">{!infoMargin.sumPercStr}</td>
+    </tr>
+    <tr>
+        <td class="tdAll textTd"><a href="https://eu1.salesforce.com/00OD0000005R0tm" target="_blank">Gesamtkosten / Cost</a></td>
+        <td class="tdAll">{!infoCost.numStr7} €</td><td class="tdAll">{!infoCost.percStr7}</td>
+        <td class="tdAll">{!infoCost.numStr8} €</td><td class="tdAll">{!infoCost.percStr8}</td>
+        <td class="tdAll">{!infoCost.numStr9} €</td><td class="tdAll">{!infoCost.percStr9}</td>
+        <td class="tdAll">{!infoCost.numStr10} €</td><td class="tdAll">{!infoCost.percStr10}</td>
+        <td class="tdAll">{!infoCost.numStr11} €</td><td class="tdAll">{!infoCost.percStr11}</td>
+        <td class="tdAll">{!infoCost.numStr12} €</td><td class="tdAll">{!infoCost.percStr12}</td>
+        <td class="tdAll">{!infoCost.numStr1} €</td><td class="tdAll">{!infoCost.percStr1}</td>
+        <td class="tdAll">{!infoCost.numStr2} €</td><td class="tdAll">{!infoCost.percStr2}</td>
+        <td class="tdAll">{!infoCost.numStr3} €</td><td class="tdAll">{!infoCost.percStr3}</td>
+        <td class="tdAll">{!infoCost.numStr4} €</td><td class="tdAll">{!infoCost.percStr4}</td>
+        <td class="tdAll">{!infoCost.numStr5} €</td><td class="tdAll">{!infoCost.percStr5}</td>
+        <td class="tdAll">{!infoCost.numStr6} €</td><td class="tdAll">{!infoCost.percStr6}</td>
+        <td class="tdAll">{!infoCost.sumNumsStr} €</td><td class="tdAll">{!infoCost.sumPercStr}</td>
+    </tr>
+    <tr>
+        <td class="tdAll textTd">Betriebsergebnis / EBITDA</td>
+        <td class="tdAll">{!infoEBITDA.numStr7} €</td><td class="tdAll">{!infoEBITDA.percStr7}</td>
+        <td class="tdAll">{!infoEBITDA.numStr8} €</td><td class="tdAll">{!infoEBITDA.percStr8}</td>
+        <td class="tdAll">{!infoEBITDA.numStr9} €</td><td class="tdAll">{!infoEBITDA.percStr9}</td>
+        <td class="tdAll">{!infoEBITDA.numStr10} €</td><td class="tdAll">{!infoEBITDA.percStr10}</td>
+        <td class="tdAll">{!infoEBITDA.numStr11} €</td><td class="tdAll">{!infoEBITDA.percStr11}</td>
+        <td class="tdAll">{!infoEBITDA.numStr12} €</td><td class="tdAll">{!infoEBITDA.percStr12}</td>
+        <td class="tdAll">{!infoEBITDA.numStr1} €</td><td class="tdAll">{!infoEBITDA.percStr1}</td>
+        <td class="tdAll">{!infoEBITDA.numStr2} €</td><td class="tdAll">{!infoEBITDA.percStr2}</td>
+        <td class="tdAll">{!infoEBITDA.numStr3} €</td><td class="tdAll">{!infoEBITDA.percStr3}</td>
+        <td class="tdAll">{!infoEBITDA.numStr4} €</td><td class="tdAll">{!infoEBITDA.percStr4}</td>
+        <td class="tdAll">{!infoEBITDA.numStr5} €</td><td class="tdAll">{!infoEBITDA.percStr5}</td>
+        <td class="tdAll">{!infoEBITDA.numStr6} €</td><td class="tdAll">{!infoEBITDA.percStr6}</td>
+        <td class="tdAll">{!infoEBITDA.sumNumsStr} €</td><td class="tdAll">{!infoEBITDA.sumPercStr}</td>
+    </tr>
+    
+    </table>
+    <br/><br/>
+    <a href="https://eu1.salesforce.com/01ZD0000000xHnz" target="_blank" style="color: blue;">Dashboard</a>
+
+</div>
+<script type="text/javascript">
+    function setFocus() {}
+    
+    var showReport = {!showReport};
+    //alert('1');
+    //alert('2 ' + showReport);
+    if(showReport == true) {
+        document.getElementById('reportDiv').style.display = '';
+    }
+</script>
+</apex:page>

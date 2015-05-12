@@ -1,0 +1,160 @@
+<apex:page showHeader="false" sidebar="false" controller="InvitationController"  action="{!updateStatus}">
+<style type="text/css">
+body {
+    margin-left: 0px;
+    margin-top: 0px;
+    margin-right: 0px;
+    margin-bottom: 0px;
+    background-image: url(http://your-sl.de/kunden/yoursl/landingpages/img/bg.gif);
+    background-repeat: repeat-x;
+    background-color: #d5d5d5;
+}
+
+.intro-headline {
+    font-family: "Myriad Pro","Trebuchet MS", Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 25px;
+    color:#FFF;
+}
+
+.intro-text {
+    font-family: "Myriad Pro","Trebuchet MS", Arial, Helvetica, sans-serif;
+    font-size: 17px;
+    color:#FFF;
+    line-height: 24px;
+}
+
+.address-headline {
+    font-family: "Myriad Pro","Trebuchet MS", Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 25px;
+    color:#599dce;
+}
+
+.address-text {
+    font-family: "Myriad Pro","Trebuchet MS", Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    color:#000;
+
+}
+
+.footer-text {
+    font-family: "Myriad Pro","Trebuchet MS", Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    color:#a5a5a5;
+
+}
+
+a {
+    color: #599dce;
+    text-decoration:none;
+}
+
+a:visited {
+    color: #599dce;
+    text-decoration:none;
+}
+
+a:hover {
+    color: #2d8acb;
+    text-decoration:none;
+}
+</style>
+<body>
+<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+  <tr>
+    <td align="center" valign="top">
+        <table width="700" border="0" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF">
+          <tr>
+            <td width="50">&nbsp;</td>
+            <td width="600"><img src="http://your-sl.de/kunden/yoursl/landingpages/img/header.jpg" width="600" height="249" /></td>
+            <td width="50">&nbsp;</td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+            <td background="http://your-sl.de/kunden/yoursl/landingpages/img/bg_teaser.jpg">
+                <table width="600" border="0" cellspacing="0" cellpadding="0">
+                  <tr>
+                    <td width="60">&nbsp;</td>
+                    <td align="left"><p><br />
+                      <span class="intro-headline">Schade, dass Sie nicht dabei sein können.</span><br />
+                    </p>
+                      <p class="intro-text">Wir freuen uns, Sie bei einer anderen Gelegenheit in unseren<br />
+                        Räumlichkeiten zu begrüßen.<br />
+                      <br />
+                      </p></td>
+                    <td width="60">&nbsp;</td>
+                  </tr>
+                </table>
+            </td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+            <td valign="top" height="50"><img src="http://your-sl.de/kunden/yoursl/landingpages/img/dropshadow.gif" width="600" height="12" /></td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+            <td>
+                <table width="600" border="0" cellspacing="0" cellpadding="0">
+                  <tr>
+                    <td width="60">&nbsp;</td>
+                    <td align="left"><p class="address-headline">YOUR SL GmbH</p>
+                      <p class="address-text">Haus Cumberland<br />
+                      Kurfürstendamm 194<br />
+                      10707 Berlin<br />
+                      Deutschland</p>
+                      <table border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                          <td width="20"><img src="http://your-sl.de/kunden/yoursl/landingpages/img/phone.gif" width="12" height="13" /></td>
+                          <td height="20"><span class="address-text">+49 30 6920513-40</span></td>
+                        </tr>
+                        <tr>
+                          <td><img src="http://your-sl.de/kunden/yoursl/landingpages/img/fax.gif" alt="" width="12" height="13" /></td>
+                          <td height="20"><span class="address-text">+49 30 6920513-49</span></td>
+                        </tr>
+                        <tr>
+                          <td><img src="http://your-sl.de/kunden/yoursl/landingpages/img/email.gif" alt="" width="12" height="13" /></td>
+                          <td height="20"><span class="address-text"><a href="mailto:enjoy@yoursl.de">enjoy@yoursl.de</a></span></td>
+                        </tr>
+                      </table>
+                      <p class="address-text"><br />
+                        <br />
+  <br />
+                    </p></td>
+                    <td valign="top" width="285"><br />
+                      <br /><br /><br />                      
+                    <img src="http://your-sl.de/kunden/yoursl/landingpages/img/map.gif" width="285" height="173" /></td>
+                    <td width="60">&nbsp;</td>
+                  </tr>
+                </table>
+            </td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+            <td>
+                <table width="600" border="0" cellspacing="0" cellpadding="0">
+                  <tr>
+                    <td width="60">&nbsp;</td>
+                    <td align="left"><span class="footer-text">© Copyright 2015 YOUR SL GmbH. All Rights Reserved.<br />
+                    Salesforce, salesforce.com, Force.com, Sales Cloud, ISVforce<br />
+                    and Chatter are trademarks of <a href="images/http|//www.salesforce.com">salesforce.com</a>, inc.3 </span><br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    </td>
+                    <td width="60">&nbsp;</td>
+                  </tr>
+                </table>
+            </td>
+            <td>&nbsp;</td>
+          </tr>
+        </table>
+    </td>
+  </tr>
+</table>
+</body>
+</apex:page>

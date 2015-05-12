@@ -1,0 +1,78 @@
+<apex:page standardController="Produkt_Ressourcen_Forecast__c" tabStyle="Produkt_Ressourcen_Forecast__c" extensions="extForecastProducts" sidebar="false" 
+recordSetVar="lstForecastProducts">
+ <apex:form >
+<br/><br/><br/><br/>
+        <apex:pageBlock >
+            <apex:pageMessages />
+        
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Save" action="{!Save}"/>
+                <apex:commandButton action="{!Cancel}" value="Cancel"/>
+            </apex:pageBlockButtons>
+                 
+                <apex:pageBlockTable value="{!lstForecastProducts}" var="prod" id="prod_table">
+                <apex:column value="{!prod.Name}"/>
+             <apex:column headerValue="Opportunity">
+                    <apex:outputField value="{!prod.Opportunity_TS_BETA__c}"/>
+                </apex:column> 
+             <apex:column >
+                    <apex:facet name="header">   
+                        <apex:commandLink action="{!ViewData}" value="Forecast Product {!IF(sortExpression=='Forecast_Product__c',IF(sortDirection='ASC','▼','▲'),'')}">
+                        <apex:param value="Forecast_Product__c" name="column" assignTo="{!sortExpression}" ></apex:param>
+                        </apex:commandLink>
+                    </apex:facet>
+                    <apex:inputField value="{!prod.Forecast_Product__c}"/>
+                </apex:column> 
+              <apex:column >
+                    <apex:facet name="header">   
+                        <apex:commandLink action="{!ViewData}" value="Leistung erbracht {!IF(sortExpression=='Leistung_erbracht__c',IF(sortDirection='ASC','▼','▲'),'')}">
+                        <apex:param value="Leistung_erbracht__c" name="column" assignTo="{!sortExpression}" ></apex:param>
+                        </apex:commandLink>
+                    </apex:facet>
+                    <apex:inputField value="{!prod.Leistung_erbracht__c}" rendered="{!not(prod.Leistung_erbracht__c) || isLeistungErbrachtEditable}"/>
+                    <apex:outputField value="{!prod.Leistung_erbracht__c}" rendered="{!prod.Leistung_erbracht__c && not(isLeistungErbrachtEditable)}"/>
+                </apex:column>
+                  <apex:column headerValue="Mitarbeiter Rolle">
+                    <apex:inputField value="{!prod.Mitarbeiter_Rolle__c}" rendered="{!not(prod.Leistung_erbracht__c) || isLeistungErbrachtEditable}"/>
+                    <apex:outputField value="{!prod.Mitarbeiter_Rolle__c}" rendered="{!prod.Leistung_erbracht__c && not(isLeistungErbrachtEditable)}"/>
+                </apex:column>
+                <apex:column headerValue="From">
+                    <apex:inputField value="{!prod.From__c}" rendered="{!not(prod.Leistung_erbracht__c) || isLeistungErbrachtEditable}"/>
+                    <apex:outputField value="{!prod.From__c}" rendered="{!prod.Leistung_erbracht__c && not(isLeistungErbrachtEditable)}"/>
+                </apex:column>   
+                <apex:column headerValue="To">
+                    <apex:inputField value="{!prod.To__c}" rendered="{!not(prod.Leistung_erbracht__c) || isLeistungErbrachtEditable}"/>
+                    <apex:outputField value="{!prod.To__c}" rendered="{!prod.Leistung_erbracht__c && not(isLeistungErbrachtEditable)}"/>
+                </apex:column>   
+                <apex:column headerValue="Forecast Quantity">
+                    <apex:inputField value="{!prod.Forecast_Quantity__c}" rendered="{!not(prod.Leistung_erbracht__c) || isLeistungErbrachtEditable}"/>
+                    <apex:outputField value="{!prod.Forecast_Quantity__c}" rendered="{!prod.Leistung_erbracht__c && not(isLeistungErbrachtEditable)}"/>
+                </apex:column>   
+                  <apex:column headerValue="Forecast Unit">
+                    <apex:inputField value="{!prod.Forecast_Unit__c}" rendered="{!not(prod.Leistung_erbracht__c) || isLeistungErbrachtEditable}"/>
+                    <apex:outputField value="{!prod.Forecast_Unit__c}" rendered="{!prod.Leistung_erbracht__c && not(isLeistungErbrachtEditable)}"/>
+                </apex:column> 
+                 <apex:column headerValue="Forecast Amount">
+                    <apex:inputField value="{!prod.Forecast_Amount__c}" rendered="{!not(prod.Leistung_erbracht__c) || isLeistungErbrachtEditable}"/>
+                    <apex:outputField value="{!prod.Forecast_Amount__c}" rendered="{!prod.Leistung_erbracht__c && not(isLeistungErbrachtEditable)}"/>
+               </apex:column> 
+                  <apex:column headerValue="SFDC Lizenz Preis">
+                    <apex:inputField value="{!prod.SFDC_Lizenz_Preis__c}" rendered="{!not(prod.Leistung_erbracht__c) || isLeistungErbrachtEditable}"/>
+                    <apex:outputField value="{!prod.SFDC_Lizenz_Preis__c}" rendered="{!prod.Leistung_erbracht__c && not(isLeistungErbrachtEditable)}"/>
+                </apex:column>
+              <apex:column headerValue="Kontakt">
+                    <apex:inputField value="{!prod.Contact__c}" rendered="{!not(prod.Leistung_erbracht__c) || isLeistungErbrachtEditable}"/>
+                    <apex:outputField value="{!prod.Contact__c}" rendered="{!prod.Leistung_erbracht__c && not(isLeistungErbrachtEditable)}"/>
+                </apex:column> 
+              <apex:column headerValue="Subunternehmen">
+                    <apex:inputField value="{!prod.Subunternehmen_a__c}" rendered="{!not(prod.Leistung_erbracht__c) || isLeistungErbrachtEditable}"/>
+                    <apex:outputField value="{!prod.Subunternehmen_a__c}" rendered="{!prod.Leistung_erbracht__c && not(isLeistungErbrachtEditable)}"/>
+                </apex:column>             
+                
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+    </apex:form>
+    <script type="text/javascript">
+        function setFocus() {}
+    </script>
+</apex:page>

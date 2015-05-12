@@ -1,0 +1,28 @@
+<apex:page standardController="Case">
+<apex:messages />
+	<apex:pageBlock mode="mainDetail" id="pB1">
+				<apex:outputPanel id="oP1">
+				<apex:outputText style="font-style:italic" value="Bearbeiten dieses Abschnittes ist nur in der Kontaktdetailseite des Kontaktes {0} möglich.">
+			       <apex:param value="{!case.Contact.Name}"/>
+			    </apex:outputText>
+			</apex:outputPanel>
+		<apex:pageBlockSection id="pBS1">
+			<apex:outputField value="{!case.Contact.Salutation}" id="oF16" title="Changes only in the contact details"/>
+			<apex:outputField value="{!case.Contact.SFU_Username__c}" id="oF9" />
+			<apex:outputField value="{!case.Contact.SFU_Profile__c}" id="oF1" />
+			<apex:outputField value="{!case.Contact.SFU_Role__c}" id="oF2" />
+			<apex:outputField value="{!case.Contact.Email}" id="oF12" />
+			<apex:outputField value="{!case.Contact.SFU_Operational_Entity__c}" id="oF10" />
+			<apex:outputField value="{!case.Contact.Title}" id="oF11" />
+			<apex:outputField value="{!case.Contact.MobilePhone}" id="oF13" />
+			<apex:outputField value="{!case.Contact.Phone}" id="oF14" />
+			<apex:outputField value="{!case.Contact.MailingCity}" id="oF15" />
+			<apex:outputField value="{!case.Contact.SFU_Marketing_Permission__c}" id="oF3" />
+			<apex:outputField value="{!case.Contact.SF_User_Emailencodingkey__c}" id="oF4" />
+			<apex:outputField value="{!case.Contact.SFU_Currency_ISO_Code__c}" id="oF5" />
+			<apex:outputField value="{!case.Contact.SFU_Language__c}" id="oF6" />
+			<apex:outputField value="{!case.Contact.SFU_Locale__c}" id="oF7" />
+			<apex:outputField value="{!case.Contact.SFU_Region__c}" id="oF8" />
+		</apex:pageBlockSection>
+	</apex:pageBlock>
+</apex:page>

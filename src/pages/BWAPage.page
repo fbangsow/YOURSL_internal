@@ -1,0 +1,34 @@
+<!-- *********************************************************** -->
+<!-- Created by: Alexander Faust   -->
+<!-- Custom Controller "myBWAController" due to no standard controller operations  -->
+<!-- Visualforce Page Access: no limitations-->
+<!-- Last modified by:  Alexander Faust-->
+<!-- Last modified date: 08.01.2013 -->
+<!-- Lastest changes   : adding header -->
+<!-- *********************************************************** --> 
+<apex:page id="thePage" controller="myBWAController">
+<script>function setFocusOnLoad() {}</script>
+<apex:form id="theDateForm">
+	<apex:pageBlock id="theDatePageBlock">
+		<table>
+			<tr><td>From</td><td>To</td></tr>
+			<tr><td><apex:inputField value="{!oppStart.CloseDate}" taborderhint="50"/></td><td><apex:inputField value="{!oppEnd.CloseDate}" taborderhint="51"/></td></tr>
+		</table>
+		<br/>
+		<apex:commandButton value="Run Report" action="{!runReport}"/>
+		<br/>
+		<br/>
+	</apex:pageBlock>
+</apex:form>
+<apex:form id="theReportForm">
+	<apex:pageBlock id="theReportBlock" rendered="{!showReport}">
+		<apex:pageBlockSection id="theReportBlockSection" >
+			<apex:pageBlockTable id="ReportTable" value="{!listChartData}" var="item">
+			<apex:column id="ReportTableRowName" value="{!item.rowName}" headerValue="Bezeichnung" />
+			<apex:column id="ReportTableTotalValue" value="{!item.totalValue}" headerValue="Summe €" />
+			<apex:column id="ReportTablePercStr" value="{!item.totalPercStr}" headerValue="% Umsatz" />
+			</apex:pageBlockTable>
+		</apex:pageBlockSection>
+	</apex:pageBlock>
+</apex:form>
+</apex:page>

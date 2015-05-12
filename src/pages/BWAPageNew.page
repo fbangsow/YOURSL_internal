@@ -1,0 +1,31 @@
+<apex:page id="thePage" controller="BWAControllerNew">
+<script>function setFocusOnLoad() {}</script>
+<apex:form id="theDateForm">
+	<apex:pageBlock id="theDatePageBlock">
+		<table>
+			<tr><td>From</td><td>To</td><td>Bereich</td></tr>
+			<tr><td><apex:inputField value="{!oppStart.CloseDate}" taborderhint="50"/></td><td><apex:inputField value="{!oppEnd.CloseDate}" taborderhint="51"/></td>
+            <td>
+                <apex:selectList value="{!bereichAuswahl}" size="1">
+                    <apex:selectOptions value="{!bereiche}"/>
+                </apex:selectList>
+            </td></tr>
+		</table>
+		<br/>
+		<apex:commandButton value="Run Report" action="{!runReport}"/>
+		<br/>
+		<br/>
+	</apex:pageBlock>
+</apex:form>
+<apex:form id="theReportForm">
+	<apex:pageBlock id="theReportBlock" rendered="{!showReport}">
+		<apex:pageBlockSection id="theReportBlockSection" >
+			<apex:pageBlockTable id="ReportTable" value="{!listChartData}" var="item">
+			<apex:column id="ReportTableRowName" value="{!item.rowName}" headerValue="Bezeichnung" />
+			<apex:column id="ReportTableTotalValue" value="{!item.totalValue}" headerValue="Summe €" />
+			<apex:column id="ReportTablePercStr" value="{!item.totalPercStr}" headerValue="% Umsatz" />
+			</apex:pageBlockTable>
+		</apex:pageBlockSection>
+	</apex:pageBlock>
+</apex:form>
+</apex:page>

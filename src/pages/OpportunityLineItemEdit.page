@@ -1,0 +1,27 @@
+<apex:page showHeader="true" sidebar="false" standardController="OpportunityLineItem" extensions="OpportunityLineItemEditExtension">
+    <apex:sectionHeader title="Edit Sales Price And Quantity for" 
+        subtitle="{!OpportunityLineItem.Contact__r.Name} in 
+            {!CASE(MONTH(OpportunityLineItem.ServiceDate),1, "January",2, "February",3, "March", 4, "April", 5, "May", 6, 
+                "June",7, "July",8, "August",9, "September",10, "October",11, "November",12, "December","None")} 
+                of {!YEAR(OpportunityLineItem.ServiceDate)}"/>
+    <apex:pageMessages id="message"/>
+    <apex:form >
+        <apex:pageBlock mode="inlineEdit" rendered="{!ShowControls}">
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton action="{!save}" value="Save"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="1">
+                <apex:inputText label="Quantity" value="{!SelectedQuantity}"/>
+                <apex:inputText label="Sales Price" value="{!SelectedPrice}"/>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:pageBlock mode="block" rendered="{!NOT(ShowControls)}">
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton action="{!redirectToOpportunityLineItemView}" value="Return to Opportunity Line Item" rendered="{!NOT(ShowControls)}"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+        <apex:inputHidden value="{!OpportunityLineItem.Quantity}"/>
+        <apex:inputHidden value="{!OpportunityLineItem.UnitPrice}"/>
+        <apex:inputHidden value="{!OpportunityLineItem.Managed_by_PSO_Tool__c}"/>
+    </apex:form>
+</apex:page>
