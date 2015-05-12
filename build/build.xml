@@ -1,0 +1,18 @@
+<project name="Retrieve and Deploy SFDC metadata" default="runTestsAndDeploy" basedir=".." xmlns:sf="antlib:com.salesforce">
+	<taskdef uri="antlib:com.salesforce"
+		resource="com/salesforce/antlib.xml"
+		classpath="${basedir}/build/ant-salesforce.jar"/>
+	<property file="${basedir}/build/build.properties"/>
+	<property environment="env"/>
+	<target name="runTestsAndDeployCode">
+		<echo level="info">Performing the deploy</echo>
+		<sf:deploy
+		username="${sfdc.username}"
+		password="${sfdc.password}"
+		serverurl="${sfdc.serverurl}"
+		deployRoot="${basedir}/src"
+		pollWaitMillis="${sfdc.pollWaitMillis}"
+		maxPoll="${sfdc.maxPoll}"
+		runAllTests="true"/>
+	</target>
+</project>
