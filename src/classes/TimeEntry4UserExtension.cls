@@ -562,7 +562,7 @@ public without sharing class TimeEntry4UserExtension {
                              + '/'
                              + timeSheetOverviewID;
 
-                PageReference timeSheetReport = new ApexPages.Pagereference('https://eu1.salesforce.com/00OD0000005aOd9?pv0=' + tempContact.FirstName + '%20' + tempContact.LastName);
+                PageReference timeSheetReport = new ApexPages.Pagereference('/00OD0000005aOd9?pv0=' + tempContact.FirstName + '%20' + tempContact.LastName);
                 timeSheetReport.setRedirect(true);
                 return timeSheetReport;
 

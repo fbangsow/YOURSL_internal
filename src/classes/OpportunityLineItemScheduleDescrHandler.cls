@@ -1,4 +1,4 @@
-public with sharing class OpportunityLineItemScheduleDescrHandler {
+public without sharing class OpportunityLineItemScheduleDescrHandler {
     private static OpportunityLineItemScheduleDescrHandler InstanceOfHandler;
     @TestVisible private Set<Id> UpdatedOpportunityLineItemIds;
     private OpportunityLineItemScheduleDescrHandler(){

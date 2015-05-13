@@ -62,6 +62,27 @@ private class BWAReportTest {
     }*/
     
     static testMethod void testBalance() {
+        Chart_of_Accounts__c vat0 = new Chart_of_Accounts__c();
+        vat0.Account_Description__c = 'Abziehbare Vorsteuer';
+        vat0.Account_Type__c = 'Finanzen';
+        vat0.Name = '0';
+        Chart_of_Accounts__c vat7 = new Chart_of_Accounts__c();
+        vat7.Account_Description__c = 'Abziehbare Vorsteuer 7%';
+        vat7.Account_Type__c = 'Finanzen';
+        vat7.Name = '7';
+        Chart_of_Accounts__c vat19 = new Chart_of_Accounts__c();
+        vat19.Account_Description__c = 'Abziehbare Vorsteuer 19%';
+        vat19.Account_Type__c = 'Finanzen';
+        vat19.Name = '19';
+        Chart_of_Accounts__c test_kasse = new Chart_of_Accounts__c();
+        test_kasse.Account_Description__c = 'Kasse';
+        test_kasse.Account_Type__c = 'Finanzen';
+        test_kasse.Name = '1000';
+        Chart_of_Accounts__c bank = new Chart_of_Accounts__c();
+        bank.Account_Description__c = 'Bank';
+        bank.Account_Type__c = 'Finanzen';
+        bank.Name = '1200';
+        insert new List<Sobject> {vat0, vat7, vat19, test_kasse, bank};
     	test.startTest();
     	BalanceController testedPageController;
     	Chart_of_Accounts__c chAcc1, chAcc2; 

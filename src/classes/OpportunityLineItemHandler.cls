@@ -1,4 +1,4 @@
-public with sharing class OpportunityLineItemHandler implements ITrigger
+public without sharing class OpportunityLineItemHandler implements ITrigger
 {
     public void bulkBefore(){
         if(Trigger.isUpdate)

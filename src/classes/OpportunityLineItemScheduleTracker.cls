@@ -1,4 +1,4 @@
-public with sharing class OpportunityLineItemScheduleTracker{
+public without sharing class OpportunityLineItemScheduleTracker{
     private static OpportunityLineItemScheduleTracker InstanceOfTracker;
     @TestVisible private static Boolean AlreadyRun = false;
     @TestVisible private static Boolean AlreadyProcessed = false;
