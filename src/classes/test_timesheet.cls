@@ -24,6 +24,32 @@ private class test_timesheet {
 							Start_Date__c = startDate);
 							
 		insert tb;
+		Opportunity firstOpportunity = new Opportunity();
+        firstOpportunity.Name = '° Roshen';
+        firstOpportunity.StageName = '° Roshen';
+        firstOpportunity.PriceBook2Id = Test.getStandardPricebookId();
+        firstOpportunity.CloseDate = Date.newInstance(2015, 1, 1);
+        insert firstOpportunity;
+        Product2 testProduct = new Product2();
+        testProduct.Name = 'Salesforce Developer';
+        testProduct.isActive = true;
+        testProduct.CanUseQuantitySchedule = true;
+        insert testProduct;
+        PricebookEntry testPricebookEntry = new PricebookEntry();
+        testPricebookEntry.Pricebook2Id = Test.getStandardPricebookId();
+        testPricebookEntry.Product2Id = testProduct.Id;
+        testPricebookEntry.UnitPrice = 99;
+        testPricebookEntry.isActive = true;
+        insert testPricebookEntry;
+        OpportunityLineItem firstLineItem = new OpportunityLineItem();
+        firstLineItem.PricebookEntryId = testPricebookEntry.Id;
+        firstLineItem.ServiceDate = Date.newInstance(2015, 1, 10);
+        firstLineItem.UnitPrice = 1200;
+        firstLineItem.Quantity = 1;
+        firstLineItem.Unit__c = 'Manntag(e)';
+        firstLineItem.OpportunityId = firstOpportunity.Id;
+        firstLineItem.Mitarbeiter_Rolle__c = 'Management Consultant';
+        insert firstLineItem;
 		oli = [SELECT id, Mitarbeiter_Rolle__c, PricebookEntry.Product2Id, OpportunityId
 						FROM OpportunityLineItem 
 						WHERE PricebookEntry.Product2Id != null
