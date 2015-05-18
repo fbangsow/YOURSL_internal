@@ -200,7 +200,7 @@ Versions:
                       k++;
                   }
               }
-              data = "<td>{{dataval2.SalesPrice}} &euro;</td><td>{{dataval2.soldrev}} </td><td>{{dataval2.plnndreven}} </td><td>{{dataval2.LastModifiedDate|date:'d MMM yyyy'}}</td><td class='Staffing' style='display:none;'>{{dataval2.Staffing}}</td><td class='statical' style='display:none;'>{{dataval2.Statistics}}</td><td class='widderclumn'></td><td class='contactidloop' style='display:none;'>{{dataval2.ContactId}}</td>" + data;
+              data = "<td>{{dataval2.SalesPrice}} €</td><td>{{dataval2.soldrev}} </td><td>{{dataval2.plnndreven}} </td><td>{{dataval2.LastModifiedDate|date:'d MMM yyyy'}}</td><td class='Staffing' style='display:none;'>{{dataval2.Staffing}}</td><td class='statical' style='display:none;'>{{dataval2.Statistics}}</td><td class='widderclumn'></td><td class='contactidloop' style='display:none;'>{{dataval2.ContactId}}</td>" + data;
               return data;
           }
       }
@@ -493,7 +493,7 @@ Versions:
                               var unplnddot = (a.unplanne).toString().replace(",", ".");
                               plandtotal = plandtotal + parseFloat(plnd);
                               unplandtotal = unplandtotal + parseFloat(unplnddot);
-                              rate = rate + parseInt(a.SalesPrice);
+                              rate = rate + parseFloat(a.SalesPrice);
                               var solddays1 = a.SoldDays;
                               var splitsoldDays = solddays1.toString().replace(",", ".");
                               var cmbine = parseFloat(splitsoldDays);
@@ -567,7 +567,7 @@ Versions:
           $scope.plannedCalculation = function(a, b, c, d, g) {
                   if (typeof a !== "undefined") {
                    var currentvalue = a.currentTarget.value;
-                      var numbervalidation = new RegExp("^([0-9]{0,})$");
+                      var numbervalidation = new RegExp("^([0-9\.]{0,})$");
                       if (!numbervalidation.test(currentvalue)) {
                           a.currentTarget.value = "";
                          
@@ -613,7 +613,7 @@ Versions:
                                                   return false;
                                               }
                       //validation for more than 12hrs
-                                                if (parseInt(a.currentTarget.value) > 8 && parseInt(a.currentTarget.value) <= 12 ) {
+                                                if (parseFloat(a.currentTarget.value) > 8 && parseFloat(a.currentTarget.value) <= 12 ) {
                                                       $(a.target).addClass('Cancelfun');
                                                       $(".appendtxt").text("This is " + a.currentTarget.value+ " hours for this day");
                                                       $(".blurbackgrund,.popup").attr("style", "display:block");
@@ -621,7 +621,7 @@ Versions:
                                                       $(a.target).addClass('Cancelfun');
                                                       cancelclick = 0;
                                                   }
-                                                   else if (parseInt(a.currentTarget.value) >12) {
+                                                   else if (parseFloat(a.currentTarget.value) >12) {
                                                           $(".appendtxt").text("This is exceeding more than 12 hours for this day");
                                                           $(".blurbackgrund,.popup").attr("style", "display:block");
                                                           $(".appndbtns").html(" ");
@@ -630,7 +630,7 @@ Versions:
                                                           cancelclick = 0;
                                                           return false;
                                                      }
-                      if (parseInt(a.currentTarget.value) == 0) {
+                      if (parseFloat(a.currentTarget.value) == 0) {
                           a.currentTarget.value = "";
                       }
                       angular.forEach(resourceavialblty, function(resa, resb) {
@@ -738,6 +738,7 @@ Versions:
               } else {
                   currentvalue = a.currentTarget.value;
               }
+
               var uncal = 0;
               if (cancelclick != 0) {
                   if ($scope.focusdata != "") {
@@ -747,7 +748,7 @@ Versions:
                       } else {
                           datanull = currentvalue;
                       }
-                      uncal = parseInt(datanull) - parseInt($scope.focusdata);
+                      uncal = parseFloat(datanull) - parseFloat($scope.focusdata);
                   }
                    else {
                       var dataforelse = currentvalue;
@@ -756,27 +757,32 @@ Versions:
                       }
                       uncal = parseFloat(dataforelse);
                       if (j != "") {
-                          uncal = parseInt(currentvalue) - parseInt(j);
+                          uncal = parseFloat(currentvalue) - parseFloat(j);
                       }
                   }
+                 
                   var calclateperhour = uncal / 8;
+               
                   //logic to calculate planned value for given resource
                   $scope.plannedscope = $scope.dataval.Customers[b].Projects[c].Resources[d].PlannedDays.replace(",", ".");
                   var spltpannd = parseFloat($scope.plannedscope) + calclateperhour;
+             
                   $scope.unplannedscope = $scope.dataval.Customers[b].Projects[c].Resources[d].unplanne.replace(",", ".");
                   //logic to calculate unplanned value for given resource
                   var spltunplanneddays = parseFloat($scope.unplannedscope) - calclateperhour;
                   spltpannd = spltpannd.toFixed(2);
                       var spltdataaftrdot=spltpannd.split(".")
-                      if(parseInt(spltdataaftrdot[1])<=10)
+                    
+                     if(parseFloat(spltdataaftrdot[1])<=1)
                       {
                       spltdataaftrdot[1]="00";
                        spltpannd=spltdataaftrdot[0]+"."+spltdataaftrdot[1];
                       }
                   spltpannd = spltpannd.toString().replace(".", ",");
                   spltunplanneddays = spltunplanneddays.toFixed(2);
-                   var spltdataaftrdotun=spltunplanneddays .split(".")
-                      if(parseInt(spltdataaftrdotun[1])<=10)
+                   var spltdataaftrdotun=spltunplanneddays .split(".");
+                      
+                        if(parseFloat(spltdataaftrdotun[1])<=1)
                       {
                       spltdataaftrdotun[1]="00";
                        spltunplanneddays =spltdataaftrdotun[0]+"."+spltdataaftrdotun[1];
@@ -832,7 +838,7 @@ Versions:
                   if (currentvalue == "") {
                       value = 0;
                   } else {
-                      value = parseInt(currentvalue);
+                      value = parseFloat(currentvalue);
                   }
                   var date = cmbinedate;
                   var cmbinedataformnth = cmbinedate.split(".");
@@ -844,7 +850,7 @@ Versions:
                       }
                   }
                   $(".Cancelfun").removeClass("Cancelfun");
-                  Visualforce.remoting.Manager.invokeAction(
+                Visualforce.remoting.Manager.invokeAction(
                       '{!$RemoteAction.CtrPSOTable.savefunction}',
                       mnthtolmt, date, value,
                       function(result, event) {
@@ -938,7 +944,7 @@ Versions:
                                   var jsonnewdate1 = new Date(splitjsonnewdate[0], parseInt(splitjsonnewdate[1]) - 1, splitjsonnewdate[2]);
                                   if (newdateinput1.getFullYear() == jsonnewdate1.getFullYear() && newdateinput1.getMonth() == jsonnewdate1.getMonth() && newdateinput1.getDate() == jsonnewdate1.getDate()) {
                                       $(this).removeClass('greencolor greycolor redcolor nacolor white');
-                                      if (parseInt(b.Staff) == 0) {
+                                      if (parseFloat(b.Staff) == 0) {
                                           b.Staff = "";
                                       }
                                       $(this).val(b.Staff);
@@ -1369,7 +1375,7 @@ Versions:
                                           } else {
                                               prsnt = $(this).val();
                                           }
-                                          var vl = parseInt(prsnt) + valueforcell * 8;
+                                          var vl = parseFloat(prsnt) + valueforcell * 8;
                                           if (vl == 0) {
                                               vl = "";
                                           }
@@ -1541,10 +1547,11 @@ Versions:
   @resourceChangedForMonth the integer value for the month it has been changed eg Jan-1 , Feb-2.. so on..
   */
   function validateMonthToLimitOnResourceAllocation(changedResource, resourceChangedForMonth, a) {
+    
       $(".dataforprint").text(changedResource.Staffing)
       var resourceStaffingForSelectedMonthRange = changedResource.Staffing;
       var staffingForChangedMonth = _.filter(resourceStaffingForSelectedMonthRange, function(eachStaffingItem) {
-          return parseInt(moment(eachStaffingItem["Day"], "DD.MM.YYYY").month()) + 1 === resourceChangedForMonth;
+          return parseFloat(moment(eachStaffingItem["Day"], "DD.MM.YYYY").month()) + 1 === resourceChangedForMonth;
       });
       var staffedDayListOfChangedMonth = _.pluck(staffingForChangedMonth, 'Staff');
       var totalStaffingHoursForChangedMonth = _.reduce(staffedDayListOfChangedMonth, function(totalStaffing, staffingHoursForEachAllocatedDay) {
@@ -1571,8 +1578,9 @@ Versions:
           updatedata = parseFloat(a.currentTarget.value) - parseFloat(ab);
           totalStaffingHoursForChangedMonth = totalStaffingHoursForChangedMonth + updatedata;
       } else {
-          totalStaffingHoursForChangedMonth = totalStaffingHoursForChangedMonth + parseInt(a.currentTarget.value)
+          totalStaffingHoursForChangedMonth = totalStaffingHoursForChangedMonth + parseFloat(a.currentTarget.value)
       }
+         if (a.currentTarget.value != 0) {
       if (_.has(changedResource.MonthToLimitMap, resourceChangedForMonth.toString())) {
           if (parseFloat(totalStaffingHoursForChangedMonth) / 8 > parseFloat(monthtlyLimitHours / 8)) {
               $(".appendtxt").text(" ");
@@ -1595,11 +1603,12 @@ Versions:
           $(a.target).addClass('Cancelfun');
           return 1;
       }
+    }
   }
         </script>
     </head>
     <body data-ng-app="myApp">
-        <p class="dataforprint" style="display:;"> </p>
+          <p class="dataforprint" style="display:;"> </p>
         <div data-ng-controller="MyCtrl" id="contid">
             <div class="blurbackgrund"></div>
             <div class="popup">

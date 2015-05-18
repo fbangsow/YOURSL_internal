@@ -30,11 +30,11 @@ public class CtrPSOTable {
   }
 
   @RemoteAction
-  public static void savefunction(String LineItemIdMap, String selectedDate, Integer numberOfHours) {
+  public static void savefunction(String LineItemIdMap, String selectedDate, Decimal numberOfHours) {
 
     String[] datefrmt = dateFormatter(selectedDate);
     Date myDate = date.newinstance(Integer.valueOf(datefrmt[2]), Integer.valueOf(datefrmt[1]), Integer.valueOf(datefrmt[0]));
-    PsoToolController.getInstance().allocateResource(LineItemIdMap, myDate, (decimal.valueOf(numberOfHours) / 8));
+    PsoToolController.getInstance().allocateResource(LineItemIdMap, myDate, numberOfHours / 8);
 
   }
 
