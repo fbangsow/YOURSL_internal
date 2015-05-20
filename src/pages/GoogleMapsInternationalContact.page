@@ -30,7 +30,7 @@
 
 <apex:sectionHeader title="{!$ObjectType.contact.label}" subtitle="{!Contact.Name}"></apex:sectionHeader>
 
-<apex:outputText >&nbsp;&#171&nbsp;</apex:outputText>
+<apex:outputText >&nbsp;&amp;#171&nbsp;</apex:outputText>
 <apex:outputLink value="{!URLFOR($Action.Contact.View, Contact.Id)}">{!$Label.GMI_BackTo}: {!Contact.Name}</apex:outputLink>
 <p></p>
 

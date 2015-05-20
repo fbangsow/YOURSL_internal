@@ -33,7 +33,7 @@
 
 <apex:sectionHeader title="{!$ObjectType.account.label}" subtitle="{!Account.Name}"></apex:sectionHeader>
 
-<apex:outputText >&nbsp;&#171&nbsp;</apex:outputText>
+<apex:outputText >&nbsp;&amp;#171&nbsp;</apex:outputText>
 <apex:outputLink value="{!URLFOR($Action.Account.View, Account.Id)}">{!$Label.GMI_BackTo}: {!Account.Name}</apex:outputLink>
 <p></p>
 
