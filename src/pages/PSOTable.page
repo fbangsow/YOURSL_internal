@@ -15,17 +15,25 @@ Versions:
 <apex:includeScript value="{!URLFOR($Resource.StreamingApiScripts,'jquery.cometd.js')}"/>
 <apex:form >
   <apex:pageBlock title="PSO Tool">
-    <apex:commandButton style="height:20px;width:50px;" value="Run Job" action="{!runJob}" />
+    <apex:commandButton style="height:20px;width:150px;" value="Run Weekly Job" action="{!runWeeklyJob}" />
+    <apex:commandButton style="height:20px;width:150px;" value="Run Monthly Job" action="{!runMonthlyJob}" />
   </apex:pageBlock>
 </apex:form>
 <html>
     <head><title>PSOTable</title>
       <link rel="stylesheet"  href="{!$Resource.datepicker}"></link>
-      <link rel="stylesheet"  href="/resource/1430707067000/PsotoolCss"></link>
+      <link rel="stylesheet"  href="/resource/1432096540000/PsotoolCss"></link>
       <script type="text/javascript" src="{!$Resource.PsoToolLibs}"></script>
       <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.17/jquery-ui.min.js"></script>
       <script src="/resource/1430742754000/PsoToolMomentjs"></script>
       <script src="/resource/1430888909000/PsoToolUnderscorejs"></script>
+      <style>
+      .largeWidth
+      {
+
+        border:1px solid red;
+      }
+      </style>
 
       <script type="text/javascript">
         var weekdays = {};
@@ -143,13 +151,13 @@ Versions:
                       weekno1 = weekno1;
                       if (weekdays[k] == "SA" || weekdays[k] == "SU") {
 
-                          data = data + '<td><input name="' + a + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td>';
+                          data = data + '<td><input name="' + a + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td>';
                       } else {
                                                
                           var cmbne = month + "-" + dt + "-" + year;
                           var weekno1 = moment(cmbne, "MM-DD-YYYY").startOf('isoweek').week();
                           weekno1 = weekno1;
-                          data = data + '<td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td>';
+                          data = data + '<td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month+ '" class="inputfields plnperhur" disabled="true"></td>';
                       }
                   } else if (weekdays[k] == "SA" || weekdays[k] == "SU") {
                       if (weekdays[k] == "SU") {
@@ -159,7 +167,7 @@ Versions:
                           weekno1 = weekno1;
                           if (parseInt(dt) == 1) {
 
-                              data = data + '<td><input type="text" name="' + weekno1 + '"  class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input name="' + a + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="drdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="dadot inputfields" disabled="true"></td>';
+                              data = data + '<td><input type="text" name="' + weekno1 + '"  class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td><td><input name="' + a + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="drdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="dadot inputfields" disabled="true"></td>';
                           } else {
  
                               data = data + '<td><input name="' + a + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '"  ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="drdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="dadot inputfields" disabled="true"></td>';
@@ -170,7 +178,7 @@ Versions:
                           weekno1 = weekno1;
                           if (parseInt(dt) == 1) {
  
-                              data = data + '<td><input type="text" name="' + weekno1 + '"  class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '"  class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input name="' + a + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-model-ngblur ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td>';
+                              data = data + '<td><input type="text" name="' + weekno1 + '"  class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '"  class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month+ '" class="inputfields plnperhur" disabled="true"></td><td><input name="' + a + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-model-ngblur ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td>';
                           } else {
  
                               data = data + '<td><input name="' + a + '"  ng-model-ngblur="' + weekdays[k] + dt + month + year + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-model="' + weekdays[k] + dt + month + year + '" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td>';
@@ -183,10 +191,10 @@ Versions:
                       if (parseInt(dt) == 1) {
                           if (weekdays[k] == "MO") {
   
-                              data = data + '<td><input type="text" name="' + month + '"  class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '"  ng-model-ngblur ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')" ></input></td>';
+                              data = data + '<td><input type="text" name="' + month + '"  class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input name="' +month + '" type="text" class="inputfields plnperhur" disabled="true"></td><td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '"  ng-model-ngblur ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')" ></input></td>';
                           } else {
   
-                              data = data + '<td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields"  disabled="true"></td><td><input type="text" name="' + weekno1 + '"  class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')" ></input></td>';
+                              data = data + '<td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields"  disabled="true"></td><td><input type="text" name="' + weekno1 + '"  class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' +month+ '" class="inputfields plnperhur" disabled="true"></td><td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')" ></input></td>';
                           }
                       } else {
  
@@ -200,7 +208,7 @@ Versions:
                       k++;
                   }
               }
-              data = "<td>{{dataval2.SalesPrice}} €</td><td>{{dataval2.soldrev}} </td><td>{{dataval2.plnndreven}} </td><td>{{dataval2.LastModifiedDate|date:'d MMM yyyy'}}</td><td class='Staffing' style='display:none;'>{{dataval2.Staffing}}</td><td class='statical' style='display:none;'>{{dataval2.Statistics}}</td><td class='widderclumn'></td><td class='contactidloop' style='display:none;'>{{dataval2.ContactId}}</td>" + data;
+              data = "<td>{{dataval2.SalesPrice}} &euro;</td><td>{{dataval2.soldrev}} </td><td>{{dataval2.plnndreven}} </td><td>{{dataval2.LastModifiedDate|date:'d MMM yyyy'}}</td><td class='Staffing' style='display:none;'>{{dataval2.Staffing}}</td><td class='statical' style='display:none;'>{{dataval2.Statistics}}</td><td class='plnnedperq' style='display:none;'>{{dataval2.plndperq}}</td><td class='widderclumn'></td><td class='contactidloop' style='display:none;'>{{dataval2.ContactId}}</td>" + data;
               return data;
           }
       }
@@ -280,6 +288,18 @@ Versions:
                           $scope.unplannedindays = parseFloat(resurce.SoldDays) - parseFloat(resurce.PlannedDays);
                           $scope.soldreven = parseFloat(resurce.SalesPrice) * parseFloat(resurce.SoldDays);
                           $scope.plnndreven = parseFloat(resurce.SalesPrice) * parseFloat(resurce.PlannedDays);
+                        resurce.plndperq=[];
+                          angular.forEach(resurce.MonthToLimitMap, function(mnthtolmt,key) {
+                            //resurce.plndperq.key=mnthtolmt-resurce.PlannedDays;
+                       var obj={};
+                       obj[key]=mnthtolmt-resurce.PlannedDays;
+                       resurce.plndperq.push(obj);
+                          //var a="+key+"+":"+"+mnthtolmt-resurce.PlannedDays+";
+                          //alert(a);
+                          //resurce.plndperq.push({a});
+                          
+                          });
+                          
                           resurce.PlannedDays = resurce.PlannedDays.toFixed(2).toString().replace(".", ",");
                           resurce.SoldDays = resurce.SoldDays.toFixed(2).toString().replace(".", ",");
                           $scope.unplannedindays = $scope.unplannedindays.toFixed(2);
@@ -458,9 +478,16 @@ Versions:
                                                   $(this).remove();
                                               }
                                           })
+                                           $(this).find(".plnperhur").each(function(cu) {
+                                              if (cu <= 0) {
+                                                  $(this).remove();
+                                              }
+                                          })
+                                          
                                       })
                                   })
                                     $scope.Statatical();
+                                    $scope.plannedorqa();
                                   $(".workingweeks .greycolorsat").attr("style", "border-bottom:none !IMPORTANT;");
                                   $(".workingweeks tr td:nth-child(3)").attr("style", "border:none !IMPORTANT;");
                                   $(".workingweeks tr td:nth-child(4)").attr("style", "border:none;border-right: none;");
@@ -554,7 +581,7 @@ Versions:
                                   }
                                   $(".totalforcalndr").each(function() {
                   $(this).find("td").each(function(co) {
-                      if (co > 3 && co < 8) {
+                      if (co > 3 && co < 9) {
                           $(this).remove();
                       }
                   })
@@ -803,6 +830,7 @@ Versions:
                     $scope.$apply();
                     clickedfoedata=0;
                   }
+               
                   //logic to populate allocation in resource allocation table
                   var date = g.split(".");
                   var cmbinedate = date[0] + "." + date[1] + "." + date[2];
@@ -860,6 +888,36 @@ Versions:
                   );
               }
           }
+            $scope.plannedorqa = function() {
+     
+                  $(".plnnedperq").each(function() {
+                      var jsondata1 = $(this).text();
+                                           if (jsondata1 != "[]"  && jsondata1 != "" ) {
+                          var th = $(this);
+                          var jsonstrngfy = JSON.parse(jsondata1);
+                           angular.forEach(jsonstrngfy, function(monthtofind, i) {
+                             angular.forEach(monthtofind, function(valueofmonth, i) {
+                          //$.each(jsonstrngfy, function(a, b) {
+                              $(th).parent().find(".plnperhur").each(function() {
+                                 var newdateinput = $(this).attr("name");
+                            
+                                 if (parseInt(i) == parseInt(newdateinput)-1) {
+                                 $(this).val(valueofmonth);
+                                 if(parseFloat(valueofmonth)<0)
+                                 {
+                                  $(this).addClass("redcolor");
+
+
+                                 }
+                                 }
+                                });
+                               });
+                            });
+                                
+              }
+            })
+          }
+         
           $scope.Statatical = function() {
      
                   $(".statical").each(function() {
@@ -924,6 +982,12 @@ Versions:
                           }
                       })
                   })
+              }
+              $scope.set_color = function (payment) {
+                  var convertion=payment.unplanne.replace(",", ".");
+                   if (parseFloat(convertion) < 0) {
+                        return { color: "red " }
+                        }
               }
               //function for populating Staffing array in inputs
           $scope.Staffingpopltion = function() {
@@ -1228,45 +1292,45 @@ Versions:
                           if (k <= 4 || k == 7) {
                               if (weekdays[k] == "SU") {
                                   if (dt == 1) {
-                                      heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;' class='weekhead' ><span class='emptyclass'>" + monthNames[month - 1] + "</span><br/><span class='spanbirder' style='padding: 0% 6px 0 6px !important;border-right:1px solid #B8B1B1;'>KW-" + weekno + "</span><br/><span style='border-right:1px solid #B8B1B1;padding:0px 12px 0px 12px;'>" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th>";
+                                      heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>P/Q</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;' class='weekhead' ><span class='emptyclass'>" + monthNames[month - 1] + "</span><br/><span class='spanbirder' style='padding: 0% 6px 0 6px !important;border-right:1px solid #B8B1B1;'>KW-" + weekno + "</span><br/><span style='border-right:1px solid #B8B1B1;padding:0px 12px 0px 12px;'>" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th>";
                                   } else {
                                       heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;' class='weekhead' ><span class='emptyclass'></span></br><span class='spanbirder' style='padding: 0% 3px 0 3px !important;border-right:1px solid #B8B1B1;'>KW-" + weekno + "</span><br/><span style='border-right:1px solid #B8B1B1;padding:0px 9px 0px 9px;'>" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th>";
                                   }
                               } else {
                                   if (dt == 1) {
-                                      heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;' class='weekhead' ><span class='emptyclass'>" + monthNames[month - 1] + "</span><br/><span class='spanbirder' style='padding: 0% 3px 0 3px !important;'>KW-" + weekno + "</span><br/><span >" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th>";
+                                      heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>P/Q</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;' class='weekhead' ><span class='emptyclass'>" + monthNames[month - 1] + "</span><br/><span class='spanbirder' style='padding: 0% 3px 0 3px !important;'>KW-" + weekno + "</span><br/><span >" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th>";
                                   } else {
                                       heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;' class='weekhead' ><span class='emptyclass'></span></br><span class='spanbirder' style='padding: 0% 3px 0 3px !important;'>KW-" + weekno + "</span><br/><span >" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th>";
                                   }
                               }
                           } else {
                               if (dt == 1) {
-                                  heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;' class='weekhead' ><span class='emptyclass'>" + monthNames[month - 1] + "</span><br/><span class='spanbirder' style='padding: 0% 3px 0 3px !important;border-right:1px solid #B8B1B1;'>KW-" + weekno + "</span><br/><span style='border-right:1px solid #B8B1B1;padding:0px 12px 0px 12px;'>" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th>";
+                                  heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>P/Q</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;' class='weekhead' ><span class='emptyclass'>" + monthNames[month - 1] + "</span><br/><span class='spanbirder' style='padding: 0% 3px 0 3px !important;border-right:1px solid #B8B1B1;'>KW-" + weekno + "</span><br/><span style='border-right:1px solid #B8B1B1;padding:0px 12px 0px 12px;'>" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th>";
                               }
                           }
                       } else if (j == parseInt(diffDays)) {
-                          heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;' class='weekhead' ><br/><span class='spanbirder' style='padding: 0% 3px 0 3px !important;'>KW-" + weekno + "</span><br/><span >" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th>";
+                          heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;' class='weekhead' ><br/><span class='spanbirder' style='padding: 0% 3px 0 3px !important;'>KW-" + weekno + "</span><br/><span >" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>P/Q</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th>";
                       } else if (weekdays[k] == "MO") {
                           if (dt == 1) {
-                              heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border:0;' class='weekhead' ><span class='emptyclass' style='border-bottom: 1px solid #B8B1B1;padding: 0px 6px 0px 0px;'>" + monthNames[month - 1] + "</span><span class='spanbirder' style='padding: 0px;'></span><br/><br/><span class='brdrdtls' style='  border-top: 1px solid #B8B1B1;padding: 0px 2px 0px 4px;'>" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th>";
+                              heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>P/Q</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border:0;' class='weekhead' ><span class='emptyclass' style='border-bottom: 1px solid #B8B1B1;padding: 0px 6px 0px 0px;'>" + monthNames[month - 1] + "</span><span class='spanbirder' style='padding: 0px;'></span><br/><br/><span class='brdrdtls' style='  border-top: 1px solid #B8B1B1;padding: 0px 2px 0px 4px;'>" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th>";
                           } else {
                               heade = heade + "<th style='text-align:center;border:0;' class='weekhead' ><span class='emptyclass'></span></br><span class='spanbirder'></span><br/><span class='brdrdtls' >" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th>";
                           }
                       } else if (weekdays[k] == "WE") {
                           if (dt == 1) {
-                              heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:left;border:none;' class='weekhead' ><span class='emptyclass'>" + monthNames[month - 1] + "</span><br/><span class='spanbirder' style='padding: 0 0px 0 0px;'>KW-" + weekno + "</span><br/><span class='wd'>" + weekdays[k] + '<br/><span class="wd1">' + dt + "</span></th>";
+                              heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>P/Q</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:left;border:none;' class='weekhead' ><span class='emptyclass'>" + monthNames[month - 1] + "</span><br/><span class='spanbirder' style='padding: 0 0px 0 0px;'>KW-" + weekno + "</span><br/><span class='wd'>" + weekdays[k] + '<br/><span class="wd1">' + dt + "</span></th>";
                           } else {
                               heade = heade + "<th style='text-align:left;border:none;' class='weekhead' ><span class='emptyclass'></span></br><span class='spanbirder' style='padding: 0 0px 0 0px;'>KW-" + weekno + "</span><br/><span class='wd'>" + weekdays[k] + '<br/><span class="wd1">' + dt + "</span></th>";
                           }
                       } else if (weekdays[k] == "SU") {
                           if (dt == 1) {
-                              heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border:0;' class='weekhead' ><span class='emptyclass' style='border-bottom: 1px solid #B8B1B1;padding: 0px 6px 0px 0px;'>" + monthNames[month - 1] + "</span><span class='spanbirder' style='padding: 0px;'></span><br/><br/><span class='brdrdtls' style='  border-top: 1px solid #B8B1B1;padding: 0px 2px 0px 4px;'>" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th>";
+                              heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>P/Q</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border:0;' class='weekhead' ><span class='emptyclass' style='border-bottom: 1px solid #B8B1B1;padding: 0px 6px 0px 0px;'>" + monthNames[month - 1] + "</span><span class='spanbirder' style='padding: 0px;'></span><br/><br/><span class='brdrdtls' style='  border-top: 1px solid #B8B1B1;padding: 0px 2px 0px 4px;'>" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th>";
                           } else {
                               heade = heade + "<th style='text-align:center;border:0;' class='weekhead' ><span class='emptyclass'></span></br><span class='spanbirder' style='border-right:1px solid #B8B1B1;'></span><br/><span class='brdrdtls' >" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th>";
                           }
                       } else {
                           if (dt == 1) {
-                              heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:left;border:none;' class='weekhead' ><span class='emptyclass'>" + monthNames[month - 1] + "</span><br/><span class='spanbirder'></span><br/><span class='brdrdtls'>" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th>";
+                              heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>P/Q</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:left;border:none;' class='weekhead' ><span class='emptyclass'>" + monthNames[month - 1] + "</span><br/><span class='spanbirder'></span><br/><span class='brdrdtls'>" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th>";
                           } else {
                               heade = heade + "<th style='text-align:left;border:none;' class='weekhead' ><span class='emptyclass'></span></br><span class='spanbirder'></span><br/><span class='brdrdtls'>" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th>";
                           }
@@ -1291,7 +1355,7 @@ Versions:
               $(".table2").each(function() {
                   $(this).find("tr").each(function() {
                       $(this).find(".weekhead").each(function(cu) {
-                          if (cu <= 3) {
+                          if (cu <= 4) {
                               $(this).remove();
                           }
                       })
@@ -1301,7 +1365,7 @@ Versions:
               $(".resourcetable").each(function() {
                   $(this).find("td").each(function(a) {
                       $(this).find("input").attr("disabled", "true");
-                      if (parseInt(a) <= 3) {
+                      if (parseInt(a) <= 4) {
                           $(this).remove();
                       }
                   })
@@ -1329,6 +1393,11 @@ Versions:
                           }
                       })
                       $(this).find(".mwdadot").each(function(cu) {
+                          if (cu == 0) {
+                              $(this).parent().remove();
+                          }
+                      })
+                       $(this).find(".plnperhur").each(function(cu) {
                           if (cu == 0) {
                               $(this).parent().remove();
                           }
@@ -1433,6 +1502,7 @@ Versions:
                   });
               })(j)
               $scope.Statatical();
+              $scope.plannedorqa();
           })
       });
   });
@@ -1638,21 +1708,21 @@ Versions:
         <div data-ng-repeat="dataval in dataval.Customers" class="custvalues" on-finish-render="ngRepeatFinished">
             <div data-ng-repeat="dataval1 in dataval.Projects" >
                 <table  class="custdetailview">
-                    <tr><td  style="text-align:left;width:110px;">Account Name:</td><td style="text-align:center;" class="customername">{{dataval.AccountName}}</td></tr>
-                    <tr><td  style="text-align:left;">Opportunity Name :</td><td  style="text-align:center;" class="prjname">{{dataval1.OpportunityName}}</td></tr>
-                    <tr><td  style="text-align:left;">Project Manager :</td><td  style="text-align:center;">{{dataval1.OurProjectManager}}</td></tr>
+                    <tr><td  style="text-align:left;width:110px;">Account Name:</td><td style="text-align:center;" class="customername"><a ng-href="https://cs8.salesforce.com/{{dataval.AccountId}}" target="_blank">{{dataval.AccountName}}</a></td></tr>
+                    <tr><td  style="text-align:left;">Opportunity Name :</td><td  style="text-align:center;" class="prjname"><a ng-href="https://cs8.salesforce.com/{{dataval1.OpportunityId}}" target="_blank">{{dataval1.OpportunityName}}</a></td></tr>
+                    <tr><td  style="text-align:left;">Project Manager :</td><td  style="text-align:center;"><a ng-href="https://cs8.salesforce.com/{{dataval1.OpportunityId}}" target="_blank">{{dataval1.OurProjectManager}}</a></td></tr>
                 </table>
                 <div  class="Resourcesection" >
                     <div >
                         <table class="table1">
                             <tr>
                                 <thead>
-                                    <th >Resource<br/> Name</th><th >Product</th><th >Sold Days</th><th>Planned Days</th><th>Un Planned Days</th>
+                                    <th >Resource<br/> Name</th><th >Product</th><th >Sold Days</th><th>Planned Days</th><th>UnPlanned Days</th>
                                 </thead>
                             </tr>
                             <tbody class="totalscalc">
                                 <tr data-ng-repeat="dataval2 in dataval1.Resources">
-                                    <td class="resource">{{dataval2.ResourceName}}</td><td>{{dataval2.Product}}</td>    <td class="noplan">{{dataval2.PlannedDays}}</td><td>{{dataval2.SoldDays}}</td> <td class="unplannedhrs">{{dataval2.LastModifiedDate}}</td><td>{{dataval2.PlannedDays}}</td> <td>{{dataval2.unplanne }}</td>
+                                    <td class="resource">{{dataval2.ResourceName}}</td><td  ng-style="set_color(dataval2) ">{{dataval2.Product}}</td>    <td class="noplan">{{dataval2.PlannedDays}}</td><td>{{dataval2.SoldDays}}</td> <td class="unplannedhrs">{{dataval2.LastModifiedDate}}</td><td>{{dataval2.PlannedDays}}</td> <td class="unplannedcal">{{dataval2.unplanne }}</td>
                                 </tr>
                             </tbody>
                         </table>
