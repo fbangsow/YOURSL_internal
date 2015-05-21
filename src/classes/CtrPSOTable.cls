@@ -146,17 +146,13 @@ public class CtrPSOTable {
     
   }
   
-   public void runMonthlyJob(){     
+   public void runMonthlyJob(){      
    
-    if(!IsMonthChangeinWeekPlanned)
-      Delete [Select ID from Planning_statistics__C where Time_Type__c = 'Month' and Data_Type__c ='Planned' and Start_Date__c <= :CurrentMonthEnd  and Start_Date__c >= :CurrentMonthStart ];
-    else
-      Delete [Select ID from Planning_statistics__C where Time_Type__c = 'Month' and Data_Type__c ='Planned' and Start_Date__c <= :CurrentMonthEnd  and Start_Date__c >= :CurrentMonthStart ];   
-    if(!IsMonthChangeinWeekActual)  
+      Delete [Select ID from Planning_statistics__C where Time_Type__c = 'Month' and Data_Type__c ='Planned' and Start_Date__c <= :CurrentMonthEnd  and Start_Date__c >= :CurrentMonthStart ];  
+      Delete [Select ID from Planning_statistics__C where Time_Type__c = 'Week' and Data_Type__c ='Planned' and Start_Date__c <= :CurrentWeekEnd  and Start_Date__c >= :CurrentMonthStart ];    
       Delete [Select ID from Planning_statistics__C where Time_Type__c = 'Month' and Data_Type__c ='Actual' and Start_Date__c <= :PreviousMonthEnd  and Start_Date__c >= :PreviousMonthStart ];
-    else
-      Delete [Select ID from Planning_statistics__C where Time_Type__c = 'Month' and Data_Type__c ='Actual' and Start_Date__c <= :PreviousMonthEnd  and Start_Date__c >= :PreviousMonthStart ];  
-      
+      Delete [Select ID from Planning_statistics__C where Time_Type__c = 'Week' and Data_Type__c ='Actual' and Start_Date__c <= :PreviousMonthEnd  and Start_Date__c >= :PreviousMonthLastMonday ];    
+
       PlanningScheduleUpdate updateSchedule = new PlanningScheduleUpdate();   
     
   }
