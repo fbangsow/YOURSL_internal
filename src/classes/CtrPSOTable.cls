@@ -22,6 +22,7 @@ public class CtrPSOTable {
     public Date CurrentMonthStart { get;set;}
     public Date CurrentMonthEnd  { get;set;}
     public Date PreviousMonthLastMonday { get;set;}
+    public Date CurrentMonthFirstSunday { get;set;}
     public Boolean IsMonthChangeinWeekPlanned {get;set;}
     public Boolean IsMonthChangeinWeekActual {get;set;}
 
@@ -84,19 +85,21 @@ public class CtrPSOTable {
             IsMonthChangeinWeekPlanned = true;
         }
 
-        Map < String, Integer > PreviousMonthLastMondayMap = new Map < String, Integer > ();
-        PreviousMonthLastMondayMap.put('Monday', 0);
-        PreviousMonthLastMondayMap.put('Tuesday', 1);
-        PreviousMonthLastMondayMap.put('Wednesday', 2);
-        PreviousMonthLastMondayMap.put('Thursday', 3);
-        PreviousMonthLastMondayMap.put('Friday', 4);
-        PreviousMonthLastMondayMap.put('Saturday', 5);
-        PreviousMonthLastMondayMap.put('Sunday', 6);
+       Map < String, Integer > PreviousMonthLastMondayMap = new Map < String, Integer >{'Monday' => 0,'Tuesday' => 1,
+                                                    'Wednesday' => 2,'Thursday' => 3,'Friday' => 4,'Saturday' =>5,'Sunday' =>6};
         Date previousdate = PreviousMonthend;
         Datetime previousdatetime = (DateTime) previousdate;
         String dayOfWk = previousdatetime.format('EEEE');
         DateTime tempDateTime = previousdatetime - PreviousMonthLastMondayMap.get(dayOfWk);
         PreviousMonthLastMonday = Date.newInstance(tempDateTime.year(), tempDateTime.month(),tempDateTime.day());
+
+        Map < String, Integer > CurrentMonthFirstSundayMap = new Map < String, Integer >{'Monday' => 6,'Tuesday' => 5,
+                                                    'Wednesday' => 4,'Thursday' => 3,'Friday' => 2,'Saturday' =>1,'Sunday' =>0};    
+        Date currentdate = CurrentMonthStart;
+        Datetime currentdatetime = (DateTime) currentdate;
+        String dayOfWeek = currentdatetime.format('EEEE');
+        DateTime tmpDateTime = currentdatetime + CurrentMonthFirstSundayMap.get(dayOfWeek);
+        CurrentMonthFirstSunday = Date.newInstance(tmpDateTime.year(), tmpDateTime.month(),tmpDateTime.day());
       
     }
 
@@ -149,7 +152,7 @@ public class CtrPSOTable {
    public void runMonthlyJob(){      
    
       Delete [Select ID from Planning_statistics__C where Time_Type__c = 'Month' and Data_Type__c ='Planned' and Start_Date__c <= :CurrentMonthEnd  and Start_Date__c >= :CurrentMonthStart ];  
-      Delete [Select ID from Planning_statistics__C where Time_Type__c = 'Week' and Data_Type__c ='Planned' and Start_Date__c <= :CurrentWeekEnd  and Start_Date__c >= :CurrentMonthStart ];    
+      Delete [Select ID from Planning_statistics__C where Time_Type__c = 'Week' and Data_Type__c ='Planned' and Start_Date__c <= :CurrentMonthFirstSunday  and Start_Date__c >= :CurrentMonthStart ];    
       Delete [Select ID from Planning_statistics__C where Time_Type__c = 'Month' and Data_Type__c ='Actual' and Start_Date__c <= :PreviousMonthEnd  and Start_Date__c >= :PreviousMonthStart ];
       Delete [Select ID from Planning_statistics__C where Time_Type__c = 'Week' and Data_Type__c ='Actual' and Start_Date__c <= :PreviousMonthEnd  and Start_Date__c >= :PreviousMonthLastMonday ];    
 
