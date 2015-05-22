@@ -213,6 +213,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>OpportunityLineItemsEditExtensionTest</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>Opportunity_BI_Test</apexClass>
         <enabled>true</enabled>
     </classAccesses>
