@@ -13,7 +13,6 @@ private class OpportunityLIScheduleChangeHandlerTest {
     @isTest static void testAddOpportunityLineItemAddsItToMap() {
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
-            FeatureSwitch.enable('PsoTool triggers');
             setup_data.createTestData(true);
             setup_data.createAnotherLineItem();
             OpportunityLineItemScheduleChangeHandler new_instance = OpportunityLineItemScheduleChangeHandler.getInstance();
@@ -30,7 +29,6 @@ private class OpportunityLIScheduleChangeHandlerTest {
     @isTest static void testAddOpportunityLineItemDoesntAddLineItemToMapWhenTheOpportunityIsNotAvailableForProcessing() {
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
-            FeatureSwitch.enable('PsoTool triggers');
             setup_data.createTestData(false);
             setup_data.createAnotherLineItem();
             OpportunityLineItemScheduleChangeHandler new_instance = OpportunityLineItemScheduleChangeHandler.getInstance();
@@ -64,7 +62,6 @@ private class OpportunityLIScheduleChangeHandlerTest {
     @isTest static void testUpsertUnplannedSchedulesUpdatesExistingSchedules() {
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
-            FeatureSwitch.enable('PsoTool triggers');
             setup_data.createTestData(true);
             List<OpportunityLineItemSchedule> unplanned_schedules2 = [SELECT Id, OpportunityLineItem.Id, Quantity FROM OpportunityLineItemSchedule WHERE OpportunityLineItem.Id = :setup_data.firstLineItem.Id];
             OpportunityLineItemScheduleChangeHandler new_instance = OpportunityLineItemScheduleChangeHandler.getInstance();
@@ -83,7 +80,6 @@ private class OpportunityLIScheduleChangeHandlerTest {
     @isTest static void testAddOpportunityLineItemDoesntDoesntAddItIfChangeParametersIsSet() {
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
-            FeatureSwitch.enable('PsoTool triggers');
             setup_data.createTestData(true);
             setup_data.createAnotherLineItem();
             setup_data.firstLineItem.Change_Parameters__c = true;

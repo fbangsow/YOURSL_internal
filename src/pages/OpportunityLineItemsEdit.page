@@ -2,39 +2,50 @@
     <apex:sectionHeader title="Edit Sales Price And Quantity for {!Opportunity.Name}"/>
     <apex:pageMessages id="message"/>
     <apex:form >
-        <apex:pageBlock >
+        <apex:pageBlock mode="inlineEdit" rendered="{!ShowControls}">
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton action="{!save}" value="Save"/>
+            </apex:pageBlockButtons>
             <apex:pageBlockSection >
-                <apex:dataTable value="{!SelectedOpportunity.OpportunityLineItems}" var="LineItem" border="1" cellpadding="10" width="900px" id="theTable">
+                <apex:dataTable value="{!OrderedListOfKeys}" var="key" border="1" cellpadding="10" id="theTable" columnsWidth="200px, 200px, 100px, 100px, 100px, 100px, 200px, 300px" width="1300px">
                     <apex:column >
                         <apex:facet name="header">Resource</apex:facet>
-                        <apex:outputText value="{!LineItem.Contact__r.Name}"/>
+                        <apex:outputText value="{!LineItems[key].LineItem.Contact__r.Name}"/>
                         <apex:facet name="footer">
                             <b>Totals</b>
                         </apex:facet>
                     </apex:column>
                     <apex:column >
                         <apex:facet name="header">Product Name</apex:facet>
-                        <apex:outputText value="{!LineItem.Product2.Name}"/>
+                        <apex:outputText value="{!LineItems[key].LineItem.Product2.Name}"/>
                     </apex:column>
                     <apex:column >
                         <apex:facet name="header">Service Date</apex:facet>
-                        <apex:outputText value="{!CASE(MONTH(LineItem.ServiceDate),1, "January",2, "February",3, "March", 4, "April", 5, "May", 6, 
-                "June",7, "July",8, "August",9, "September",10, "October",11, "November",12, "December","None")} {!YEAR(LineItem.ServiceDate)}"/>
+                        <apex:outputText value="{!CASE(MONTH(LineItems[key].LineItem.ServiceDate),1, "January",2, "February",3, "March", 4, "April", 5, "May", 6, 
+                "June",7, "July",8, "August",9, "September",10, "October",11, "November",12, "December","None")} {!YEAR(LineItems[key].LineItem.ServiceDate)}"/>
                     </apex:column>
                     <apex:column >
                         <apex:facet name="header">Sales Price</apex:facet>
                         <apex:outputText value="{0, number, ###,###,###,###.00} €" id="unitPrice">
-                            <apex:param value="{!LineItem.UnitPrice}"/>
+                            <apex:param value="{!LineItems[key].LineItem.UnitPrice}"/>
                         </apex:outputText>
                     </apex:column>
                     <apex:column >
-                        <apex:facet name="header">Quantity</apex:facet>
-                        <apex:inputText value="{!LineItem.Quantity}" onKeyUp="recountTotal('{!$Component.theTable.revenueAfter}', document.getElementById('{!$Component.theTable.unitPrice}').innerText, this.value);recountGlobalTotal('{!$Component.theTable.totalRevenueAfter}', '{!$Component.theTable}');" id="quantity"/>
+                        <apex:facet name="header">Quantity before</apex:facet>
+                        <apex:outputText value="{!LineItems[key].LineItem.Quantity}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Quantity after</apex:facet>
+                        <apex:inputText value="{!LineItems[key].SelectedQuantity}" onKeyUp="recountTotal('{!$Component.theTable.revenueAfter}', document.getElementById('{!$Component.theTable.unitPrice}').innerText, this.value);recountGlobalTotal('{!$Component.theTable}');" id="quantity"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Unplanned days</apex:facet>
+                        <apex:outputText value="{!LineItems[key].UnplannedDays}"/>
                     </apex:column>
                     <apex:column >
                         <apex:facet name="header">Revenue before</apex:facet>
                         <apex:outputText value="{0, number, ###,###,###,###.00} €">
-                            <apex:param value="{!LineItem.Quantity*LineItem.UnitPrice}"/>
+                            <apex:param value="{!LineItems[key].LineItem.Quantity*LineItems[key].LineItem.UnitPrice}"/>
                         </apex:outputText>
                         <apex:facet name="footer">
                             <apex:outputText value="{0, number, ###,###,###,###.00} €">
@@ -45,7 +56,7 @@
                     <apex:column >
                         <apex:facet name="header">Revenue after</apex:facet>
                         <apex:outputText value="{0, number, ###,###,###,###.00} €" id="revenueAfter" styleClass="revenueAfter">
-                            <apex:param value="{!LineItem.Quantity*LineItem.UnitPrice}"/>
+                            <apex:param value="{!LineItems[key].LineItem.Quantity*LineItems[key].LineItem.UnitPrice}"/>
                         </apex:outputText>
                         <apex:facet name="footer">
                             <apex:outputText value="{0, number, ###,###,###,###.00} €" id="totalRevenueAfter">
@@ -56,31 +67,45 @@
                 </apex:dataTable>
             </apex:pageBlockSection>
         </apex:pageBlock>
+         <apex:pageBlock mode="block" rendered="{!NOT(ShowControls)}">
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton action="{!redirectToOpportunityView}" value="Return to Opportunity" rendered="{!NOT(ShowControls)}"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
     </apex:form>
     <script>
         function recountTotal(id, unitPrice, quantity){
             if(!isNumber(quantity)){
-                document.getElementById(id).innerText = 'Hard to count. Please, use period for separating decimals!';
+                document.getElementById(id).innerText = 'Please, use period for separating decimals and obey math laws!';
             }
             else
-                document.getElementById(id).innerText = (parseFloat(unitPrice.replace(',',''))*quantity).formatMoney(2, ',', '.') + '€';
+                document.getElementById(id).innerText = (parseFloat(replaceAll(',', '',unitPrice))*quantity).formatMoney(2, ',', '.') + '€';
         }
 
-        function recountGlobalTotal(id_to_update, tableId){
+        function recountGlobalTotal(tableId){
             var tableElem = window.document.getElementById(tableId.substring(0, tableId.lastIndexOf(":")));
             var tableBody = tableElem.getElementsByTagName("tbody").item(0);
             var i;
             var howManyRows = tableBody.rows.length;
-            for (i=1; i<(howManyRows-1); i++){
-               var thisTrElem = tableBody.rows[i];
-               var thisTdElem = thisTrElem.cells[thisTrElem.cells.length];
-               var thisTextNode = thisTdElem.childNodes.item(0);
-               var thisNumber = parseFloat(thisTextNode.data);
-               // if you didn't get back the value NaN (i.e. not a number), add into result
-               if (!isNaN(thisNumber))
-                 result += thisNumber;
-             }
-            document.getElementById(id_to_update).innerText = parseFloat(result).formatMoney(2, ',', '.') + '€';
+            var result = 0;
+            for (i=0; i<(howManyRows); i++){
+                var thisTrElem = tableBody.rows[i];
+                var thisTdElem = thisTrElem.cells[thisTrElem.cells.length-1];
+                var thisTextNode = thisTdElem.childNodes.item(0);
+                var thisNumber = parseFloat(replaceAll(',', '', thisTextNode.innerHTML));
+                if (isNumber(thisNumber)){
+                    result += thisNumber;
+                }
+                else {
+                    result = null;
+                    break;
+                }
+            }
+            var idOfTotalRevenue = tableId.substring(0, tableId.lastIndexOf(":")).concat(':totalRevenueAfter');
+            if(result == null)
+                document.getElementById(idOfTotalRevenue).innerText = 'Please, use period for separating decimals and obey math laws!';
+            else
+                document.getElementById(idOfTotalRevenue).innerText = parseFloat(result).formatMoney(2, ',', '.') + '€';
         }
 
         function isNumber(n) {
@@ -97,5 +122,9 @@
             j = (j = i.length) > 3 ? j % 3 : 0;
             return sign + (j ? i.substr(0, j) + thouSeparator : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thouSeparator) + (decPlaces ? decSeparator + Math.abs(n - i).toFixed(decPlaces).slice(2) : "");
         };
+
+        function replaceAll(find, replace, str) {
+            return str.replace(new RegExp(find, 'g'), replace);
+        }
     </script>
 </apex:page>
