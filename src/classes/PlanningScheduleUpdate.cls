@@ -29,26 +29,42 @@ public class PlanningScheduleUpdate {
 
     public PlanningScheduleUpdate() {
 
-          getDatesForCalculation();
+          getDatesForCalculation(d);
+          populateStatisticsData('Planned');
+          updateOpportunityData();
+          populateStatisticsData('Actual');
+    }
+
+     public PlanningScheduleUpdate(String selectedDate) {
+
+           String[] myDateOnly = selectedDate.split(' ');
+           String[] strDate = myDateOnly[0].split('/');
+           Integer myIntDate = integer.valueOf(strDate[1]);
+           Integer myIntMonth = integer.valueOf(strDate[0]);
+           Integer myIntYear = integer.valueOf(strDate[2]);
+           Date dateValue = Date.newInstance(myIntYear, myIntMonth, myIntDate);   
+     
+          getDatesForCalculation(dateValue);
           populateStatisticsData('Planned');
           updateOpportunityData();
           populateStatisticsData('Actual');
     }
  
-    public void getDatesForCalculation(){
+ 
+    public void getDatesForCalculation(Date dateValue){
 
-        PreviousWeekStart = d.toStartOfWeek()-7;
-        PreviousWeekEnd = d.toStartOfWeek()-1;
-        CurrentWeekStart = d.toStartOfWeek();
-        CurrentWeekEnd = d.toStartOfWeek()+6;
+        PreviousWeekStart = dateValue.toStartOfWeek()-7;
+        PreviousWeekEnd = dateValue.toStartOfWeek()-1;
+        CurrentWeekStart = dateValue.toStartOfWeek();
+        CurrentWeekEnd = dateValue.toStartOfWeek()+6;
         IsMonthChangeinWeekPlanned = false;
         IsMonthChangeinWeekActual = false;
          
         Integer prevmonth=0;
         Integer nxtmonth=0;
         Integer currentmonth=0;
-        Integer y = d.year();
-        Integer m = d.month();
+        Integer y = dateValue.year();
+        Integer m = dateValue.month();
         Integer dy;
         Integer currentday;
         Integer nxtdy;
