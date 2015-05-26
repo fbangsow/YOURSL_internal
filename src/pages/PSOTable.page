@@ -13,17 +13,12 @@ Versions:
 <apex:includeScript value="{!URLFOR($Resource.StreamingApiScripts,'json2.js')}"/>
 <apex:includeScript value="{!URLFOR($Resource.StreamingApiScripts,'Cometd.js')}"/>
 <apex:includeScript value="{!URLFOR($Resource.StreamingApiScripts,'jquery.cometd.js')}"/>
-<apex:form >
-  <apex:pageBlock >
-   <span class="psotoolheader">PSO Tool</span> <apex:commandButton style="height:20px;width:150px;" value="Run Weekly Job" action="{!runWeeklyJob}" />
-    <apex:commandButton style="height:20px;width:150px;" value="Run Monthly Job" action="{!runMonthlyJob}" />
-  </apex:pageBlock>
-</apex:form>
+
 <html>
     <head><title>PSOTable</title>
       <link rel="stylesheet"  href="{!$Resource.datepicker}"></link>
-      <link rel="stylesheet"  href="/resource/1432128500000/PsotoolCss"></link>
-      <script type="text/javascript" src="{!$Resource.PsoToolLibs}"></script>
+      <link rel="stylesheet"  href="{!$Resource.PsotoolCss}"></link>
+       <script type="text/javascript" src="{!$Resource.PsoToolLibs}"></script>
       <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.17/jquery-ui.min.js"></script>
       <script src="/resource/1430742754000/PsoToolMomentjs"></script>
       <script src="/resource/1430888909000/PsoToolUnderscorejs"></script>
@@ -207,7 +202,7 @@ Versions:
                        k++;
                    }
                }
-               data = "<td>{{dataval2.SalesPrice}} &euro;</td><td>{{dataval2.soldrev}} </td><td>{{dataval2.plnndreven}} </td><td>{{dataval2.LastModifiedDate|date:'d MMM yyyy'}}</td><td class='Staffing' style='display:none;'>{{dataval2.Staffing}}</td><td class='statical' style='display:none;'>{{dataval2.Statistics}}</td><td class='plnnedperq' style='display:none;'>{{dataval2.plndperq}}</td><td class='widderclumn'></td><td class='contactidloop' style='display:none;'>{{dataval2.ContactId}}</td>" + data;
+               data = "<td style='padding:0 5px !important'>{{dataval2.SalesPrice}}</td><td style='padding:0 5px !important'>{{dataval2.soldrev}} </td><td style='padding:0 5px !important'>{{dataval2.plnndreven}} </td><td style='padding:0 5px !important'>{{dataval2.LastModifiedDate|date:'d MMM yyyy'}}</td><td class='Staffing' style='display:none;'>{{dataval2.Staffing}}</td><td class='statical' style='display:none;'>{{dataval2.Statistics}}</td><td class='plnnedperq' style='display:none;'>{{dataval2.plndperq}}</td><td class='widderclumn'></td><td class='contactidloop' style='display:none;'>{{dataval2.ContactId}}</td>" + data;
                return data;
            }
        }
@@ -293,6 +288,10 @@ Versions:
                            $scope.unplannedindays = parseFloat(resurce.SoldDays) - parseFloat(resurce.PlannedDays);
                            $scope.soldreven = parseFloat(resurce.SalesPrice) * parseFloat(resurce.SoldDays);
                            $scope.plnndreven = parseFloat(resurce.SalesPrice) * parseFloat(resurce.PlannedDays);
+                           //alert(euroconverter($scope.soldreven));
+                           resurce.SalesPrice=euroconverter(resurce.SalesPrice);
+                           $scope.soldreven =euroconverter($scope.soldreven);
+                            $scope.plnndreven=euroconverter($scope.plnndreven);
 
                            var localplanedformont1 = $scope.localobject(startdate, resurce.Staffing);
 
@@ -314,11 +313,11 @@ Versions:
                            resurce.SoldDays = resurce.SoldDays.toFixed(2).toString().replace(".", ",");
                            $scope.unplannedindays = $scope.unplannedindays.toFixed(2);
                            var ab = $scope.unplannedindays.toString();
-                           var soldrevstring = $scope.soldreven.toFixed(2).toString();
-                           var plnndrevstring = $scope.plnndreven.toFixed(2).toString();
+                           var soldrevstring = $scope.soldreven//.toFixed(2).toString();
+                           var plnndrevstring = $scope.plnndreven//.toFixed(2).toString();
                            $scope.unplannedindays = ab.replace(".", ",");
-                           $scope.soldreven = soldrevstring.replace(".", ",");
-                           $scope.plnndreven = plnndrevstring.replace(".", ",");
+                           $scope.soldreven = soldrevstring//.replace(".", ",");
+                           $scope.plnndreven = plnndrevstring//.replace(".", ",");
                            $scope.date = resurce.LastModifiedDate.split(" ");
                            resurce.LastModifiedDate = $scope.date[0];
                            resurce.unplanne = "" + $scope.unplannedindays + "";
@@ -511,13 +510,13 @@ Versions:
                                            }
                                        })
                                        $(this).find(".weekhead").each(function(cu) {
-                                           if (cu <= 3) {
+                                           if (cu <= 4) {
                                                $(this).remove();
                                            }
                                        })
                                        $(this).find(".plnperhur").each(function(cu) {
                                            if (cu <= 0) {
-                                               $(this).remove();
+                                               $(this).parent().remove();
                                            }
                                        })
 
@@ -526,7 +525,7 @@ Versions:
                                $scope.Statatical();
                                $scope.plannedorqa();
                                $(".workingweeks .greycolorsat").attr("style", "border-bottom:none !IMPORTANT;");
-                               $(".workingweeks tr td:nth-child(3)").attr("style", "border:none !IMPORTANT;");
+                               $(".workingweeks tr td:nth-child(3)").attr("style", "border:none !IMPORTANT;display:none;");
                                $(".workingweeks tr td:nth-child(4)").attr("style", "border:none;border-right: none;");
                                $(".workingweeks input").attr("style", "height:19px;");
                            } else {
@@ -560,16 +559,59 @@ Versions:
                            var unplnddot = (a.unplanne).toString().replace(",", ".");
                            plandtotal = plandtotal + parseFloat(plnd);
                            unplandtotal = unplandtotal + parseFloat(unplnddot);
-                           rate = rate + parseFloat(a.SalesPrice);
+                          var fltsalesprice='';
+                          //alert((a.SalesPrice).indexOf("."))
+                           if((a.SalesPrice).indexOf(".")>0)
+                           {
+                             fltsalesprice = a.SalesPrice.replace(",", ".");
+                            fltsalesprice = fltsalesprice .replace(".", "");
+                           }
+                           else
+                           {
+                            fltsalesprice = a.SalesPrice.replace(",", ".");
+                           }
+                           //var fltsalesprice=euroconverter1(a.SalesPrice)
+                           
+
+                            
+                           rate = rate + parseFloat(fltsalesprice );
+                  
                            var solddays1 = a.SoldDays;
                            var splitsoldDays = solddays1.toString().replace(",", ".");
                            var cmbine = parseFloat(splitsoldDays);
                            solddays = solddays + cmbine;
-                           var fltsoldrev = a.soldrev.replace(",", ".");
+                            //alert(euroconverter1( a.soldrev))
+                           
+                           var fltsoldrev="";
+                             if((a.soldrev).indexOf(".")>0)
+                           {
+                             fltsoldrev = a.soldrev.replace(",", ".");
+                            fltsoldrev = fltsoldrev.replace(".", "");
+                           
+                           }
+                           else
+                           {
+                            fltsoldrev = a.soldrev.replace(",", ".");
+                           }
+                           
                            soldrev = soldrev + parseFloat(fltsoldrev);
-                           var fltplndrev = a.plnndreven.replace(",", ".");
+                           
+                          var fltplndrev ="";
+                             if((a.plnndreven).indexOf(".")>0)
+                           {
+                             fltplndrev = a.plnndreven.replace(",", ".");
+                            fltplndrev = fltplndrev .replace(".", "");
+                           
+                           }
+                           else
+                           {
+                       fltplndrev = a.plnndreven.replace(",", ".");
+                           }
+                         
+                      
                            plnndreven = plnndreven + parseFloat(fltplndrev);
                        });
+
                        soldrev = soldrev.toFixed(2);
                        var eurosoliddays = euroconverter(solddays);
                        plandtotal = parseFloat(plandtotal).toFixed(2);
@@ -577,11 +619,15 @@ Versions:
                        plandtotal = plandtotal.toString().replace(".", ",");
                        unplandtotal = unplandtotal.toString().replace(".", ",");
                        var latetmodef = soldrev - plnndreven;
-                       soldrev = soldrev.toString().replace(".", ",");
-                       plnndreven = plnndreven.toFixed(2).toString().replace(".", ",");
+                       //soldrev = soldrev.toString().replace(".", ",");
+                       //rate= rate.toFixed(2);
+                        rate=euroconverter(rate);
+                         soldrev =euroconverter(soldrev); 
+                       plnndreven =euroconverter(plnndreven ); 
+                       //plnndreven = plnndreven.toFixed(2).toString().replace(".", ",");
                        latetmodef = latetmodef.toFixed(2).toString().replace(".", ",");
                        trdata = "<tr class='totalplannedandun'><td>Totals</td><td></td><td>" + eurosoliddays + "</td><td>" + plandtotal + "</td><td>" + unplandtotal + "</td></tr>";
-                       secondtable = "<tr class='totalforcalndr'><td>" + rate.toFixed(2) + "€</td><td style='height:19px;'>" + soldrev + "</td><td>" + plnndreven + "</td><td>" + latetmodef + "</td></tr>"
+                       secondtable = "<tr class='totalforcalndr'><td>" +rate + "</td><td style='height:19px;'>" + soldrev + "</td><td>" + plnndreven + "</td><td></td></tr>"
                        $(".prjname").each(function() {
                            if ($(this).parent().prev().find(".customername").text() == customer && $(this).text() == aprojects.OpportunityName) {
                                $(this).parent().parent().parent().next().find(".table1 .totalscalc").append(trdata);
@@ -838,12 +884,7 @@ Versions:
 
 
 
-                   /*resurce.plndperq=[];
-                          angular.forEach($scope.monthtolimit, function(mnthtolmt,key) {
-              var obj={};
-                       obj[key]=(parseFloat(mnthtolmt)-parseFloat(spltpannd)).toFixed(2) ;
-                       $scope.dataval.Customers[b].Projects[c].Resources[d].plndperq.push(obj);
-                         });*/
+                 
                    //logic to calculate unplanned value for given resource
                    var spltunplanneddays = parseFloat($scope.unplannedscope) - calclateperhour;
                    spltpannd = spltpannd.toFixed(2);
@@ -871,7 +912,8 @@ Versions:
                    $scope.unplannedindays = parseFloat(scopesolddays) - parseFloat($scope.plannedscope);
                    $scope.soldreven = parseFloat(scopesalesprice) * parseFloat(scopesolddays);
                    $scope.plnndreven = parseFloat(scopesalesprice) * parseFloat(spltpannd);
-                   $scope.dataval.Customers[b].Projects[c].Resources[d].plnndreven = $scope.plnndreven.toFixed(2).toString().replace(".", ",");
+                   
+                   $scope.dataval.Customers[b].Projects[c].Resources[d].plnndreven = euroconverter($scope.plnndreven)//$scope.plnndreven.toFixed(2).toString().replace(".", ",");
 
 
                    if (clickedfoedata == 1) {
@@ -975,9 +1017,14 @@ Versions:
                                    if (parseInt(i) == parseInt(newdateinput) - 1) {
                                        $(this).val(valueofmonth);
                                        if (parseFloat(valueofmonth) < 0) {
+                                          $(this).removeClass('greencolor greycolor redcolor nacolor white');
                                            $(this).addClass("redcolor");
 
 
+                                       }
+                                       else{
+
+                                          $(this).removeClass('greencolor greycolor redcolor nacolor white');
                                        }
                                    }
                                });
@@ -1175,8 +1222,8 @@ Versions:
                                }
                            })
                        }
-                       var widthdy = $(".custvalues").width();
-                       $("#resourcetable").attr("style", "width:" + widthdy + "px");
+                      var widthdy = parseFloat($(".custvalues").width())+2;
+                       $("#resourcetable").attr("style", "width:" + widthdy+ "px");
                    } else {
                        $(".appendtxt").text(" ");
                        $(".appendtxt").append("No results are available for the filtering.")
@@ -1257,7 +1304,7 @@ Versions:
                            $(this).next().removeClass("hidedata");
                        })
                    }
-                   var widthdy = $(".custvalues").width();
+                  var widthdy = parseFloat($(".custvalues").width())+2;
                    $("#resourcetable").attr("style", "width:" + widthdy + "px");
                } else {
                    $(".appendtxt").text(" ");
@@ -1267,11 +1314,15 @@ Versions:
                }
            }
            $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
-               var widthdy = $(".custvalues").width();
-               $("#resourcetable").attr("style", "width:" + widthdy + "px");
+               var widthdy = parseFloat($(".custvalues").width())+2;
+               $("#resourcetable").attr("style", "width:" + widthdy+ "px");
                //Controller Ends Here
                //Functions of angularjs when is in document ready Starts here
                //date picker plugin starts here
+              
+
+$('.datepickerforbind').datepicker();
+
                $('.strtdateinput').datepicker({
                    changeMonth: true,
                    changeYear: true,
@@ -1486,6 +1537,7 @@ Versions:
                        // Subscribe to a topic. JSON-encoded update will be returned
                        // in the callback
                        $.cometd.subscribe('/topic/ResourceChanges', function(message) {
+                        
                            var pushtopic = message;
                            var valueforcell;
                            var datefr = pushtopic.data.sobject.Scheduled_Date__c;
@@ -1620,6 +1672,18 @@ Versions:
            numFormat.unshift(numberStr);
            return numFormat.join('.') + ',' + numFormatDec; /*format 000.000.000,00 */
        }
+          function euroconverter1(number) {
+           var numberStr = parseFloat(number).toFixed(2).toString();
+           var numFormatDec = numberStr.slice(-2); /*decimal 00*/
+           numberStr = numberStr.substring(0, numberStr.length - 3); /*cut last 3 strings*/
+           var numFormat = new Array;
+           while (numberStr.length > 3) {
+               numFormat.unshift(numberStr.slice(-3));
+               numberStr = numberStr.substring(0, numberStr.length - 3);
+           }
+           numFormat.unshift(numberStr);
+           return numFormat.join('') + '.' + numFormatDec; /*format 000.000.000,00 */
+       }
        //function for leapyear caluclation
    function leapYear(year) {
            return ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
@@ -1735,6 +1799,9 @@ Versions:
         </script>
     </head>
     <body data-ng-app="myApp">
+   <apex:form >
+
+        
           <p class="dataforprint" style="display:;"> </p>
         <div data-ng-controller="MyCtrl" id="contid">
             <div class="blurbackgrund"></div>
@@ -1743,43 +1810,55 @@ Versions:
                 <div><p class="appendtxt"></p></div>
                 <div class="footer"><div class="appndbtns"></div></div>
             </div>
-            <table class="custdetails">
+  <apex:pageBlock >
+                <apex:pageMessages id="showmsg"></apex:pageMessages>
+   <span class="psotoolheader">PSO Tool</span> <apex:commandButton style="height:20px;width:150px;" value="Run Weekly Job" action="{!runWeeklyJob}" reRender="showmsg" />
+    <apex:commandButton style="height:20px;width:150px;" value="Run Monthly Job" action="{!runMonthlyJob}" reRender="showmsg" />
+     Date: <apex:inputText value="{!DateValue}" size="10" id="demo" style="width:100px;border:1px solid #B8B1B1" styleClass="datepickerforbind"  />  
+    <!--<apex:inputField value="{!datepicker}" styleClass="datepickerbind"/>-->
+    <div class="bordervalue">
+<!-- <apex:outputField styleClass="datepickerwithdate" value="{!datepicker}"/>-->
+  <table class="custdetails">
                 <tr>
                     <td>Account Name:</td>
                     <td>
                     <select class="Customers" data-ng-model="blisterPackTemplateSelected" data-ng-change="Customersfilter(blisterPackTemplateSelected)"  data-ng-options="persons as persons.value for persons in persons" > </select>
                 </td>
-            </tr>
-            <tr>
+           
                 <td>Opportunity Name:</td>
             <td><select class="Projects" data-ng-model="projectsSelecteddata" data-ng-change="projects(projectsSelecteddata)"  data-ng-options="projectsselect as projectsselect.value for projectsselect in projectsselect"> </select>
         </td>
-    </tr>
-    <tr>
+   
         <td>Start Month :</td>
         <td><input type="text" class="strtdateinput" /><input type="text" class="setstrtdateinput" style="display:none;"/></td>
     </tr>
 </table>
+</div>
+  </apex:pageBlock>
+
+           
 <div class="hdng">
     <div class="custdisplay">
         <div data-ng-repeat="dataval in dataval.Customers" class="custvalues" on-finish-render="ngRepeatFinished">
             <div data-ng-repeat="dataval1 in dataval.Projects" >
                 <table  class="custdetailview">
-                    <tr><td  style="text-align:left;width:110px;">Account Name:</td><td style="text-align:center;" class="customername"><a ng-href="https://cs8.salesforce.com/{{dataval.AccountId}}" target="_blank">{{dataval.AccountName}}</a></td></tr>
-                    <tr><td  style="text-align:left;">Opportunity Name :</td><td  style="text-align:center;" class="prjname"><a ng-href="https://cs8.salesforce.com/{{dataval1.OpportunityId}}" target="_blank">{{dataval1.OpportunityName}}</a></td></tr>
-                    <tr><td  style="text-align:left;">Project Manager :</td><td  style="text-align:center;"><a ng-href="https://cs8.salesforce.com/{{dataval1.OpportunityId}}" target="_blank">{{dataval1.OurProjectManager}}</a></td></tr>
+                    <tr><td  style="text-align:left;width:75px;">Account:</td><td style="text-align:left;" class="customername"><a ng-href="https://cs8.salesforce.com/{{dataval.AccountId}}" target="_blank">{{dataval.AccountName}}</a></td></tr>
+                    <tr><td  style="text-align:left;">Opportunity:</td><td  style="text-align:left;" class="prjname"><a ng-href="https://cs8.salesforce.com/{{dataval1.OpportunityId}}" target="_blank">{{dataval1.OpportunityName}}</a></td></tr>
+                    <tr><td  style="text-align:left;">PM:</td><td  style="text-align:left;"><a ng-href="https://cs8.salesforce.com/{{dataval1.OpportunityId}}" target="_blank">{{dataval1.OurProjectManager}}</a></td></tr>
+                    <tr><td>  <a ng-href="/apex/OpportunityLineItemsEdit?id={{dataval1.OpportunityId}}" target="_blank" style="text-decoration:none;"><input type="button" style="height:20px;width:87px;"  value="Change Quantity" class="btn"/></a></td><td>  
+                    <apex:commandButton style="height:20px;width:87px;" value="Project Health" /></td><td> <select class="Customers" data-ng-model="blisterPackTemplateSelected"  style="min-height:20px !important"><option> Select</option> </select></td></tr>
                 </table>
                 <div  class="Resourcesection" >
                     <div >
                         <table class="table1">
                             <tr>
                                 <thead>
-                                    <th >Resource<br/> Name</th><th >Product</th><th >Sold Days</th><th>Planned Days</th><th>UnPlanned Days</th>
+                                    <th >Resource<br/> Name</th><th >Product</th><th >Sold<br></br> Days</th><th>Planned <br></br>Days</th><th>Un-<br></br>Planned<br></br> Days</th>
                                 </thead>
                             </tr>
                             <tbody class="totalscalc">
                                 <tr data-ng-repeat="dataval2 in dataval1.Resources">
-                                    <td class="resource">{{dataval2.ResourceName}}</td><td  ng-style="set_color(dataval2) ">{{dataval2.Product}}</td>    <td class="noplan">{{dataval2.PlannedDays}}</td><td>{{dataval2.SoldDays}}</td> <td class="unplannedhrs">{{dataval2.LastModifiedDate}}</td><td>{{dataval2.PlannedDays}}</td> <td class="unplannedcal">{{dataval2.unplanne }}</td>
+                                    <td class="resource" style='padding:0 5px !important'>{{dataval2.ResourceName}}</td><td  ng-style="set_color(dataval2) " style='padding:0 5px !important'>{{dataval2.Product}}</td>    <td class="noplan" style='padding:0 5px !important'>{{dataval2.PlannedDays}}</td><td style='padding:0 5px !important'>{{dataval2.SoldDays}}</td> <td class="unplannedhrs" style='padding:0 5px !important'>{{dataval2.LastModifiedDate}}</td><td style='padding:0 5px !important'>{{dataval2.PlannedDays}}</td> <td class="unplannedcal" style='padding:0 5px !important'>{{dataval2.unplanne }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1799,7 +1878,7 @@ Versions:
                 </thead>
             </tr>
             <tr data-ng-repeat="dataval2 in dataval.Resources">
-                <td>{{dataval2.ResourceName}}</td>
+                <td style="padding:0 5px !important;">{{dataval2.ResourceName}}</td>
                 <!--
                 <td class="" >{{dataval2.SpecialOccasion}}</td><td >{{dataval2.SoldDays}}</td><td class="" ></td><td ></td><td class="" ></td>-->
             </tr>
@@ -1810,15 +1889,16 @@ Versions:
             <div data-ng-repeat="dataval in dataval.Customers">
                 <div data-ng-repeat="dataval1 in dataval.Projects" >
                     <table  class="hiddentable custdetailview">
-                        <tr><td  style="text-align:left;width:110px;">Account Name:</td><td style="text-align:center;" class="customername">{{dataval.AccountName}}</td></tr>
-                        <tr><td  style="text-align:left;">Opportunity Name :</td><td  style="text-align:center;" class="prjname">{{dataval1.OpportunityName}}</td></tr>
-                        <tr><td  style="text-align:left;">Project Manager :</td><td  style="text-align:center;">{{dataval1.OurProjectManager}}</td></tr>
+                        <tr><td  style="text-align:left;width:75px;">Account:</td><td style="text-align:left;" class="customername">{{dataval.AccountName}}</td></tr>
+                        <tr><td  style="text-align:left;">Opportunity:</td><td  style="text-align:left;" class="prjname">{{dataval1.OpportunityName}}</td></tr>
+                        <tr><td  style="text-align:left;">PM:</td><td  style="text-align:left;">{{dataval1.OurProjectManager}}</td></tr>
+                           <tr><td>  <apex:commandButton style="height:20px;width:150px;" value="Change Quantity" /></td><td>  <apex:commandButton style="height:20px;width:150px;" value="Project Health" /></td><td> <select class="Customers" data-ng-model="blisterPackTemplateSelected" data-ng-change="Customersfilter(blisterPackTemplateSelected)"  data-ng-options="persons as persons.value for persons in persons" style="height:20px !important" > </select></td></tr>
                     </table>
                     <div class="table2" >
                         <table >
                             <tr>
                                 <thead>
-                                    <tr> <th>Sales Price</th><th>Sold Rev.</th><th>Planned Rev.</th><th>Latest Mod.</th></tr>
+                                    <tr> <th style="padding:1px 5px !important;">Sales<br></br> Price( &euro;)</th><th style="padding:1px 10px !important;">Sold<br></br> Rev.( &euro;)</th><th style="padding:1px 7px !important;">Planned<br></br> Rev.( &euro;)</th><th style="padding:1px 20px !important;">Latest<br></br> Mod.</th></tr>
                                 </thead>
                             </tr>
                             <tbody class="inputbdy">
@@ -1853,6 +1933,7 @@ Versions:
         <div class="clearfix"></div>
     </div>
 </div>
+</apex:form>
 </body>
 </html>
 </apex:page>
