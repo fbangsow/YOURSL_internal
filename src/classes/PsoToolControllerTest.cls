@@ -203,7 +203,6 @@ private class PsoToolControllerTest {
     @isTest static void testGetResourcesReturnsListOfResources() {
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
-            FeatureSwitch.enable('PsoTool triggers');
             PsoToolController new_instance = PsoToolController.getInstance();
             new_instance.startDate = Date.newInstance(2015, 1, 1);
             new_instance.endDate = Date.newInstance(2015, 3, 31);

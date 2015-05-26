@@ -25,10 +25,8 @@ public without sharing class OpportunityLineItemHandler implements ITrigger
     public void afterDelete(SObject so){}
 
     public void postProcessing(){
-        if(FeatureSwitch.getSwitch('PsoTool triggers')){
-            OpportunityLineItemScheduleChangeHandler.getInstance().upsertUnplannedSchedules();
-            OpportunityLineItemScheduleTracker.getInstance().createResourceScheduleEntries();
-            OpportunityLineItemScheduleDescrHandler.getInstance().updateCommentsToHaveCurrentValue();
-        }
+        OpportunityLineItemScheduleChangeHandler.getInstance().upsertUnplannedSchedules();
+        OpportunityLineItemScheduleTracker.getInstance().createResourceScheduleEntries();
+        OpportunityLineItemScheduleDescrHandler.getInstance().updateCommentsToHaveCurrentValue();
     }
 }

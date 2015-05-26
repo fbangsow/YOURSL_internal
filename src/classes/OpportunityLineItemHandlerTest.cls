@@ -4,7 +4,6 @@ private class OpportunityLineItemHandlerTest {
     @isTest static void testInsertingSchedulesCreatesInsertEntryOfResourceSchedule() {
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
-            FeatureSwitch.enable('PsoTool triggers');
             setup_data.createTestData();
             Test.startTest();
                 setup_data.createOpportunityLineItemsSchedule();
@@ -24,7 +23,6 @@ private class OpportunityLineItemHandlerTest {
     @isTest static void testUpdatingSchedulesCreatesUpdateEntryOfResourceSchedule() {
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
-            FeatureSwitch.enable('PsoTool triggers');
             setup_data.createTestData();
             setup_data.createOpportunityLineItemsSchedule();
             setup_data.schedule.Quantity = 0.5;
@@ -48,7 +46,6 @@ private class OpportunityLineItemHandlerTest {
     @isTest static void testDeletingSchedulesCreatesUpdateEntryOfResourceSchedule() {
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
-            FeatureSwitch.enable('PsoTool triggers');
             setup_data.createTestData();
             setup_data.createOpportunityLineItemsSchedule();
             setup_data.schedule.Quantity = 0;
@@ -72,7 +69,6 @@ private class OpportunityLineItemHandlerTest {
     @isTest static void testInsertingSchedulesInsertsUnplannedSchedule() {
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
-            FeatureSwitch.enable('PsoTool triggers');
             setup_data.createTestData();
             Test.startTest();
                 setup_data.createOpportunityLineItemsSchedule();
@@ -89,7 +85,6 @@ private class OpportunityLineItemHandlerTest {
     @isTest static void testUpdatingSchedulesInsertsUnplannedSchedule() {
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
-            FeatureSwitch.enable('PsoTool triggers');
             setup_data.createTestData();
             setup_data.createOpportunityLineItemsSchedule();
             setup_data.schedule.Quantity = 0.1;
@@ -108,7 +103,6 @@ private class OpportunityLineItemHandlerTest {
     @isTest static void testDeletingSchedulesInsertsUnplannedSchedule() {
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
-            FeatureSwitch.enable('PsoTool triggers');
             setup_data.createTestData();
             setup_data.createOpportunityLineItemsSchedule();
             setup_data.schedule.Quantity = 0;
@@ -127,7 +121,6 @@ private class OpportunityLineItemHandlerTest {
     @isTest static void testInsertintScheduleUpdatesItsDescription() {
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
-            FeatureSwitch.enable('PsoTool triggers');
             setup_data.createTestData();
             Test.startTest();
                 setup_data.createOpportunityLineItemsSchedule();
@@ -141,7 +134,6 @@ private class OpportunityLineItemHandlerTest {
     @isTest static void testUpdatingScheduleUpdatesItsDescription() {
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
-            FeatureSwitch.enable('PsoTool triggers');
             setup_data.createTestData();
             setup_data.createOpportunityLineItemsSchedule();
             Decimal new_value = 0.1;
@@ -154,128 +146,7 @@ private class OpportunityLineItemHandlerTest {
             System.assertEquals(setup_data.schedule.Quantity, Decimal.valueOf(planned_schedules.get(0).Description));
         }
     }
-    
-    @isTest static void testInsertingSchedulesDoesntInsertEntryOfResourceScheduleWhenFSIsOff() {
-        SetupDataClass setup_data = new SetupDataClass();
-        System.runAs(setup_data.TestUser) {
-            FeatureSwitch.disable('PsoTool triggers');
-            setup_data.createTestData();
-            Test.startTest();
-                setup_data.createOpportunityLineItemsSchedule();
-            Test.stopTest();
-            List<Resource_Schedule__c> related_resource_schedules = [SELECT ContactId__c, Event__c, Old_value__c, New_value__c, Scheduled_Date__c, OpportunityLineItemScheduleId__c
-                                FROM Resource_Schedule__c WHERE OpportunityLineItemScheduleId__c =: setup_data.schedule.Id];
-            System.assertEquals(0, related_resource_schedules.size());
-        }
-    }
 
-    @isTest static void testUpdatingSchedulesDoesntCreatesUpdateEntryOfResourceScheduleWhenFSIsOff() {
-        SetupDataClass setup_data = new SetupDataClass();
-        System.runAs(setup_data.TestUser) {
-            FeatureSwitch.disable('PsoTool triggers');
-            setup_data.createTestData();
-            setup_data.createOpportunityLineItemsSchedule();
-            setup_data.schedule.Quantity = 0.5;
-            OpportunityLineItemScheduleTracker.AlreadyRun = false;
-            OpportunityLineItemScheduleTracker.AlreadyProcessed = false;
-            Test.startTest();
-                update setup_data.schedule;
-            Test.stopTest();
-            List<Resource_Schedule__c> related_resource_schedules = [SELECT ContactId__c, Event__c, Old_value__c, New_value__c, Scheduled_Date__c, OpportunityLineItemScheduleId__c
-                                FROM Resource_Schedule__c WHERE OpportunityLineItemScheduleId__c =: setup_data.schedule.Id];
-            System.assertEquals(0, related_resource_schedules.size());
-        }
-    }
-
-    @isTest static void testDeletingSchedulesDoesntCreatesUpdateEntryOfResourceScheduleWhenFsIsOff() {
-        SetupDataClass setup_data = new SetupDataClass();
-        System.runAs(setup_data.TestUser) {
-            FeatureSwitch.disable('PsoTool triggers');
-            setup_data.createTestData();
-            setup_data.createOpportunityLineItemsSchedule();
-            setup_data.schedule.Quantity = 0;
-            OpportunityLineItemScheduleTracker.AlreadyRun = false;
-            OpportunityLineItemScheduleTracker.AlreadyProcessed = false;
-            Test.startTest();
-                update setup_data.schedule;
-            Test.stopTest();
-            List<Resource_Schedule__c> related_resource_schedules = [SELECT ContactId__c, Event__c, Old_value__c, New_value__c, Scheduled_Date__c, OpportunityLineItemScheduleId__c
-                                FROM Resource_Schedule__c WHERE OpportunityLineItemScheduleId__c =: setup_data.schedule.Id];
-            System.assertEquals(0, related_resource_schedules.size());
-        }
-    }
-
-    @isTest static void testInsertingSchedulesDoesntInsertUnplannedScheduleWhenFsIsOff() {
-        SetupDataClass setup_data = new SetupDataClass();
-        System.runAs(setup_data.TestUser) {
-            FeatureSwitch.disable('PsoTool triggers');
-            setup_data.createTestData();
-            Test.startTest();
-                setup_data.createOpportunityLineItemsSchedule();
-            Test.stopTest();
-            List<OpportunityLineItemSchedule> unplanned_schedules = [SELECT Id, OpportunityLineItem.Id, Quantity FROM OpportunityLineItemSchedule WHERE OpportunityLineItem.Id = :setup_data.firstLineItem.Id AND Description =: OpportunityLineItemScheduleChangeHandler.UNPLANNED_COMMENT];
-            System.assertEquals(0, unplanned_schedules.size());
-        }
-    }
-
-    @isTest static void testUpdatingSchedulesDoesntInsertUnplannedSchedule() {
-        SetupDataClass setup_data = new SetupDataClass();
-        System.runAs(setup_data.TestUser) {
-            FeatureSwitch.disable('PsoTool triggers');
-            setup_data.createTestData();
-            setup_data.createOpportunityLineItemsSchedule();
-            setup_data.schedule.Quantity = 0.1;
-            Test.startTest();
-                update setup_data.schedule;
-            Test.stopTest();
-            List<OpportunityLineItemSchedule> unplanned_schedules = [SELECT Id, OpportunityLineItem.Id, Quantity FROM OpportunityLineItemSchedule WHERE OpportunityLineItem.Id = :setup_data.firstLineItem.Id AND Description =: OpportunityLineItemScheduleChangeHandler.UNPLANNED_COMMENT];
-            System.assertEquals(0, unplanned_schedules.size());
-        }
-    }
-
-    @isTest static void testDeletingSchedulesDoesntInsertUnplannedSchedule() {
-        SetupDataClass setup_data = new SetupDataClass();
-        System.runAs(setup_data.TestUser) {
-            FeatureSwitch.disable('PsoTool triggers');
-            setup_data.createTestData();
-            setup_data.createOpportunityLineItemsSchedule();
-            setup_data.schedule.Quantity = 0;
-            Test.startTest();
-                update setup_data.schedule;
-            Test.stopTest();
-            List<OpportunityLineItemSchedule> unplanned_schedules = [SELECT Id, OpportunityLineItem.Id, Quantity FROM OpportunityLineItemSchedule WHERE OpportunityLineItem.Id = :setup_data.firstLineItem.Id AND Description =: OpportunityLineItemScheduleChangeHandler.UNPLANNED_COMMENT];
-            System.assertEquals(0, unplanned_schedules.size());
-        }
-    }
-
-    @isTest static void testInsertintScheduleDoesntUpdateItsDescription() {
-        SetupDataClass setup_data = new SetupDataClass();
-        System.runAs(setup_data.TestUser) {
-            FeatureSwitch.disable('PsoTool triggers');
-            setup_data.createTestData();
-            Test.startTest();
-                setup_data.createOpportunityLineItemsSchedule();
-            Test.stopTest();
-            List<OpportunityLineItemSchedule> planned_schedules = [SELECT Id, OpportunityLineItem.Id, Quantity, Description FROM OpportunityLineItemSchedule WHERE OpportunityLineItem.Id = :setup_data.firstLineItem.Id AND Description !=: OpportunityLineItemScheduleChangeHandler.UNPLANNED_COMMENT AND Description != null];
-            System.assertEquals(0, planned_schedules.size());
-        }
-    }
-
-    @isTest static void testUpdatingScheduleDoesntUpdateItsDescription() {
-        SetupDataClass setup_data = new SetupDataClass();
-        System.runAs(setup_data.TestUser) {
-            FeatureSwitch.disable('PsoTool triggers');
-            setup_data.createTestData();
-            setup_data.createOpportunityLineItemsSchedule();
-            Decimal new_value = 0.1;
-            setup_data.schedule.Quantity = new_value;
-            Test.startTest();
-                update setup_data.schedule;
-            Test.stopTest();
-            List<OpportunityLineItemSchedule> planned_schedules = [SELECT Id, OpportunityLineItem.Id, Quantity, Description FROM OpportunityLineItemSchedule WHERE OpportunityLineItem.Id = :setup_data.firstLineItem.Id AND Description !=: OpportunityLineItemScheduleChangeHandler.UNPLANNED_COMMENT AND Description != null];
-            System.assertEquals(0, planned_schedules.size());
-        }
-    }
     private class SetupDataClass {
         public Account firstAccount;
         public Contact testContact;

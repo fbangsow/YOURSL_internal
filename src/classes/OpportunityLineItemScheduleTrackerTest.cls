@@ -38,7 +38,6 @@ private class OpportunityLineItemScheduleTrackerTest {
     @isTest static void testCreateResourceScheduleEntriesCreatesEntries() {
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
-            FeatureSwitch.enable('PsoTool triggers');
             OpportunityLineItemScheduleTracker new_instance = OpportunityLineItemScheduleTracker.getInstance();
             setup_data.createTestData(true);
             Map<Id, SObject> old_opportunity_line_items = new Map<Id, SObject>();
@@ -67,7 +66,6 @@ private class OpportunityLineItemScheduleTrackerTest {
     @isTest static void testCreateResourceScheduleEntriesUpdatesExistingRecordIfItExists() {
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
-            FeatureSwitch.enable('PsoTool triggers');
             OpportunityLineItemScheduleTracker new_instance = OpportunityLineItemScheduleTracker.getInstance();
             setup_data.createTestData(true);
             Map<Id, SObject> old_opportunity_line_items = new Map<Id, SObject>();

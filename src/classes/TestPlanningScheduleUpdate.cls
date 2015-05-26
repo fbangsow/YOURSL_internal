@@ -5,7 +5,6 @@ public class TestPlanningScheduleUpdate {
 
 
         PlanningScheduleUpdate__c runTime = PlanningScheduleUpdate__c.getValues('PlanningScheduleUpdate');
-        //new PlanningScheduleUpdate__c(Name = 'PlanningScheduleUpdate');
 
         Date d = System.today();
         Datetime dt = (DateTime) d;
@@ -16,9 +15,8 @@ public class TestPlanningScheduleUpdate {
         upsert runTime;
     }
 
-    Public date dateforTest = system.today();
     public static testMethod void test() {
-         Date serviceDate = system.today();
+        Date serviceDate = system.today();
         //inserting account   
         Account acc = new Account();
         acc.Name = 'Naveen';
@@ -62,7 +60,7 @@ public class TestPlanningScheduleUpdate {
         UnitPrice = 12000, IsActive = true);
         insert customPrice;
 
-        OpportunityLineItem acccobj = new OpportunityLineItem(OpportunityId = opp.id, Description = 'This is a test descriptiion', Quantity = 3, UnitPrice = 5000,ServiceDate = serviceDate, PricebookEntryId = customPrice.id);
+        OpportunityLineItem acccobj = new OpportunityLineItem(OpportunityId = opp.id, Description = 'This is a test descriptiion', Quantity = 3, UnitPrice = 5000, ServiceDate = serviceDate, PricebookEntryId = customPrice.id);
         insert acccobj;
 
         Planning_statistics__c pst = new Planning_statistics__c();
@@ -81,11 +79,6 @@ public class TestPlanningScheduleUpdate {
         timeEntr.Date__c = system.today();
 
         insert timeEntr;
-
-        Date d = System.today();
-        Datetime dt = (DateTime) d;
-        String dayOfWeek = dt.format('EEEE');
-
 
         OpportunityLineItemSchedule schedule = new OpportunityLineItemSchedule();
         schedule.OpportunityLineItemId = acccobj.Id;
@@ -116,11 +109,6 @@ public class TestPlanningScheduleUpdate {
 
         PlanningScheduleUpdate pln2 = new PlanningScheduleUpdate();
 
-        pln2.populateStatisticsData('Planned');
-
-        pln2.populateStatisticsData('Actual');
-
-        pln2.updateOpportunityData();
     }
 
 }

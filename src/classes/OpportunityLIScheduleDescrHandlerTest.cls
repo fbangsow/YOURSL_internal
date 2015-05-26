@@ -41,7 +41,6 @@ private class OpportunityLIScheduleDescrHandlerTest {
     @isTest static void testUpdateCommentsToHaveCurrentValueUpdatesComment() {
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
-            FeatureSwitch.enable('PsoTool triggers');
             OpportunityLineItemScheduleDescrHandler new_instance = OpportunityLineItemScheduleDescrHandler.getInstance();
             setup_data.createTestData(true);
             OpportunityLineItemSchedule original_schedule = [SELECT Quantity, Description FROM OpportunityLineItemSchedule WHERE Id =: setup_data.schedule.Id];
