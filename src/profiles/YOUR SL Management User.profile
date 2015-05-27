@@ -178,7 +178,7 @@
     </classAccesses>
     <classAccesses>
         <apexClass>OpportunityLineItemEditExtension</apexClass>
-        <enabled>false</enabled>
+        <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
         <apexClass>OpportunityLineItemEditExtensionTest</apexClass>
@@ -210,7 +210,7 @@
     </classAccesses>
     <classAccesses>
         <apexClass>OpportunityLineItemsEditExtension</apexClass>
-        <enabled>false</enabled>
+        <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
         <apexClass>OpportunityLineItemsEditExtensionTest</apexClass>
@@ -519,11 +519,11 @@
     </pageAccesses>
     <pageAccesses>
         <apexPage>OpportunityLineItemEdit</apexPage>
-        <enabled>false</enabled>
+        <enabled>true</enabled>
     </pageAccesses>
     <pageAccesses>
         <apexPage>OpportunityLineItemsEdit</apexPage>
-        <enabled>false</enabled>
+        <enabled>true</enabled>
     </pageAccesses>
     <pageAccesses>
         <apexPage>OrgHierarchy</apexPage>

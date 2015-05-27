@@ -210,7 +210,7 @@
     </classAccesses>
     <classAccesses>
         <apexClass>OpportunityLineItemsEditExtension</apexClass>
-        <enabled>false</enabled>
+        <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
         <apexClass>OpportunityLineItemsEditExtensionTest</apexClass>
@@ -523,7 +523,7 @@
     </pageAccesses>
     <pageAccesses>
         <apexPage>OpportunityLineItemsEdit</apexPage>
-        <enabled>false</enabled>
+        <enabled>true</enabled>
     </pageAccesses>
     <pageAccesses>
         <apexPage>OrgHierarchy</apexPage>
