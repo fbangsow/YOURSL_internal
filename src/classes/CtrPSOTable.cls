@@ -133,6 +133,7 @@ public class CtrPSOTable {
 
     return dateString.split('[.]{1}[\\s]?');
   }
+
     
   public void runWeeklyJob(){  
 
@@ -148,7 +149,7 @@ public class CtrPSOTable {
       else
           Delete [Select ID from Planning_statistics__C where Time_Type__c = 'Week' and Data_Type__c ='Actual' and Start_Date__c <= :PreviousWeekEnd  and Start_Date__c >= :CurrentMonthStart  ];     
       
-        PlanningScheduleUpdate updateSchedule = new PlanningScheduleUpdate(DateValue);   
+        PlanningScheduleUpdate updateSchedule = new PlanningScheduleUpdate(DateValue, true,false);   
     }
     
   }
@@ -163,7 +164,7 @@ public class CtrPSOTable {
       Delete [Select ID from Planning_statistics__C where Time_Type__c = 'Month' and Data_Type__c ='Actual' and Start_Date__c <= :PreviousMonthEnd  and Start_Date__c >= :PreviousMonthStart ];
       Delete [Select ID from Planning_statistics__C where Time_Type__c = 'Week' and Data_Type__c ='Actual' and Start_Date__c <= :PreviousMonthEnd  and Start_Date__c >= :PreviousMonthLastMonday ];    
 
-      PlanningScheduleUpdate updateSchedule = new PlanningScheduleUpdate(DateValue);         
+      PlanningScheduleUpdate updateSchedule = new PlanningScheduleUpdate(DateValue,false,true);        
     }      
     
   }

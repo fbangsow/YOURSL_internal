@@ -1800,8 +1800,7 @@ $('.datepickerforbind').datepicker();
     </head>
     <body data-ng-app="myApp">
    <apex:form >
-
-        
+      <apex:pageMessages id="showmsg"></apex:pageMessages>        
           <p class="dataforprint" style="display:;"> </p>
         <div data-ng-controller="MyCtrl" id="contid">
             <div class="blurbackgrund"></div>
@@ -1810,14 +1809,20 @@ $('.datepickerforbind').datepicker();
                 <div><p class="appendtxt"></p></div>
                 <div class="footer"><div class="appndbtns"></div></div>
             </div>
-  <apex:pageBlock >
-                <apex:pageMessages id="showmsg"></apex:pageMessages>
-   <span class="psotoolheader">PSO Tool</span> <apex:commandButton style="height:20px;width:150px;" value="Run Weekly Job" action="{!runWeeklyJob}" reRender="showmsg" />
-    <apex:commandButton style="height:20px;width:150px;" value="Run Monthly Job" action="{!runMonthlyJob}" reRender="showmsg" />
-     Date: <apex:inputText value="{!DateValue}" size="10" id="demo" style="width:100px;border:1px solid #B8B1B1" styleClass="datepickerforbind"  />  
-    <!--<apex:inputField value="{!datepicker}" styleClass="datepickerbind"/>-->
-    <div class="bordervalue">
-<!-- <apex:outputField styleClass="datepickerwithdate" value="{!datepicker}"/>-->
+            <apex:outputPanel id="panel">
+            <apex:actionStatus id="counterStatus" onStart="document.body.style.cursor = 'wait';return true;" onStop="document.body.style.cursor = 'default';return true;" >
+            <apex:facet name="start" >   
+              </apex:facet>
+            <apex:facet name="stop">
+              </apex:facet>
+        </apex:actionStatus>
+        </apex:outputPanel>
+  <apex:pageBlock >                
+    <span class="psotoolheader">PSO Tool</span> 
+    <apex:commandButton status="counterStatus" style="height:20px;width:150px;" value="Run Weekly Job" action="{!runWeeklyJob}" />
+    <apex:commandButton style="height:20px;width:150px;" status="counterStatus" value="Run Monthly Job" action="{!runMonthlyJob}" />
+    Date: <apex:inputText value="{!DateValue}" size="10" id="demo" style="width:100px;border:1px solid #B8B1B1" styleClass="datepickerforbind" ></apex:inputText> 
+      <div class="bordervalue">
   <table class="custdetails">
                 <tr>
                     <td>Account Name:</td>
@@ -1889,10 +1894,11 @@ $('.datepickerforbind').datepicker();
             <div data-ng-repeat="dataval in dataval.Customers">
                 <div data-ng-repeat="dataval1 in dataval.Projects" >
                     <table  class="hiddentable custdetailview">
-                        <tr><td  style="text-align:left;width:75px;">Account:</td><td style="text-align:left;" class="customername">{{dataval.AccountName}}</td></tr>
-                        <tr><td  style="text-align:left;">Opportunity:</td><td  style="text-align:left;" class="prjname">{{dataval1.OpportunityName}}</td></tr>
-                        <tr><td  style="text-align:left;">PM:</td><td  style="text-align:left;">{{dataval1.OurProjectManager}}</td></tr>
-                           <tr><td>  <apex:commandButton style="height:20px;width:150px;" value="Change Quantity" /></td><td>  <apex:commandButton style="height:20px;width:150px;" value="Project Health" /></td><td> <select class="Customers" data-ng-model="blisterPackTemplateSelected" data-ng-change="Customersfilter(blisterPackTemplateSelected)"  data-ng-options="persons as persons.value for persons in persons" style="height:20px !important" > </select></td></tr>
+                      <tr><td  style="text-align:left;width:75px;">Account:</td><td style="text-align:left;" class="customername"><a ng-href="https://cs8.salesforce.com/{{dataval.AccountId}}" target="_blank">{{dataval.AccountName}}</a></td></tr>
+                    <tr><td  style="text-align:left;">Opportunity:</td><td  style="text-align:left;" class="prjname"><a ng-href="https://cs8.salesforce.com/{{dataval1.OpportunityId}}" target="_blank">{{dataval1.OpportunityName}}</a></td></tr>
+                    <tr><td  style="text-align:left;">PM:</td><td  style="text-align:left;"><a ng-href="https://cs8.salesforce.com/{{dataval1.OpportunityId}}" target="_blank">{{dataval1.OurProjectManager}}</a></td></tr>
+                    <tr><td>  <a ng-href="/apex/OpportunityLineItemsEdit?id={{dataval1.OpportunityId}}" target="_blank" style="text-decoration:none;"><input type="button" style="height:20px;width:87px;"  value="Change Quantity" class="btn"/></a></td><td>  
+                    <apex:commandButton style="height:20px;width:87px;" value="Project Health" /></td><td> <select class="Customers" data-ng-model="blisterPackTemplateSelected"  style="min-height:20px !important"><option> Select</option> </select></td></tr>
                     </table>
                     <div class="table2" >
                         <table >

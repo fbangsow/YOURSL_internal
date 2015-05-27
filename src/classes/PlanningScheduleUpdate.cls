@@ -30,12 +30,12 @@ public class PlanningScheduleUpdate {
     public PlanningScheduleUpdate() {
 
           getDatesForCalculation(d);
-          populateStatisticsData('Planned');
-          updateOpportunityData();
-          populateStatisticsData('Actual');
+          populateStatisticsData('Planned', false,false);
+          updateOpportunityData(false,false);
+          populateStatisticsData('Actual',false,false);
     }
 
-     public PlanningScheduleUpdate(String selectedDate) {
+     public PlanningScheduleUpdate(String selectedDate, Boolean isWeeklyManualRun, Boolean isMonthlyManualRun) {
 
            String[] myDateOnly = selectedDate.split(' ');
            String[] strDate = myDateOnly[0].split('/');
@@ -45,9 +45,9 @@ public class PlanningScheduleUpdate {
            Date dateValue = Date.newInstance(myIntYear, myIntMonth, myIntDate);   
      
           getDatesForCalculation(dateValue);
-          populateStatisticsData('Planned');
-          updateOpportunityData();
-          populateStatisticsData('Actual');
+          populateStatisticsData('Planned',isWeeklyManualRun,isMonthlyManualRun);
+          updateOpportunityData(isWeeklyManualRun,isMonthlyManualRun);
+          populateStatisticsData('Actual',isWeeklyManualRun,isMonthlyManualRun);
     }
  
  
@@ -117,7 +117,7 @@ public class PlanningScheduleUpdate {
       
     }
 
-    public void populateStatisticsData(String value) {
+    public void populateStatisticsData(String value, Boolean isWeeklyManualRun, Boolean isMonthlyManualRun) {
 
         List < OpportunityLineItem > OppLineItem = new List < OpportunityLineItem > ();
         List < OpportunityLineItemSchedule > OppLineItemSchedule = new List < OpportunityLineItemSchedule > ();
@@ -141,7 +141,7 @@ public class PlanningScheduleUpdate {
         }
 
         //Weekly logic 
-        if (dayOfWeek == runTime.Dayofweek__c) {
+        if (dayOfWeek == runTime.Dayofweek__c || (isWeeklyManualRun && !isMonthlyManualRun)) {
             Lstwrap = new List < Wrapper > ();
             if (value == label.Planned) {
 
@@ -159,7 +159,7 @@ public class PlanningScheduleUpdate {
             }
         }
         //Monthly logic
-        if (d.day() == runTime.DateofMonth__c) {
+        if (d.day() == runTime.DateofMonth__c || (!isWeeklyManualRun && isMonthlyManualRun)) {
             system.debug('In month logic');
             if (dayOfWeek != 'Monday') Lstwrap = new List < Wrapper > ();
 
@@ -207,12 +207,24 @@ public class PlanningScheduleUpdate {
             if (wp.TimeType == 'Week') {                
                 if (!wp.IsWeeklyUpdateInMonth) {
                     if (value == label.Planned) {
-                        p.Start_Date__c = CurrentWeekStart;
-                        p.End_Date__c = CurrentWeekEnd;                     
+                        if(!IsMonthChangeinWeekPlanned) {
+                            p.Start_Date__c = CurrentWeekStart;
+                            p.End_Date__c = CurrentWeekEnd;   
+                        }
+                        else {
+                            p.Start_Date__c = CurrentWeekStart;
+                            p.End_Date__c = CurrentMonthEnd;  
+                        }                  
                     }
                     if (value == label.Actual) {
-                        p.Start_Date__c = PreviousWeekStart;
-                        p.End_Date__c = PreviousWeekEnd;                  
+                         if(!IsMonthChangeinWeekActual){
+                            p.Start_Date__c = PreviousWeekStart;
+                            p.End_Date__c = PreviousWeekEnd; 
+                        }
+                        else{
+                            p.Start_Date__c = CurrentMonthStart;
+                            p.End_Date__c = PreviousWeekEnd; 
+                        }                 
                     }
                 } else {
                     if (value == label.Planned) {                   
@@ -262,18 +274,18 @@ public class PlanningScheduleUpdate {
     }
 
 
-    public void updateOpportunityData() {
+    public void updateOpportunityData(Boolean isWeeklyManualRun, Boolean isMonthlyManualRun ) {
 
         List < TimeEntry__c > timeEntries = new List < TimeEntry__c > ();
         Set < id > timeEntryIds = new Set < id > ();
-        if (dayOfWeek == runTime.Dayofweek__c) {
+        if (dayOfWeek == runTime.Dayofweek__c || (isWeeklyManualRun && !isMonthlyManualRun)) {
 
             timeEntries = [Select id, Opportunity_Product_ID__c, Date__c, Time__c from TimeEntry__c
             where Date__c >= :PreviousWeekStart and Date__c <= :PreviousWeekEnd and Billable__c  = true  order by Date__c ASC];
 
         }
 
-        if (d.day() == runTime.DateofMonth__c && dayOfWeek != 'monday') {
+        if ((d.day() == runTime.DateofMonth__c && dayOfWeek != 'monday')|| (isWeeklyManualRun && !isMonthlyManualRun) ) {
             timeEntries = [Select id, Opportunity_Product_ID__c, Date__c, Time__c from TimeEntry__c
             where Date__c >= :PreviousMonthLastMonday and Date__c <= :PreviousMonthEnd and Billable__c  = true order by Date__c ASC];
         }
