@@ -129,7 +129,7 @@ public class PlanningScheduleUpdate {
         Set < Id > oppLinSchdlstset = new set < Id > ();
     
         //Queries OLIS records which needs to deleted and stores in a list.
-        if (dayOfWeek == runTime.Dayofweek__c && value == label.Planned) {
+        if ((dayOfWeek == runTime.Dayofweek__c && value == label.Planned)||(isWeeklyManualRun && !isMonthlyManualRun)) {
             for (OpportunityLineItemSchedule OppLineItemSchdl: [SELECT Id, OpportunityLineItem.Contact__r.Id,
             OpportunityLineItem.unitprice, CreatedDate, OpportunityLineItemId,
             OpportunityLineItem.OpportunityId, ScheduleDate, SystemModstamp, Type, Quantity
@@ -285,7 +285,7 @@ public class PlanningScheduleUpdate {
 
         }
 
-        if ((d.day() == runTime.DateofMonth__c && dayOfWeek != 'monday')|| (isWeeklyManualRun && !isMonthlyManualRun) ) {
+        if ((d.day() == runTime.DateofMonth__c && dayOfWeek != 'monday')|| (!isWeeklyManualRun && isMonthlyManualRun) ) {
             timeEntries = [Select id, Opportunity_Product_ID__c, Date__c, Time__c from TimeEntry__c
             where Date__c >= :PreviousMonthLastMonday and Date__c <= :PreviousMonthEnd and Billable__c  = true order by Date__c ASC];
         }
@@ -340,24 +340,37 @@ public class PlanningScheduleUpdate {
 
     public void getLineItemRecords(Date StartDate, Date EndDate,String DataType,String TimeType, Boolean IsWeeklyUpdateInMonth){
 
-      if(TimeType =='Week' && DataType =='Planned'){
-          if(!IsMonthChangeinWeekPlanned)
-              Delete [Select ID from Planning_statistics__C where Time_Type__c = 'Week' and Data_Type__c ='Planned' and Start_Date__c <= :CurrentWeekEnd  and Start_Date__c >= :CurrentWeekStart  ];
-          else
-              Delete [Select ID from Planning_statistics__C where Time_Type__c = 'Week' and Data_Type__c ='Planned' and Start_Date__c <= :CurrentMonthEnd  and Start_Date__c >= :CurrentWeekStart  ];
-          }
-       if(TimeType =='Week' && DataType =='Actual'){
-          if(!IsMonthChangeinWeekActual)
-              Delete [Select ID from Planning_statistics__C where Time_Type__c = 'Week' and Data_Type__c ='Actual' and Start_Date__c <= :PreviousWeekEnd  and Start_Date__c >= :PreviousWeekStart  ];
-          else
-              Delete [Select ID from Planning_statistics__C where Time_Type__c = 'Week' and Data_Type__c ='Actual' and Start_Date__c <= :PreviousWeekEnd  and Start_Date__c >= :CurrentMonthStart  ]; 
-       }
-       if(TimeType =='Month' && DataType =='Planned'){
+      if(TimeType =='Week'){
+            if (!IsWeeklyUpdateInMonth) {
+                 if(DataType ==label.Planned){
+                    if(!IsMonthChangeinWeekPlanned)
+                          Delete [Select ID from Planning_statistics__C where Time_Type__c = 'Week' and Data_Type__c ='Planned' and Start_Date__c <= :CurrentWeekEnd  and Start_Date__c >= :CurrentWeekStart  ];
+                    else
+                          Delete [Select ID from Planning_statistics__C where Time_Type__c = 'Week' and Data_Type__c ='Planned' and Start_Date__c <= :CurrentMonthEnd  and Start_Date__c >= :CurrentWeekStart ];
+                }
+                if(DataType ==label.Actual){
+                    if(!IsMonthChangeinWeekActual)
+                        Delete [Select ID from Planning_statistics__C where Time_Type__c = 'Week' and Data_Type__c ='Actual' and Start_Date__c <= :PreviousWeekEnd  and Start_Date__c >= :PreviousWeekStart  ];
+                    else
+                        Delete [Select ID from Planning_statistics__C where Time_Type__c = 'Week' and Data_Type__c ='Actual' and Start_Date__c <= :PreviousWeekEnd  and Start_Date__c >= :CurrentMonthStart  ]; 
+               } 
+             }
+            else{
+                if(DataType ==label.Planned){
+                        Delete [Select ID from Planning_statistics__C where Time_Type__c = 'Week' and Data_Type__c ='Planned' and Start_Date__c <= :CurrentMonthFirstSunday  and Start_Date__c >= :CurrentMonthStart ];
+                }
+                if(DataType ==label.Actual){
+                        Delete [Select ID from Planning_statistics__C where Time_Type__c = 'Week' and Data_Type__c ='Actual' and Start_Date__c <= :PreviousMonthEnd  and Start_Date__c >= :PreviousMonthLastMonday  ]; 
+               } 
+            } 
+        }
+
+       if(TimeType =='Month' && DataType ==label.Planned){
           Delete [Select ID from Planning_statistics__C where Time_Type__c = 'Month' and Data_Type__c ='Planned' and Start_Date__c <= :CurrentMonthEnd  and Start_Date__c >= :CurrentMonthStart ];  
           Delete [Select ID from Planning_statistics__C where Time_Type__c = 'Week' and Data_Type__c ='Planned' and Start_Date__c <= :CurrentMonthFirstSunday  and Start_Date__c >= :CurrentMonthStart ];    
       }
-      if(TimeType =='Month' && DataType =='Actual'){
-          Delete [Select ID from Planning_statistics__C where Time_Type__c = 'Month' and Data_Type__c ='Actual' and Start_Date__c <= :PreviousMonthEnd  and Start_Date__c >= :PreviousMonthStart ];
+      if(TimeType =='Month' && DataType ==label.Actual){
+          Delete [Select ID from Planning_statistics__C where Time_Type__c = 'Month' and Data_Type__c ='Actual' and Start_Date__c  <= :PreviousMonthEnd  and Start_Date__c >= :PreviousMonthStart ];
           Delete [Select ID from Planning_statistics__C where Time_Type__c = 'Week' and Data_Type__c ='Actual' and Start_Date__c <= :PreviousMonthEnd  and Start_Date__c >= :PreviousMonthLastMonday ];  
        }
 
