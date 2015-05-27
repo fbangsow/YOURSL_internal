@@ -139,19 +139,25 @@ Versions:
 
                    var a = dt + "." + month + "." + year;
                    var b = weekdays[k] + dt;
-                   if (j == parseInt(diffDays)) {
+                   if (j == 0) {
+                   data = data + '<td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td>';
+                   }
+
+                   else if (j == parseInt(diffDays)) {
                        var cmbne = month + "-" + dt + "-" + year;
                        var weekno1 = moment(cmbne, "MM-DD-YYYY").startOf('isoweek').week();
                        weekno1 = weekno1;
+                       var month1=parseInt(month)+1;
+                       
                        if (weekdays[k] == "SA" || weekdays[k] == "SU") {
 
-                           data = data + '<td><input name="' + a + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td>';
+                           data = data + '<td><input name="' + a + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' +month1 + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="inputfields plnperhur" disabled="true"></td>';
                        } else {
 
                            var cmbne = month + "-" + dt + "-" + year;
                            var weekno1 = moment(cmbne, "MM-DD-YYYY").startOf('isoweek').week();
                            weekno1 = weekno1;
-                           data = data + '<td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td>';
+                           data = data + '<td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' +month1+ '" class="inputfields plnperhur" disabled="true"></td>';
                        }
                    } else if (weekdays[k] == "SA" || weekdays[k] == "SU") {
                        if (weekdays[k] == "SU") {
@@ -187,6 +193,7 @@ Versions:
 
                                data = data + '<td><input type="text" name="' + month + '"  class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input name="' + month + '" type="text" class="inputfields plnperhur" disabled="true"></td><td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '"  ng-model-ngblur ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')" ></input></td>';
                            } else {
+
 
                                data = data + '<td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields"  disabled="true"></td><td><input type="text" name="' + weekno1 + '"  class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td><td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')" ></input></td>';
                            }
@@ -339,16 +346,29 @@ Versions:
                                //differnce between startdate and end date ends
                                weekno = weekno;
                                splitenddate[1] = parseInt(splitenddate[1]);
+                             
                                if (diffDays == 6) {
                                    sttcs["Day"] = "Week";
                                    sttcs["wmno"] = weekno;
                                } else if (diffDays < 7) {
+                               if(parseInt(splitenddate[0])<=6)
+                               {
+                                   sttcs["Day"] = "Week";
+                                   sttcs["wmno"] = weekno;
+
+                               }
+                               else
+                               {
+
                                    sttcs["Day"] = "MWeek";
                                    sttcs["wmno"] = weekno;
+                               }
+                                
                                } else {
                                    sttcs["Day"] = "Month";
                                    sttcs["wmno"] = splitenddate[1];
                                }
+                               
                                var splitstt = sttcs.Days.split("/");
                                var splitsttrev = sttcs.Revenue.split("/");
                                if (parseFloat(splitstt[0]) == 0 && parseFloat(splitstt[1]) == 0) {
@@ -489,36 +509,13 @@ Versions:
                                var splcta = a.split(".");
                                $(".table2").each(function() {
                                    $(this).find("tr").each(function() {
-                                       $(this).find(".mwdrdot").each(function(cu) {
-                                           if (cu == 0) {
-                                               $(this).parent().remove();
-                                           }
-                                       })
-                                       $(this).find(".mdadot").each(function(cu1) {
-                                           if (cu1 == 0) {
-                                               $(this).parent().remove();
-                                           }
-                                       })
-                                       $(this).find(".mdrdot").each(function(cu2) {
-                                           if (cu2 == 0) {
-                                               $(this).parent().remove();
-                                           }
-                                       })
-                                       $(this).find(".mwdadot").each(function(cu3) {
-                                           if (cu3 == 0) {
-                                               $(this).parent().remove();
-                                           }
-                                       })
+                                      
                                        $(this).find(".weekhead").each(function(cu) {
                                            if (cu <= 4) {
                                                $(this).remove();
                                            }
                                        })
-                                       $(this).find(".plnperhur").each(function(cu) {
-                                           if (cu <= 0) {
-                                               $(this).parent().remove();
-                                           }
-                                       })
+                                     
 
                                    })
                                })
@@ -667,7 +664,7 @@ Versions:
                    }
                    $(".totalforcalndr").each(function() {
                        $(this).find("td").each(function(co) {
-                           if (co > 3 && co < 9) {
+                           if (co > 3 && co < 4) {
                                $(this).remove();
                            }
                        })
@@ -948,6 +945,7 @@ Versions:
                    var localplanedformont1 = $scope.localobject($scope.dataval.StartDate, $scope.dataval.Customers[b].Projects[c].Resources[d].Staffing);
 
 
+
                    angular.forEach($scope.monthtolimit, function(mnthtolmt, key) {
                        angular.forEach(localplanedformont1, function(lclplnd, plndkey) {
                            for (var key1 in lclplnd) {
@@ -1043,14 +1041,7 @@ Versions:
                        var th = $(this);
                        var jsonstrngfy = JSON.parse(jsondata);
                        $.each(jsonstrngfy, function(a, b) {
-                           $(th).parent().find(".drdot").each(function() {
-                               var newdateinput = $(this).attr("name");
-                               if (b.Day == "Week") {
-                                   if (parseInt(b.wmno) == parseInt(newdateinput)) {
-                                       $(this).val(b.Days);
-                                   }
-                               }
-                           });
+                          
                            $(th).parent().find(".mwdrdot").each(function() {
                                var newdateinput = $(this).attr("name");
                                if (b.Day == "MWeek") {
@@ -1064,6 +1055,14 @@ Versions:
                                if (b.Day == "MWeek") {
                                    if (parseInt(b.wmno) == parseInt(newdateinput)) {
                                        $(this).val(b.Revenue);
+                                   }
+                               }
+                           });
+                            $(th).parent().find(".drdot").each(function() {
+                               var newdateinput = $(this).attr("name");
+                               if (b.Day == "Week") {
+                                   if (parseInt(b.wmno) == parseInt(newdateinput)) {
+                                       $(this).val(b.Days);
                                    }
                                }
                            });
@@ -1320,8 +1319,8 @@ Versions:
                //Functions of angularjs when is in document ready Starts here
                //date picker plugin starts here
               
-
-$('.datepickerforbind').datepicker();
+ 
+                $('.datepickerforbind').datepicker();
 
                $('.strtdateinput').datepicker({
                    changeMonth: true,
@@ -1494,36 +1493,7 @@ $('.datepickerforbind').datepicker();
                //previous month's data read only @ 4 AM Germany time on 1st of corresponding month
                $scope.disablinginputs();
 
-               $(".table2").each(function() {
-                   $(this).find("tr").each(function() {
-                       $(this).find(".mwdrdot").each(function(cu) {
-                           if (cu == 0) {
-                               $(this).parent().remove();
-                           }
-                       })
-                       $(this).find(".mdadot").each(function(cu) {
-                           if (cu == 0) {
-                               $(this).parent().remove();
-                           }
-                       })
-                       $(this).find(".mdrdot").each(function(cu) {
-                           if (cu == 0) {
-                               $(this).parent().remove();
-                           }
-                       })
-                       $(this).find(".mwdadot").each(function(cu) {
-                           if (cu == 0) {
-                               $(this).parent().remove();
-                           }
-                       })
-                       $(this).find(".plnperhur").each(function(cu) {
-                           if (cu == 0) {
-                               $(this).parent().remove();
-                           }
-                       })
-
-                   })
-               })
+          
                var j = jQuery.noConflict();
                (function(j) {
                    j(document).ready(function() {
@@ -1672,18 +1642,7 @@ $('.datepickerforbind').datepicker();
            numFormat.unshift(numberStr);
            return numFormat.join('.') + ',' + numFormatDec; /*format 000.000.000,00 */
        }
-          function euroconverter1(number) {
-           var numberStr = parseFloat(number).toFixed(2).toString();
-           var numFormatDec = numberStr.slice(-2); /*decimal 00*/
-           numberStr = numberStr.substring(0, numberStr.length - 3); /*cut last 3 strings*/
-           var numFormat = new Array;
-           while (numberStr.length > 3) {
-               numFormat.unshift(numberStr.slice(-3));
-               numberStr = numberStr.substring(0, numberStr.length - 3);
-           }
-           numFormat.unshift(numberStr);
-           return numFormat.join('') + '.' + numFormatDec; /*format 000.000.000,00 */
-       }
+      
        //function for leapyear caluclation
    function leapYear(year) {
            return ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
@@ -1799,8 +1758,7 @@ $('.datepickerforbind').datepicker();
         </script>
     </head>
     <body data-ng-app="myApp">
-   <apex:form >
-      <apex:pageMessages id="showmsg"></apex:pageMessages>        
+         <apex:pageMessages id="showmsg"></apex:pageMessages>        
           <p class="dataforprint" style="display:;"> </p>
         <div data-ng-controller="MyCtrl" id="contid">
             <div class="blurbackgrund"></div>
@@ -1809,6 +1767,8 @@ $('.datepickerforbind').datepicker();
                 <div><p class="appendtxt"></p></div>
                 <div class="footer"><div class="appndbtns"></div></div>
             </div>
+            <apex:form >
+
             <apex:outputPanel id="panel">
             <apex:actionStatus id="counterStatus" onStart="document.body.style.cursor = 'wait';return true;" onStop="document.body.style.cursor = 'default';return true;" >
             <apex:facet name="start" >   
@@ -1817,7 +1777,8 @@ $('.datepickerforbind').datepicker();
               </apex:facet>
         </apex:actionStatus>
         </apex:outputPanel>
-  <apex:pageBlock >                
+  <apex:pageBlock >    
+
     <span class="psotoolheader">PSO Tool</span> 
     <apex:commandButton status="counterStatus" style="height:20px;width:150px;" value="Run Weekly Job" action="{!runWeeklyJob}" />
     <apex:commandButton style="height:20px;width:150px;" status="counterStatus" value="Run Monthly Job" action="{!runMonthlyJob}" />
@@ -1828,7 +1789,7 @@ $('.datepickerforbind').datepicker();
                     <td>Account Name:</td>
                     <td>
                     <select class="Customers" data-ng-model="blisterPackTemplateSelected" data-ng-change="Customersfilter(blisterPackTemplateSelected)"  data-ng-options="persons as persons.value for persons in persons" > </select>
-                </td>
+                     </td>
            
                 <td>Opportunity Name:</td>
             <td><select class="Projects" data-ng-model="projectsSelecteddata" data-ng-change="projects(projectsSelecteddata)"  data-ng-options="projectsselect as projectsselect.value for projectsselect in projectsselect"> </select>
@@ -1840,7 +1801,7 @@ $('.datepickerforbind').datepicker();
 </table>
 </div>
   </apex:pageBlock>
-
+</apex:form>         
            
 <div class="hdng">
     <div class="custdisplay">
@@ -1851,7 +1812,7 @@ $('.datepickerforbind').datepicker();
                     <tr><td  style="text-align:left;">Opportunity:</td><td  style="text-align:left;" class="prjname"><a ng-href="https://cs8.salesforce.com/{{dataval1.OpportunityId}}" target="_blank">{{dataval1.OpportunityName}}</a></td></tr>
                     <tr><td  style="text-align:left;">PM:</td><td  style="text-align:left;"><a ng-href="https://cs8.salesforce.com/{{dataval1.OpportunityId}}" target="_blank">{{dataval1.OurProjectManager}}</a></td></tr>
                     <tr><td>  <a ng-href="/apex/OpportunityLineItemsEdit?id={{dataval1.OpportunityId}}" target="_blank" style="text-decoration:none;"><input type="button" style="height:20px;width:87px;"  value="Change Quantity" class="btn"/></a></td><td>  
-                    <apex:commandButton style="height:20px;width:87px;" value="Project Health" /></td><td> <select class="Customers" data-ng-model="blisterPackTemplateSelected"  style="min-height:20px !important"><option> Select</option> </select></td></tr>
+                    <input type="button" style="height:20px;width:87px;" value="Project Health"  class="btn"/></td><td> <select class="Customers" data-ng-model="blisterPackTemplateSelected"  style="min-height:20px !important"><option> Select</option> </select></td></tr>
                 </table>
                 <div  class="Resourcesection" >
                     <div >
@@ -1894,11 +1855,11 @@ $('.datepickerforbind').datepicker();
             <div data-ng-repeat="dataval in dataval.Customers">
                 <div data-ng-repeat="dataval1 in dataval.Projects" >
                     <table  class="hiddentable custdetailview">
-                      <tr><td  style="text-align:left;width:75px;">Account:</td><td style="text-align:left;" class="customername"><a ng-href="https://cs8.salesforce.com/{{dataval.AccountId}}" target="_blank">{{dataval.AccountName}}</a></td></tr>
+                        <tr><td  style="text-align:left;width:75px;">Account:</td><td style="text-align:left;" class="customername"><a ng-href="https://cs8.salesforce.com/{{dataval.AccountId}}" target="_blank">{{dataval.AccountName}}</a></td></tr>
                     <tr><td  style="text-align:left;">Opportunity:</td><td  style="text-align:left;" class="prjname"><a ng-href="https://cs8.salesforce.com/{{dataval1.OpportunityId}}" target="_blank">{{dataval1.OpportunityName}}</a></td></tr>
                     <tr><td  style="text-align:left;">PM:</td><td  style="text-align:left;"><a ng-href="https://cs8.salesforce.com/{{dataval1.OpportunityId}}" target="_blank">{{dataval1.OurProjectManager}}</a></td></tr>
                     <tr><td>  <a ng-href="/apex/OpportunityLineItemsEdit?id={{dataval1.OpportunityId}}" target="_blank" style="text-decoration:none;"><input type="button" style="height:20px;width:87px;"  value="Change Quantity" class="btn"/></a></td><td>  
-                    <apex:commandButton style="height:20px;width:87px;" value="Project Health" /></td><td> <select class="Customers" data-ng-model="blisterPackTemplateSelected"  style="min-height:20px !important"><option> Select</option> </select></td></tr>
+                    <input type="button" style="height:20px;width:87px;" value="Project Health" class="btn"/></td><td> <select class="Customers" data-ng-model="blisterPackTemplateSelected"  style="min-height:20px !important"><option> Select</option> </select></td></tr>
                     </table>
                     <div class="table2" >
                         <table >
@@ -1939,7 +1900,7 @@ $('.datepickerforbind').datepicker();
         <div class="clearfix"></div>
     </div>
 </div>
-</apex:form>
+
 </body>
 </html>
 </apex:page>
