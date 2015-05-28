@@ -290,7 +290,7 @@ public without sharing class PsoToolController{
         Map<String, Staffing> DateToStaffingForResourceMap = new Map<String, Staffing>();
         for(Map<String, OpportunityLineItem> oppLineItemIdToLineItems: oppLineItemIdToOpportunityLineItemMap){
             for(OpportunityLineItem item: oppLineItemIdToLineItems.values()){
-                if(checkIfSpecialOccasion(item.Opportunity.Name) && item.ServiceDate > this.startDate && item.ServiceDate < this.endDate)
+                if(checkIfSpecialOccasion(item.Opportunity.Name) && item.ServiceDate >= this.startDate && item.ServiceDate <= this.endDate)
                     DateToStaffingForResourceMap = addStaffing(DateToStaffingForResourceMap, getStaffingForSpecialOccasionEntry(item));
                 else{
                     for(OpportunityLineItemSchedule timeEntry:item.OpportunityLineItemSchedules){
