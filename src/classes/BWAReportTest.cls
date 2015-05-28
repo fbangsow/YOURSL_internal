@@ -93,7 +93,7 @@ private class BWAReportTest {
     	
     	Opportunity opp = [Select Id, AccountId, account.name FROM Opportunity limit 1];
     	try {
-    		chAcc1 = [select id from Chart_of_Accounts__c where Account__c =: opp.AccountId and Account_Type__c = 'Kreditoren'];
+    		chAcc1 = [select id from Chart_of_Accounts__c where Account__c =: opp.AccountId and Account_Type__c = 'Kreditoren' LIMIT 1];
     	} catch (exception e) {
 	    	chAcc1 = new Chart_of_Accounts__c(
 				name = '99999',
@@ -154,7 +154,7 @@ private class BWAReportTest {
     	insert coaBuero;
     	/*Chart_of_Accounts__c Kasse = new Chart_of_Accounts__c(Name='1000',Account_Description__c = 'Kasse',Activation_date__c=Date.newInstance(2011, 1, 1),Account_Type__c='Finanzen',Active__c=true);
     	insert Kasse;*/
-    	Chart_of_Accounts__c Kasse = [select id from Chart_of_Accounts__c where Account_Type__c = 'Finanzen' and Account_Description__c = 'Kasse'];
+    	Chart_of_Accounts__c Kasse = [select id from Chart_of_Accounts__c where Account_Type__c = 'Finanzen' and Account_Description__c = 'Kasse' LIMIT 1];
     	Chart_of_Accounts__c chAcc3	= new Chart_of_Accounts__c (Name='1362', Account_Type__c = 'Finanzen' , Account_Description__c = 'Bank HVB *0343');
 		Chart_of_Accounts__c chAcc4	= new Chart_of_Accounts__c (Name='1362', Account_Type__c = 'Finanzen' , Account_Description__c = 'Bank HVB *8380');
 		Chart_of_Accounts__c chAcc5	= new Chart_of_Accounts__c (Name='1362', Account_Type__c = 'Finanzen' , Account_Description__c = 'Deutsche Bank *3200');
