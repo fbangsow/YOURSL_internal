@@ -140,7 +140,17 @@ Versions:
                    var a = dt + "." + month + "." + year;
                    var b = weekdays[k] + dt;
                    if (j == 0) {
+                       var cmbne = month + "-" + dt + "-" + year;
+                       var weekno1 = moment(cmbne, "MM-DD-YYYY").startOf('isoweek').week();
+                       weekno1 = weekno1;
+                     if (weekdays[k] == "SU") {
+
+                           data = data + '<td><input name="' + a + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' +weekno1 + '" class="drdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1+ '" class="dadot inputfields" disabled="true"></td>';
+                       }
+                       else
+                       {
                    data = data + '<td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td>';
+                 }
                    }
 
                    else if (j == parseInt(diffDays)) {
@@ -295,7 +305,7 @@ Versions:
                            $scope.unplannedindays = parseFloat(resurce.SoldDays) - parseFloat(resurce.PlannedDays);
                            $scope.soldreven = parseFloat(resurce.SalesPrice) * parseFloat(resurce.SoldDays);
                            $scope.plnndreven = parseFloat(resurce.SalesPrice) * parseFloat(resurce.PlannedDays);
-                           //alert(euroconverter($scope.soldreven));
+                           
                            resurce.SalesPrice=euroconverter(resurce.SalesPrice);
                            $scope.soldreven =euroconverter($scope.soldreven);
                             $scope.plnndreven=euroconverter($scope.plnndreven);
@@ -557,7 +567,7 @@ Versions:
                            plandtotal = plandtotal + parseFloat(plnd);
                            unplandtotal = unplandtotal + parseFloat(unplnddot);
                           var fltsalesprice='';
-                          //alert((a.SalesPrice).indexOf("."))
+                          
                            if((a.SalesPrice).indexOf(".")>0)
                            {
                              fltsalesprice = a.SalesPrice.replace(",", ".");
@@ -567,18 +577,12 @@ Versions:
                            {
                             fltsalesprice = a.SalesPrice.replace(",", ".");
                            }
-                           //var fltsalesprice=euroconverter1(a.SalesPrice)
-                           
-
-                            
-                           rate = rate + parseFloat(fltsalesprice );
+                             rate = rate + parseFloat(fltsalesprice );
                   
                            var solddays1 = a.SoldDays;
                            var splitsoldDays = solddays1.toString().replace(",", ".");
                            var cmbine = parseFloat(splitsoldDays);
                            solddays = solddays + cmbine;
-                            //alert(euroconverter1( a.soldrev))
-                           
                            var fltsoldrev="";
                              if((a.soldrev).indexOf(".")>0)
                            {
@@ -904,15 +908,25 @@ Versions:
                    $scope.dataval.Customers[b].Projects[c].Resources[d].unplanne = spltunplanneddays;
                    $scope.ResourceName = $scope.dataval.Customers[b].Projects[c].Resources[d].ResourceName;
                    var scopesolddays = $scope.dataval.Customers[b].Projects[c].Resources[d].SoldDays.replace(",", ".");
-                   var scopesalesprice = $scope.dataval.Customers[b].Projects[c].Resources[d].SalesPrice.replace(",", ".");
+                   var scopesalesprice = $scope.dataval.Customers[b].Projects[c].Resources[d].SalesPrice;//.replace(",", ".");
                    spltpannd = spltpannd.replace(",", ".");
                    $scope.unplannedindays = parseFloat(scopesolddays) - parseFloat($scope.plannedscope);
                    $scope.soldreven = parseFloat(scopesalesprice) * parseFloat(scopesolddays);
-                   $scope.plnndreven = parseFloat(scopesalesprice) * parseFloat(spltpannd);
-                   
-                   $scope.dataval.Customers[b].Projects[c].Resources[d].plnndreven = euroconverter($scope.plnndreven)//$scope.plnndreven.toFixed(2).toString().replace(".", ",");
-
-
+                    var fltsalesprice='';
+                  
+                           if((scopesalesprice).indexOf(".")>0)
+                           {
+                             fltsalesprice = scopesalesprice.replace(",", ".");
+                            fltsalesprice = fltsalesprice .replace(".", "");
+                           }
+                           else
+                           {
+                            fltsalesprice =scopesalesprice.replace(",", ".");
+                           }
+                       
+                   $scope.plnndreven = parseFloat(fltsalesprice) * parseFloat(spltpannd);
+                    
+                   $scope.dataval.Customers[b].Projects[c].Resources[d].plnndreven = euroconverter($scope.plnndreven);
                    if (clickedfoedata == 1) {
                        $scope.$apply();
                        clickedfoedata = 0;
@@ -985,7 +999,7 @@ Versions:
                            mnthtolmt = objctformnth[key];
                        }
                    }
-                   //$scope.$watch(' $scope.dataval');
+                  
 
                    $(".Cancelfun").removeClass("Cancelfun");
                    Visualforce.remoting.Manager.invokeAction(
@@ -1812,7 +1826,7 @@ Versions:
                     <tr><td  style="text-align:left;">Opportunity:</td><td  style="text-align:left;" class="prjname"><a ng-href="https://cs8.salesforce.com/{{dataval1.OpportunityId}}" target="_blank">{{dataval1.OpportunityName}}</a></td></tr>
                     <tr><td  style="text-align:left;">PM:</td><td  style="text-align:left;"><a ng-href="https://cs8.salesforce.com/{{dataval1.OpportunityId}}" target="_blank">{{dataval1.OurProjectManager}}</a></td></tr>
                     <tr><td>  <a ng-href="/apex/OpportunityLineItemsEdit?id={{dataval1.OpportunityId}}" target="_blank" style="text-decoration:none;"><input type="button" style="height:20px;width:87px;"  value="Change Quantity" class="btn"/></a></td><td>  
-                    <input type="button" style="height:20px;width:87px;" value="Project Health"  class="btn"/></td><td> <select class="Customers" data-ng-model="blisterPackTemplateSelected"  style="min-height:20px !important"><option> Select</option> </select></td></tr>
+                    <input type="button" style="height:20px;width:87px;" value="Project Health"  class="btn"/><select class="Customers" data-ng-model="blisterPackTemplateSelected"  style="min-height:20px !important"><option> Select</option> </select></td><td> </td></tr>
                 </table>
                 <div  class="Resourcesection" >
                     <div >
@@ -1859,7 +1873,7 @@ Versions:
                     <tr><td  style="text-align:left;">Opportunity:</td><td  style="text-align:left;" class="prjname"><a ng-href="https://cs8.salesforce.com/{{dataval1.OpportunityId}}" target="_blank">{{dataval1.OpportunityName}}</a></td></tr>
                     <tr><td  style="text-align:left;">PM:</td><td  style="text-align:left;"><a ng-href="https://cs8.salesforce.com/{{dataval1.OpportunityId}}" target="_blank">{{dataval1.OurProjectManager}}</a></td></tr>
                     <tr><td>  <a ng-href="/apex/OpportunityLineItemsEdit?id={{dataval1.OpportunityId}}" target="_blank" style="text-decoration:none;"><input type="button" style="height:20px;width:87px;"  value="Change Quantity" class="btn"/></a></td><td>  
-                    <input type="button" style="height:20px;width:87px;" value="Project Health" class="btn"/></td><td> <select class="Customers" data-ng-model="blisterPackTemplateSelected"  style="min-height:20px !important"><option> Select</option> </select></td></tr>
+                    <input type="button" style="height:20px;width:87px;" value="Project Health" class="btn"/><select class="Customers" data-ng-model="blisterPackTemplateSelected"  style="min-height:20px !important"><option> Select</option> </select></td><td> </td></tr>
                     </table>
                     <div class="table2" >
                         <table >
