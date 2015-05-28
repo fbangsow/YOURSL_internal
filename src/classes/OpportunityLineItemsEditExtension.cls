@@ -10,7 +10,8 @@ public with sharing class OpportunityLineItemsEditExtension {
 
     public OpportunityLineItemsEditExtension(ApexPages.StandardController std_controller) {
         this.SelectedOpportunity = [SELECT Name, Managed_by_PSO_Tool__c, (SELECT Contact__r.Name, Quantity, Product2.Name, ServiceDate, UnitPrice
-                                        FROM OpportunityLineItems ORDER BY Contact__r.Name, ServiceDate ASC)
+                                        FROM OpportunityLineItems WHERE Unit__c = 'Manntag(e)' 
+                                        ORDER BY Contact__r.Name, ServiceDate ASC)
                                             FROM Opportunity WHERE Id =: ApexPages.currentPage().getParameters().get('id')];
         ShowControls = true;
         checkIfOpportunityCanBeProcessed();

@@ -7,15 +7,15 @@
                 <apex:commandButton action="{!save}" value="Save"/>
             </apex:pageBlockButtons>
             <apex:pageBlockSection >
-                <apex:dataTable value="{!OrderedListOfKeys}" var="key" border="1" cellpadding="10" id="theTable" columnsWidth="200px, 200px, 100px, 100px, 100px, 100px, 200px, 300px" width="1300px">
-                    <apex:column >
+                <apex:dataTable value="{!OrderedListOfKeys}" var="key" border="1" cellpadding="10" id="theTable" width="1400px">
+                    <apex:column width="150px">
                         <apex:facet name="header">Resource</apex:facet>
                         <apex:outputText value="{!LineItems[key].LineItem.Contact__r.Name}"/>
                         <apex:facet name="footer">
                             <b>Totals</b>
                         </apex:facet>
                     </apex:column>
-                    <apex:column >
+                    <apex:column  width="150px">
                         <apex:facet name="header">Product Name</apex:facet>
                         <apex:outputText value="{!LineItems[key].LineItem.Product2.Name}"/>
                     </apex:column>
@@ -39,6 +39,10 @@
                         <apex:inputText value="{!LineItems[key].SelectedQuantity}" onKeyUp="recountTotal('{!$Component.theTable.revenueAfter}', document.getElementById('{!$Component.theTable.unitPrice}').innerText, this.value);recountGlobalTotal('{!$Component.theTable}');" id="quantity"/>
                     </apex:column>
                     <apex:column >
+                        <apex:facet name="header">Planned days</apex:facet>
+                        <apex:outputText value="{!(LineItems[key].LineItem.Quantity-LineItems[key].UnplannedDays)}"/>
+                    </apex:column>
+                    <apex:column >
                         <apex:facet name="header">Unplanned days</apex:facet>
                         <apex:outputText value="{!LineItems[key].UnplannedDays}"/>
                     </apex:column>
@@ -53,7 +57,7 @@
                             </apex:outputText>
                         </apex:facet>
                     </apex:column>
-                    <apex:column >
+                    <apex:column width="425px">
                         <apex:facet name="header">Revenue after</apex:facet>
                         <apex:outputText value="{0, number, ###,###,###,###.00} €" id="revenueAfter" styleClass="revenueAfter">
                             <apex:param value="{!LineItems[key].LineItem.Quantity*LineItems[key].LineItem.UnitPrice}"/>
