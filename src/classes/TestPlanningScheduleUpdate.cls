@@ -15,7 +15,7 @@ public class TestPlanningScheduleUpdate {
         upsert runTime;
     }
 
-    public static testMethod void test() {
+    public static testMethod void firstTest() {
         Date serviceDate = system.today();
         //inserting account   
         Account acc = new Account();
@@ -106,9 +106,17 @@ public class TestPlanningScheduleUpdate {
         insert new List < Sobject > {
             schedule, secondSchedule, thirdSchedule
         };
+		
+        PlanningScheduleUpdate firstPlanning = new PlanningScheduleUpdate();	
 
-        PlanningScheduleUpdate pln2 = new PlanningScheduleUpdate();
-
+    }
+    
+    public static testMethod void weeklyTest(){
+        PlanningScheduleUpdate secondPlanning = new PlanningScheduleUpdate('2015/05/10',true,false);
+     }
+    
+     public static testMethod void monthlyTest(){
+        PlanningScheduleUpdate thirdPlanning = new PlanningScheduleUpdate('2015/05/01',false,true);
     }
 
 }

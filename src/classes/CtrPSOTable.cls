@@ -10,20 +10,7 @@ public class CtrPSOTable {
 
     public string jsonstring {set; get;}  
     public String DateValue {get; set;}
-    public Date PreviousWeekStart { get;set;}
-    public Date PreviousWeekEnd  { get;set;}
-    public Date CurrentWeekStart { get;set;}
-    public Date CurrentWeekEnd  { get;set;}
-    public Date PreviousMonthStart { get;set;}
-    public Date PreviousMonthEnd  { get;set;}
-    public Date CurrentMonthStart { get;set;}
-    public Date CurrentMonthEnd  { get;set;}
-    public Date PreviousMonthLastMonday { get;set;}
-    public Date CurrentMonthFirstSunday { get;set;}
-    public Boolean IsMonthChangeinWeekPlanned {get;set;}
-    public Boolean IsMonthChangeinWeekActual {get;set;}
-
-    
+     
     public CtrPSOTable(){        
 
     }
