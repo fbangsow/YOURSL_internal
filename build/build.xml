@@ -18,8 +18,6 @@
     <target name="deployCode">
         <echo level="info">Performing the deploy</echo>
         <sf:deploy
-        checkOnly="true"
-        logType="Debugonly"
         username="${sfdc.username}"
         password="${sfdc.password}"
         serverurl="${sfdc.serverurl}"
@@ -28,17 +26,28 @@
         maxPoll="${sfdc.maxPoll}"
         runAllTests="false"/>
     </target>
-    <target name="deployEmptyCheckOnly">
-      <echo level="info">Testing the deploy</echo>
-      <sf:deploy
-          checkOnly="true"
-          logType="Debugonly"
-          username="${sfdc.username}"
-          password="${sfdc.password}"
-          serverurl="${sfdc.serverurl}"
-          deployRoot="${basedir}/src"
-          pollWaitMillis="${sfdc.pollWaitMillis}"
-          maxPoll="${sfdc.maxPoll}" 
-          runAllTests="true" />
+    <target name="deployEmptyCheckOnlyWithAllTests">
+        <echo level="info">Testing the deploy with all tests</echo>
+        <sf:deploy
+        checkOnly="true"
+        username="${sfdc.username}"
+        password="${sfdc.password}"
+        serverurl="${sfdc.serverurl}"
+        deployRoot="${basedir}/src"
+        pollWaitMillis="${sfdc.pollWaitMillis}"
+        maxPoll="${sfdc.maxPoll}" 
+        runAllTests="true" />
+    </target>
+    <target name="deployEmptyCheckOnlyWithNotAllTests">
+        <echo level="info">Testing the deploy with not all tests</echo>
+        <sf:deploy
+        checkOnly="true"
+        username="${sfdc.username}"
+        password="${sfdc.password}"
+        serverurl="${sfdc.serverurl}"
+        deployRoot="${basedir}/src"
+        pollWaitMillis="${sfdc.pollWaitMillis}"
+        maxPoll="${sfdc.maxPoll}" 
+        runAllTests="false" />
     </target>
 </project>
