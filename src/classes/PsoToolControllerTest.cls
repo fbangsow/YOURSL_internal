@@ -195,6 +195,7 @@ private class PsoToolControllerTest {
             Test.stopTest();
             System.assertEquals(setup_data.firstOpportunity.Name, project.OpportunityName);
             System.assertEquals(setup_data.testContact.FirstName + ' ' + setup_data.testContact.LastName, project.OurProjectManager);
+            System.assertEquals(setup_data.testContact.Id, project.ProjectManagerId);
             System.assertEquals(setup_data.firstOpportunity.Id, project.OpportunityId);
             System.assertEquals(1, project.Resources.size());
         }

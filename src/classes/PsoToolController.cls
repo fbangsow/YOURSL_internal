@@ -182,6 +182,7 @@ public without sharing class PsoToolController{
         Project newProject = new Project();
         newProject.OpportunityName = opp.Name;
         newProject.OurProjectManager = opp.Projektleiter_YOUR_SL__r.Name;
+        newProject.ProjectManagerId = opp.Projektleiter_YOUR_SL__r.Id;
         newProject.OpportunityId = opp.Id;
         newProject.Resources = getResources(opp);
         return newProject;
@@ -405,6 +406,7 @@ public without sharing class PsoToolController{
     public class Project {
         public String OpportunityName;
         public String OurProjectManager;
+        public String ProjectManagerId;
         public String OpportunityId;
         public List<Resource> Resources;
     }
