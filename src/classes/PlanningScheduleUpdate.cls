@@ -280,8 +280,14 @@ public class PlanningScheduleUpdate {
         Set < id > timeEntryIds = new Set < id > ();
         if (dayOfWeek == runTime.Dayofweek__c || (isWeeklyManualRun && !isMonthlyManualRun)) {
 
+          if(!IsMonthChangeinWeekActual){
             timeEntries = [Select id, Opportunity_Product_ID__c, Date__c, Time__c from TimeEntry__c
             where Date__c >= :PreviousWeekStart and Date__c <= :PreviousWeekEnd and Billable__c  = true  order by Date__c ASC];
+          }
+          else{
+              timeEntries = [Select id, Opportunity_Product_ID__c, Date__c, Time__c from TimeEntry__c
+            where Date__c >= :CurrentMonthStart and Date__c <= :PreviousWeekEnd and Billable__c  = true  order by Date__c ASC];
+          }
 
         }
 
