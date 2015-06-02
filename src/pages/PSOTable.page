@@ -1087,14 +1087,7 @@ Versions:
                    })
                })
            }
-           $scope.set_color = function(payment) {
-                   var convertion = payment.unplanne.replace(",", ".");
-                   if (parseFloat(convertion) < 0) {
-                       return {
-                           color: "red "
-                       }
-                   }
-               }
+          
                //function for populating Staffing array in inputs
            $scope.Staffingpopltion = function() {
                    $(".Staffing").each(function() {
@@ -1821,7 +1814,7 @@ Versions:
                             </tr>
                             <tbody class="totalscalc">
                                 <tr data-ng-repeat="dataval2 in dataval1.Resources">
-                                    <td class="resource" style='padding:0 5px !important'>{{dataval2.ResourceName}}</td><td  ng-style="set_color(dataval2) " style='padding:0 5px !important'>{{dataval2.Product}}</td>    <td class="noplan" style='padding:0 5px !important'>{{dataval2.PlannedDays}}</td><td style='padding:0 5px !important'>{{dataval2.SoldDays}}</td> <td class="unplannedhrs" style='padding:0 5px !important'>{{dataval2.LastModifiedDate}}</td><td style='padding:0 5px !important'>{{dataval2.PlannedDays}}</td> <td class="unplannedcal" style='padding:0 5px !important'>{{dataval2.unplanne }}</td>
+                                    <td class="resource" style='padding:0 5px !important'>{{dataval2.ResourceName}}</td><td style='padding:0 5px !important'>{{dataval2.Product}}</td>    <td class="noplan" style='padding:0 5px !important'>{{dataval2.PlannedDays}}</td><td style='padding:0 5px !important'>{{dataval2.SoldDays}}</td> <td class="unplannedhrs" style='padding:0 5px !important'>{{dataval2.LastModifiedDate}}</td><td style='padding:0 5px !important'>{{dataval2.PlannedDays}}</td> <td class="unplannedcal" style='padding:0 5px !important'>{{dataval2.unplanne }}</td>
                                 </tr>
                             </tbody>
                         </table>
