@@ -76,6 +76,7 @@ Versions:
                universalobject = factorytmp;
                var strtdate = factorytmp.StartDate;
                var enddate = factorytmp.EndDate;
+               
                var splitstrtdate = strtdate.split(".");
                var splitenddate = enddate.split(".");
                var date = new Date(splitstrtdate[2], parseInt(splitstrtdate[1]) - 1, splitstrtdate[0]);
@@ -133,10 +134,11 @@ Versions:
 
                    var a = dt + "." + month + "." + year;
                    var b = weekdays[k] + dt;
-                   if (j == 0) {
-                       var cmbne = month + "-" + dt + "-" + year;
+                     var cmbne = month + "-" + dt + "-" + year;
                        var weekno1 = moment(cmbne, "MM-DD-YYYY").startOf('isoweek').week();
                        weekno1 = weekno1;
+                   if (j == 0) {
+                     
                      if (weekdays[k] == "SU") {
 
                            data = data + '<td><input name="' + a + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' +weekno1 + '" class="drdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1+ '" class="dadot inputfields" disabled="true"></td>';
@@ -148,9 +150,7 @@ Versions:
                    }
 
                    else if (j == parseInt(diffDays)) {
-                       var cmbne = month + "-" + dt + "-" + year;
-                       var weekno1 = moment(cmbne, "MM-DD-YYYY").startOf('isoweek').week();
-                       weekno1 = weekno1;
+                      
                        var month1=parseInt(month)+1;
                        
                        if (weekdays[k] == "SA" || weekdays[k] == "SU") {
@@ -158,17 +158,13 @@ Versions:
                            data = data + '<td><input name="' + a + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' +month1 + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="inputfields plnperhur" disabled="true"></td>';
                        } else {
 
-                           var cmbne = month + "-" + dt + "-" + year;
-                           var weekno1 = moment(cmbne, "MM-DD-YYYY").startOf('isoweek').week();
-                           weekno1 = weekno1;
+                          
                            data = data + '<td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' +month1+ '" class="inputfields plnperhur" disabled="true"></td>';
                        }
                    } else if (weekdays[k] == "SA" || weekdays[k] == "SU") {
                        if (weekdays[k] == "SU") {
 
-                           var cmbne = month + "-" + dt + "-" + year;
-                           var weekno1 = moment(cmbne, "MM-DD-YYYY").startOf('isoweek').week();
-                           weekno1 = weekno1;
+                         
                            if (parseInt(dt) == 1) {
                         
 
@@ -179,9 +175,7 @@ Versions:
                                data = data + '<td><input name="' + a + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '"  ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="drdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="dadot inputfields" disabled="true"></td>';
                            }
                        } else {
-                           var cmbne = month + "-" + dt + "-" + year;
-                           var weekno1 = moment(cmbne, "MM-DD-YYYY").startOf('isoweek').week();
-                           weekno1 = weekno1;
+                          
                            if (parseInt(dt) == 1) {
 
 
@@ -192,9 +186,7 @@ Versions:
                            }
                        }
                    } else {
-                       var cmbne = month + "-" + dt + "-" + year;
-                       var weekno1 = moment(cmbne, "MM-DD-YYYY").startOf('isoweek').week();
-                       weekno1 = weekno1;
+                      
                        if (parseInt(dt) == 1) {
                            if (weekdays[k] == "MO") {
 
@@ -274,7 +266,6 @@ Versions:
        var myDataSet1;
        serviceforgetaccount().then(function(result) {
            var daatjson = htmlDecode(result);
-
            var resultobject = JSON.parse(daatjson);
 
            $scope.mainPage = tempService.inputbindingtable(resultobject);
@@ -514,18 +505,7 @@ Versions:
                                })
                                var a = resultobject.StartDate;
                                var splcta = a.split(".");
-                               $(".table2").each(function() {
-                                   $(this).find("tr").each(function() {
-                                      
-                                       $(this).find(".weekhead").each(function(cu) {
-                                           if (cu <= 4) {
-                                               $(this).remove();
-                                           }
-                                       })
-                                     
-
-                                   })
-                               })
+                             
                                $scope.Statatical();
                                $scope.plannedorqa();
                                $(".workingweeks .greycolorsat").attr("style", "border-bottom:none !IMPORTANT;");
@@ -1352,7 +1332,7 @@ Versions:
                $scope.headerpop = function() {
                    var strtdate = startdateobj.StartDate;
                    var enddate = startdateobj.EndDate;
-                 
+             
                    var inputsplit = strtdate.split(".");
                    var splitstrtdate = strtdate.split(".");
                    var splitenddate = enddate.split(".");
@@ -1419,20 +1399,20 @@ Versions:
                            if (k <= 4 || k == 7) {
                                if (weekdays[k] == "SU") {
                                    if (dt == 1) {
-                                       heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>S.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;' class='weekhead' ><span class='emptyclass'>" + monthNames[month - 1] + "</span><br/><span class='spanbirder' style='padding: 0% 6px 0 6px !important;border-right:1px solid #B8B1B1;'>KW-" + weekno + "</span><br/><span style='border-right:1px solid #B8B1B1;padding:0px 12px 0px 12px;'>" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th>";
+                                       heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;' class='weekhead' ><span class='emptyclass'>" + monthNames[month - 1] + "</span><br/><span class='spanbirder' style='padding: 0% 6px 0 6px !important;border-right:1px solid #B8B1B1;'>KW-" + weekno + "</span><br/><span style='border-right:1px solid #B8B1B1;padding:0px 12px 0px 12px;'>" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th>";
                                    } else {
                                        heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;' class='weekhead' ><span class='emptyclass'></span></br><span class='spanbirder' style='padding: 0% 3px 0 3px !important;border-right:1px solid #B8B1B1;'>KW-" + weekno + "</span><br/><span style='border-right:1px solid #B8B1B1;padding:0px 9px 0px 9px;'>" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th>";
                                    }
                                } else {
                                    if (dt == 1) {
-                                       heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>S.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;' class='weekhead' ><span class='emptyclass'>" + monthNames[month - 1] + "</span><br/><span class='spanbirder' style='padding: 0% 3px 0 3px !important;'>KW-" + weekno + "</span><br/><span >" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th>";
+                                       heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;' class='weekhead' ><span class='emptyclass'>" + monthNames[month - 1] + "</span><br/><span class='spanbirder' style='padding: 0% 3px 0 3px !important;'>KW-" + weekno + "</span><br/><span >" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th>";
                                    } else {
                                        heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;' class='weekhead' ><span class='emptyclass'></span></br><span class='spanbirder' style='padding: 0% 3px 0 3px !important;'>KW-" + weekno + "</span><br/><span >" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th>";
                                    }
                                }
                            } else {
                                if (dt == 1) {
-                                   heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>S.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;' class='weekhead' ><span class='emptyclass'>" + monthNames[month - 1] + "</span><br/><span class='spanbirder' style='padding: 0% 3px 0 3px !important;border-right:1px solid #B8B1B1;'>KW-" + weekno + "</span><br/><span style='border-right:1px solid #B8B1B1;padding:0px 12px 0px 12px;'>" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th>";
+                                   heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;' class='weekhead' ><span class='emptyclass'>" + monthNames[month - 1] + "</span><br/><span class='spanbirder' style='padding: 0% 3px 0 3px !important;border-right:1px solid #B8B1B1;'>KW-" + weekno + "</span><br/><span style='border-right:1px solid #B8B1B1;padding:0px 12px 0px 12px;'>" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th>";
                                }
                            }
                        } else if (j == parseInt(diffDays)) {
@@ -1479,15 +1459,7 @@ Versions:
                    $(".table2 .one").append(tableheade);
                }
                $scope.headerpop();
-               $(".table2").each(function() {
-                   $(this).find("tr").each(function() {
-                       $(this).find(".weekhead").each(function(cu) {
-                           if (cu <= 4) {
-                               $(this).remove();
-                           }
-                       })
-                   })
-               })
+              
                angular.element(document.getElementById('contid')).scope().Staffingpopltion();
                $(".resourcetable").each(function() {
                        $(this).find("td").each(function(a) {
@@ -1630,10 +1602,11 @@ Versions:
                    } else {
                        valuee = 0;
                    }
-                  valuee= parseFloat(valuee).toFixed(2);
+                  //valuee= parseFloat(valuee).toFixed(2);
                        var spltdaat=(valuee).toString().split("");
                          if(spltdaat.length>=5)
                                        {
+                                        valuee= parseFloat(valuee).toFixed(2);
                                             txtx = txtx + "<td style='font-size:8px;'>" + valuee + "</td>";
 
                                        }
@@ -1813,7 +1786,10 @@ Versions:
                      </td>
            
                 <td>Opportunity Name:</td>
-            <td><select class="Projects" data-ng-model="projectsSelecteddata" data-ng-change="projects(projectsSelecteddata)"  data-ng-options="projectsselect as projectsselect.value for projectsselect in projectsselect"> </select>
+            <td>
+                      
+
+            <select class="Projects" data-ng-model="projectsSelecteddata" data-ng-change="projects(projectsSelecteddata)"  data-ng-options="projectsselect as projectsselect.value for projectsselect in projectsselect"> </select>
         </td>
    
         <td>Start Month :</td>
