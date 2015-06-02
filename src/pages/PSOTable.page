@@ -22,13 +22,7 @@ Versions:
       <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.17/jquery-ui.min.js"></script>
       <script src="/resource/1430742754000/PsoToolMomentjs"></script>
       <script src="/resource/1430888909000/PsoToolUnderscorejs"></script>
-      <style>
-      .largeWidth
-      {
-
-        border:1px solid red;
-      }
-      </style>
+   
 
       <script type="text/javascript">
         var weekdays = {};
@@ -333,8 +327,8 @@ Versions:
                            resurce.SoldDays = resurce.SoldDays.toFixed(2).toString().replace(".", ",");
                            $scope.unplannedindays = $scope.unplannedindays.toFixed(2);
                            var ab = $scope.unplannedindays.toString();
-                           var soldrevstring = $scope.soldreven//.toFixed(2).toString();
-                           var plnndrevstring = $scope.plnndreven//.toFixed(2).toString();
+                           var soldrevstring = $scope.soldreven;
+                           var plnndrevstring = $scope.plnndreven;
                            $scope.unplannedindays = ab.replace(".", ",");
                            $scope.soldreven = soldrevstring//.replace(".", ",");
                            $scope.plnndreven = plnndrevstring//.replace(".", ",");
@@ -553,7 +547,7 @@ Versions:
                );
            })
 
-           //
+    
 
 
            $scope.calculationandconvertion = function() {
@@ -623,15 +617,12 @@ Versions:
                        plandtotal = plandtotal.toString().replace(".", ",");
                        unplandtotal = unplandtotal.toString().replace(".", ",");
                        var latetmodef = soldrev - plnndreven;
-                       //soldrev = soldrev.toString().replace(".", ",");
-                       //rate= rate.toFixed(2);
-                        rate=euroconverter(rate);
+                       rate=euroconverter(rate);
                          soldrev =euroconverter(soldrev); 
                        plnndreven =euroconverter(plnndreven ); 
-                       //plnndreven = plnndreven.toFixed(2).toString().replace(".", ",");
                        latetmodef = latetmodef.toFixed(2).toString().replace(".", ",");
                        trdata = "<tr class='totalplannedandun'><td>Totals</td><td></td><td>" + eurosoliddays + "</td><td>" + plandtotal + "</td><td>" + unplandtotal + "</td></tr>";
-                       secondtable = "<tr class='totalforcalndr'><td>" +rate + "</td><td style='height:19px;'>" + soldrev + "</td><td>" + plnndreven + "</td><td></td></tr>"
+                       secondtable = "<tr class='totalforcalndr' style='min-width:72px;'><td></td><td style='height:19px;min-width:72px;'>" + soldrev + "</td><td style='min-width:72px;'>" + plnndreven + "</td><td></td></tr>"
                        $(".prjname").each(function() {
                            if ($(this).parent().prev().find(".customername").text() == customer && $(this).text() == aprojects.OpportunityName) {
                                $(this).parent().parent().parent().next().find(".table1 .totalscalc").append(trdata);
@@ -819,7 +810,7 @@ Versions:
 
                        if (parseFloat(currentvalue) == 0) {
                            a.currentTarget.value = "";
-                           //$(a.target).removeClass();
+                
                        }
                        if (totalhours == "") {
                            totalhours = a.currentTarget.value;
@@ -1146,6 +1137,9 @@ Versions:
                                        if (parseFloat(b.Staff) == 0) {
                                            b.Staff = "";
                                        }
+                                    
+                
+                                      
                                        $(this).val(b.Staff);
                                        if (b.SpecialOccasion == true) {
                                            $(this).attr("disabled", "true");
@@ -1238,8 +1232,7 @@ Versions:
                                }
                            })
                        }
-                      var widthdy = parseFloat($(".custvalues").width())+2;
-                       $("#resourcetable").attr("style", "width:" + widthdy+ "px");
+                     Z
                    } else {
                        $(".appendtxt").text(" ");
                        $(".appendtxt").append("No results are available for the filtering.")
@@ -1320,8 +1313,7 @@ Versions:
                            $(this).next().removeClass("hidedata");
                        })
                    }
-                  var widthdy = parseFloat($(".custvalues").width())+2;
-                   $("#resourcetable").attr("style", "width:" + widthdy + "px");
+
                } else {
                    $(".appendtxt").text(" ");
                    $(".appendtxt").append("No results are available for the filtering.")
@@ -1330,8 +1322,7 @@ Versions:
                }
            }
            $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
-               var widthdy = parseFloat($(".custvalues").width())+2;
-               $("#resourcetable").attr("style", "width:" + widthdy+ "px");
+        
                //Controller Ends Here
                //Functions of angularjs when is in document ready Starts here
                //date picker plugin starts here
@@ -1361,6 +1352,7 @@ Versions:
                $scope.headerpop = function() {
                    var strtdate = startdateobj.StartDate;
                    var enddate = startdateobj.EndDate;
+                 
                    var inputsplit = strtdate.split(".");
                    var splitstrtdate = strtdate.split(".");
                    var splitenddate = enddate.split(".");
@@ -1638,7 +1630,19 @@ Versions:
                    } else {
                        valuee = 0;
                    }
-                   txtx = txtx + "<td>" + valuee + "</td>";
+                  valuee= parseFloat(valuee).toFixed(2);
+                       var spltdaat=(valuee).toString().split("");
+                         if(spltdaat.length>=5)
+                                       {
+                                            txtx = txtx + "<td style='font-size:8px;'>" + valuee + "</td>";
+
+                                       }
+                                       else
+                                       {
+
+                                           txtx = txtx + "<td>" + valuee + "</td>";
+                                       }
+                
 
 
                });
@@ -1852,6 +1856,7 @@ Versions:
         <div class="clearfix"></div>
         <h1 style="position:relative;top:20px;">Resource Availability</h1>
         <div class="clearfix"></div>
+        <div class="custvalues ">
         <table class="table1" id="resourcetable">
             <tr>
                 <thead>
@@ -1866,6 +1871,8 @@ Versions:
                 <td class="" >{{dataval2.SpecialOccasion}}</td><td >{{dataval2.SoldDays}}</td><td class="" ></td><td ></td><td class="" ></td>-->
             </tr>
         </table>
+        </div>
+         <div class="clearfix"></div>
     </div>
     <div class="weekspresence" >
         <div class="weekpresencedata">
@@ -1882,7 +1889,7 @@ Versions:
                         <table >
                             <tr>
                                 <thead>
-                                    <tr> <th style="padding:1px 5px !important;">Sales<br></br> Price( &euro;)</th><th style="padding:1px 10px !important;">Sold<br></br> Rev.( &euro;)</th><th style="padding:1px 7px !important;">Planned<br></br> Rev.( &euro;)</th><th style="padding:1px 20px !important;">Latest<br></br> Mod.</th></tr>
+                                    <tr> <th style="padding:1px 5px !important;" class="fxdwidth">Sales<br></br> Price( &euro;)</th><th style="padding:1px 10px !important;" class="fxdwidth">Sold<br></br> Rev.( &euro;)</th><th style="padding:1px 7px !important;" class="fxdwidth">Planned<br></br> Rev.( &euro;)</th><th style="padding:1px 20px !important;" >Latest<br></br> Mod.</th></tr>
                                 </thead>
                             </tr>
                             <tbody class="inputbdy">
