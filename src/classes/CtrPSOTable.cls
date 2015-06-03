@@ -55,17 +55,23 @@ public class CtrPSOTable {
 
       if(DateValue == '')
         ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.WARNING,'Please select Date before running the job'));
-      else     
-          PlanningScheduleUpdate updateSchedule = new PlanningScheduleUpdate(DateValue, true,false);             
-    
+      else{
+
+           batchPSOTool b = new batchPSOTool(DateValue, true,false);
+           Database.executeBatch(b);  
+          //PlanningScheduleUpdate updateSchedule = new PlanningScheduleUpdate(DateValue, true,false);             
+      }
   }
   
    public void runMonthlyJob(){      
    
     if(DateValue == '')
         ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.WARNING,'Please select Date before running the job'));
-    else   
-      PlanningScheduleUpdate updateSchedule = new PlanningScheduleUpdate(DateValue,false,true);     
+    else{              
+           batchPSOTool b = new batchPSOTool(DateValue,false,true);
+           Database.executeBatch(b);  
+          //PlanningScheduleUpdate updateSchedule = new PlanningScheduleUpdate(DateValue, false,true);             
+      }  
     
   }
 

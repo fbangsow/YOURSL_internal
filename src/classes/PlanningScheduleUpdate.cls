@@ -29,10 +29,6 @@ public class PlanningScheduleUpdate {
 
     public PlanningScheduleUpdate() {
 
-        getDatesForCalculation(d);
-        populateStatisticsData('Planned', false, false);
-        updateOpportunityData(false, false);
-        populateStatisticsData('Actual', false, false);
     }
 
     public PlanningScheduleUpdate(String selectedDate, Boolean isWeeklyManualRun, Boolean isMonthlyManualRun) {

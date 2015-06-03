@@ -9,9 +9,11 @@ and oppprtunitylineItemSchedule objects.
 Public class SchedulesUpdate implements Schedulable {
    
    Public void execute(SchedulableContext SC) {
-   
-       PlanningScheduleUpdate updateSchedule = new PlanningScheduleUpdate();
-      
+   		
+   		Datetime d = system.today();
+   		String dateValue = String.valueOf(d.format('MM/dd/yyyy'));
+        batchPSOTool b = new batchPSOTool(dateValue,false,false);
+        Database.executeBatch(b);      
    }
    
 }

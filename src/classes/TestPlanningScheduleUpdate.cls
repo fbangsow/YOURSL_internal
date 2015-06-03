@@ -112,11 +112,11 @@ public class TestPlanningScheduleUpdate {
     }
     
     public static testMethod void weeklyTest(){
-        PlanningScheduleUpdate secondPlanning = new PlanningScheduleUpdate('2015/05/10',true,false);
+        PlanningScheduleUpdate secondPlanning = new PlanningScheduleUpdate('05/10/2015',true,false);
      }
     
      public static testMethod void monthlyTest(){
-        PlanningScheduleUpdate thirdPlanning = new PlanningScheduleUpdate('2015/05/01',false,true);
-    }
+        PlanningScheduleUpdate thirdPlanning = new PlanningScheduleUpdate('05/01/2015',false,true);
+    }  
 
 }
