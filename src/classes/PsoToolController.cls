@@ -1,13 +1,14 @@
 public without sharing class PsoToolController{
-    private static Map<Id, PsoToolController> userIdToPsoToolInstance= new Map<Id, PsoToolController>();
-    private PsoToolDataSetWrapper dataSet;
-    @TestVisible private List<Opportunity> opportunities;
-    private String currentUserId;
-    @TestVisible private Map<String, String> contactIdsToNamesMap;
-    @TestVisible private Map<String, Map<String, Map<String, OpportunityLineItem>>> contactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap;
-    @TestVisible private Date startDate;
-    @TestVisible private Date endDate;
-    private List<String> opportunityLineItemIds;
+    private static Map<Id, PsoToolController> UserIdToPsoToolInstance= new Map<Id, PsoToolController>();
+    private PsoToolDataSetWrapper DataSet;
+    @TestVisible private List<Opportunity> Opportunities;
+    private String CurrentUserId;
+    @TestVisible private Map<String, String> ContactIdsToNamesMap;
+    @TestVisible private Map<String, Map<String, Map<String, OpportunityLineItem>>> ContactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap;
+    @TestVisible private Date StartDate;
+    @TestVisible private Date EndDate;
+    @TestVisible private List<Id> OpportunitiesToShow;
+    private List<String> OpportunityLineItemIds;
     private Map<String, Decimal> OppLineItemScheduleIdToNumberOfDays;
     @TestVisible private Map<String, Map<String, Map<String, Planning_statistics__c>>> OppLineItemIdToDateRangeToDataTypeToStatisticsEntry;
     public static final String SPECIAL_OPPORTUNITY = '° Urlaub/Krankheit/Feiertage';
@@ -22,72 +23,85 @@ public without sharing class PsoToolController{
         };
     
     private PsoToolController(){
-        opportunityLineItemIds = new List<String>();
+        OpportunityLineItemIds = new List<String>();
+        OpportunitiesToShow = new List<Id>();
+        setStartDate(Date.today());
     }
 
     public static PsoToolController getInstance(){
         createInstanceIfDoesntExist();
-        return userIdToPsoToolInstance.get(UserInfo.getUserId());
+        return UserIdToPsoToolInstance.get(UserInfo.getUserId());
     }
 
     private static void createInstanceIfDoesntExist(){
-        if(!userIdToPsoToolInstance.containsKey(UserInfo.getUserId())){
+        if(!UserIdToPsoToolInstance.containsKey(UserInfo.getUserId())){
             PsoToolController pso_tool_instance = new PsoToolController();
-            userIdToPsoToolInstance.put(UserInfo.getUserId(), pso_tool_instance);
+            UserIdToPsoToolInstance.put(UserInfo.getUserId(), pso_tool_instance);
         }
     }
 
-    public PsoToolDataSetWrapper getDataSet(Date passedDate){
-        dataSet = new PsoToolDataSetWrapper();
-        setDatesRange(passedDate);
-        queryData();
-        contactIdsToNamesMap = new Map<String, String>();
-        dataSet.StartDate = this.startDate.format();
-        dataSet.EndDate = this.endDate.format();
-        dataSet.TimeStamp = Datetime.now().format('yyyy-MM-dd HH:mm:ss');
-        dataSet.Customers = getCustomers();
-        dataSet.Resources = getResourcesAvailabilityData();
-        return dataSet;
-    }
-
     public PsoToolDataSetWrapper getDataSet(){
-        return getDataSet(Date.Today());
+        DataSet = new PsoToolDataSetWrapper();
+        queryData();
+        ContactIdsToNamesMap = new Map<String, String>();
+        DataSet.StartDate = this.StartDate.format();
+        DataSet.EndDate = this.EndDate.format();
+        DataSet.TimeStamp = Datetime.now().format('yyyy-MM-dd HH:mm:ss');
+        DataSet.Customers = getCustomers(true);
+        DataSet.Resources = getResourcesAvailabilityData();
+        return DataSet;
     }
 
-    private void setDatesRange(Date passedDate){
-        this.startDate = passedDate.toStartOfMonth();
-        Date helperDate = this.startDate.addMonths(2);
-        this.endDate = Date.newInstance(helperDate.year(), helperDate.month(), Date.daysInMonth(helperDate.year(), helperDate.month()));
+    public PsoToolController setStartDate(Date passed_date){
+        this.StartDate = passed_date.toStartOfMonth();
+        Date helper_date = this.StartDate.addMonths(2);
+        this.EndDate = Date.newInstance(helper_date.year(), helper_date.month(), Date.daysInMonth(helper_date.year(), helper_date.month()));
+        return this;
+    }
+
+    public PsoToolController setSelectedOpportunities(List<Id> selected_opportunities){
+        this.OpportunitiesToShow = selected_opportunities;
+        return this;
     }
 
     @TestVisible private void queryData(){
-        opportunities = [SELECT Id, Name, Account.Name, Account.Id, Projektleiter_YOUR_SL__r.Name,
-                                    (SELECT Contact__r.Name, Contact__r.Id, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
-                                        FROM OpportunityLineItems
-                                        WHERE Contact__r.LastName != 'All' AND
-                                        Unit__c = 'Manntag(e)') 
-                                        FROM Opportunity 
-                                        WHERE Id IN :getRelatedOpportunityIds() 
-                                        AND 
-                                        Project_Start_Date__c <= :this.endDate AND 
-                                        Project_End_Date__c >= :this.startDate 
-                                        AND Managed_by_PSO_Tool__c = true
-                                        ];
-        List<OpportunityLineItem> opportunitylineItems = [SELECT Contact__r.Id, Product2.Name, ServiceDate, Opportunity.Name, Opportunity.Id, Quantity,
+        getOpportunities();
+        List<OpportunityLineItem> opportunity_line_items = [SELECT Contact__r.Id, Product2.Name, ServiceDate, Opportunity.Name, Opportunity.Id, Quantity,
                                     (SELECT OpportunityLineItemId, ScheduleDate, Quantity 
                                         FROM OpportunityLineItemSchedules
                                         WHERE Description !=:OpportunityLineItemScheduleChangeHandler.UNPLANNED_COMMENT)
                                         FROM OpportunityLineItem
                                         WHERE Contact__r.Id IN :getRelatedContactIds()];
-        buildDataStructure(opportunitylineItems);
+        buildDataStructure(opportunity_line_items);
         List<Planning_statistics__c> planning_statistics_info = [SELECT Data_Type__c, Days__c, End_Date__c, OpportunityLineItemId__c, Revenue__c, Start_Date__c, Time_Type__c 
                                         FROM Planning_statistics__c 
-                                        WHERE OpportunityLineItemId__c IN :opportunityLineItemIds];
+                                        WHERE OpportunityLineItemId__c IN :OpportunityLineItemIds];
         processStatistics(planning_statistics_info);
     }
 
+    private void getOpportunities(){
+        Opportunities = [SELECT Id, Name, Account.Name, Account.Id, Projektleiter_YOUR_SL__r.Name,
+                                    (SELECT Contact__r.Name, Contact__r.Id, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
+                                        FROM OpportunityLineItems
+                                        WHERE Contact__r.LastName != 'All' AND
+                                        Unit__c = 'Manntag(e)') 
+                                        FROM Opportunity 
+                                        WHERE Id IN :getOpportunitiesToShow() 
+                                        AND 
+                                        Project_Start_Date__c <= :this.EndDate AND 
+                                        Project_End_Date__c >= :this.StartDate 
+                                        AND Managed_by_PSO_Tool__c = true];
+    }
+
+    @TestVisible private List<Id> getOpportunitiesToShow(){
+        if(OpportunitiesToShow.isEmpty())
+            return getRelatedOpportunityIds();
+        else
+            return OpportunitiesToShow;
+    }
+
     private List<Id> getRelatedOpportunityIds(){
-        this.currentUserId = UserInfo.getUserId();
+        this.CurrentUserId = UserInfo.getUserId();
         if(PROFILE_ID_TO_PROFILE_NAME_FOR_ADMIN_MODE.containsKey(UserInfo.getProfileId()))
             return getAllOpportunityIds();
         else
@@ -96,54 +110,54 @@ public without sharing class PsoToolController{
 
     private List<Id> getAllOpportunityIds(){
         List<Id> all_ids = new List<Id>();
-        List<Opportunity> opportunities = [SELECT Id FROM Opportunity WHERE Managed_by_PSO_Tool__c = true];
-        for(Opportunity single_opportunity: opportunities){
+        List<Opportunity> Opportunities = [SELECT Id FROM Opportunity WHERE Managed_by_PSO_Tool__c = true];
+        for(Opportunity single_opportunity: Opportunities){
             all_ids.add(single_opportunity.Id);
         }
         return all_ids;
     }
 
     private List<Id> getOnlyRelatedOpportunityIds(){
-        List<OpportunityTeamMember> teamMembers = [SELECT OpportunityId FROM OpportunityTeamMember WHERE UserId =: this.currentUserId];
+        List<OpportunityTeamMember> team_members = [SELECT OpportunityId FROM OpportunityTeamMember WHERE UserId =: this.CurrentUserId];
         List<Id> opportunityIds = new List<Id>();
-        for(OpportunityTeamMember teamMember: teamMembers){
-            opportunityIds.add(teamMember.OpportunityId);
+        for(OpportunityTeamMember team_member: team_members){
+            opportunityIds.add(team_member.OpportunityId);
         }
         return opportunityIds;
     }
 
     private Set<Id> getRelatedContactIds(){
-        Set<Id> contactIds = new Set<Id>();
-        for(Opportunity opp: opportunities){
+        Set<Id> contact_ids = new Set<Id>();
+        for(Opportunity opp: Opportunities){
             for(OpportunityLineItem item: opp.OpportunityLineItems){
-                contactIds.add(item.Contact__r.Id);
-                opportunityLineItemIds.add(item.Id);
+                contact_ids.add(item.Contact__r.Id);
+                OpportunityLineItemIds.add(item.Id);
             }
         }
-        return contactIds;
+        return contact_ids;
     }
 
     private void buildDataStructure(List<OpportunityLineItem> opportunity_line_items){
-        contactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap = new Map<String, Map<String, Map<String, OpportunityLineItem>>>();
+        ContactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap = new Map<String, Map<String, Map<String, OpportunityLineItem>>>();
         for(OpportunityLineItem item: opportunity_line_items){
-            if(!contactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap.containsKey(item.Contact__r.Id)){
-                contactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap.put(item.Contact__r.Id, getOpportunityIdToOpportunityLineItemMap(item));
+            if(!ContactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap.containsKey(item.Contact__r.Id)){
+                ContactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap.put(item.Contact__r.Id, getOpportunityIdToOpportunityLineItemMap(item));
             }
             else{
-                if(!contactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap.get(item.Contact__r.Id).containsKey(item.Opportunity.Id)){
-                    contactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap.get(item.Contact__r.Id).put(item.Opportunity.Id, new Map<String, OpportunityLineItem>{item.Id => item});
+                if(!ContactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap.get(item.Contact__r.Id).containsKey(item.Opportunity.Id)){
+                    ContactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap.get(item.Contact__r.Id).put(item.Opportunity.Id, new Map<String, OpportunityLineItem>{item.Id => item});
                 }
                 else{
-                    contactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap.get(item.Contact__r.Id).get(item.Opportunity.Id).put(item.Id, item);
+                    ContactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap.get(item.Contact__r.Id).get(item.Opportunity.Id).put(item.Id, item);
                 }
             }
         }
     }
 
     private Map<String, Map<String, OpportunityLineItem>> getOpportunityIdToOpportunityLineItemMap(OpportunityLineItem item){
-        Map<String, Map<String, OpportunityLineItem>> newMap = new Map<String, Map<String, OpportunityLineItem>>();
-        newMap.put(item.Opportunity.Id, new Map<String, OpportunityLineItem>{item.Id => item});
-        return newMap;
+        Map<String, Map<String, OpportunityLineItem>> new_map = new Map<String, Map<String, OpportunityLineItem>>();
+        new_map.put(item.Opportunity.Id, new Map<String, OpportunityLineItem>{item.Id => item});
+        return new_map;
     }
 
     @TestVisible private void processStatistics(List<Planning_statistics__c> planning_statistics){
@@ -151,95 +165,96 @@ public without sharing class PsoToolController{
         for(Planning_statistics__c entry : planning_statistics){
             if(!OppLineItemIdToDateRangeToDataTypeToStatisticsEntry.containsKey(entry.OpportunityLineItemId__c))
                 OppLineItemIdToDateRangeToDataTypeToStatisticsEntry.put(entry.OpportunityLineItemId__c, new Map<String, Map<String, Planning_statistics__c>>());
-            String keyForNestedMap = entry.Start_Date__c.format() + ' - ' + entry.End_Date__c.format();
-            if(!OppLineItemIdToDateRangeToDataTypeToStatisticsEntry.get(entry.OpportunityLineItemId__c).containsKey(keyForNestedMap))
-                OppLineItemIdToDateRangeToDataTypeToStatisticsEntry.get(entry.OpportunityLineItemId__c).put(keyForNestedMap, new Map<String, Planning_statistics__c>());
-            if(!OppLineItemIdToDateRangeToDataTypeToStatisticsEntry.get(entry.OpportunityLineItemId__c).get(keyForNestedMap).containsKey(entry.Data_Type__c))
-                OppLineItemIdToDateRangeToDataTypeToStatisticsEntry.get(entry.OpportunityLineItemId__c).get(keyForNestedMap).put(entry.Data_Type__c, entry);
+            String key_for_nested_map = entry.Start_Date__c.format() + ' - ' + entry.End_Date__c.format();
+            if(!OppLineItemIdToDateRangeToDataTypeToStatisticsEntry.get(entry.OpportunityLineItemId__c).containsKey(key_for_nested_map))
+                OppLineItemIdToDateRangeToDataTypeToStatisticsEntry.get(entry.OpportunityLineItemId__c).put(key_for_nested_map, new Map<String, Planning_statistics__c>());
+            if(!OppLineItemIdToDateRangeToDataTypeToStatisticsEntry.get(entry.OpportunityLineItemId__c).get(key_for_nested_map).containsKey(entry.Data_Type__c))
+                OppLineItemIdToDateRangeToDataTypeToStatisticsEntry.get(entry.OpportunityLineItemId__c).get(key_for_nested_map).put(entry.Data_Type__c, entry);
         }
     }
 
-    @TestVisible private List<Customer> getCustomers(){
+    @TestVisible private List<Customer> getCustomers(Boolean with_resources){
         Map<Id, Customer> customers = new Map<Id, Customer>();
-        for(Opportunity opp: opportunities){
+        for(Opportunity opp: Opportunities){
             if(!customers.containsKey(opp.Account.Id)){
                 customers.put(opp.Account.Id, getCustomer(opp));
             }
-            customers.get(opp.Account.Id).Projects.add(getProject(opp));
+            customers.get(opp.Account.Id).Projects.add(getProject(opp, with_resources));
         }
         return customers.values();
     }
 
     @TestVisible private Customer getCustomer(Opportunity opp){
-        Customer newCustomer = new Customer();
-        newCustomer.AccountName = opp.Account.Name;
-        newCustomer.AccountId = opp.Account.Id;
-        newCustomer.Projects = new List<Project>();
-        return newCustomer;
+        Customer new_customer = new Customer();
+        new_customer.AccountName = opp.Account.Name;
+        new_customer.AccountId = opp.Account.Id;
+        new_customer.Projects = new List<Project>();
+        return new_customer;
     }
 
-    @TestVisible private Project getProject(Opportunity opp){
-        Project newProject = new Project();
-        newProject.OpportunityName = opp.Name;
-        newProject.OurProjectManager = opp.Projektleiter_YOUR_SL__r.Name;
-        newProject.ProjectManagerId = opp.Projektleiter_YOUR_SL__r.Id;
-        newProject.OpportunityId = opp.Id;
-        newProject.Resources = getResources(opp);
-        return newProject;
+    @TestVisible private Project getProject(Opportunity opp, Boolean with_resources){
+        Project new_project = new Project();
+        new_project.OpportunityName = opp.Name;
+        new_project.OurProjectManager = opp.Projektleiter_YOUR_SL__r.Name;
+        new_project.ProjectManagerId = opp.Projektleiter_YOUR_SL__r.Id;
+        new_project.OpportunityId = opp.Id;
+        if(with_resources)
+            new_project.Resources = getResources(opp);
+        return new_project;
     }
 
     @TestVisible private List<Resource> getResources(Opportunity opp){
         Map<String, Resource> resources = new Map<String, Resource> ();
-        for(OpportunityLineItem lineItem: opp.OpportunityLineItems){
-            contactIdsToNamesMap.put(lineItem.Contact__r.Id, lineItem.Contact__r.Name);
-            String keyForMap = lineItem.Contact__r.Name + lineItem.Product2.Name;
-            if(!resources.containsKey(keyForMap)){
-                resources.put(lineItem.Contact__r.Name + lineItem.Product2.Name, getResource(opp.Id, lineItem));
+        for(OpportunityLineItem line_item: opp.OpportunityLineItems){
+            ContactIdsToNamesMap.put(line_item.Contact__r.Id, line_item.Contact__r.Name);
+            String key_for_map = line_item.Contact__r.Name + line_item.Product2.Name;
+            if(!resources.containsKey(key_for_map)){
+                resources.put(line_item.Contact__r.Name + line_item.Product2.Name, getResource(opp.Id, line_item));
             }
             else{
-                resources.get(keyForMap).SoldDays += WORKING_HOURS_IN_DAY*lineItem.Quantity;
-                resources.get(keyForMap).Staffing.addAll(getStaffingForResourceForOpportunity(opp.Id, lineItem));
-                checkIfMonthIsWithinRangeAndPutInMap(resources.get(keyForMap), lineItem);
-                resources.get(keyForMap).Statistics.addAll(getStats(lineItem.Id));
-                if(Datetime.valueOf(resources.get(keyForMap).LastModifiedDate) < lineItem.LastModifiedDate)
-                    resources.get(keyForMap).LastModifiedDate = lineItem.LastModifiedDate.format('yyyy-MM-dd HH:mm:ss');
+                resources.get(key_for_map).SoldDays += WORKING_HOURS_IN_DAY*line_item.Quantity;
+                resources.get(key_for_map).Staffing.addAll(getStaffingForResourceForOpportunity(opp.Id, line_item));
+                checkIfMonthIsWithinRangeAndPutInMap(resources.get(key_for_map), line_item);
+                resources.get(key_for_map).Statistics.addAll(getStats(line_item.Id));
+                if(Datetime.valueOf(resources.get(key_for_map).LastModifiedDate) < line_item.LastModifiedDate)
+                    resources.get(key_for_map).LastModifiedDate = line_item.LastModifiedDate.format('yyyy-MM-dd HH:mm:ss');
             }
         }
         countPlannedDaysAndFilterStaffingByDates(resources);
         return resources.values();
     }
 
-    @TestVisible private Resource getResource(String oppId, OpportunityLineItem lineItem){
-        Resource newResource = new Resource();
-        newResource.ResourceName = lineItem.Contact__r.Name;
-        newResource.ContactId = lineItem.Contact__r.Id;
-        newResource.Product = lineItem.Product2.Name;
-        newResource.SalesPrice = lineItem.UnitPrice;
-        newResource.SoldDays = WORKING_HOURS_IN_DAY*lineItem.Quantity;
-        newResource.LastModifiedDate = lineItem.LastModifiedDate.format('yyyy-MM-dd HH:mm:ss');
-        newResource.Staffing = getStaffingForResourceForOpportunity(oppId, lineItem);
-        newResource.MonthToLimitMap = new Map<String, String>();
-        newResource.MonthToOppLineItemIdMap = new Map<String, String>();
-        newResource.Statistics = getStats(lineItem.Id);
-        checkIfMonthIsWithinRangeAndPutInMap(newResource, lineItem);
-        return newResource;
+    @TestVisible private Resource getResource(String opp_id, OpportunityLineItem line_item){
+        Resource new_resource = new Resource();
+        new_resource.ResourceName = line_item.Contact__r.Name;
+        new_resource.ContactId = line_item.Contact__r.Id;
+        new_resource.Product = line_item.Product2.Name;
+        new_resource.SalesPrice = line_item.UnitPrice;
+        new_resource.SoldDays = WORKING_HOURS_IN_DAY*line_item.Quantity;
+        new_resource.LastModifiedDate = line_item.LastModifiedDate.format('yyyy-MM-dd HH:mm:ss');
+        new_resource.Staffing = getStaffingForResourceForOpportunity(opp_id, line_item);
+        new_resource.MonthToLimitMap = new Map<String, String>();
+        new_resource.MonthToOppLineItemIdMap = new Map<String, String>();
+        new_resource.Statistics = getStats(line_item.Id);
+        checkIfMonthIsWithinRangeAndPutInMap(new_resource, line_item);
+        return new_resource;
     }
 
     @TestVisible private void checkIfMonthIsWithinRangeAndPutInMap(Resource resource, OpportunityLineItem item){
-        if(item.ServiceDate >= this.startDate && item.ServiceDate <= this.endDate){
+        if(item.ServiceDate >= this.StartDate && item.ServiceDate <= this.EndDate){
             resource.MonthToLimitMap.put(String.valueOf(item.ServiceDate.month()), String.valueOf(item.Quantity));
             resource.MonthToOppLineItemIdMap.put(String.valueOf(item.ServiceDate.month()), item.Id);
         }
     }
 
-    @TestVisible private List<Staffing> getStaffingForResourceForOpportunity(String oppId, OpportunityLineItem lineItem){
+    @TestVisible private List<Staffing> getStaffingForResourceForOpportunity(String opp_id, OpportunityLineItem line_item){
         List<Staffing> schedule = new List<Staffing>();
-        if(contactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap.containsKey(lineItem.Contact__r.Id)){
-            if(contactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap.get(lineItem.Contact__r.Id).containsKey(oppId)){
-                if(contactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap.get(lineItem.Contact__r.Id).get(oppId).containsKey(lineItem.Id)){
-                    for(OpportunityLineItemSchedule timeEntry: contactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap.get(lineItem.Contact__r.Id).get(oppId).get(lineItem.Id).OpportunityLineItemSchedules){
-                        if(timeEntry.Quantity != 0)
-                            schedule.add(getStaffingForScheduleEntry(timeEntry));
+        if(ContactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap.containsKey(line_item.Contact__r.Id)){
+            if(ContactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap.get(line_item.Contact__r.Id).containsKey(opp_id)){
+                if(ContactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap.get(line_item.Contact__r.Id).get(opp_id).containsKey(line_item.Id)){
+                    for(OpportunityLineItemSchedule time_entry: ContactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap.get(line_item.Contact__r.Id).get(opp_id).get(line_item.Id).OpportunityLineItemSchedules){
+                        if(time_entry.Quantity != 0)
+                            schedule.add(getStaffingForScheduleEntry(time_entry));
                     }
                 }
             }
@@ -247,12 +262,12 @@ public without sharing class PsoToolController{
         return schedule;
     }
 
-    @TestVisible private Staffing getStaffingForScheduleEntry(OpportunityLineItemSchedule timeEntry){
-        Staffing newStaff = new Staffing();
-        newStaff.Day = timeEntry.ScheduleDate.format();
-        newStaff.Staff = timeEntry.Quantity*WORKING_HOURS_IN_DAY;
-        newStaff.SpecialOccasion = false;
-        return newStaff;
+    @TestVisible private Staffing getStaffingForScheduleEntry(OpportunityLineItemSchedule time_entry){
+        Staffing new_staff = new Staffing();
+        new_staff.Day = time_entry.ScheduleDate.format();
+        new_staff.Staff = time_entry.Quantity*WORKING_HOURS_IN_DAY;
+        new_staff.SpecialOccasion = false;
+        return new_staff;
     }
 
     @TestVisible private void countPlannedDaysAndFilterStaffingByDates(Map<String, Resource> resources){
@@ -261,7 +276,7 @@ public without sharing class PsoToolController{
             List<Staffing> filteredStaffing = new List<Staffing>();
             for(Staffing specificStaff: resources.get(key).Staffing){
                 plannedDays += specificStaff.Staff;
-                if(Date.parse(specificStaff.Day) >= this.startDate && Date.parse(specificStaff.Day) <= this.endDate) {
+                if(Date.parse(specificStaff.Day) >= this.StartDate && Date.parse(specificStaff.Day) <= this.EndDate) {
                     filteredStaffing.add(specificStaff);
                 }
             }
@@ -272,16 +287,16 @@ public without sharing class PsoToolController{
 
     @TestVisible private List<ResourceInfo> getResourcesAvailabilityData(){
         Map<String, ResourceInfo> contactIdToResourceAvailabilityData = new Map<String, ResourceInfo>();
-        for(String contactId: contactIdsToNamesMap.keySet()){
-            if(!contactIdToResourceAvailabilityData.containsKey(contactId)){
+        for(String contact_id: ContactIdsToNamesMap.keySet()){
+            if(!contactIdToResourceAvailabilityData.containsKey(contact_id)){
                 ResourceInfo newInfo = new ResourceInfo();
-                newInfo.ResourceName = contactIdsToNamesMap.get(contactId);
+                newInfo.ResourceName = ContactIdsToNamesMap.get(contact_id);
                 newInfo.Staffing = new List<Staffing>();
-                newInfo.ContactId = contactId;
-                contactIdToResourceAvailabilityData.put(contactId, newInfo);
+                newInfo.ContactId = contact_id;
+                contactIdToResourceAvailabilityData.put(contact_id, newInfo);
             }
-            if(contactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap.containsKey(contactId)){
-                contactIdToResourceAvailabilityData.get(contactId).Staffing.addAll(getStaffingForResource(contactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap.get(contactId).values()));
+            if(ContactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap.containsKey(contact_id)){
+                contactIdToResourceAvailabilityData.get(contact_id).Staffing.addAll(getStaffingForResource(ContactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap.get(contact_id).values()));
             }
         }
         return contactIdToResourceAvailabilityData.values();
@@ -289,14 +304,14 @@ public without sharing class PsoToolController{
 
     @TestVisible private List<Staffing> getStaffingForResource(List<Map<String, OpportunityLineItem>> oppLineItemIdToOpportunityLineItemMap){
         Map<String, Staffing> DateToStaffingForResourceMap = new Map<String, Staffing>();
-        for(Map<String, OpportunityLineItem> oppLineItemIdToLineItems: oppLineItemIdToOpportunityLineItemMap){
-            for(OpportunityLineItem item: oppLineItemIdToLineItems.values()){
-                if(checkIfSpecialOccasion(item.Opportunity.Name) && item.ServiceDate >= this.startDate && item.ServiceDate <= this.endDate)
+        for(Map<String, OpportunityLineItem> opp_line_item_id_to_line_items: oppLineItemIdToOpportunityLineItemMap){
+            for(OpportunityLineItem item: opp_line_item_id_to_line_items.values()){
+                if(checkIfSpecialOccasion(item.Opportunity.Name) && item.ServiceDate >= this.StartDate && item.ServiceDate <= this.EndDate)
                     DateToStaffingForResourceMap = addStaffing(DateToStaffingForResourceMap, getStaffingForSpecialOccasionEntry(item));
                 else{
-                    for(OpportunityLineItemSchedule timeEntry:item.OpportunityLineItemSchedules){
-                        if(timeEntry.ScheduleDate >= this.startDate && timeEntry.ScheduleDate <= this.endDate){
-                            DateToStaffingForResourceMap = addStaffing(DateToStaffingForResourceMap, getStaffingForScheduleEntry(timeEntry));
+                    for(OpportunityLineItemSchedule time_entry:item.OpportunityLineItemSchedules){
+                        if(time_entry.ScheduleDate >= this.StartDate && time_entry.ScheduleDate <= this.EndDate){
+                            DateToStaffingForResourceMap = addStaffing(DateToStaffingForResourceMap, getStaffingForScheduleEntry(time_entry));
                         }
                     }
                 }
@@ -305,11 +320,11 @@ public without sharing class PsoToolController{
         return DateToStaffingForResourceMap.values();
     }
 
-    @TestVisible private Boolean checkIfSpecialOccasion(String oppName){
-        Boolean isSpecialOccasion = false;
-        if(oppName.contains(SPECIAL_OPPORTUNITY))
-            isSpecialOccasion = true;
-        return isSpecialOccasion;
+    @TestVisible private Boolean checkIfSpecialOccasion(String opp_name){
+        Boolean is_special_occasion = false;
+        if(opp_name.contains(SPECIAL_OPPORTUNITY))
+            is_special_occasion = true;
+        return is_special_occasion;
     }
 
     @TestVisible private Map<String, Staffing> addStaffing(Map<String, Staffing> existingStuffing, Staffing newItemToAdd){
@@ -325,36 +340,36 @@ public without sharing class PsoToolController{
     }
 
     @TestVisible private Staffing getStaffingForSpecialOccasionEntry(OpportunityLineItem item){
-        Staffing newStaff = new Staffing();
-        newStaff.Day = item.ServiceDate.format();
-        newStaff.Staff = item.Quantity*WORKING_HOURS_IN_DAY;
-        newStaff.SpecialOccasion = true;
-        return newStaff;
+        Staffing new_staff = new Staffing();
+        new_staff.Day = item.ServiceDate.format();
+        new_staff.Staff = item.Quantity*WORKING_HOURS_IN_DAY;
+        new_staff.SpecialOccasion = true;
+        return new_staff;
     }
 
     public void allocateResource(String oppLineItemId, Date selectedDate, Decimal numberOfDays){
-        OpportunityLineItemSchedule changedOrCreatedLineItemSchedule;
-        List<OpportunityLineItem> changedOpportunityLineItems = [SELECT UnitPrice, Quantity, 
+        OpportunityLineItemSchedule changed_or_created_line_item_schedule;
+        List<OpportunityLineItem> changed_opportunity_line_items = [SELECT UnitPrice, Quantity, 
                             (SELECT Quantity, Description FROM OpportunityLineItemSchedules WHERE ScheduleDate =:selectedDate 
                                 AND Description != :OpportunityLineItemScheduleChangeHandler.UNPLANNED_COMMENT ORDER BY LastModifiedDate DESC) 
                             FROM OpportunityLineItem WHERE Id =: oppLineItemId];
-        if(changedOpportunityLineItems.size() == 0)
+        if(changed_opportunity_line_items.size() == 0)
             throw new OpportunityLineItemNotFoundException('OpportunityLineItem is not found');
-        OpportunityLineItem changedOpportunityLineItem = changedOpportunityLineItems.get(0);
-        if(changedOpportunityLineItem.OpportunityLineItemSchedules.size()>0)
-            changedOrCreatedLineItemSchedule = changedOpportunityLineItem.OpportunityLineItemSchedules.get(0);
+        OpportunityLineItem changed_opportunity_line_item = changed_opportunity_line_items.get(0);
+        if(changed_opportunity_line_item.OpportunityLineItemSchedules.size()>0)
+            changed_or_created_line_item_schedule = changed_opportunity_line_item.OpportunityLineItemSchedules.get(0);
         else
-            changedOrCreatedLineItemSchedule = createNewOpportunityLineItemSchedule(oppLineItemId, selectedDate);
-        changedOrCreatedLineItemSchedule.Quantity = numberOfDays;
-        upsert changedOrCreatedLineItemSchedule;
+            changed_or_created_line_item_schedule = createNewOpportunityLineItemSchedule(oppLineItemId, selectedDate);
+        changed_or_created_line_item_schedule.Quantity = numberOfDays;
+        upsert changed_or_created_line_item_schedule;
     }
 
     @TestVisible private OpportunityLineItemSchedule createNewOpportunityLineItemSchedule(String oppLineItemId, Date selectedDate){
-        OpportunityLineItemSchedule createdLineItemSchedule = new OpportunityLineItemSchedule();
-        createdLineItemSchedule.ScheduleDate = selectedDate;
-        createdLineItemSchedule.OpportunityLineItemId = oppLineItemId;
-        createdLineItemSchedule.Type = 'Quantity';
-        return createdLineItemSchedule;
+        OpportunityLineItemSchedule created_line_item_schedule = new OpportunityLineItemSchedule();
+        created_line_item_schedule.ScheduleDate = selectedDate;
+        created_line_item_schedule.OpportunityLineItemId = oppLineItemId;
+        created_line_item_schedule.Type = 'Quantity';
+        return created_line_item_schedule;
     }
 
     @TestVisible private List<Stats> getStats(String opp_line_item_id){
@@ -385,12 +400,27 @@ public without sharing class PsoToolController{
         return new_stat;
     }
 
+    public AccountsAndTheirOpportunities getAccountsAndOpportunities(){
+        AccountsAndTheirOpportunities accounts_and_opportunities = new AccountsAndTheirOpportunities();
+        getOpportunities();
+        accounts_and_opportunities.Customers = getCustomers(false);
+        return accounts_and_opportunities;
+    }
+
     public class PsoToolDataSetWrapper{
         public String StartDate;
         public String EndDate;
         public String TimeStamp;
         public List<Customer> Customers;
         public List<ResourceInfo> Resources;
+
+        public String JSON(){
+            return JSON.serialize(this);
+        }
+    }
+
+    public class AccountsAndTheirOpportunities{
+        public List<Customer> Customers;
 
         public String JSON(){
             return JSON.serialize(this);

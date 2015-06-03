@@ -15,7 +15,7 @@
                             <b>Totals</b>
                         </apex:facet>
                     </apex:column>
-                    <apex:column  width="150px">
+                    <apex:column width="150px">
                         <apex:facet name="header">Product Name</apex:facet>
                         <apex:outputText value="{!LineItems[key].LineItem.Product2.Name}"/>
                     </apex:column>
