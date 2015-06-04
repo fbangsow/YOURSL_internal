@@ -353,6 +353,10 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>batchPSOTool</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>extForecastProducts</apexClass>
         <enabled>true</enabled>
     </classAccesses>
