@@ -35,7 +35,8 @@ public without sharing class OpportunityLineItemScheduleTracker{
         for(OpportunityLineItemSchedule schedule: [SELECT Quantity, ScheduleDate, Id, OpportunityLineItem.Id, Description 
                                                     FROM OpportunityLineItemSchedule 
                                                     WHERE OpportunityLineItem.Id IN :opp_line_items_to_search 
-                                                    AND Description != :OpportunityLineItemScheduleChangeHandler.UNPLANNED_COMMENT]){
+                                                    AND Description != :OpportunityLineItemScheduleChangeHandler.UNPLANNED_COMMENT
+                                                    AND OpportunityLineItem.Unit__c = 'Manntag(e)']){
             if(!opp_line_id_to_opp_line_item_schedule.containsKey(schedule.OpportunityLineItem.Id))
                 opp_line_id_to_opp_line_item_schedule.put(schedule.OpportunityLineItem.Id, new Map<Id, OpportunityLineItemSchedule>());
             opp_line_id_to_opp_line_item_schedule.get(schedule.OpportunityLineItem.Id).put(schedule.Id, schedule);

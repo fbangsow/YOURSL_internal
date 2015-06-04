@@ -13,7 +13,7 @@ public without sharing class OpportunityLineItemScheduleDescrHandler {
 
     public void addIdToSet(SObject so){
         OpportunityLineItem new_item = (OpportunityLineItem)so;
-        if(new_item.Managed_by_PSO_Tool__c)
+        if(new_item.Managed_by_PSO_Tool__c && new_item.Unit__c == 'Manntag(e)')
             UpdatedOpportunityLineItemIds.add(new_item.Id);
     }
 

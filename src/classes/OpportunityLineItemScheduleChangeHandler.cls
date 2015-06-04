@@ -18,7 +18,7 @@ public with sharing class OpportunityLineItemScheduleChangeHandler{
     public void addOpportunityLineItem(SObject old_so, Sobject new_so){
         OpportunityLineItem old_opp_line_item = (OpportunityLineItem)old_so;
         OpportunityLineItem new_opp_line_item = (OpportunityLineItem)new_so;
-        if(old_opp_line_item.Quantity != new_opp_line_item.Quantity && !hasRunAlready(new_opp_line_item.Id) && !new_opp_line_item.Change_Parameters__c && new_opp_line_item.Managed_by_PSO_Tool__c)
+        if(old_opp_line_item.Quantity != new_opp_line_item.Quantity && !hasRunAlready(new_opp_line_item.Id) && !new_opp_line_item.Change_Parameters__c && new_opp_line_item.Managed_by_PSO_Tool__c && new_opp_line_item.Unit__c == 'Manntag(e)')
             OpportunityLineItemIdToDifferenceInNumberOfDays.put(new_opp_line_item.Id, old_opp_line_item.Quantity  - new_opp_line_item.Quantity);
         if(old_opp_line_item.Change_Parameters__c && new_opp_line_item.Quantity != 0)
             new_opp_line_item.Change_Parameters__c = false;
@@ -62,8 +62,10 @@ public with sharing class OpportunityLineItemScheduleChangeHandler{
     private Map<String, Date> getOpportunityLineItemIdToServiceDateMap (Set<String> opp_line_item_ids){
         Map<String, Date> opportunity_line_item_id_to_service_date = new Map<String, Date>();
         for(OpportunityLineItem item: [SELECT ServiceDate FROM OpportunityLineItem WHERE Id IN :opp_line_item_ids]){
-            if(item.ServiceDate == null)
+            if(item.ServiceDate == null){
+                System.debug('### opportunity line item that doesn\'t have ServiceDate ' + item);
                 throw new ServiceDateIsNotSetException('Please set Date for this Opportunity Line Item');
+            }
             opportunity_line_item_id_to_service_date.put(item.Id, item.ServiceDate);
         }
         return opportunity_line_item_id_to_service_date;
