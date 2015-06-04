@@ -23,16 +23,34 @@ public class CtrPSOTable {
   @RemoteAction
   public static string getAccount() {
 
-    return PsoToolController.getInstance().getDataSet().JSON();
+    return PsoToolController.getInstance().getAccountsAndOpportunities().JSON();
   }
-
+ 
   @RemoteAction
-  public static string getDataofMonth(String dateparam) {
+  public static string getAccountsonload(String list_of_ids,String dateparam) {
 
     String[] datefrmt = dateFormatter(dateparam);
     Date myDate = date.newinstance(Integer.valueOf(datefrmt[2]), Integer.valueOf(datefrmt[1]), Integer.valueOf(datefrmt[0]));
 
-    return PsoToolController.getInstance().getDataSet(myDate).JSON();
+ list<String> listofdata=new list<String>();
+listofdata=list_of_ids.split(',');
+
+system.debug('@@@'+listofdata);
+system.debug(PsoToolController.getInstance().setSelectedOpportunities(listofdata).setStartDate(myDate).getDataSet().JSON());
+    return PsoToolController.getInstance().setSelectedOpportunities(listofdata).setStartDate(myDate).getDataSet().JSON();
+  }
+ 
+
+  @RemoteAction
+  public static string getDataofMonth(String dateparam,String listofdata) {
+
+    String[] datefrmt = dateFormatter(dateparam);
+    Date myDate = date.newinstance(Integer.valueOf(datefrmt[2]), Integer.valueOf(datefrmt[1]), Integer.valueOf(datefrmt[0]));
+
+     list<String> listofdataforlist=new list<String>();
+listofdataforlist=listofdata.split(',');
+return  PsoToolController.getInstance().setSelectedOpportunities(listofdataforlist).setStartDate(myDate).getDataSet().JSON();
+    //return PsoToolController.getInstance().setStartDate(myDate).getAccountsAndOpportunities().JSON();
   }
 
   @RemoteAction
@@ -55,17 +73,23 @@ public class CtrPSOTable {
 
       if(DateValue == '')
         ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.WARNING,'Please select Date before running the job'));
-      else     
-          PlanningScheduleUpdate updateSchedule = new PlanningScheduleUpdate(DateValue, true,false);             
-    
+      else{
+
+           batchPSOTool b = new batchPSOTool(DateValue, true,false);
+           Database.executeBatch(b);  
+          //PlanningScheduleUpdate updateSchedule = new PlanningScheduleUpdate(DateValue, true,false);             
+      }
   }
   
    public void runMonthlyJob(){      
    
     if(DateValue == '')
         ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.WARNING,'Please select Date before running the job'));
-    else   
-      PlanningScheduleUpdate updateSchedule = new PlanningScheduleUpdate(DateValue,false,true);     
+    else{              
+           batchPSOTool b = new batchPSOTool(DateValue,false,true);
+           Database.executeBatch(b);  
+          //PlanningScheduleUpdate updateSchedule = new PlanningScheduleUpdate(DateValue, false,true);             
+      }  
     
   }
 
