@@ -1520,8 +1520,9 @@ $(".clickforselect").slideToggle('fast');
          $scope.headerpop();
       
 
-         if($scope.stylng==1)
+         if($scope.stylng==0)
          {
+          
              $(".table2").each(function(co) {
                              var a = parseInt($(this).find("thead tr th").height());
                              
@@ -1538,7 +1539,7 @@ $(".clickforselect").slideToggle('fast');
                          var paddg = $("#lasttable thead tr th").css("padding");
                          $("#resourcetable thead tr th").attr("style", "height:" + 79+ "px;padding:" + paddg + "!important;");
                        }
-      $scope.stylng=1;
+      
          $(".blurbackgrund,.imgldr").attr("style", "display:none");
 
 
