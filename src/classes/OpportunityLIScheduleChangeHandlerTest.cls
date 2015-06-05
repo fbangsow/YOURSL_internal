@@ -111,30 +111,6 @@ private class OpportunityLIScheduleChangeHandlerTest {
         }
     }
 
-    @isTest static void testUpsertUnplannedSchedulesThrowsExceptionWhenServiceDateIsNotSet() {
-        SetupDataClass setup_data = new SetupDataClass();
-        System.runAs(setup_data.TestUser) {
-            setup_data.createTestData(true, true);
-            setup_data.createAnotherLineItem();
-            OpportunityLineItemScheduleChangeHandler new_instance = OpportunityLineItemScheduleChangeHandler.getInstance();
-            List<OpportunityLineItemSchedule> unplanned_schedules_before_test = [SELECT Id, OpportunityLineItem.Id, Quantity FROM OpportunityLineItemSchedule WHERE OpportunityLineItem.Id = :setup_data.FirstLineItem.Id AND Description =: OpportunityLineItemScheduleChangeHandler.UNPLANNED_COMMENT];
-            delete unplanned_schedules_before_test;
-            Decimal difference = 5;
-            setup_data.AnotherLineItem.ServiceDate = null;
-            update setup_data.AnotherLineItem;
-            new_instance.OpportunityLineItemIdToDifferenceInNumberOfDays.put(setup_data.AnotherLineItem.Id, difference);
-            Boolean exception_is_caught = false;
-            Test.startTest();
-                try{
-                    new_instance.upsertUnplannedSchedules();
-                } catch(OpportunityLineItemScheduleChangeHandler.ServiceDateIsNotSetException e){
-                    exception_is_caught = true;
-                }
-            Test.stopTest();
-            System.assert(exception_is_caught);
-        }
-    }
-
     @isTest static void testUpsertUnplannedSchedulesWithNonMantageUnitDoesntGetAddedToTheList() {
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {

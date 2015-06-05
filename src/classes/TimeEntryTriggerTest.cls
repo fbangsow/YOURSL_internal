@@ -65,7 +65,7 @@ private class TimeEntryTriggerTest {
 		insert testOpp1;
 				
 		//OpportunityLineItem
-		OpportunityLineItem testOppLineItem1 = new OpportunityLineItem(OpportunityId=testOpp1.Id, PricebookEntryId=testpbe2.Id, UnitPrice=1.5, Quantity=32.00, Unit__c='Manntag(e)');
+		OpportunityLineItem testOppLineItem1 = new OpportunityLineItem(OpportunityId=testOpp1.Id, PricebookEntryId=testpbe2.Id, ServiceDate = Date.newInstance(2015, 6, 1), UnitPrice=1.5, Quantity=32.00, Unit__c='Manntag(e)');
 		insert testOppLineItem1;
 		
 		Contact co = new Contact(
