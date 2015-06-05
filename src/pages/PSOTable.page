@@ -2014,7 +2014,7 @@ $(".joberrormsg").text("Please select Date before running the job");
   <apex:pageBlock >    
 <p class="joberrormsg"></p>
     <span class="psotoolheader">PSO Scheduler 1.2</span> 
-    <input type="button" class="weekl btn" value="Recalculate last week" style="height:20px;width:150px;"/>
+    <input type="button" class="weekl btn" value="Recalculate last Week" style="height:20px;width:150px;"/>
     <input type="button" class="montlyl btn" value="Recalculate End of Month" style="height:20px;width:150px;"/>
     <!--<apex:commandButton status="counterStatus"  value="Run Weekly Job" action="{!runWeeklyJob}" reRender="counterStatus" />
     <apex:commandButton style="height:20px;width:150px;" status="counterStatus" value="Run Monthly Job" action="{!runMonthlyJob}"  />-->

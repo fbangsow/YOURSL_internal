@@ -303,7 +303,7 @@ private class PsoToolControllerTest {
         }
     }
 
-    @isTest static void tesGetStaffingForScheduleEntryReturnsProperStaffingObject(){
+    @isTest static void testGetStaffingForScheduleEntryReturnsProperStaffingObject(){
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
             PsoToolController new_instance = PsoToolController.getInstance();
