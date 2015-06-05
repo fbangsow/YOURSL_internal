@@ -281,6 +281,7 @@ Versions:
 
 
      $scope.Customersfilter = function(ab) {
+      $(".multiSel").val("All Opportunity Names");
              var myDataSet = $scope.filterdata.Customers;
              startdateobj = $scope.dataval;
              //Display customer and projects information on initial page load
@@ -289,39 +290,36 @@ Versions:
 
 
              var countforfilterdata = 0;
-             if (typeof $scope.dataforfilter !== "undefined") {
-                 $(".table2").each(function(co) {
-                     var a = parseInt($(this).find("thead tr th").height()) + 1;
-                     if ($(this).attr("id") != "lasttable") {
-                         $(".table1").each(function(co1) {
-                             if (co == co1) {
-                                 $(this).find("thead tr th").attr("style", "height:" + a + "px;padding:1px !important");
-                             }
-                         })
-                     }
-                 })
-                 var a = $("#lasttable thead tr th").height() + 1;
-                 var paddg = $("#lasttable thead tr th").css("padding");
-                 $("#resourcetable thead tr th").attr("style", "height:" + a + "px;padding:" + paddg + "!important;");
-                 var tda = $("#lasttable  tr td").height();
-                 var tdpaddg = $("#lasttable  tr td").css("padding");
-                 angular.forEach($scope.dataforfilter.Customers, function(Customers, i) {
-                     if (Customers.AccountName == ab.value) {
-                         countforfilterdata = countforfilterdata + 1;
-                     }
-                 });
-             } else {
+           angular.forEach(ab, function(selectedvalueforcount, b) {
+             if (selectedvalueforcount== "All Account Names") {
                  countforfilterdata = 1;
              }
-             if (ab.value == "All Account Names") {
-                 countforfilterdata = 1;
-             }
-             if (countforfilterdata > 0) {
-                 var projects1 = new Array();
+           })
+            var projects1 = new Array();
+             if(countforfilterdata==1)
+             {
                  projects1.push({
                      "value": "All Opportunity Names"
                  })
+                  angular.forEach($scope.projectdetails, function(a, b) {
+                         
+                             angular.forEach(a.project, function(an, b) {
+                                 projects1.push({
+                                     "value": an.name,
+                                     "Id": an.Id
+                                 });
+                             })
+                          
+                     })
+
+             }
+             else
+             {
+     projects1.push({
+                     "value": "All Opportunity Names"
+                 })
                  angular.forEach(ab, function(selectedvalue, b) {
+                  
                      angular.forEach($scope.projectdetails, function(a, b) {
                          if (a.customer == selectedvalue) {
                              angular.forEach(a.project, function(an, b) {
@@ -330,49 +328,16 @@ Versions:
                                      "Id": an.Id
                                  });
                              })
-                         } else if (selectedvalue == "All Account Names") {
-                             angular.forEach(a.project, function(an, b) {
-                                 projects1.push({
-                                     "value": an.name,
-                                     "Id": an.Id
-                                 });
-                             })
-                         }
+                         } 
                      })
                  })
-                 $scope.projectsselect = "";
-                 $scope.projectsselect = projects1;
 
-                 if (ab.value == "All Account Names") {
-                     var projects1 = _.unique(projects1, false, function(item, k, v) {
-                         return item.value;
-                     });
-                     $scope.projectsselect = projects1;
-                 }
-                 $scope.projectsSelecteddata = $scope.projectsselect[0];
-                 $(".filterclass").attr("style", "display:block");
-                 $(".maintable").attr("style", "display:none");
-                 $("#contid table").each(function() {
-                     $(this).removeClass("hidedata");
-                     $(this).next().removeClass("hidedata");
-                 })
-                 if (ab.value != "All Account Names") {
-                     $(".customername").each(function() {
-                         if ($(this).text() != ab.value) {
-                             $(this).parent().parent().parent().addClass("hidedata");
-                             $(this).parent().parent().parent().next().addClass("hidedata");
-                         }
-                     })
-                 }
 
-             } else {
-                 $(".appendtxt").text(" ");
-                 $(".appendtxt").append("No results are available for the filtering.")
-                 $(".popup,.blurbackgrund").attr("style", "display:block");
-                 $(".appndbtns").html("<input type='button' value='Cancel' class='cancelbtn'>");
              }
-
-
+          
+               
+             
+              $scope.projectsselect = projects1;
 
          }
          //filtering of table based on input selection
@@ -541,13 +506,47 @@ Versions:
      })
      $(document).on("blur", ".clickforselect ", function() {
 
-
+$(".clickforselect").slideToggle('fast');
          var a = $(".oprid").val();
          var count = $scope.focusforchange.localeCompare(a);
-         var date = new Date();
-         var mnth = parseInt(date.getMonth()) + 1;
-         var datestring = date.getDate() + "." + mnth + "." + date.getFullYear();
 
+        $scope.date=$(".strtdateinput").val();
+      
+        var mnth="";
+        var datestring =""
+        if($scope.date=="")
+        {
+         var date = new Date()
+         mnth = parseInt(date.getMonth()) + 1;
+         datestring = date.getDate() + "." + mnth + "." + date.getFullYear();
+
+        }
+        else
+        {
+              var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+         var  spltdatepicker=$scope.date.split(" ");
+        
+         var mnth="";
+         for(i=0;i<=monthNames.length-1;i++)
+         {
+          if(monthNames[i]==spltdatepicker[0])
+          {
+            mnth=i;
+
+
+          }
+
+         }
+         mnth = parseInt(mnth) + 1;
+             datestring ="01." + mnth + "." + spltdatepicker[1];
+
+        
+
+
+        }
+     
+      
 
 
          if (count != 0) {
@@ -562,6 +561,7 @@ Versions:
                  $scope.mainPage = tempService.inputbindingtable(resultobject);
                  $scope.dataval = resultobject;
                  $scope.focusdata = "";
+                 
                  //code for template of binding input field of calender
                  var myDataSet1 = $scope.dataval1;
                  //caculation for planned and unplanned days
@@ -1244,6 +1244,7 @@ Versions:
                      })
                  }
 
+                     
                  //function for populating Staffing array in inputs
                  $scope.Staffingpopltion = function() {
                          $(".Staffing").each(function() {
@@ -1298,14 +1299,14 @@ Versions:
                              if ($(this).attr("id") != "lasttable") {
                                  $(".table1").each(function(co1) {
                                      if (co == co1) {
-                                         $(this).find("thead tr th").attr("style", "height:" + a + "px;padding:1px !important");
+                                        // $(this).find("thead tr th").attr("style", "height:" + a + "px;padding:1px !important");
                                      }
                                  })
                              }
                          })
                          var a = $("#lasttable thead tr th").height() + 1;
                          var paddg = $("#lasttable thead tr th").css("padding");
-                         $("#resourcetable thead tr th").attr("style", "height:" + a + "px;padding:" + paddg + "!important;");
+                        // $("#resourcetable thead tr th").attr("style", "height:" + a + "px;padding:" + paddg + "!important;");
                          var tda = $("#lasttable  tr td").height();
                          var tdpaddg = $("#lasttable  tr td").css("padding");
                          angular.forEach($scope.dataforfilter.Customers, function(Customers, i) {
@@ -1517,8 +1518,27 @@ Versions:
              $(".table2 .one").append(tableheade);
          }
          $scope.headerpop();
+      
 
-
+         if($scope.stylng==1)
+         {
+             $(".table2").each(function(co) {
+                             var a = parseInt($(this).find("thead tr th").height());
+                             
+                             if ($(this).attr("id") != "lasttable") {
+                                 $(".table1").each(function(co1) {
+                                     if (co == co1) {
+                                   
+                                         $(this).find("thead tr th").attr("style", "height:" + 75+ "px;padding:1px !important");
+                                     }
+                                 })
+                             }
+                         })
+                         var a = $("#lasttable thead tr th").height() + 2;
+                         var paddg = $("#lasttable thead tr th").css("padding");
+                         $("#resourcetable thead tr th").attr("style", "height:" + 79+ "px;padding:" + paddg + "!important;");
+                       }
+      $scope.stylng=1;
          $(".blurbackgrund,.imgldr").attr("style", "display:none");
 
 
@@ -1673,7 +1693,8 @@ Versions:
                          $scope.calculationonload();
                          myDataSet = $scope.dataval.Customers;
                          $scope.$apply();
-                         $scope.headerpop();
+                         $scope.stylng=0;
+                         //$scope.headerpop();
                          $scope.Staffingpopltion();
                          //$scope.projects($scope.projectsSelecteddata);
                          //$scope.calculationandconvertion();
@@ -1682,18 +1703,20 @@ Versions:
                          $scope.disablinginputs();
 
                          $(".table2").each(function(co) {
-                             var a = parseInt($(this).find("thead tr th").height()) + 1;
+                             var a = parseInt($(this).find("thead tr th").height());
+                             
                              if ($(this).attr("id") != "lasttable") {
                                  $(".table1").each(function(co1) {
                                      if (co == co1) {
-                                         $(this).find("thead tr th").attr("style", "height:" + a + "px;padding:1px !important");
+                                       
+                                         $(this).find("thead tr th").attr("style", "height:" + 75 + "px;padding:1px !important");
                                      }
                                  })
                              }
                          })
                          var a = $("#lasttable thead tr th").height() + 2;
                          var paddg = $("#lasttable thead tr th").css("padding");
-                         $("#resourcetable thead tr th").attr("style", "height:" + a + "px;padding:" + paddg + "!important;");
+                         $("#resourcetable thead tr th").attr("style", "height:" + 79+ "px;padding:" + paddg + "!important;");
                          var a = resultobject.StartDate;
                          var splcta = a.split(".");
 
@@ -1719,7 +1742,61 @@ Versions:
          );
      })
  });
+$(document).ready(function(){
 
+     $(document).on("click",".weekl",function(){
+      var dateforjob=$(".datepickerforbind").val();
+      
+      if(dateforjob!="")
+      {
+         $('.joberrormsg').fadeIn('fast');
+        $(".joberrormsg").text("The job was successfully submitted, you'll see results in a few minutes");
+          weeklyjob();
+          setTimeout(function() {
+    $('.joberrormsg').fadeOut('slow');
+}, 5000); // <-- time in milliseconds
+
+      }
+      else
+      {
+$(".joberrormsg").text("Please select Date before running the job");
+
+      }
+
+         //$(".weekl").click(function(){
+      
+
+          
+         })
+   
+       $(document).on("click",".montlyl",function(){
+    
+      var dateforjob=$(".datepickerforbind").val();
+     
+      if(dateforjob!="")
+      {
+         $('.joberrormsg').fadeIn('fast');
+        $(".joberrormsg").text("The job was successfully submitted, you'll see results in a few minutes");
+          Monthlyjob();
+          setTimeout(function() {
+    $('.joberrormsg').fadeOut('slow');
+}, 5000); // <-- time in milliseconds
+
+      }
+      else
+      {
+$(".joberrormsg").text("Please select Date before running the job");
+
+      }
+
+         //$(".weekl").click(function(){
+      
+
+          
+         })
+
+
+})
  function totalcaluculation() {
      $(".inputbdy").each(function() {
          var count = 0;
@@ -1802,7 +1879,7 @@ Versions:
  });
  $(document).ready(function() {
 
-     $('.datepickerforbind').datepicker();
+    $('.datepickerforbind').datepicker();
      $('.strtdateinput').datepicker({
          changeMonth: true,
          changeYear: true,
@@ -1819,7 +1896,7 @@ Versions:
              var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
              $(".setstrtdateinput").val(parseInt(month) + 1 + " " + year);
          });
-     });
+     })
  })
 
  //function for confrom button
@@ -1922,7 +1999,7 @@ Versions:
                 <div class="footer"><div class="appndbtns"></div></div>
             </div>
             <apex:form >
-
+<input type="text" style="height:1px  !important;border:0px !important"/>
             <apex:outputPanel id="panel">
             <apex:actionStatus id="counterStatus" startText="The job was successfully submitted, you'll see results in a few minutes"  onStart="document.body.style.cursor = 'wait';return true;" onStop="document.body.style.cursor = 'default';return true;" >
             <apex:facet name="start" >   
@@ -1931,12 +2008,19 @@ Versions:
               </apex:facet>
         </apex:actionStatus>
         </apex:outputPanel>
+        <apex:actionFunction action="{!runWeeklyJob}" name="weeklyjob" reRender="panel"/>
+           <apex:actionFunction action="{!runMonthlyJob}" name="Monthlyjob" reRender="panel"/>
   <apex:pageBlock >    
+<p class="joberrormsg"></p>
+    <span class="psotoolheader">PSO Scheduler 1.2</span> 
+    <input type="button" class="weekl btn" value="Recalculate last week" style="height:20px;width:150px;"/>
+    <input type="button" class="montlyl btn" value="Recalculate End of Month" style="height:20px;width:150px;"/>
+    <!--<apex:commandButton status="counterStatus"  value="Run Weekly Job" action="{!runWeeklyJob}" reRender="counterStatus" />
+    <apex:commandButton style="height:20px;width:150px;" status="counterStatus" value="Run Monthly Job" action="{!runMonthlyJob}"  />-->
+    Date: 
 
-    <span class="psotoolheader">PSO Tool</span> 
-    <apex:commandButton status="counterStatus" style="height:20px;width:150px;" value="Run Weekly Job" action="{!runWeeklyJob}"  />
-    <apex:commandButton style="height:20px;width:150px;" status="counterStatus" value="Run Monthly Job" action="{!runMonthlyJob}" />
-    Date: <apex:inputText value="{!DateValue}" size="10" id="demo" style="width:100px;border:1px solid #B8B1B1" styleClass="datepickerforbind" ></apex:inputText> 
+
+    <apex:inputText value="{!DateValue}" size="10" id="demo" style="width:100px;border:1px solid #B8B1B1" styleClass="datepickerforbind" ></apex:inputText> 
       <div class="bordervalue">
   <table class="custdetails">
                 <tr>
@@ -1950,7 +2034,7 @@ Versions:
      <!-- <span class="hida">Select</span>    
       <p class="multiSel"></p>  -->
      <a href="#" class="">
-        <input type="text" class="Accountnamedsp" value="All Account Names"/>
+        <input type="text" class="Accountnamedsp" value="All Account Names" autofocus="true"/>
     </a>
    
     </dt>
@@ -2012,8 +2096,8 @@ Versions:
     <div class="custdisplay">
         <div data-ng-repeat="dataval in dataval.Customers" class="custvalues" on-finish-render="ngRepeatFinished">
             <div data-ng-repeat="dataval1 in dataval.Projects" >
-                <table  class="custdetailview">
-                    <tr><td  style="text-align:left;width:75px;">Account:</td><td style="text-align:left;" class="customername"><a ng-href="/{{dataval.AccountId}}" target="_blank">{{dataval.AccountName}}</a></td></tr>
+                <table  class="custdetailview" >
+                    <tr ><td  style="text-align:left;width:75px;padding-top:10px;">Account:</td><td style="text-align:left;padding-top:10px" class="customername"><a ng-href="/{{dataval.AccountId}}" target="_blank">{{dataval.AccountName}}</a></td></tr>
                     <tr><td  style="text-align:left;">Opportunity:</td><td  style="text-align:left;" class="prjname"><a ng-href="/{{dataval1.OpportunityId}}" target="_blank">{{dataval1.OpportunityName}}</a></td></tr>
                     <tr><td  style="text-align:left;">PM:</td><td  style="text-align:left;"><a ng-href="/{{dataval1.ProjectManagerId}}" target="_blank">{{dataval1.OurProjectManager}}</a></td></tr>
                     <tr><td>  <a ng-href="/apex/OpportunityLineItemsEdit?id={{dataval1.OpportunityId}}" target="_blank" style="text-decoration:none;"><input type="button" style="height:20px;width:87px;"  value="Change Quantity" class="btn"/></a></td><td>  
@@ -2062,8 +2146,8 @@ Versions:
         <div class="weekpresencedata">
             <div data-ng-repeat="dataval in dataval.Customers">
                 <div data-ng-repeat="dataval1 in dataval.Projects" class="aligntable">
-                    <table  class="hiddentable custdetailview">
-                        <tr><td  style="text-align:left;width:75px;">Account:</td><td style="text-align:left;" class="customername"><a ng-href="/{{dataval.AccountId}}" target="_blank">{{dataval.AccountName}}</a></td></tr>
+                    <table  class="hiddentable custdetailview" >
+                        <tr ><td  style="text-align:left;width:75px;padding-top:10px">Account:</td><td style="text-align:left;padding-top:10px" class="customername"><a ng-href="/{{dataval.AccountId}}" target="_blank">{{dataval.AccountName}}</a></td></tr>
                     <tr><td  style="text-align:left;">Opportunity:</td><td  style="text-align:left;" class="prjname"><a ng-href="/{{dataval1.OpportunityId}}" target="_blank">{{dataval1.OpportunityName}}</a></td></tr>
                     <tr><td  style="text-align:left;">PM:</td><td  style="text-align:left;"><a ng-href="/{{dataval1.ProjectManagerId}}" target="_blank">{{dataval1.OurProjectManager}}</a></td></tr>
                     <tr><td>  <a ng-href="/apex/OpportunityLineItemsEdit?id={{dataval1.OpportunityId}}" target="_blank" style="text-decoration:none;"><input type="button" style="height:20px;width:87px;"  value="Change Quantity" class="btn"/></a></td><td>  
