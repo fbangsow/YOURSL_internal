@@ -32,6 +32,7 @@ public without sharing class OpportunityLineItemScheduleTracker{
 
     private Map<Id, Map<Id, OpportunityLineItemSchedule>> getOppLineIdToOpportunityLineItemScheduleWithIds(Set<Id> opp_line_items_to_search){
         Map<Id, Map<Id, OpportunityLineItemSchedule>> opp_line_id_to_opp_line_item_schedule = new Map<Id, Map<Id, OpportunityLineItemSchedule>>();
+        Set<Id> all_schedule_ids = new Set<Id>();
         for(OpportunityLineItemSchedule schedule: [SELECT Quantity, ScheduleDate, Id, OpportunityLineItem.Id, Description 
                                                     FROM OpportunityLineItemSchedule 
                                                     WHERE OpportunityLineItem.Id IN :opp_line_items_to_search 
@@ -40,7 +41,9 @@ public without sharing class OpportunityLineItemScheduleTracker{
             if(!opp_line_id_to_opp_line_item_schedule.containsKey(schedule.OpportunityLineItem.Id))
                 opp_line_id_to_opp_line_item_schedule.put(schedule.OpportunityLineItem.Id, new Map<Id, OpportunityLineItemSchedule>());
             opp_line_id_to_opp_line_item_schedule.get(schedule.OpportunityLineItem.Id).put(schedule.Id, schedule);
+            all_schedule_ids.add(schedule.Id);
         }
+        getRelatedResourceSchedules(all_schedule_ids);
         return opp_line_id_to_opp_line_item_schedule;
     }
     
@@ -49,7 +52,6 @@ public without sharing class OpportunityLineItemScheduleTracker{
             List<Resource_Schedule__c> resources_to_upsert = new List<Resource_Schedule__c>();
             for(Id opp_line_item_id : OppLineIdToOpportunityLineItemScheduleWithId.keySet()){
                 Set<Id> all_schedules = OppLineIdToOpportunityLineItemScheduleWithId.get(opp_line_item_id).keySet();
-                getRelatedResourceSchedules(all_schedules);
                 for(Id schedule_id : all_schedules){
                     Resource_Schedule__c event = createEvent(OppLineIdToOpportunityLineItemScheduleWithId.get(opp_line_item_id).get(schedule_id), OppLineItemIdToContactId.get(opp_line_item_id));
                     if(event.Old_value__c != event.New_value__c)
