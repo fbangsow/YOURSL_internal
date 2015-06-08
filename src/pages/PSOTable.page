@@ -353,6 +353,11 @@ Versions:
          var myDataSet1 = $scope.dataval1;
          $scope.filterdata = resultobject;
          myDataSet = resultobject.Customers;
+         if(!resultobject.IsAllowedToRunScript)
+         {
+
+$(".loginacess").attr("style","display:none;")
+         }
          startdateobj = resultobject;
          //Display customer and projects information on initial page load
          var newthing = [],
@@ -561,7 +566,7 @@ $(".clickforselect").slideToggle('fast');
                  $scope.mainPage = tempService.inputbindingtable(resultobject);
                  $scope.dataval = resultobject;
                  $scope.focusdata = "";
-                 
+              
                  //code for template of binding input field of calender
                  var myDataSet1 = $scope.dataval1;
                  //caculation for planned and unplanned days
@@ -2012,6 +2017,7 @@ $(".joberrormsg").text("Please select Date before running the job");
         <apex:actionFunction action="{!runWeeklyJob}" name="weeklyjob" reRender="panel"/>
            <apex:actionFunction action="{!runMonthlyJob}" name="Monthlyjob" reRender="panel"/>
   <apex:pageBlock >    
+  <div class="loginacess">
 <p class="joberrormsg"></p>
     <span class="psotoolheader">PSO Scheduler 1.2</span> 
     <input type="button" class="weekl btn" value="Recalculate last Week" style="height:20px;width:150px;"/>
@@ -2022,10 +2028,11 @@ $(".joberrormsg").text("Please select Date before running the job");
 
 
     <apex:inputText value="{!DateValue}" size="10" id="demo" style="width:100px;border:1px solid #B8B1B1" styleClass="datepickerforbind" ></apex:inputText> 
+    </div>
       <div class="bordervalue">
-  <table class="custdetails">
+  <table class="custdetails" >
                 <tr>
-                    <td>Account Name:</td>
+                    <td>Account:</td>
                     <td>
 
  <dl class="dropdown"> 
@@ -2056,7 +2063,7 @@ $(".joberrormsg").text("Please select Date before running the job");
                 
                      </td>
            
-                <td>Opportunity Name:</td>
+                <td>Opportunity:</td>
               
             <td>
           
