@@ -49,6 +49,7 @@ public without sharing class PsoToolController{
         DataSet.TimeStamp = Datetime.now().format('yyyy-MM-dd HH:mm:ss');
         DataSet.Customers = getCustomers(true);
         DataSet.Resources = getResourcesAvailabilityData();
+        DataSet.IsAllowedToRunScript = PROFILE_ID_TO_PROFILE_NAME_FOR_ADMIN_MODE.containsKey(UserInfo.getProfileId());
         return DataSet;
     }
 
@@ -413,10 +414,23 @@ public without sharing class PsoToolController{
         public String TimeStamp;
         public List<Customer> Customers;
         public List<ResourceInfo> Resources;
+        public Boolean IsAllowedToRunScript;
 
         public String JSON(){
             return JSON.serialize(this);
         }
+/*
+        public String toJson(){
+            JSONGenerator jeyson = JSON.createGenerator(false);
+            jeyson.writeStartObject();
+            jeyson.writeStringField('StartDate', StartDate);
+            jeyson.writeStringField('EndDate', EndDate);
+            jeyson.writeStringField('TimeStamp', TimeStamp);
+            jeyson.write
+            jeyson.writeEndObject();
+            return jeyson.getAsString();
+        }
+*/
     }
 
     public class AccountsAndTheirOpportunities{

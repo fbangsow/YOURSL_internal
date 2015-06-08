@@ -24,6 +24,7 @@ private class PsoToolControllerTest {
             System.assertNotEquals(null, data_set_object.StartDate, 'StartDate should be set');
             System.assertNotEquals(null, data_set_object.EndDate, 'EndDate should be set');
             System.assertNotEquals(null, data_set_object.TimeStamp, 'TimeStamp should be set');
+            System.assertEquals(true, data_set_object.IsAllowedToRunScript);
         }
     }
 
