@@ -9,9 +9,10 @@ object when ran weekly/monthly.
 public class PlanningScheduleUpdate {
 
     public PlanningScheduleUpdate__c runTime = PlanningScheduleUpdate__c.getValues('PlanningScheduleUpdate');
-    public Date d = System.today();
-    public Datetime dt = (DateTime) d;
-    public String dayOfWeek = dt.format('EEEE');
+    //public Date d = System.today();
+    //public Datetime dt = (DateTime) d;
+    //public String dayOfWeek = dt.format('EEEE');
+    public Date DateValue {get;set;}
     public static final String SPECIAL_OPPORTUNITY = '° Urlaub/Krankheit/Feiertage';
     public Date PreviousWeekStart { get;set;}
     public Date PreviousWeekEnd  { get;set;}
@@ -38,12 +39,14 @@ public class PlanningScheduleUpdate {
         Integer myIntDate = integer.valueOf(strDate[1]);
         Integer myIntMonth = integer.valueOf(strDate[0]);
         Integer myIntYear = integer.valueOf(strDate[2]);
-        Date dateValue = Date.newInstance(myIntYear, myIntMonth, myIntDate);
+        DateValue = Date.newInstance(myIntYear, myIntMonth, myIntDate);
+        Datetime dt = (DateTime) DateValue;
+        string dayOfWeek = dt.format('EEEE');
 
         getDatesForCalculation(dateValue);
-        populateStatisticsData('Planned', isWeeklyManualRun, isMonthlyManualRun);
-        updateOpportunityData(isWeeklyManualRun, isMonthlyManualRun);
-        populateStatisticsData('Actual', isWeeklyManualRun, isMonthlyManualRun);
+        populateStatisticsData('Planned', isWeeklyManualRun, isMonthlyManualRun,dayOfWeek);
+        updateOpportunityData(isWeeklyManualRun, isMonthlyManualRun,dayOfWeek);
+        populateStatisticsData('Actual', isWeeklyManualRun, isMonthlyManualRun,dayOfWeek);
     }
 
 
@@ -105,12 +108,12 @@ public class PlanningScheduleUpdate {
                                                     'Wednesday' => 4,'Thursday' => 3,'Friday' => 2,'Saturday' =>1,'Sunday' =>0};    
         Date currentdate = CurrentMonthStart;
         Datetime currentdatetime = (DateTime) currentdate;
-        String dayOfWeek = currentdatetime.format('EEEE');
-        DateTime tmpDateTime = currentdatetime + CurrentMonthFirstSundayMap.get(dayOfWeek);
+        String dayOfWek = currentdatetime.format('EEEE');
+        DateTime tmpDateTime = currentdatetime + CurrentMonthFirstSundayMap.get(dayOfWek);
         CurrentMonthFirstSunday = Date.newInstance(tmpDateTime.year(), tmpDateTime.month(),tmpDateTime.day());
     }
 
-    public void populateStatisticsData(String value, Boolean isWeeklyManualRun, Boolean isMonthlyManualRun) {
+    public void populateStatisticsData(String value, Boolean isWeeklyManualRun, Boolean isMonthlyManualRun, String currentDayOfWeek) {
 
         List < OpportunityLineItem > OppLineItem = new List < OpportunityLineItem > ();
         List < OpportunityLineItemSchedule > OppLineItemSchedule = new List < OpportunityLineItemSchedule > ();
@@ -122,7 +125,7 @@ public class PlanningScheduleUpdate {
         Set < Id > oppLinSchdlstset = new set < Id > ();
 
         //Queries OLIS records which needs to deleted and stores in a list.
-        if ((dayOfWeek == runTime.Dayofweek__c && value == label.Planned) || (isWeeklyManualRun && !isMonthlyManualRun)) {
+        if ((currentDayOfWeek == runTime.Dayofweek__c && value == label.Planned) || (isWeeklyManualRun && !isMonthlyManualRun)) {
 
             if (!IsMonthChangeinWeekActual) {
                 for (OpportunityLineItemSchedule OppLineItemSchdl: [SELECT Id, OpportunityLineItem.Contact__r.Id,
@@ -146,7 +149,7 @@ public class PlanningScheduleUpdate {
         }
 
         //Weekly logic 
-        if (dayOfWeek == runTime.Dayofweek__c || (isWeeklyManualRun && !isMonthlyManualRun)) {
+        if (currentDayOfWeek == runTime.Dayofweek__c || (isWeeklyManualRun && !isMonthlyManualRun)) {
             Lstwrap = new List < Wrapper > ();
             if (value == label.Planned) {
 
@@ -160,9 +163,9 @@ public class PlanningScheduleUpdate {
             }
         }
         //Monthly logic
-        if (d.day() == runTime.DateofMonth__c || (!isWeeklyManualRun && isMonthlyManualRun)) {
+        if (DateValue.day() == runTime.DateofMonth__c || (!isWeeklyManualRun && isMonthlyManualRun)) {
             system.debug('In month logic');
-            if (dayOfWeek != 'Monday') Lstwrap = new List < Wrapper > ();
+            if (currentDayOfWeek != 'Monday') Lstwrap = new List < Wrapper > ();
 
             if (Value == label.Planned) {
 
@@ -174,7 +177,7 @@ public class PlanningScheduleUpdate {
                 getLineItemRecords(PreviousMonthStart, PreviousMonthend, 'Actual', 'Month', false);
             }
 
-            if (dayOfWeek != 'Sunday' && dayOfWeek != 'Monday') {
+            if (currentDayOfWeek != 'Monday') {
 
                 if (value == label.Planned) {
 
@@ -272,11 +275,11 @@ public class PlanningScheduleUpdate {
     }
 
 
-    public void updateOpportunityData(Boolean isWeeklyManualRun, Boolean isMonthlyManualRun) {
+    public void updateOpportunityData(Boolean isWeeklyManualRun, Boolean isMonthlyManualRun, String currentDayOfWeek) {
 
         List < TimeEntry__c > timeEntries = new List < TimeEntry__c > ();
         Set < id > timeEntryIds = new Set < id > ();
-        if (dayOfWeek == runTime.Dayofweek__c || (isWeeklyManualRun && !isMonthlyManualRun)) {
+        if (currentDayOfWeek == runTime.Dayofweek__c || (isWeeklyManualRun && !isMonthlyManualRun)) {
 
             if (!IsMonthChangeinWeekActual) {
                 timeEntries = [Select id, Opportunity_Product_ID__c, Date__c, Time__c from TimeEntry__c
@@ -288,7 +291,7 @@ public class PlanningScheduleUpdate {
 
         }
 
-        if ((d.day() == runTime.DateofMonth__c && dayOfWeek != 'monday') || (!isWeeklyManualRun && isMonthlyManualRun)) {
+        if ((DateValue.day() == runTime.DateofMonth__c && currentDayOfWeek != 'monday') || (!isWeeklyManualRun && isMonthlyManualRun)) {
             timeEntries = [Select id, Opportunity_Product_ID__c, Date__c, Time__c from TimeEntry__c
             where Date__c >= : PreviousMonthLastMonday and Date__c <= : PreviousMonthEnd and Billable__c = true order by Date__c ASC];
         }
