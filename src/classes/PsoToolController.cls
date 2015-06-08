@@ -49,7 +49,6 @@ public without sharing class PsoToolController{
         DataSet.TimeStamp = Datetime.now().format('yyyy-MM-dd HH:mm:ss');
         DataSet.Customers = getCustomers(true);
         DataSet.Resources = getResourcesAvailabilityData();
-        DataSet.IsAllowedToRunScript = PROFILE_ID_TO_PROFILE_NAME_FOR_ADMIN_MODE.containsKey(UserInfo.getProfileId());
         return DataSet;
     }
 
@@ -405,6 +404,7 @@ public without sharing class PsoToolController{
         AccountsAndTheirOpportunities accounts_and_opportunities = new AccountsAndTheirOpportunities();
         getOpportunities();
         accounts_and_opportunities.Customers = getCustomers(false);
+        accounts_and_opportunities.IsAllowedToRunScript = PROFILE_ID_TO_PROFILE_NAME_FOR_ADMIN_MODE.containsKey(UserInfo.getProfileId());
         return accounts_and_opportunities;
     }
 
@@ -414,7 +414,6 @@ public without sharing class PsoToolController{
         public String TimeStamp;
         public List<Customer> Customers;
         public List<ResourceInfo> Resources;
-        public Boolean IsAllowedToRunScript;
 
         public String JSON(){
             return JSON.serialize(this);
@@ -426,15 +425,16 @@ public without sharing class PsoToolController{
             jeyson.writeStringField('StartDate', StartDate);
             jeyson.writeStringField('EndDate', EndDate);
             jeyson.writeStringField('TimeStamp', TimeStamp);
-            jeyson.write
+            jeyson.writeBooleanField('IsAllowedToRunScript', IsAllowedToRunScript);
+            jeyson.writeObjectField('Customers', Customers);
             jeyson.writeEndObject();
             return jeyson.getAsString();
-        }
-*/
-    }
+        }*/
 
+    }
     public class AccountsAndTheirOpportunities{
         public List<Customer> Customers;
+        public Boolean IsAllowedToRunScript;
 
         public String JSON(){
             return JSON.serialize(this);

@@ -24,7 +24,6 @@ private class PsoToolControllerTest {
             System.assertNotEquals(null, data_set_object.StartDate, 'StartDate should be set');
             System.assertNotEquals(null, data_set_object.EndDate, 'EndDate should be set');
             System.assertNotEquals(null, data_set_object.TimeStamp, 'TimeStamp should be set');
-            System.assertEquals(true, data_set_object.IsAllowedToRunScript);
         }
     }
 
@@ -743,6 +742,7 @@ private class PsoToolControllerTest {
             System.assertEquals(2, data_set_object.Customers.size());
             System.assertEquals(1, data_set_object.Customers.get(0).Projects.size());
             System.assertEquals(1, data_set_object.Customers.get(1).Projects.size());
+            System.assertEquals(true, data_set_object.IsAllowedToRunScript);
         }
     }
 
