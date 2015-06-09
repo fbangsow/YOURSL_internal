@@ -185,7 +185,7 @@ private class PsoToolControllerTest {
             setup_data.createTestData();
             new_instance.queryData();
             new_instance.ContactIdsToContacts = new Map<String, Contact>();
-            Opportunity opp = [SELECT Id, Name, Account.Name, Account.Id, Projektleiter_YOUR_SL__r.Name,
+            Opportunity opp = [SELECT Id, Name, Account.Name, Account.Id, Projektleiter_YOUR_SL__r.Name, Projektstatus__c,
                                     (SELECT Contact__r.Name, Contact__r.Id, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
                                         FROM OpportunityLineItems) 
                                         FROM Opportunity 
@@ -197,6 +197,7 @@ private class PsoToolControllerTest {
             System.assertEquals(setup_data.TestContact.FirstName + ' ' + setup_data.TestContact.LastName, project.OurProjectManager);
             System.assertEquals(setup_data.TestContact.Id, project.ProjectManagerId);
             System.assertEquals(setup_data.FirstOpportunity.Id, project.OpportunityId);
+            System.assertEquals(setup_data.FirstOpportunity.Projektstatus__c, project.ProjectStatus);
             System.assertEquals(1, project.Resources.size());
         }
     }
@@ -794,6 +795,56 @@ private class PsoToolControllerTest {
         }
     }
 
+    @isTest static void testGetProjectHealthReasonsReturnsSomething() {
+        SetupDataClass setup_data = new SetupDataClass();
+        System.runAs(setup_data.TestUser) {
+            Test.startTest();
+                Object data_set = PsoToolController.getInstance().getProjectHealthReasons();
+            Test.stopTest();
+            System.assert(data_set instanceof PsoToolController.ProjectHealthReasons, 'Method should return an instance of ProjectHealthReasons class');
+            PsoToolController.ProjectHealthReasons data_set_object = (PsoToolController.ProjectHealthReasons)data_set;
+            System.assert(!data_set_object.ReasonsLabelToValue.isEmpty());
+        }
+    }
+
+    @isTest static void testGetProjectHealthReasonsReturnsSomethingInJson() {
+        SetupDataClass setup_data = new SetupDataClass();
+        System.runAs(setup_data.TestUser) {
+            Test.startTest();
+                String json = PsoToolController.getInstance().getProjectHealthReasons().JSON();
+            Test.stopTest();
+            System.assertNotEquals(null, json);
+        }
+    }
+
+    @isTest static void testSetProjectHealthReasonUpdatesProjectStatus() {
+        SetupDataClass setup_data = new SetupDataClass();
+        System.runAs(setup_data.TestUser) {
+            setup_data.createTestData();
+            String new_status = 'Not fishy';
+            Test.startTest();
+                PsoToolController.getInstance().setProjectHealthReason(setup_data.FirstOpportunity.Id, new_status);
+            Test.stopTest();
+            Opportunity opp = [SELECT Projektstatus__c FROM Opportunity WHERE Id =: setup_data.FirstOpportunity.Id];
+            System.assertEquals(new_status, opp.Projektstatus__c);
+        }
+    }
+
+    @isTest static void testSetProjectHealthReasonThrowsExceptionWhenOppIdDoesntExist() {
+        SetupDataClass setup_data = new SetupDataClass();
+        System.runAs(setup_data.TestUser) {
+            Boolean exception_is_caught = false;
+            Test.startTest();
+                try{
+                    PsoToolController.getInstance().setProjectHealthReason('strange_id', 'new_status');
+                } catch(PsoToolController.OpportunityNotFoundException e){
+                    exception_is_caught = true;
+                }
+            Test.stopTest();
+            System.assert(exception_is_caught);
+        }
+    }
+
     private class SetupDataClass {
         public Account FirstAccount;
         public Account SecondAccount;
@@ -892,6 +943,7 @@ private class PsoToolControllerTest {
             this.FirstOpportunity.CloseDate = Date.newInstance(2015, 1, 1);
             this.FirstOpportunity.Projektleiter_YOUR_SL__c = this.TestContact.Id;
             this.FirstOpportunity.Managed_by_PSO_Tool__c = true;
+            this.FirstOpportunity.Projektstatus__c = 'Terrible';
             this.SecondOpportunity = new Opportunity();
             this.SecondOpportunity.Name = 'Apple iWatch';
             this.SecondOpportunity.StageName = 'iWatch';
@@ -900,6 +952,7 @@ private class PsoToolControllerTest {
             this.SecondOpportunity.CloseDate = Date.newInstance(2015, 1, 1);
             this.SecondOpportunity.Projektleiter_YOUR_SL__c = this.TestContact.Id;
             this.SecondOpportunity.Managed_by_PSO_Tool__c = true;
+            this.FirstOpportunity.Projektstatus__c = 'Fishy';
             insert new List<Sobject> {this.FirstOpportunity, this.SecondOpportunity};
         }
 

@@ -79,7 +79,7 @@ public without sharing class PsoToolController{
     }
 
     private void getOpportunities(){
-        Opportunities = [SELECT Id, Name, Account.Name, Account.Id, Projektleiter_YOUR_SL__r.Name,
+        Opportunities = [SELECT Id, Name, Account.Name, Account.Id, Projektleiter_YOUR_SL__r.Name, Projektstatus__c,
                                     (SELECT Contact__r.Name, Contact__r.Id, Contact__r.Account.Name, Contact__r.Title, Contact__r.LastName, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
                                         FROM OpportunityLineItems
                                         WHERE Contact__r.LastName != 'All' AND
@@ -196,6 +196,7 @@ public without sharing class PsoToolController{
         new_project.OurProjectManager = opp.Projektleiter_YOUR_SL__r.Name;
         new_project.ProjectManagerId = opp.Projektleiter_YOUR_SL__r.Id;
         new_project.OpportunityId = opp.Id;
+        new_project.ProjectStatus = opp.Projektstatus__c;
         if(with_resources)
             new_project.Resources = getResources(opp);
         return new_project;
@@ -204,7 +205,8 @@ public without sharing class PsoToolController{
     @TestVisible private List<Resource> getResources(Opportunity opp){
         Map<String, Resource> resources = new Map<String, Resource> ();
         for(OpportunityLineItem line_item: opp.OpportunityLineItems){
-            ContactIdsToContacts.put(line_item.Contact__r.Id, line_item.Contact__r);
+            if(line_item.Contact__r != null)
+                ContactIdsToContacts.put(line_item.Contact__r.Id, line_item.Contact__r);
             String key_for_map = line_item.Contact__r.Name + line_item.Product2.Name;
             if(!resources.containsKey(key_for_map)){
                 resources.put(line_item.Contact__r.Name + line_item.Product2.Name, getResource(opp.Id, line_item));
@@ -303,9 +305,9 @@ public without sharing class PsoToolController{
         return contactIdToResourceAvailabilityData.values();
     }
 
-    @TestVisible private List<Staffing> getStaffingForResource(List<Map<String, OpportunityLineItem>> oppLineItemIdToOpportunityLineItemMap){
+    @TestVisible private List<Staffing> getStaffingForResource(List<Map<String, OpportunityLineItem>> opp_line_item_id_to_opportunity_line_item){
         Map<String, Staffing> DateToStaffingForResourceMap = new Map<String, Staffing>();
-        for(Map<String, OpportunityLineItem> opp_line_item_id_to_line_items: oppLineItemIdToOpportunityLineItemMap){
+        for(Map<String, OpportunityLineItem> opp_line_item_id_to_line_items: opp_line_item_id_to_opportunity_line_item){
             for(OpportunityLineItem item: opp_line_item_id_to_line_items.values()){
                 if(checkIfSpecialOccasion(item.Opportunity.Name) && item.ServiceDate >= this.StartDate && item.ServiceDate <= this.EndDate)
                     DateToStaffingForResourceMap = addStaffing(DateToStaffingForResourceMap, getStaffingForSpecialOccasionEntry(item));
@@ -328,16 +330,16 @@ public without sharing class PsoToolController{
         return is_special_occasion;
     }
 
-    @TestVisible private Map<String, Staffing> addStaffing(Map<String, Staffing> existingStuffing, Staffing newItemToAdd){
-        if(!existingStuffing.containsKey(newItemToAdd.Day)){
-            existingStuffing.put(newItemToAdd.Day, newItemToAdd);
+    @TestVisible private Map<String, Staffing> addStaffing(Map<String, Staffing> existing_stuffing, Staffing new_item_to_add){
+        if(!existing_stuffing.containsKey(new_item_to_add.Day)){
+            existing_stuffing.put(new_item_to_add.Day, new_item_to_add);
         }
         else {
-            existingStuffing.get(newItemToAdd.Day).Staff += newItemToAdd.Staff;
-            if(newItemToAdd.SpecialOccasion)
-                existingStuffing.get(newItemToAdd.Day).SpecialOccasion = newItemToAdd.SpecialOccasion;
+            existing_stuffing.get(new_item_to_add.Day).Staff += new_item_to_add.Staff;
+            if(new_item_to_add.SpecialOccasion)
+                existing_stuffing.get(new_item_to_add.Day).SpecialOccasion = new_item_to_add.SpecialOccasion;
         }
-        return existingStuffing;
+        return existing_stuffing;
     }
 
     @TestVisible private Staffing getStaffingForSpecialOccasionEntry(OpportunityLineItem item){
@@ -348,27 +350,27 @@ public without sharing class PsoToolController{
         return new_staff;
     }
 
-    public void allocateResource(String oppLineItemId, Date selectedDate, Decimal numberOfDays){
+    public void allocateResource(String opp_line_item_id, Date selected_date, Decimal number_of_days){
         OpportunityLineItemSchedule changed_or_created_line_item_schedule;
         List<OpportunityLineItem> changed_opportunity_line_items = [SELECT UnitPrice, Quantity, 
-                            (SELECT Quantity, Description FROM OpportunityLineItemSchedules WHERE ScheduleDate =:selectedDate 
+                            (SELECT Quantity, Description FROM OpportunityLineItemSchedules WHERE ScheduleDate =:selected_date 
                                 AND Description != :OpportunityLineItemScheduleChangeHandler.UNPLANNED_COMMENT ORDER BY LastModifiedDate DESC) 
-                            FROM OpportunityLineItem WHERE Id =: oppLineItemId];
-        if(changed_opportunity_line_items.size() == 0)
+                            FROM OpportunityLineItem WHERE Id =: opp_line_item_id];
+        if(changed_opportunity_line_items.isEmpty())
             throw new OpportunityLineItemNotFoundException('OpportunityLineItem is not found');
         OpportunityLineItem changed_opportunity_line_item = changed_opportunity_line_items.get(0);
         if(changed_opportunity_line_item.OpportunityLineItemSchedules.size()>0)
             changed_or_created_line_item_schedule = changed_opportunity_line_item.OpportunityLineItemSchedules.get(0);
         else
-            changed_or_created_line_item_schedule = createNewOpportunityLineItemSchedule(oppLineItemId, selectedDate);
-        changed_or_created_line_item_schedule.Quantity = numberOfDays;
+            changed_or_created_line_item_schedule = createNewOpportunityLineItemSchedule(opp_line_item_id, selected_date);
+        changed_or_created_line_item_schedule.Quantity = number_of_days;
         upsert changed_or_created_line_item_schedule;
     }
 
-    @TestVisible private OpportunityLineItemSchedule createNewOpportunityLineItemSchedule(String oppLineItemId, Date selectedDate){
+    @TestVisible private OpportunityLineItemSchedule createNewOpportunityLineItemSchedule(String opp_line_item_id, Date selected_date){
         OpportunityLineItemSchedule created_line_item_schedule = new OpportunityLineItemSchedule();
-        created_line_item_schedule.ScheduleDate = selectedDate;
-        created_line_item_schedule.OpportunityLineItemId = oppLineItemId;
+        created_line_item_schedule.ScheduleDate = selected_date;
+        created_line_item_schedule.OpportunityLineItemId = opp_line_item_id;
         created_line_item_schedule.Type = 'Quantity';
         return created_line_item_schedule;
     }
@@ -409,6 +411,24 @@ public without sharing class PsoToolController{
         return accounts_and_opportunities;
     }
 
+    public ProjectHealthReasons getProjectHealthReasons(){
+        ProjectHealthReasons container_object = new ProjectHealthReasons();
+        container_object.ReasonsLabelToValue = new Map<String, String>();
+        List<Schema.PicklistEntry> field_result = Opportunity.Projektstatus__c.getDescribe().getPicklistValues();
+        for(Schema.PicklistEntry entry:field_result)
+            container_object.ReasonsLabelToValue.put(entry.getLabel(), entry.getValue());
+        return container_object;
+    }
+
+    public void setProjectHealthReason(String opportunity_id, String value){
+        List<Opportunity> selected_opportunities = [SELECT Projektstatus__c FROM Opportunity WHERE Id =: opportunity_id];
+        if(selected_opportunities.isEmpty())
+            throw new OpportunityNotFoundException('Opportunity is not found');
+        Opportunity opportunity_to_update = selected_opportunities.get(0);
+        opportunity_to_update.Projektstatus__c = value;
+        update opportunity_to_update;
+    }
+
     public class PsoToolDataSetWrapper{
         public String StartDate;
         public String EndDate;
@@ -445,6 +465,14 @@ public without sharing class PsoToolController{
         }
     }
 
+    public class ProjectHealthReasons{
+        public Map<String,String> ReasonsLabelToValue;
+
+        public String JSON(){
+            return JSON.serialize(this);
+        }
+    }
+
     public class Customer{
         public String AccountName;
         public String AccountId;
@@ -456,6 +484,7 @@ public without sharing class PsoToolController{
         public String OurProjectManager;
         public String ProjectManagerId;
         public String OpportunityId;
+        public String ProjectStatus;
         public List<Resource> Resources;
     }
 
@@ -518,6 +547,7 @@ public without sharing class PsoToolController{
         public String Revenue;
     }
 
+    public class OpportunityNotFoundException extends Exception{}
     public class OpportunityLineItemNotFoundException extends Exception{}
     public class OpportunityLineItemQuantityLimitIsReachedException extends Exception{}
 }
