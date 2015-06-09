@@ -1,9 +1,8 @@
 public without sharing class PsoToolController{
     private static Map<Id, PsoToolController> UserIdToPsoToolInstance= new Map<Id, PsoToolController>();
-    private PsoToolDataSetWrapper DataSet;
+    @TestVisible private PsoToolDataSetWrapper DataSet;
     @TestVisible private List<Opportunity> Opportunities;
-    private String CurrentUserId;
-    @TestVisible private Map<String, String> ContactIdsToNamesMap;
+    @TestVisible private Map<String, Contact> ContactIdsToContacts;
     @TestVisible private Map<String, Map<String, Map<String, OpportunityLineItem>>> ContactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap;
     @TestVisible private Date StartDate;
     @TestVisible private Date EndDate;
@@ -21,6 +20,7 @@ public without sharing class PsoToolController{
         '00eD0000001hihX' => 'YOUR SL Management User',
         '00eD0000001higZ' => 'YOUR SL System Administrator'
         };
+    public static final String COMPANY_NAME = 'YOUR SL GmbH';
     
     private PsoToolController(){
         OpportunityLineItemIds = new List<String>();
@@ -43,10 +43,9 @@ public without sharing class PsoToolController{
     public PsoToolDataSetWrapper getDataSet(){
         DataSet = new PsoToolDataSetWrapper();
         queryData();
-        ContactIdsToNamesMap = new Map<String, String>();
+        ContactIdsToContacts = new Map<String, Contact>();
         DataSet.StartDate = this.StartDate.format();
         DataSet.EndDate = this.EndDate.format();
-        DataSet.TimeStamp = Datetime.now().format('yyyy-MM-dd HH:mm:ss');
         DataSet.Customers = getCustomers(true);
         DataSet.Resources = getResourcesAvailabilityData();
         return DataSet;
@@ -81,7 +80,7 @@ public without sharing class PsoToolController{
 
     private void getOpportunities(){
         Opportunities = [SELECT Id, Name, Account.Name, Account.Id, Projektleiter_YOUR_SL__r.Name,
-                                    (SELECT Contact__r.Name, Contact__r.Id, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
+                                    (SELECT Contact__r.Name, Contact__r.Id, Contact__r.Account.Name, Contact__r.Title, Contact__r.LastName, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
                                         FROM OpportunityLineItems
                                         WHERE Contact__r.LastName != 'All' AND
                                         Unit__c = 'Manntag(e)') 
@@ -101,7 +100,6 @@ public without sharing class PsoToolController{
     }
 
     private List<Id> getRelatedOpportunityIds(){
-        this.CurrentUserId = UserInfo.getUserId();
         if(PROFILE_ID_TO_PROFILE_NAME_FOR_ADMIN_MODE.containsKey(UserInfo.getProfileId()))
             return getAllOpportunityIds();
         else
@@ -118,7 +116,7 @@ public without sharing class PsoToolController{
     }
 
     private List<Id> getOnlyRelatedOpportunityIds(){
-        List<OpportunityTeamMember> team_members = [SELECT OpportunityId FROM OpportunityTeamMember WHERE UserId =: this.CurrentUserId];
+        List<OpportunityTeamMember> team_members = [SELECT OpportunityId FROM OpportunityTeamMember WHERE UserId =: UserInfo.getUserId()];
         List<Id> opportunityIds = new List<Id>();
         for(OpportunityTeamMember team_member: team_members){
             opportunityIds.add(team_member.OpportunityId);
@@ -206,7 +204,7 @@ public without sharing class PsoToolController{
     @TestVisible private List<Resource> getResources(Opportunity opp){
         Map<String, Resource> resources = new Map<String, Resource> ();
         for(OpportunityLineItem line_item: opp.OpportunityLineItems){
-            ContactIdsToNamesMap.put(line_item.Contact__r.Id, line_item.Contact__r.Name);
+            ContactIdsToContacts.put(line_item.Contact__r.Id, line_item.Contact__r);
             String key_for_map = line_item.Contact__r.Name + line_item.Product2.Name;
             if(!resources.containsKey(key_for_map)){
                 resources.put(line_item.Contact__r.Name + line_item.Product2.Name, getResource(opp.Id, line_item));
@@ -272,25 +270,28 @@ public without sharing class PsoToolController{
 
     @TestVisible private void countPlannedDaysAndFilterStaffingByDates(Map<String, Resource> resources){
         for(String key : resources.keySet()){
-            Decimal plannedDays = 0;
+            Decimal planned_days = 0;
             List<Staffing> filteredStaffing = new List<Staffing>();
             for(Staffing specificStaff: resources.get(key).Staffing){
-                plannedDays += specificStaff.Staff;
+                planned_days += specificStaff.Staff;
                 if(Date.parse(specificStaff.Day) >= this.StartDate && Date.parse(specificStaff.Day) <= this.EndDate) {
                     filteredStaffing.add(specificStaff);
                 }
             }
             resources.get(key).Staffing = filteredStaffing;
-            resources.get(key).PlannedDays = String.valueOf(plannedDays);
+            resources.get(key).PlannedDays = String.valueOf(planned_days);
         }
     }
 
     @TestVisible private List<ResourceInfo> getResourcesAvailabilityData(){
         Map<String, ResourceInfo> contactIdToResourceAvailabilityData = new Map<String, ResourceInfo>();
-        for(String contact_id: ContactIdsToNamesMap.keySet()){
+        for(String contact_id: ContactIdsToContacts.keySet()){
             if(!contactIdToResourceAvailabilityData.containsKey(contact_id)){
                 ResourceInfo newInfo = new ResourceInfo();
-                newInfo.ResourceName = ContactIdsToNamesMap.get(contact_id);
+                newInfo.ResourceName = ContactIdsToContacts.get(contact_id).Name;
+                newInfo.LastName = ContactIdsToContacts.get(contact_id).LastName;
+                newInfo.Title = ContactIdsToContacts.get(contact_id).Title;
+                newInfo.AccountName = ContactIdsToContacts.get(contact_id).Account.Name;
                 newInfo.Staffing = new List<Staffing>();
                 newInfo.ContactId = contact_id;
                 contactIdToResourceAvailabilityData.put(contact_id, newInfo);
@@ -411,27 +412,30 @@ public without sharing class PsoToolController{
     public class PsoToolDataSetWrapper{
         public String StartDate;
         public String EndDate;
-        public String TimeStamp;
         public List<Customer> Customers;
         public List<ResourceInfo> Resources;
 
         public String JSON(){
-            return JSON.serialize(this);
-        }
-/*
-        public String toJson(){
             JSONGenerator jeyson = JSON.createGenerator(false);
             jeyson.writeStartObject();
             jeyson.writeStringField('StartDate', StartDate);
             jeyson.writeStringField('EndDate', EndDate);
-            jeyson.writeStringField('TimeStamp', TimeStamp);
-            jeyson.writeBooleanField('IsAllowedToRunScript', IsAllowedToRunScript);
             jeyson.writeObjectField('Customers', Customers);
+            sortAndWriteResources(jeyson);
             jeyson.writeEndObject();
             return jeyson.getAsString();
-        }*/
+        }
 
+        private void sortAndWriteResources(JSONGenerator jeyson){
+            Resources.sort();
+            jeyson.writeFieldName('Resources');
+            jeyson.writeStartArray();
+            for(ResourceInfo resource: Resources)
+                jeyson.writeObject(resource);
+            jeyson.writeEndArray(); 
+        }
     }
+
     public class AccountsAndTheirOpportunities{
         public List<Customer> Customers;
         public Boolean IsAllowedToRunScript;
@@ -475,10 +479,36 @@ public without sharing class PsoToolController{
         public Boolean SpecialOccasion;
     }
 
-    public class ResourceInfo{
+    public class ResourceInfo implements Comparable{
         public String ResourceName;
+        public String Title;
+        public String AccountName;
+        @TestVisible private String LastName;
         public String ContactId;
         public List<Staffing> Staffing;
+
+        public Integer compareTo(Object compare_to){
+            ResourceInfo resource_info_to_compare = (ResourceInfo)compare_to;
+            if(AccountName == COMPANY_NAME && resource_info_to_compare.AccountName != COMPANY_NAME)
+                return -1;
+            else if(AccountName != COMPANY_NAME && resource_info_to_compare.AccountName == COMPANY_NAME)
+                return 1;
+            else if(AccountName != resource_info_to_compare.AccountName)
+                return AccountName.compareTo(resource_info_to_compare.AccountName);
+            else
+                return compareBasedOnTitle(resource_info_to_compare);
+        }
+
+        private Integer compareBasedOnTitle(ResourceInfo resource_info_to_compare){
+            if(Title != resource_info_to_compare.Title)
+                return Title.compareTo(resource_info_to_compare.Title);
+            else
+                return compareBasedOnLastName(resource_info_to_compare);
+        }
+
+        private Integer compareBasedOnLastName(ResourceInfo resource_info_to_compare){
+            return LastName.compareTo(resource_info_to_compare.LastName);
+        }
     }
 
     public class Stats{
