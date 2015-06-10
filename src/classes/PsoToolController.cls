@@ -75,7 +75,7 @@ public without sharing class PsoToolController{
         buildDataStructure(opportunity_line_items);
         List<Planning_statistics__c> planning_statistics_info = [SELECT Data_Type__c, Days__c, End_Date__c, OpportunityLineItemId__c, Revenue__c, Start_Date__c, Time_Type__c 
                                         FROM Planning_statistics__c 
-                                        WHERE OpportunityLineItemId__c IN :OpportunityLineItemIds];
+                                        WHERE OpportunityLineItemId__c IN :OpportunityLineItemIds AND Start_Date__c >= :this.StartDate AND End_Date__c <= :this.EndDate];
         processStatistics(planning_statistics_info);
     }
 

@@ -845,6 +845,23 @@ private class PsoToolControllerTest {
         }
     }
 
+    @isTest static void testGetStatsDoesntCreateStatsWhenItsOutOfDateRange(){
+        SetupDataClass setup_data = new SetupDataClass();
+        System.runAs(setup_data.TestUser) {
+            PsoToolController new_instance = PsoToolController.getInstance();
+            new_instance.StartDate = Date.newInstance(2015, 2, 1);
+            new_instance.EndDate = Date.newInstance(2015, 3, 31);
+            setup_data.createTestData();
+            setup_data.createPlannedStatisticalData();
+            setup_data.createActualStatisticalData();
+            new_instance.queryData();
+            Test.startTest();
+                List<PsoToolController.Stats> stats = new_instance.getStats(setup_data.FirstLineItem.Id);
+            Test.stopTest();
+            System.assertEquals(0, stats.size());
+        }
+    }
+
     private class SetupDataClass {
         public Account FirstAccount;
         public Account SecondAccount;
