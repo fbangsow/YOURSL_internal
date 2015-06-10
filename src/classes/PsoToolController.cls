@@ -21,6 +21,7 @@ public without sharing class PsoToolController{
         '00eD0000001higZ' => 'YOUR SL System Administrator'
         };
     public static final String COMPANY_NAME = 'YOUR SL GmbH';
+    private Integer NumberOfShownMonthes = 2;
     
     private PsoToolController(){
         OpportunityLineItemIds = new List<String>();
@@ -53,7 +54,7 @@ public without sharing class PsoToolController{
 
     public PsoToolController setStartDate(Date passed_date){
         this.StartDate = passed_date.toStartOfMonth();
-        Date helper_date = this.StartDate.addMonths(2);
+        Date helper_date = this.StartDate.addMonths(NumberOfShownMonthes - 1);
         this.EndDate = Date.newInstance(helper_date.year(), helper_date.month(), Date.daysInMonth(helper_date.year(), helper_date.month()));
         return this;
     }

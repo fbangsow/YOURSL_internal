@@ -36,7 +36,7 @@ private class PsoToolControllerTest {
             System.assert(data_set instanceof PsoToolController.PsoToolDataSetWrapper, 'Method should return an instance of PsoToolDataSetWrapper class');
             PsoToolController.PsoToolDataSetWrapper data_set_object = (PsoToolController.PsoToolDataSetWrapper)data_set;
             System.assertEquals(Date.newInstance(2015, 1, 1), Date.parse(data_set_object.StartDate), 'StartDate should be the first day of the passed month');
-            System.assertEquals(Date.newInstance(2015, 3, 31), Date.parse(data_set_object.EndDate), 'EndDate should be the last day of the passed month + 3 months');
+            System.assertEquals(Date.newInstance(2015, 2, 28), Date.parse(data_set_object.EndDate), 'EndDate should be the last day of the passed month + 3 months');
         }
     }
 
@@ -679,7 +679,7 @@ private class PsoToolControllerTest {
                 PsoToolController new_instance = PsoToolController.getInstance().setStartDate(start_date);
             Test.stopTest();
             System.assertEquals(Date.newInstance(2015, 6, 1), new_instance.StartDate);
-            System.assertEquals(Date.newInstance(2015, 8, 31), new_instance.EndDate);
+            System.assertEquals(Date.newInstance(2015, 7, 31), new_instance.EndDate);
         }
     }
 
