@@ -9,7 +9,7 @@ Versions:
 -->
 <!-- start of the page -->
 
-<apex:page sidebar="false" name="PSOTable" controller="CtrPSOTable"  action="{!init}">
+<apex:page sidebar="false" name="PSOTable" controller="CtrPSOTable"  >
 <apex:includeScript value="{!URLFOR($Resource.StreamingApiScripts,'jquery-1.5.1.js')}"/>
 <apex:includeScript value="{!URLFOR($Resource.StreamingApiScripts,'json2.js')}"/>
 <apex:includeScript value="{!URLFOR($Resource.StreamingApiScripts,'Cometd.js')}"/>
@@ -23,6 +23,8 @@ Versions:
       <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.17/jquery-ui.min.js"></script>
       <script src="/resource/1430742754000/PsoToolMomentjs"></script>
       <script src="/resource/1430888909000/PsoToolUnderscorejs"></script>
+
+    
  
       <script type="text/javascript">
      var weekdays = {};
@@ -356,13 +358,13 @@ Versions:
          if(!resultobject.IsAllowedToRunScript)
          {
 
-$(".loginacess").attr("style","display:none;")
+                $(".loginacess").attr("style","display:none;")
          }
          startdateobj = resultobject;
          //Display customer and projects information on initial page load
          var newthing = [],
              customer = [],
-             projectload = [];
+             projectload = [];x
          customer.push({
              "value": "All Account Names",
              "Id": "0"
@@ -400,6 +402,7 @@ $(".loginacess").attr("style","display:none;")
          $scope.projectsselect = foo2;
          $scope.blisterPackTemplateSelected = $scope.persons[0];
          $scope.projectsSelecteddata = $scope.projectsselect[0];
+  
      });
      $(".multiSel").click(function() {
 
@@ -441,6 +444,7 @@ $(".loginacess").attr("style","display:none;")
      $(document).on('click', '.clickforselect option', function() {
 
          if ($(this).is(":selected")) {
+          
              if ($(this).val() == 0) {
                  $('.clickforselect option').each(function(i, selected) {
 
@@ -453,10 +457,13 @@ $(".loginacess").attr("style","display:none;")
 
 
          }
+         
      });
      $(document).on('click', '.accountname  option', function() {
 
          if ($(this).is(":selected")) {
+                
+
              if ($(this).val() == "All Account Names") {
                  $('.accountname option').each(function(i, selected) {
 
@@ -509,12 +516,23 @@ $(".loginacess").attr("style","display:none;")
          $scope.focusforchange = $(".oprid").val();
 
      })
-     $(document).on("blur", ".clickforselect ", function() {
+     //$(document).on("blur", ".clickforselect ", function() {
+$scope.oppselectedvalue=function(){
 
-$(".clickforselect").slideToggle('fast');
+
          var a = $(".oprid").val();
-         var count = $scope.focusforchange.localeCompare(a);
-
+         var count="";
+         
+         if(typeof $scope.focusforchange!=="undefined")
+         {
+         count = $scope.focusforchange.localeCompare(a);
+         $(".clickforselect").slideToggle('fast');
+          }
+          else
+          {
+            count=1;
+          }
+   
         $scope.date=$(".strtdateinput").val();
       
         var mnth="";
@@ -545,13 +563,9 @@ $(".clickforselect").slideToggle('fast');
          }
          mnth = parseInt(mnth) + 1;
              datestring ="01." + mnth + "." + spltdatepicker[1];
-
-        
-
-
-        }
+              }
      
-      
+
 
 
          if (count != 0) {
@@ -566,7 +580,7 @@ $(".clickforselect").slideToggle('fast');
                  $scope.mainPage = tempService.inputbindingtable(resultobject);
                  $scope.dataval = resultobject;
                  $scope.focusdata = "";
-              
+              universalobject=resultobject;
                  //code for template of binding input field of calender
                  var myDataSet1 = $scope.dataval1;
                  //caculation for planned and unplanned days
@@ -768,7 +782,7 @@ $(".clickforselect").slideToggle('fast');
                              plnndreven = euroconverter(plnndreven);
                              latetmodef = latetmodef.toFixed(2).toString().replace(".", ",");
                              trdata = "<tr class='totalplannedandun'><td>Totals</td><td></td><td>" + eurosoliddays + "</td><td>" + plandtotal + "</td><td>" + unplandtotal + "</td></tr>";
-                             secondtable = "<tr class='totalforcalndr' style='min-width:72px;'><td></td><td style='height:19px;min-width:72px;'>" + soldrev + "</td><td style='min-width:72px;'>" + plnndreven + "</td><td></td></tr>"
+                             secondtable = "<tr class='totalforcalndr' style='min-width:72px;'><td></td><td style='height:19px;min-width:72px;max-width:72px;'>" + soldrev + "</td><td style='min-width:72px;max-width:72px;'>" + plnndreven + "</td><td></td></tr>"
                              $(".prjname").each(function() {
                                  if ($(this).parent().prev().find(".customername").text() == customer && $(this).text() == aprojects.OpportunityName) {
                                      $(this).parent().parent().parent().next().find(".table1 .totalscalc").append(trdata);
@@ -1381,8 +1395,10 @@ $(".clickforselect").slideToggle('fast');
 
          }
 
-     })
+     }
+     //)
      $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
+
 
          //Controller Ends Here
          //Functions of angularjs when is in document ready Starts here
@@ -1560,7 +1576,7 @@ $(".clickforselect").slideToggle('fast');
              //calender total caluculation
          totalcaluculation();
          //previous month's data read only @ 4 AM Germany time on 1st of corresponding month
-         $scope.disablinginputs();
+         //$scope.disablinginputs();
          $scope.Statatical();
          $scope.plannedorqa();
 
@@ -1671,6 +1687,7 @@ $(".clickforselect").slideToggle('fast');
 
      $(document).on("click", ".ui-datepicker-close", function() {
 
+
          var monthno;
          var splitdatedatepicker = ($(".setstrtdateinput").val()).split(" ");
          var listofdata = $(".oprid").val();
@@ -1679,6 +1696,7 @@ $(".clickforselect").slideToggle('fast');
              monthno = (monthNames[i] == splitdatedatepicker[0]) ? i : monthno;
          }
          var dateparam = "01." + splitdatedatepicker[0] + "." + splitdatedatepicker[1];
+      
          Visualforce.remoting.Manager.invokeAction(
              '{!$RemoteAction.CtrPSOTable.getDataofMonth}',
              dateparam, listofdata,
@@ -1706,7 +1724,7 @@ $(".clickforselect").slideToggle('fast');
                          //$scope.calculationandconvertion();
                          totalcaluculation();
                          //previous month's data read only @ 4 AM Germany time on 1st of corresponding month
-                         $scope.disablinginputs();
+                         //$scope.disablinginputs();
 
                          $(".table2").each(function(co) {
                              var a = parseInt($(this).find("thead tr th").height());
@@ -1752,20 +1770,28 @@ $(document).ready(function(){
 
      $(document).on("click",".weekl",function(){
       var dateforjob=$(".datepickerforbind").val();
+      var splitenddate = dateforjob.split("/");
+      var firstDate = new Date(splitenddate[2], parseInt(splitenddate[0]) - 1, splitenddate[1]);
+      var currentDay = firstDate.getDay();
       
-      if(dateforjob!="")
+      if(dateforjob=="")
       {
+        $(".joberrormsg").text("Please select Date before running the job");
          $('.joberrormsg').fadeIn('fast');
+      }
+      else if(parseInt(currentDay) != 1)
+      {
+        $(".joberrormsg").text("Please select Monday as a date before running the weekly job");
+         $('.joberrormsg').fadeIn('fast');
+      }
+     else
+      {
+        $('.joberrormsg').fadeIn('fast');
         $(".joberrormsg").text("The job was successfully submitted, you'll see results in a few minutes");
           weeklyjob();
           setTimeout(function() {
     $('.joberrormsg').fadeOut('slow');
 }, 5000); // <-- time in milliseconds
-
-      }
-      else
-      {
-$(".joberrormsg").text("Please select Date before running the job");
 
       }
 
@@ -1778,20 +1804,30 @@ $(".joberrormsg").text("Please select Date before running the job");
        $(document).on("click",".montlyl",function(){
     
       var dateforjob=$(".datepickerforbind").val();
-     
-      if(dateforjob!="")
+      
+      var splitenddate = dateforjob.split("/");
+      var firstDate = new Date(splitenddate[2], parseInt(splitenddate[0]) - 1, splitenddate[1]);
+      var currentDay = firstDate.getDate();
+      
+      if(dateforjob=="")
       {
+        $(".joberrormsg").text("Please select Date before running the job");
          $('.joberrormsg').fadeIn('fast');
+      }
+       else if(parseInt(currentDay) != 1)
+      {
+        $(".joberrormsg").text("Please select 1st as a date before running the monthly job");
+         $('.joberrormsg').fadeIn('fast');
+      }
+      else
+      {
+$('.joberrormsg').fadeIn('fast');
         $(".joberrormsg").text("The job was successfully submitted, you'll see results in a few minutes");
           Monthlyjob();
           setTimeout(function() {
     $('.joberrormsg').fadeOut('slow');
 }, 5000); // <-- time in milliseconds
 
-      }
-      else
-      {
-$(".joberrormsg").text("Please select Date before running the job");
 
       }
 
@@ -1996,7 +2032,7 @@ $(".joberrormsg").text("Please select Date before running the job");
     <body data-ng-app="myApp">
    
          <apex:pageMessages id="showmsg"></apex:pageMessages>        
-          <p class="dataforprint" style="display:;"> </p>
+          <p class="dataforprint" style="display:none;"> </p>
         <div data-ng-controller="MyCtrl" id="contid">
             <div class="blurbackgrund"></div>
             <div class="popup">
@@ -2081,7 +2117,7 @@ $(".joberrormsg").text("Please select Date before running the job");
     <dd>
         <div class="mutliSelect">
      
-           <select class="Projects clickforselect" data-ng-model="projectsSelecteddata"  multiple="true" ng-click="oprnameselect()"> 
+           <select class="Projects clickforselect" data-ng-model="projectsSelecteddata"  ng-blur="oppselectedvalue()" multiple="true" ng-click="oprnameselect()"> 
    <option ng-repeat="c in projectsselect" value="{{c.Id}}" >{{c.value}}</option>
             </select>
           
