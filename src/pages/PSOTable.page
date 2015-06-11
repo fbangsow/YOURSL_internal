@@ -1659,13 +1659,7 @@ $(this).find(" .companyname").remove();
          $scope.plannedorqa();
 
 
-         
-
-
-
-
-     })
-var j = jQuery.noConflict();
+         var j = jQuery.noConflict();
          (function(j) {
              j(document).ready(function() {
 
@@ -1763,6 +1757,12 @@ var j = jQuery.noConflict();
                  });
              });
          })(j)
+
+
+
+
+     })
+
      $(document).on("click", ".ui-datepicker-close", function() {
 
 
