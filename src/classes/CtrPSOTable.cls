@@ -10,20 +10,37 @@ public class CtrPSOTable {
 
     public string jsonstring {set; get;}  
     public String DateValue {get; set;}
+    public static Date CurrentDate {get;set;}
      
-    public CtrPSOTable(){        
+    public CtrPSOTable(){              
 
-    }
-
-    public void init() {
-
-      jsonstring = string.valueof(PsoToolController.getInstance().getDataSet().JSON());
-   }
-
+    }  
+      @RemoteAction
+ public static void  getChangedProjectHealth(String opptrtuntyid,String changedvalue) {
+system.debug('opptrtuntyid'+opptrtuntyid);
+system.debug('changedbd'+changedvalue);
+     PsoToolController.getInstance().setProjectHealthReason(opptrtuntyid,changedvalue);
+  }
+   
   @RemoteAction
   public static string getAccount() {
 
     return PsoToolController.getInstance().getAccountsAndOpportunities().JSON();
+  }
+    @RemoteAction
+  public static string getProjectHealth() {
+
+    return PsoToolController.getInstance().getProjectHealthReasons().JSON();
+  }
+
+   @RemoteAction
+  public static Datetime getCurrentDate() {
+    CurrentDate = system.today();
+    Datetime currentDateTime = (Datetime)CurrentDate;
+    system.debug('!!cur'+CurrentDate);
+    system.debug('!!cur time'+currentDateTime);
+
+    return currentDateTime;
   }
  
   @RemoteAction
@@ -69,8 +86,8 @@ return  PsoToolController.getInstance().setSelectedOpportunities(listofdataforli
   }
 
     
-  public void runWeeklyJob(){  
-
+  public void runWeeklyJob(){          
+          
       if(DateValue == '')
         ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.WARNING,'Please select Date before running the job'));
       else{
