@@ -24,7 +24,7 @@ Versions:
       <script src="/resource/1430742754000/PsoToolMomentjs"></script>
       <script src="/resource/1430888909000/PsoToolUnderscorejs"></script>
 
-    
+   
  
       <script type="text/javascript">
      var weekdays = {};
@@ -225,7 +225,7 @@ Versions:
                      k++;
                  }
              }
-             data = "<td style='padding:0 5px !important'>{{dataval2.SalesPrice}}</td><td style='padding:0 5px !important'>{{dataval2.soldrev}} </td><td style='padding:0 5px !important'>{{dataval2.plnndreven}} </td><td style='padding:0 5px !important'>{{dataval2.LastModifiedDate|date:'d MMM yyyy'}}</td><td class='Staffing' style='display:none;'>{{dataval2.Staffing}}</td><td class='statical' style='display:none;'>{{dataval2.Statistics}}</td><td class='plnnedperq' style='display:none;'>{{dataval2.plndperq}}</td><td class='widderclumn'></td><td class='contactidloop' style='display:none;'>{{dataval2.ContactId}}</td>" + data;
+             data = "<td style='padding:0 5px !important'>{{dataval2.SalesPrice}}</td><td style='padding:0 5px !important'>{{dataval2.soldrev}} </td><td style='padding:0 5px !important'>{{dataval2.plnndreven}} </td><td style='padding:0 5px !important'>{{dataval2.LastModifiedDate|date:'d MMM yyyy'}}</td><td class='Staffing' style='display:none;'>{{dataval2.Staffing}}</td><td class='statical' style='display:none;'>{{dataval2.Statistics}}</td><td class='plnnedperq' style='display:none;'>{{dataval2.plndperq}}</td><td class='companyname widderclumn' ng-style='set_color(dataval2.AccountName)' >{{dataval2.AccountName}}</td><td class='contactidloop' style='display:none;'>{{dataval2.ContactId}}</td>" + data;
              return data;
          }
      }
@@ -280,6 +280,12 @@ Versions:
  }, {}));
  //Controller Starts Here
  app.controller('MyCtrl', function($scope, $compile, serviceforgetaccount, serviceforgetaccountchange, tempService, $q) {
+      $scope.set_color = function (payment) {
+                  //var convertion=payment.unplanne.replace(",", ".");
+                   if (payment !="YOUR SL GmbH") {
+                        return {   background: "rgb(221, 221, 221)",  }
+                        }
+              }
   $scope.projecthealth=function(opptrtuntyid,changedvalue){
 
   Visualforce.remoting.Manager.invokeAction(
@@ -856,33 +862,40 @@ $scope.oppselectedvalue=function(){
                  $scope.disablinginputs = function() {
                          var disableprevmonth = new Date();
                          //var jsontimestamp = universalobject.TimeStamp;
-                         var jsontimestamp = disableprevmonth.format('yyyy-MM-dd HH:mm:ss');
+                         var now = new Date();
+                         var hour = now.getUTCHours() + 2;
+                         var minutes=now.getUTCMinutes();
+                           var seconds=now.getUTCSeconds();
+                       
+                         //var jsontimestamp = disableprevmonth.format('yyyy-MM-dd HH:mm:ss');
                          
-                         var splitjsondata = jsontimestamp.split(" ");
-                         var gettingdatesplit = splitjsondata[0].split("-");
-                         var timesplit = splitjsondata[1].split(":");
+                         //var splitjsondata = jsontimestamp.split(" ");
+                        // var gettingdatesplit = splitjsondata[0].split("-");
+                         //var timesplit = splitjsondata[1].split(":");
+                         var month=parseInt(now.getUTCMonth())+1;
+                         var date=now.getUTCDate();
+                         var year=now.getUTCFullYear();
                          $(".inputfields").each(function() {
                                  var inputsplit = ($(this).attr("name")).split(".");
-                                 if (parseInt(inputsplit[1]) < parseInt(gettingdatesplit[1])) {
+                                 if (parseInt(inputsplit[1]) < month) {
                                      $(this).attr("disabled", "true");
                                  }
                              })
                              //every sunday from 4 AM Germany time previous week's data needs to be uneditable
-                         var dateforsun = new Date(gettingdatesplit[0], parseInt(gettingdatesplit[1]) - 1, gettingdatesplit[2]);
-                         var dayforjson = dateforsun.getDay();
-                         if (parseInt(timesplit[0]) > 4) {
-                             if (parseInt(timesplit[1]) > 0) {
-                                 if (parseInt(timesplit[2]) > 0) {
+                         //var dateforsun = new Date(gettingdatesplit[0], parseInt(gettingdatesplit[1]) - 1, gettingdatesplit[2]);
+                         var dayforjson = now.getUTCDay();
+                         if (parseInt(hour) > 4 && parseInt(minutes) > 0 && parseInt(seconds) > 0) {
+                            
                                      $(".inputfields").each(function() {
                                          var inputsplit = ($(this).attr("name")).split(".");
                                          var dayforweek = parseInt(dayforjson) - 1;
-                                         if (parseInt(inputsplit[1]) <= parseInt(gettingdatesplit[1]) && ((parseInt(inputsplit[0]) < parseInt(dateforsun.getDate()) - dayforweek))) {
+                                          if (parseInt(inputsplit[2]) <= parseInt(year) && parseInt(inputsplit[1]) <=parseInt(month)  && ((parseInt(inputsplit[0]) < parseInt(date) - dayforweek))) {
+                                        
                                              $(this).attr("disabled", "true");
                                          }
                                      })
                                  }
-                             }
-                         }
+                        
                          $(".totalforcalndr").each(function() {
                              $(this).find("td").each(function(co) {
                                  if (co > 3 && co < 4) {
@@ -1602,7 +1615,9 @@ $scope.oppselectedvalue=function(){
          }
          $scope.headerpop();
   
-
+$(".aligntable  .table2 table tr").each(function(a){
+$(this).find(" .companyname").remove();
+})
 
          if($scope.stylng==0)
          {
@@ -1639,7 +1654,7 @@ $scope.oppselectedvalue=function(){
              //calender total caluculation
          totalcaluculation();
          //previous month's data read only @ 4 AM Germany time on 1st of corresponding month
-         //$scope.disablinginputs();
+         $scope.disablinginputs();
          $scope.Statatical();
          $scope.plannedorqa();
 
@@ -1787,7 +1802,7 @@ $scope.oppselectedvalue=function(){
                          //$scope.calculationandconvertion();
                          totalcaluculation();
                          //previous month's data read only @ 4 AM Germany time on 1st of corresponding month
-                         //$scope.disablinginputs();
+                         $scope.disablinginputs();
 
                          $(".table2").each(function(co) {
                              var a = parseInt($(this).find("thead tr th").height());
@@ -1830,6 +1845,7 @@ $scope.oppselectedvalue=function(){
      })
  });
 $(document).ready(function(){
+
 
      $(document).on("click",".weekl",function(){
       var dateforjob=$(".datepickerforbind").val();
@@ -2235,13 +2251,13 @@ $('.joberrormsg').fadeIn('fast');
         <table class="table1" id="resourcetable">
             <tr>
                 <thead>
-                    <th >Resource Name</th>
+                   <th >Title</th> <th >Resource Name</th>
                     <!--
                     <th >Role</th> <th > Sold days</th><th >Planned Days<br/> days</th><th >Unplanned <br/>days</th><th >Latest<br/> Modification</th>-->
                 </thead>
             </tr>
             <tr data-ng-repeat="dataval2 in dataval.Resources">
-                <td style="padding:0 5px !important;">{{dataval2.ResourceName}}</td>
+                <td style="padding:0 5px !important;" ng-style='set_color(dataval2.AccountName)' >{{dataval2.Title}}</td><td style="padding:0 5px !important;" ng-style='set_color(dataval2.AccountName)' >{{dataval2.ResourceName}}</td>
                 <!--
                 <td class="" >{{dataval2.SpecialOccasion}}</td><td >{{dataval2.SoldDays}}</td><td class="" ></td><td ></td><td class="" ></td>-->
             </tr>
@@ -2287,7 +2303,7 @@ $('.joberrormsg').fadeIn('fast');
                 <table class="workingweeks">
                     <tr>
                         <thead>
-                            <tr><th></th> </tr>
+                            <tr><th>Account Name</th> </tr>
                         </thead>
                     </tr>
                     <tr class="tbody1 resourcetable" data-ng-repeat="dataval2 in dataval.Resources" template="{{mainPage}}" compile-data="x" />
