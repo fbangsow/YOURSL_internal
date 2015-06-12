@@ -281,6 +281,25 @@ Versions:
     }, {}));
     //Controller Starts Here
     app.controller('MyCtrl', function($scope, $compile, serviceforgetaccount, serviceforgetaccountchange, tempService, $q) {
+        $('.datepickerforbind').datepicker();
+        $('.strtdateinput').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            showButtonPanel: true,
+            dateFormat: 'MM YY',
+            minDate: -180,
+            maxDate: +180,
+            currentText: "Today:" + $.datepicker.formatDate('MM dd yy', new Date())
+        }).focus(function() {
+            var thisCalendar = $(this);
+            $('.ui-datepicker-calendar').detach();
+            $('.ui-datepicker-close').click(function() {
+                var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                $(".setstrtdateinput").val(parseInt(month) + 1 + " " + year);
+            });
+        })
+  
         $scope.set_color = function(payment) {
             //var convertion=payment.unplanne.replace(",", ".");
             if (payment != "YOUR SL GmbH") {
@@ -1662,7 +1681,105 @@ Versions:
             $scope.disablinginputs();
             $scope.Statatical();
             $scope.plannedorqa();
-         var j = jQuery.noConflict();
+     
+         })
+     //function for close button
+    $(document).on("click", ".closebtn", function() {
+        $(".blurbackgrund,.popup").attr("style", "display:none");
+        dataforna = 0;
+    });
+ 
+
+       
+
+    //function for confrom button
+    $(document).on("click", ".cnfrmbtn", function() {
+        $(".Cancelfun").removeClass("Cancelfun");
+        $(".blurbackgrund,.popup").attr("style", "display:none");
+        clickedfoedata = 1;
+        var splitdata = $(this).attr("ng-click").split("(");
+        cancelclick = 1;
+        var dataforbracket = splitdata[1].split(")");
+        var splitbycomma = dataforbracket[0].split(",");
+        var a = splitbycomma[0];
+        var b = splitbycomma[1];
+        var c = splitbycomma[2];
+        var d = splitbycomma[3];
+        var e = splitbycomma[4];
+        angular.element(document.getElementById('contid')).scope().resourceplanningcalc(a, b, c, d, e);
+        colorcoding();
+    });
+    //function for confrom button ends here
+    //function for cancel button starts here
+    $(document).on("click", ".cancelbtn", function() {
+        $(".blurbackgrund,.popup").attr("style", "display:none");
+        $(".Cancelfun").val($('.Cancelfun').attr('id'));
+        cancelclick = 1;
+        colorcoding();
+        $(".Cancelfun").removeClass("Cancelfun");
+    });
+        $(document).on("click", ".ui-datepicker-close", function() {
+
+           var monthno;
+            var splitdatedatepicker = ($(".setstrtdateinput").val()).split(" ");
+            var listofdata = $(".oprid").val();
+            var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            for (i = 0; i <= monthNames.length - 1; i++) {
+                monthno = (monthNames[i] == splitdatedatepicker[0]) ? i : monthno;
+            }
+            var dateparam = "01." + splitdatedatepicker[0] + "." + splitdatedatepicker[1];
+
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.CtrPSOTable.getDataofMonth}',
+                dateparam, listofdata,
+                function(result, event) {
+                    if (event.status) {
+
+                        var daatjson = htmlDecode(result);
+                        var parsedDaatjson = JSON.parse(daatjson);
+                        var resultobject = parsedDaatjson;
+                        $scope.dataforfilter = parsedDaatjson;
+
+
+                        if (resultobject.Customers.length > 0) {
+
+                            $scope.mainPage = tempService.inputbindingtable(resultobject);
+                            $scope.dataval = resultobject;
+                            startdateobj = resultobject;
+                            $scope.calculationonload();
+                            myDataSet = $scope.dataval.Customers;
+                            $scope.$apply();
+                            $scope.stylng = 0;
+                            $scope.Staffingpopltion();
+                            totalcaluculation();
+                            //previous month's data read only @ 4 AM Germany time on 1st of corresponding month
+                            $scope.disablinginputs();
+                            var a = $("#lasttable thead tr th").height() + 2;
+                            var paddg = $("#lasttable thead tr th").css("padding");
+                            $("#resourcetable thead tr th").attr("style", "height:" + 79 + "px;padding:" + paddg + "!important;");
+                            $scope.Statatical();
+                            $scope.plannedorqa();
+                            $(".workingweeks .greycolorsat").attr("style", "border-bottom:none !IMPORTANT;");
+                            $(".workingweeks tr td:nth-child(3)").attr("style", "border:none !IMPORTANT;display:none;");
+                            $(".workingweeks tr td:nth-child(4)").attr("style", "border:none;border-right: none;");
+                            $(".workingweeks input").attr("style", "height:19px;");
+                            
+                        } else {
+
+                            $(".appendtxt").text(" ");
+                            $(".appendtxt").append("No results are available for the filtering.")
+                            $(".popup,.blurbackgrund").attr("style", "display:block");
+                            $(".appndbtns").html("<input type='button' value='Cancel' class='cancelbtn'>");
+                        }
+                    }
+                }, {
+                    buffer: true,
+                    escape: true,
+                    timeout: 30000
+                }
+            );
+        })
+           var j = jQuery.noConflict();
         (function(j) {
             j(document).ready(function() {
 
@@ -1761,70 +1878,6 @@ Versions:
             });
         })(j)
 
-         })
- 
-        $(document).on("click", ".ui-datepicker-close", function() {
-
-           var monthno;
-            var splitdatedatepicker = ($(".setstrtdateinput").val()).split(" ");
-            var listofdata = $(".oprid").val();
-            var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            for (i = 0; i <= monthNames.length - 1; i++) {
-                monthno = (monthNames[i] == splitdatedatepicker[0]) ? i : monthno;
-            }
-            var dateparam = "01." + splitdatedatepicker[0] + "." + splitdatedatepicker[1];
-
-            Visualforce.remoting.Manager.invokeAction(
-                '{!$RemoteAction.CtrPSOTable.getDataofMonth}',
-                dateparam, listofdata,
-                function(result, event) {
-                    if (event.status) {
-
-                        var daatjson = htmlDecode(result);
-                        var parsedDaatjson = JSON.parse(daatjson);
-                        var resultobject = parsedDaatjson;
-                        $scope.dataforfilter = parsedDaatjson;
-
-
-                        if (resultobject.Customers.length > 0) {
-
-                            $scope.mainPage = tempService.inputbindingtable(resultobject);
-                            $scope.dataval = resultobject;
-                            startdateobj = resultobject;
-                            $scope.calculationonload();
-                            myDataSet = $scope.dataval.Customers;
-                            $scope.$apply();
-                            $scope.stylng = 0;
-                            $scope.Staffingpopltion();
-                            totalcaluculation();
-                            //previous month's data read only @ 4 AM Germany time on 1st of corresponding month
-                            $scope.disablinginputs();
-                            var a = $("#lasttable thead tr th").height() + 2;
-                            var paddg = $("#lasttable thead tr th").css("padding");
-                            $("#resourcetable thead tr th").attr("style", "height:" + 79 + "px;padding:" + paddg + "!important;");
-                            $scope.Statatical();
-                            $scope.plannedorqa();
-                            $(".workingweeks .greycolorsat").attr("style", "border-bottom:none !IMPORTANT;");
-                            $(".workingweeks tr td:nth-child(3)").attr("style", "border:none !IMPORTANT;display:none;");
-                            $(".workingweeks tr td:nth-child(4)").attr("style", "border:none;border-right: none;");
-                            $(".workingweeks input").attr("style", "height:19px;");
-                            
-                        } else {
-
-                            $(".appendtxt").text(" ");
-                            $(".appendtxt").append("No results are available for the filtering.")
-                            $(".popup,.blurbackgrund").attr("style", "display:block");
-                            $(".appndbtns").html("<input type='button' value='Cancel' class='cancelbtn'>");
-                        }
-                    }
-                }, {
-                    buffer: true,
-                    escape: true,
-                    timeout: 30000
-                }
-            );
-        })
-       
     });
 
     
@@ -1904,59 +1957,7 @@ Versions:
         }
         $(".Cancelfun").removeClass('Cancelfun');
     }
-    //function for close button
-    $(document).on("click", ".closebtn", function() {
-        $(".blurbackgrund,.popup").attr("style", "display:none");
-        dataforna = 0;
-    });
-    $(document).ready(function() {
 
-        $('.datepickerforbind').datepicker();
-        $('.strtdateinput').datepicker({
-            changeMonth: true,
-            changeYear: true,
-            showButtonPanel: true,
-            dateFormat: 'MM YY',
-            minDate: -180,
-            maxDate: +180,
-            currentText: "Today:" + $.datepicker.formatDate('MM dd yy', new Date())
-        }).focus(function() {
-            var thisCalendar = $(this);
-            $('.ui-datepicker-calendar').detach();
-            $('.ui-datepicker-close').click(function() {
-                var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
-                var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
-                $(".setstrtdateinput").val(parseInt(month) + 1 + " " + year);
-            });
-        })
-    })
-
-    //function for confrom button
-    $(document).on("click", ".cnfrmbtn", function() {
-        $(".Cancelfun").removeClass("Cancelfun");
-        $(".blurbackgrund,.popup").attr("style", "display:none");
-        clickedfoedata = 1;
-        var splitdata = $(this).attr("ng-click").split("(");
-        cancelclick = 1;
-        var dataforbracket = splitdata[1].split(")");
-        var splitbycomma = dataforbracket[0].split(",");
-        var a = splitbycomma[0];
-        var b = splitbycomma[1];
-        var c = splitbycomma[2];
-        var d = splitbycomma[3];
-        var e = splitbycomma[4];
-        angular.element(document.getElementById('contid')).scope().resourceplanningcalc(a, b, c, d, e);
-        colorcoding();
-    });
-    //function for confrom button ends here
-    //function for cancel button starts here
-    $(document).on("click", ".cancelbtn", function() {
-        $(".blurbackgrund,.popup").attr("style", "display:none");
-        $(".Cancelfun").val($('.Cancelfun').attr('id'));
-        cancelclick = 1;
-        colorcoding();
-        $(".Cancelfun").removeClass("Cancelfun");
-    });
     /*
     @changedResource the corresponding changed nested resource object extracted from dataset and
     @resourceChangedForMonth the integer value for the month it has been changed eg Jan-1 , Feb-2.. so on..
