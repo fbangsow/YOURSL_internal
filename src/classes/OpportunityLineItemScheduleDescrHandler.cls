@@ -19,11 +19,16 @@ public without sharing class OpportunityLineItemScheduleDescrHandler {
 
     public void updateCommentsToHaveCurrentValue(){
         if(UpdatedOpportunityLineItemIds.size() > 0){
+            List<OpportunityLineItemSchedule> schedules_to_update = new List<OpportunityLineItemSchedule>();
             List<OpportunityLineItemSchedule> schedules = [SELECT Quantity, Description FROM OpportunityLineItemSchedule WHERE OpportunityLineItem.Id IN :UpdatedOpportunityLineItemIds AND Description != :OpportunityLineItemScheduleChangeHandler.UNPLANNED_COMMENT];
             for(OpportunityLineItemSchedule schedule : schedules){
-                schedule.Description = String.valueOf(schedule.Quantity);
+                if(schedule.Description == null || schedule.Quantity != Decimal.valueOf(Schedule.Description)){
+                    schedule.Description = String.valueOf(schedule.Quantity);
+                    schedules_to_update.add(schedule);
+                }
             }
-            update schedules;
+            if(!schedules_to_update.isEmpty())
+                update schedules_to_update;
             UpdatedOpportunityLineItemIds.clear();
         }
     }
