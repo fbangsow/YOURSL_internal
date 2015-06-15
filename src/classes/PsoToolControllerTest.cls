@@ -64,7 +64,8 @@ private class PsoToolControllerTest {
             Map<String, OpportunityLineItem> lineOppsThatBelongToSecondOpportunity = opportunitiesToOppLineItemIdToOppLineItems.get(setup_data.SecondOpportunity.Id);
             System.assertEquals(2, lineOppsThatBelongToSecondOpportunity.values().size());
             System.assert(lineOppsThatBelongToSecondOpportunity.containsKey(setup_data.SecondLineItem.Id));
-            System.assert(new_instance.OppLineItemIdToDateRangeToDataTypeToStatisticsEntry.containsKey(setup_data.FirstLineItem.Id));
+            System.assert(new_instance.OppLineItemIdToDateRangeToRawStats.containsKey(setup_data.FirstLineItem.Id));
+            System.assert(new_instance.ContactIdToDateRangeToRawStats.containsKey(setup_data.TestContact.Id));
         }
     }
 
@@ -92,7 +93,8 @@ private class PsoToolControllerTest {
             Map<String, OpportunityLineItem> lineOppsThatBelongToSecondOpportunity = opportunitiesToOppLineItemIdToOppLineItems.get(setup_data.SecondOpportunity.Id);
             System.assertEquals(2, lineOppsThatBelongToSecondOpportunity.values().size());
             System.assert(lineOppsThatBelongToSecondOpportunity.containsKey(setup_data.SecondLineItem.Id));
-            System.assert(new_instance.OppLineItemIdToDateRangeToDataTypeToStatisticsEntry.containsKey(setup_data.FirstLineItem.Id));
+            System.assert(new_instance.OppLineItemIdToDateRangeToRawStats.containsKey(setup_data.FirstLineItem.Id));
+            System.assert(new_instance.ContactIdToDateRangeToRawStats.containsKey(setup_data.TestContact.Id));
         }
     }
 
@@ -116,26 +118,54 @@ private class PsoToolControllerTest {
         }
     }
 
-    @isTest static void testProcessStatisticsCreatesRightData(){
+    @isTest static void testBuildOppLineItemIdToDateRangeToRawStatsCreatesRightData(){
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
             PsoToolController new_instance = PsoToolController.getInstance();
             setup_data.createTestData();
             setup_data.createPlannedStatisticalData();
             setup_data.createActualStatisticalData();
-            List<Planning_statistics__c> planning_statistics_info = [SELECT Data_Type__c, Days__c, End_Date__c, OpportunityLineItemId__c, Revenue__c, Start_Date__c, Time_Type__c 
-                                        FROM Planning_statistics__c 
-                                        WHERE OpportunityLineItemId__c =: setup_data.FirstLineItem.Id];
-            Test.startTest();
-                new_instance.processStatistics(planning_statistics_info);
-            Test.stopTest();
-            System.assert(new_instance.OppLineItemIdToDateRangeToDataTypeToStatisticsEntry.containsKey(setup_data.FirstLineItem.Id));
+            new_instance.OppLineItemIdToDateRangeToRawStats = new Map<String, Map<String, PsoToolController.RawStats>>();
             String key_for_nested_map = setup_data.PlannedNumbers.Start_Date__c.format() + ' - ' + setup_data.PlannedNumbers.End_Date__c.format();
-            System.assert(new_instance.OppLineItemIdToDateRangeToDataTypeToStatisticsEntry.get(setup_data.FirstLineItem.Id).containsKey(key_for_nested_map));
-            System.assert(new_instance.OppLineItemIdToDateRangeToDataTypeToStatisticsEntry.get(setup_data.FirstLineItem.Id).get(key_for_nested_map).containsKey(PsoToolController.PLANNED_STATISTIC_TYPE));
-            System.assertEquals(setup_data.PlannedNumbers.Id, new_instance.OppLineItemIdToDateRangeToDataTypeToStatisticsEntry.get(setup_data.FirstLineItem.Id).get(key_for_nested_map).get(PsoToolController.PLANNED_STATISTIC_TYPE).Id);
-            System.assert(new_instance.OppLineItemIdToDateRangeToDataTypeToStatisticsEntry.get(setup_data.FirstLineItem.Id).get(key_for_nested_map).containsKey(PsoToolController.ACTUAL_STATISTIC_TYPE));
-            System.assertEquals(setup_data.ActualNumbers.Id, new_instance.OppLineItemIdToDateRangeToDataTypeToStatisticsEntry.get(setup_data.FirstLineItem.Id).get(key_for_nested_map).get(PsoToolController.ACTUAL_STATISTIC_TYPE).Id);
+            Test.startTest();
+                new_instance.buildOppLineItemIdToDateRangeToRawStats(setup_data.PlannedNumbers, key_for_nested_map);
+                new_instance.buildOppLineItemIdToDateRangeToRawStats(setup_data.ActualNumbers, key_for_nested_map);
+            Test.stopTest();
+            System.assert(new_instance.OppLineItemIdToDateRangeToRawStats.containsKey(setup_data.FirstLineItem.Id));
+            System.assert(new_instance.OppLineItemIdToDateRangeToRawStats.get(setup_data.FirstLineItem.Id).containsKey(key_for_nested_map));
+            System.assertEquals(setup_data.PlannedNumbers.Start_Date__c, new_instance.OppLineItemIdToDateRangeToRawStats.get(setup_data.FirstLineItem.Id).get(key_for_nested_map).StartDate);
+            System.assertEquals(setup_data.PlannedNumbers.End_Date__c, new_instance.OppLineItemIdToDateRangeToRawStats.get(setup_data.FirstLineItem.Id).get(key_for_nested_map).EndDate);
+            System.assertEquals(setup_data.PlannedNumbers.Days__c, new_instance.OppLineItemIdToDateRangeToRawStats.get(setup_data.FirstLineItem.Id).get(key_for_nested_map).PlannedDays);
+            System.assertEquals(setup_data.PlannedNumbers.Revenue__c, new_instance.OppLineItemIdToDateRangeToRawStats.get(setup_data.FirstLineItem.Id).get(key_for_nested_map).PlannedRevenue);
+            System.assertEquals(setup_data.ActualNumbers.Days__c, new_instance.OppLineItemIdToDateRangeToRawStats.get(setup_data.FirstLineItem.Id).get(key_for_nested_map).ActualDays);
+            System.assertEquals(setup_data.ActualNumbers.Revenue__c, new_instance.OppLineItemIdToDateRangeToRawStats.get(setup_data.FirstLineItem.Id).get(key_for_nested_map).ActualRevenue);
+        }
+    }
+
+    @isTest static void testBuildContactIdToDateRangeToRawStatsCreatesRightData(){
+        SetupDataClass setup_data = new SetupDataClass();
+        System.runAs(setup_data.TestUser) {
+            PsoToolController new_instance = PsoToolController.getInstance();
+            setup_data.createTestData();
+            setup_data.createPlannedStatisticalData();
+            setup_data.createActualStatisticalData();
+            setup_data.createAdditionalStatisticalData();
+            List<Planning_statistics__c> planning_statistics_info = [SELECT Data_Type__c, Days__c, End_Date__c, OpportunityLineItemId__c, Revenue__c, Start_Date__c, Time_Type__c, Contact__r.Id
+                                        FROM Planning_statistics__c];
+            new_instance.ContactIdToDateRangeToRawStats = new Map<String, Map<String, PsoToolController.RawStats>>();
+            String key_for_nested_map = setup_data.PlannedNumbers.Start_Date__c.format() + ' - ' + setup_data.PlannedNumbers.End_Date__c.format();
+            Test.startTest();
+                for(Planning_statistics__c info: planning_statistics_info)
+                    new_instance.buildContactIdToDateRangeToRawStats(info, key_for_nested_map);
+            Test.stopTest();
+            System.assert(new_instance.ContactIdToDateRangeToRawStats.containsKey(setup_data.TestContact.Id));
+            System.assert(new_instance.ContactIdToDateRangeToRawStats.get(setup_data.TestContact.Id).containsKey(key_for_nested_map));
+            System.assertEquals(setup_data.PlannedNumbers.Start_Date__c, new_instance.ContactIdToDateRangeToRawStats.get(setup_data.TestContact.Id).get(key_for_nested_map).StartDate);
+            System.assertEquals(setup_data.PlannedNumbers.End_Date__c, new_instance.ContactIdToDateRangeToRawStats.get(setup_data.TestContact.Id).get(key_for_nested_map).EndDate);
+            System.assertEquals(setup_data.PlannedNumbers.Days__c + setup_data.AdditionalPlannedNumbers.Days__c, new_instance.ContactIdToDateRangeToRawStats.get(setup_data.TestContact.Id).get(key_for_nested_map).PlannedDays);
+            System.assertEquals(setup_data.PlannedNumbers.Revenue__c + setup_data.AdditionalPlannedNumbers.Revenue__c, new_instance.ContactIdToDateRangeToRawStats.get(setup_data.TestContact.Id).get(key_for_nested_map).PlannedRevenue);
+            System.assertEquals(setup_data.ActualNumbers.Days__c + setup_data.AdditionalActualNumbers.Days__c, new_instance.ContactIdToDateRangeToRawStats.get(setup_data.TestContact.Id).get(key_for_nested_map).ActualDays);
+            System.assertEquals(setup_data.ActualNumbers.Revenue__c + setup_data.AdditionalActualNumbers.Revenue__c, new_instance.ContactIdToDateRangeToRawStats.get(setup_data.TestContact.Id).get(key_for_nested_map).ActualRevenue);
         }
     }
 
@@ -187,8 +217,8 @@ private class PsoToolControllerTest {
             new_instance.ContactIdsToContacts = new Map<String, Contact>();
             Opportunity opp = [SELECT Id, Name, Account.Name, Account.Id, Projektleiter_YOUR_SL__r.Name, Projektstatus__c,
                                     (SELECT Contact__r.Name, Contact__r.Id, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
-                                        FROM OpportunityLineItems) 
-                                        FROM Opportunity 
+                                        FROM OpportunityLineItems)
+                                        FROM Opportunity
                                         WHERE Id =: setup_data.FirstOpportunity.Id];
             Test.startTest();
                 PsoToolController.Project project = new_instance.getProject(opp, true);
@@ -214,7 +244,7 @@ private class PsoToolControllerTest {
             Opportunity opp = [SELECT Id, Name, Account.Name, Account.Id, Projektleiter_YOUR_SL__r.Name,
                                     (SELECT Contact__r.Name, Contact__r.Id, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
                                         FROM OpportunityLineItems)
-                                        FROM Opportunity 
+                                        FROM Opportunity
                                         WHERE Id =: setup_data.SecondOpportunity.Id];
             Test.startTest();
                 List<PsoToolController.Resource> resources = new_instance.getResources(opp);
@@ -244,7 +274,7 @@ private class PsoToolControllerTest {
             Opportunity opp = [SELECT Id, Name, Account.Name, Account.Id, Projektleiter_YOUR_SL__r.Name,
                                     (SELECT Contact__r.Name, Contact__r.Id, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
                                         FROM OpportunityLineItems)
-                                        FROM Opportunity 
+                                        FROM Opportunity
                                         WHERE Id =: setup_data.FirstOpportunity.Id];
             Test.startTest();
                 PsoToolController.Resource resource = new_instance.getResource(opp.Id, opp.OpportunityLineItems.get(0));
@@ -353,12 +383,14 @@ private class PsoToolControllerTest {
             new_instance.startDate = Date.newInstance(2015, 1, 1);
             new_instance.endDate = Date.newInstance(2015, 3, 31);
             setup_data.createTestData();
+            setup_data.createPlannedStatisticalData();
+            setup_data.createActualStatisticalData();
             new_instance.queryData();
             new_instance.contactIdsToContacts = new Map<String, Contact>();
             Opportunity opp = [SELECT Id, Name, Account.Name, Account.Id, Projektleiter_YOUR_SL__r.Name,
                         (SELECT Contact__r.Name, Contact__r.Id, Contact__r.Account.Name, Contact__r.Title, Contact__r.LastName, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
                             FROM OpportunityLineItems)
-                            FROM Opportunity 
+                            FROM Opportunity
                             WHERE Id =: setup_data.SecondOpportunity.Id];
             new_instance.getResources(opp);
             Test.startTest();
@@ -368,6 +400,7 @@ private class PsoToolControllerTest {
             System.assertEquals(setup_data.TestContact.FirstName + ' ' + setup_data.TestContact.LastName, staffing.get(0).ResourceName);
             System.assertEquals(2, staffing.get(0).Staffing.size());
             System.assertEquals(setup_data.TestContact.Id, staffing.get(0).ContactId);
+            System.assertEquals(1, staffing.get(0).Statistics.size());
         }
     }
 
@@ -379,7 +412,7 @@ private class PsoToolControllerTest {
             new_instance.endDate = Date.newInstance(2015, 3, 31);
             setup_data.createTestData();
             OpportunityLineItem opp_line_item = [SELECT Contact__r.Name, Contact__r.Id, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate, Opportunity.Name,
-                            (SELECT OpportunityLineItemId, ScheduleDate, Quantity 
+                            (SELECT OpportunityLineItemId, ScheduleDate, Quantity
                                         FROM OpportunityLineItemSchedules
                                         WHERE Description != :OpportunityLineItemScheduleChangeHandler.UNPLANNED_COMMENT)
                             FROM OpportunityLineItem
@@ -497,9 +530,9 @@ private class PsoToolControllerTest {
             Test.startTest();
                 new_instance.allocateResource(setup_data.FirstLineItem.Id, selected_date, selected_quantity);
             Test.stopTest();
-            List<OpportunityLineItemSchedule> Schedules = [SELECT OpportunityLineItemId, ScheduleDate, Quantity 
+            List<OpportunityLineItemSchedule> Schedules = [SELECT OpportunityLineItemId, ScheduleDate, Quantity
                                         FROM OpportunityLineItemSchedule
-                                        WHERE Description != :OpportunityLineItemScheduleChangeHandler.UNPLANNED_COMMENT 
+                                        WHERE Description != :OpportunityLineItemScheduleChangeHandler.UNPLANNED_COMMENT
                                         AND OpportunityLineItemId = :setup_data.FirstLineItem.Id ORDER BY ScheduleDate DESC];
             System.assertEquals(2, Schedules.size());
             System.assertEquals(selected_date, Schedules.get(0).ScheduleDate);
@@ -517,9 +550,9 @@ private class PsoToolControllerTest {
             Test.startTest();
                 new_instance.allocateResource(setup_data.FirstLineItem.Id, selected_date, selected_quantity);
             Test.stopTest();
-            List<OpportunityLineItemSchedule> Schedules = [SELECT OpportunityLineItemId, ScheduleDate, Quantity 
+            List<OpportunityLineItemSchedule> Schedules = [SELECT OpportunityLineItemId, ScheduleDate, Quantity
                                         FROM OpportunityLineItemSchedule
-                                        WHERE Description != :OpportunityLineItemScheduleChangeHandler.UNPLANNED_COMMENT 
+                                        WHERE Description != :OpportunityLineItemScheduleChangeHandler.UNPLANNED_COMMENT
                                         AND OpportunityLineItemId = :setup_data.FirstLineItem.Id ORDER BY ScheduleDate DESC];
             System.assertEquals(1, Schedules.size());
             System.assertEquals(selected_date, Schedules.get(0).ScheduleDate);
@@ -572,7 +605,7 @@ private class PsoToolControllerTest {
             setup_data.createActualStatisticalData();
             new_instance.queryData();
             Test.startTest();
-                List<PsoToolController.Stats> stats = new_instance.getStats(setup_data.FirstLineItem.Id);
+                List<PsoToolController.Stats> stats = new_instance.getStatsForOppLineItem(setup_data.FirstLineItem.Id);
             Test.stopTest();
             System.assertEquals(1, stats.size());
             System.assertEquals(setup_data.ActualNumbers.Days__c + '/' +setup_data.PlannedNumbers.Days__c, stats.get(0).Days);
@@ -592,7 +625,7 @@ private class PsoToolControllerTest {
             setup_data.createActualStatisticalData();
             new_instance.queryData();
             Test.startTest();
-                List<PsoToolController.Stats> stats = new_instance.getStats(setup_data.FirstLineItem.Id);
+                List<PsoToolController.Stats> stats = new_instance.getStatsForOppLineItem(setup_data.FirstLineItem.Id);
             Test.stopTest();
             System.assertEquals(1, stats.size());
             System.assertEquals(setup_data.ActualNumbers.Days__c + '/0', stats.get(0).Days);
@@ -612,7 +645,7 @@ private class PsoToolControllerTest {
             setup_data.createPlannedStatisticalData();
             new_instance.queryData();
             Test.startTest();
-                List<PsoToolController.Stats> stats = new_instance.getStats(setup_data.FirstLineItem.Id);
+                List<PsoToolController.Stats> stats = new_instance.getStatsForOppLineItem(setup_data.FirstLineItem.Id);
             Test.stopTest();
             System.assertEquals(1, stats.size());
             System.assertEquals('0/' + setup_data.PlannedNumbers.Days__c, stats.get(0).Days);
@@ -622,21 +655,26 @@ private class PsoToolControllerTest {
         }
     }
 
-    @isTest static void testGetDefaultNewStatSetsExpectedValues(){
+    @isTest static void testGetNewStatSetsExpectedValues(){
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
             PsoToolController new_instance = PsoToolController.getInstance();
-            new_instance.startDate = Date.newInstance(2015, 1, 1);
-            new_instance.endDate = Date.newInstance(2015, 3, 31);
             setup_data.createTestData();
             setup_data.createPlannedStatisticalData();
+            PsoToolController.RawStats raw_stat = new PsoToolController.RawStats(setup_data.PlannedNumbers);
+            raw_stat.PlannedDays = 5;
+            raw_stat.PlannedRevenue = 1000;
+            raw_stat.ActualDays = 10;
+            raw_stat.ActualRevenue = 2000;
+            raw_stat.StartDate = Date.newInstance(2015, 1, 1);
+            raw_stat.EndDate = Date.newInstance(2015, 3, 31);
             Test.startTest();
-                PsoToolController.Stats stat = new_instance.getDefaultNewStat(setup_data.PlannedNumbers);
+                PsoToolController.Stats stat = new_instance.getNewStat(raw_stat);
             Test.stopTest();
-            System.assertEquals(setup_data.PlannedNumbers.Start_Date__c, Date.parse(stat.StartDate));
-            System.assertEquals(setup_data.PlannedNumbers.End_Date__c, Date.parse(stat.EndDate));
-            System.assertEquals('0/0', stat.Days);
-            System.assertEquals('0/0', stat.Revenue);
+            System.assertEquals(raw_stat.StartDate, Date.parse(stat.StartDate));
+            System.assertEquals(raw_stat.EndDate, Date.parse(stat.EndDate));
+            System.assertEquals(raw_stat.ActualDays + '/' + raw_stat.PlannedDays, stat.Days);
+            System.assertEquals(raw_stat.ActualRevenue + '/' + raw_stat.PlannedRevenue, stat.Revenue);
         }
     }
 
@@ -745,6 +783,20 @@ private class PsoToolControllerTest {
         }
     }
 
+    @isTest static void testGetAccountsAndOpportunitiesReturnsJson() {
+        SetupDataClass setup_data = new SetupDataClass();
+        System.runAs(setup_data.TestUser) {
+            PsoToolController new_instance = PsoToolController.getInstance();
+            new_instance.startDate = Date.newInstance(2015, 1, 1);
+            new_instance.endDate = Date.newInstance(2015, 3, 31);
+            setup_data.createTestData();
+            Test.startTest();
+                String json = PsoToolController.getInstance().getAccountsAndOpportunities().JSON();
+            Test.stopTest();
+            System.assertNotEquals(null, json);
+        }
+    }
+
     @isTest static void testGetDataSetInJsonReturnsSortedJson() {
         SetupDataClass setup_data = new SetupDataClass();
         PsoToolController.ResourceInfo resource1 = new PsoToolController.ResourceInfo();
@@ -786,11 +838,11 @@ private class PsoToolControllerTest {
                 '"EndDate":"28.02.2015",' +
                 '"Customers":[],' +
                 '"Resources":[' +
-                '{"Title":"Consultant","Staffing":null,"ResourceName":null,"LastName":"Batman","ContactId":null,"AccountName":"YOUR SL GmbH"},' +
-                '{"Title":"Consultant","Staffing":null,"ResourceName":null,"LastName":"Superman","ContactId":null,"AccountName":"YOUR SL GmbH"},' +
-                '{"Title":"Developer","Staffing":null,"ResourceName":null,"LastName":"Batman","ContactId":null,"AccountName":"YOUR SL GmbH"},' +
-                '{"Title":"Developer","Staffing":null,"ResourceName":null,"LastName":"Batman","ContactId":null,"AccountName":"Some company"},' +
-                '{"Title":"Developer","Staffing":null,"ResourceName":null,"LastName":"Batman","ContactId":null,"AccountName":"Some zalando company"}]}';
+                '{"Title":"Consultant","Statistics":null,"Staffing":null,"ResourceName":null,"LastName":"Batman","ContactId":null,"AccountName":"YOUR SL GmbH"},' +
+                '{"Title":"Consultant","Statistics":null,"Staffing":null,"ResourceName":null,"LastName":"Superman","ContactId":null,"AccountName":"YOUR SL GmbH"},' +
+                '{"Title":"Developer","Statistics":null,"Staffing":null,"ResourceName":null,"LastName":"Batman","ContactId":null,"AccountName":"YOUR SL GmbH"},' +
+                '{"Title":"Developer","Statistics":null,"Staffing":null,"ResourceName":null,"LastName":"Batman","ContactId":null,"AccountName":"Some company"},' +
+                '{"Title":"Developer","Statistics":null,"Staffing":null,"ResourceName":null,"LastName":"Batman","ContactId":null,"AccountName":"Some zalando company"}]}';
             System.assertEquals(expected_json, json);
         }
     }
@@ -856,9 +908,30 @@ private class PsoToolControllerTest {
             setup_data.createActualStatisticalData();
             new_instance.queryData();
             Test.startTest();
-                List<PsoToolController.Stats> stats = new_instance.getStats(setup_data.FirstLineItem.Id);
+                List<PsoToolController.Stats> stats = new_instance.getStatsForOppLineItem(setup_data.FirstLineItem.Id);
             Test.stopTest();
             System.assertEquals(0, stats.size());
+        }
+    }
+
+    @isTest static void testGetStatsForContactCreatesStats(){
+        SetupDataClass setup_data = new SetupDataClass();
+        System.runAs(setup_data.TestUser) {
+            PsoToolController new_instance = PsoToolController.getInstance();
+            new_instance.startDate = Date.newInstance(2015, 1, 1);
+            new_instance.endDate = Date.newInstance(2015, 3, 31);
+            setup_data.createTestData();
+            setup_data.createPlannedStatisticalData();
+            setup_data.createActualStatisticalData();
+            new_instance.queryData();
+            Test.startTest();
+                List<PsoToolController.Stats> stats = new_instance.getStatsForContact(setup_data.TestContact.Id);
+            Test.stopTest();
+            System.assertEquals(1, stats.size());
+            System.assertEquals(setup_data.ActualNumbers.Days__c + '/' +setup_data.PlannedNumbers.Days__c, stats.get(0).Days);
+            System.assertEquals(setup_data.ActualNumbers.Revenue__c + '/' + setup_data.PlannedNumbers.Revenue__c, stats.get(0).Revenue);
+            System.assertEquals(setup_data.PlannedNumbers.Start_Date__c, Date.parse(stats.get(0).StartDate));
+            System.assertEquals(setup_data.PlannedNumbers.End_Date__c, Date.parse(stats.get(0).EndDate));
         }
     }
 
@@ -880,6 +953,8 @@ private class PsoToolControllerTest {
         public OpportunityLineItemSchedule Schedule;
         public Planning_statistics__c PlannedNumbers;
         public Planning_statistics__c ActualNumbers;
+        public Planning_statistics__c AdditionalPlannedNumbers;
+        public Planning_statistics__c AdditionalActualNumbers;
         private String DesiredProfile = 'System Administrator';
 
         public SetupDataClass() {
@@ -933,7 +1008,7 @@ private class PsoToolControllerTest {
             this.TestContact.LastName = testUser.LastName;
             insert this.TestContact;
         }
-        
+
         private void createAndInsertProduct() {
             this.TestProduct = new Product2();
             this.TestProduct.Name = 'Salesforce Developer';
@@ -1085,6 +1160,7 @@ private class PsoToolControllerTest {
             PlannedNumbers.Start_Date__c = Date.newInstance(2015, 1, 1);
             PlannedNumbers.End_Date__c = Date.newInstance(2015, 1, 31);
             PlannedNumbers.Time_Type__c = 'Monthly';
+            PlannedNumbers.Contact__c = this.TestContact.Id;
             insert PlannedNumbers;
         }
 
@@ -1097,7 +1173,30 @@ private class PsoToolControllerTest {
             ActualNumbers.Start_Date__c = Date.newInstance(2015, 1, 1);
             ActualNumbers.End_Date__c = Date.newInstance(2015, 1, 31);
             ActualNumbers.Time_Type__c = 'Monthly';
+            ActualNumbers.Contact__c = this.TestContact.Id;
             insert ActualNumbers;
+        }
+
+        public void createAdditionalStatisticalData(){
+            AdditionalPlannedNumbers = new Planning_statistics__c();
+            AdditionalPlannedNumbers.Data_Type__c = PsoToolController.PLANNED_STATISTIC_TYPE;
+            AdditionalPlannedNumbers.Days__c = 7;
+            AdditionalPlannedNumbers.Revenue__c = 1500;
+            AdditionalPlannedNumbers.OpportunityLineItemId__c = this.SecondLineItem.Id;
+            AdditionalPlannedNumbers.Start_Date__c = Date.newInstance(2015, 1, 1);
+            AdditionalPlannedNumbers.End_Date__c = Date.newInstance(2015, 1, 31);
+            AdditionalPlannedNumbers.Time_Type__c = 'Monthly';
+            AdditionalPlannedNumbers.Contact__c = this.TestContact.Id;
+            AdditionalActualNumbers = new Planning_statistics__c();
+            AdditionalActualNumbers.Data_Type__c = PsoToolController.ACTUAL_STATISTIC_TYPE;
+            AdditionalActualNumbers.Days__c = 14;
+            AdditionalActualNumbers.Revenue__c = 300;
+            AdditionalActualNumbers.OpportunityLineItemId__c = this.SecondLineItem.Id;
+            AdditionalActualNumbers.Start_Date__c = Date.newInstance(2015, 1, 1);
+            AdditionalActualNumbers.End_Date__c = Date.newInstance(2015, 1, 31);
+            AdditionalActualNumbers.Time_Type__c = 'Monthly';
+            AdditionalActualNumbers.Contact__c = this.TestContact.Id;
+            insert new List<Sobject> {AdditionalPlannedNumbers, AdditionalActualNumbers};
         }
     }
 }

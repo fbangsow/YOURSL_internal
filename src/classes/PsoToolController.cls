@@ -9,7 +9,8 @@ public without sharing class PsoToolController{
     @TestVisible private List<Id> OpportunitiesToShow;
     private List<String> OpportunityLineItemIds;
     private Map<String, Decimal> OppLineItemScheduleIdToNumberOfDays;
-    @TestVisible private Map<String, Map<String, Map<String, Planning_statistics__c>>> OppLineItemIdToDateRangeToDataTypeToStatisticsEntry;
+    @TestVisible private Map<String, Map<String, RawStats>> OppLineItemIdToDateRangeToRawStats;
+    @TestVisible private Map<String, Map<String, RawStats>> ContactIdToDateRangeToRawStats;
     public static final String SPECIAL_OPPORTUNITY = '° Urlaub/Krankheit/Feiertage';
     public static final String PLANNED_STATISTIC_TYPE = 'Planned';
     public static final String ACTUAL_STATISTIC_TYPE = 'Actual';
@@ -22,7 +23,7 @@ public without sharing class PsoToolController{
         };
     public static final String COMPANY_NAME = 'YOUR SL GmbH';
     private Integer NumberOfShownMonthes = 2;
-    
+
     private PsoToolController(){
         OpportunityLineItemIds = new List<String>();
         OpportunitiesToShow = new List<Id>();
@@ -67,14 +68,14 @@ public without sharing class PsoToolController{
     @TestVisible private void queryData(){
         getOpportunities();
         List<OpportunityLineItem> opportunity_line_items = [SELECT Contact__r.Id, Product2.Name, ServiceDate, Opportunity.Name, Opportunity.Id, Quantity,
-                                    (SELECT OpportunityLineItemId, ScheduleDate, Quantity 
+                                    (SELECT OpportunityLineItemId, ScheduleDate, Quantity
                                         FROM OpportunityLineItemSchedules
                                         WHERE Description !=:OpportunityLineItemScheduleChangeHandler.UNPLANNED_COMMENT)
                                         FROM OpportunityLineItem
                                         WHERE Contact__r.Id IN :getRelatedContactIds()];
         buildDataStructure(opportunity_line_items);
-        List<Planning_statistics__c> planning_statistics_info = [SELECT Data_Type__c, Days__c, End_Date__c, OpportunityLineItemId__c, Revenue__c, Start_Date__c, Time_Type__c 
-                                        FROM Planning_statistics__c 
+        List<Planning_statistics__c> planning_statistics_info = [SELECT Data_Type__c, Days__c, End_Date__c, OpportunityLineItemId__c, Revenue__c, Start_Date__c, Time_Type__c, Contact__r.Id
+                                        FROM Planning_statistics__c
                                         WHERE OpportunityLineItemId__c IN :OpportunityLineItemIds AND Start_Date__c >= :this.StartDate AND End_Date__c <= :this.EndDate];
         processStatistics(planning_statistics_info);
     }
@@ -84,12 +85,12 @@ public without sharing class PsoToolController{
                                     (SELECT Contact__r.Name, Contact__r.Id, Contact__r.Account.Name, Contact__r.Title, Contact__r.LastName, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
                                         FROM OpportunityLineItems
                                         WHERE Contact__r.LastName != 'All' AND
-                                        Unit__c = 'Manntag(e)') 
-                                        FROM Opportunity 
-                                        WHERE Id IN :getOpportunitiesToShow() 
-                                        AND 
-                                        Project_Start_Date__c <= :this.EndDate AND 
-                                        Project_End_Date__c >= :this.StartDate 
+                                        Unit__c = 'Manntag(e)')
+                                        FROM Opportunity
+                                        WHERE Id IN :getOpportunitiesToShow()
+                                        AND
+                                        Project_Start_Date__c <= :this.EndDate AND
+                                        Project_End_Date__c >= :this.StartDate
                                         AND Managed_by_PSO_Tool__c = true];
     }
 
@@ -160,15 +161,42 @@ public without sharing class PsoToolController{
     }
 
     @TestVisible private void processStatistics(List<Planning_statistics__c> planning_statistics){
-        OppLineItemIdToDateRangeToDataTypeToStatisticsEntry = new Map<String, Map<String, Map<String, Planning_statistics__c>>>();
+        OppLineItemIdToDateRangeToRawStats = new Map<String, Map<String, RawStats>>();
+        ContactIdToDateRangeToRawStats = new Map<String, Map<String, RawStats>>();
         for(Planning_statistics__c entry : planning_statistics){
-            if(!OppLineItemIdToDateRangeToDataTypeToStatisticsEntry.containsKey(entry.OpportunityLineItemId__c))
-                OppLineItemIdToDateRangeToDataTypeToStatisticsEntry.put(entry.OpportunityLineItemId__c, new Map<String, Map<String, Planning_statistics__c>>());
             String key_for_nested_map = entry.Start_Date__c.format() + ' - ' + entry.End_Date__c.format();
-            if(!OppLineItemIdToDateRangeToDataTypeToStatisticsEntry.get(entry.OpportunityLineItemId__c).containsKey(key_for_nested_map))
-                OppLineItemIdToDateRangeToDataTypeToStatisticsEntry.get(entry.OpportunityLineItemId__c).put(key_for_nested_map, new Map<String, Planning_statistics__c>());
-            if(!OppLineItemIdToDateRangeToDataTypeToStatisticsEntry.get(entry.OpportunityLineItemId__c).get(key_for_nested_map).containsKey(entry.Data_Type__c))
-                OppLineItemIdToDateRangeToDataTypeToStatisticsEntry.get(entry.OpportunityLineItemId__c).get(key_for_nested_map).put(entry.Data_Type__c, entry);
+            buildOppLineItemIdToDateRangeToRawStats(entry, key_for_nested_map);
+            buildContactIdToDateRangeToRawStats(entry, key_for_nested_map);
+        }
+    }
+
+    @TestVisible private void buildOppLineItemIdToDateRangeToRawStats(Planning_statistics__c entry, String key_for_nested_map){
+        if(!OppLineItemIdToDateRangeToRawStats.containsKey(entry.OpportunityLineItemId__c))
+            OppLineItemIdToDateRangeToRawStats.put(entry.OpportunityLineItemId__c, new Map<String, RawStats>());
+        if(!OppLineItemIdToDateRangeToRawStats.get(entry.OpportunityLineItemId__c).containsKey(key_for_nested_map))
+            OppLineItemIdToDateRangeToRawStats.get(entry.OpportunityLineItemId__c).put(key_for_nested_map, new RawStats(entry));
+        if(entry.Data_Type__c == PLANNED_STATISTIC_TYPE){
+            OppLineItemIdToDateRangeToRawStats.get(entry.OpportunityLineItemId__c).get(key_for_nested_map).PlannedDays = entry.Days__c;
+            OppLineItemIdToDateRangeToRawStats.get(entry.OpportunityLineItemId__c).get(key_for_nested_map).PlannedRevenue = entry.Revenue__c;
+        }
+        if(entry.Data_Type__c == ACTUAL_STATISTIC_TYPE){
+            OppLineItemIdToDateRangeToRawStats.get(entry.OpportunityLineItemId__c).get(key_for_nested_map).ActualDays = entry.Days__c;
+            OppLineItemIdToDateRangeToRawStats.get(entry.OpportunityLineItemId__c).get(key_for_nested_map).ActualRevenue = entry.Revenue__c;
+        }
+    }
+
+    @TestVisible private void buildContactIdToDateRangeToRawStats(Planning_statistics__c entry, String key_for_nested_map){
+        if(!ContactIdToDateRangeToRawStats.containsKey(entry.Contact__r.Id))
+            ContactIdToDateRangeToRawStats.put(entry.Contact__r.Id, new Map<String, RawStats>());
+        if(!ContactIdToDateRangeToRawStats.get(entry.Contact__r.Id).containsKey(key_for_nested_map))
+            ContactIdToDateRangeToRawStats.get(entry.Contact__r.Id).put(key_for_nested_map, new RawStats(entry));
+        if(entry.Data_Type__c == PLANNED_STATISTIC_TYPE){
+            ContactIdToDateRangeToRawStats.get(entry.Contact__r.Id).get(key_for_nested_map).PlannedDays += entry.Days__c;
+            ContactIdToDateRangeToRawStats.get(entry.Contact__r.Id).get(key_for_nested_map).PlannedRevenue += entry.Revenue__c;
+        }
+        if(entry.Data_Type__c == ACTUAL_STATISTIC_TYPE){
+            ContactIdToDateRangeToRawStats.get(entry.Contact__r.Id).get(key_for_nested_map).ActualDays += entry.Days__c;
+            ContactIdToDateRangeToRawStats.get(entry.Contact__r.Id).get(key_for_nested_map).ActualRevenue += entry.Revenue__c;
         }
     }
 
@@ -216,7 +244,7 @@ public without sharing class PsoToolController{
                 resources.get(key_for_map).SoldDays += WORKING_HOURS_IN_DAY*line_item.Quantity;
                 resources.get(key_for_map).Staffing.addAll(getStaffingForResourceForOpportunity(opp.Id, line_item));
                 checkIfMonthIsWithinRangeAndPutInMap(resources.get(key_for_map), line_item);
-                resources.get(key_for_map).Statistics.addAll(getStats(line_item.Id));
+                resources.get(key_for_map).Statistics.addAll(getStatsForOppLineItem(line_item.Id));
                 if(Datetime.valueOf(resources.get(key_for_map).LastModifiedDate) < line_item.LastModifiedDate)
                     resources.get(key_for_map).LastModifiedDate = line_item.LastModifiedDate.format('yyyy-MM-dd HH:mm:ss');
             }
@@ -236,7 +264,7 @@ public without sharing class PsoToolController{
         new_resource.Staffing = getStaffingForResourceForOpportunity(opp_id, line_item);
         new_resource.MonthToLimitMap = new Map<String, String>();
         new_resource.MonthToOppLineItemIdMap = new Map<String, String>();
-        new_resource.Statistics = getStats(line_item.Id);
+        new_resource.Statistics = getStatsForOppLineItem(line_item.Id);
         checkIfMonthIsWithinRangeAndPutInMap(new_resource, line_item);
         return new_resource;
     }
@@ -297,6 +325,7 @@ public without sharing class PsoToolController{
                 newInfo.AccountName = ContactIdsToContacts.get(contact_id).Account.Name;
                 newInfo.Staffing = new List<Staffing>();
                 newInfo.ContactId = contact_id;
+                newInfo.Statistics = getStatsForContact(contact_id);
                 contactIdToResourceAvailabilityData.put(contact_id, newInfo);
             }
             if(ContactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap.containsKey(contact_id)){
@@ -353,9 +382,9 @@ public without sharing class PsoToolController{
 
     public void allocateResource(String opp_line_item_id, Date selected_date, Decimal number_of_days){
         OpportunityLineItemSchedule changed_or_created_line_item_schedule;
-        List<OpportunityLineItem> changed_opportunity_line_items = [SELECT UnitPrice, Quantity, 
-                            (SELECT Quantity, Description FROM OpportunityLineItemSchedules WHERE ScheduleDate =:selected_date 
-                                AND Description != :OpportunityLineItemScheduleChangeHandler.UNPLANNED_COMMENT ORDER BY LastModifiedDate DESC) 
+        List<OpportunityLineItem> changed_opportunity_line_items = [SELECT UnitPrice, Quantity,
+                            (SELECT Quantity, Description FROM OpportunityLineItemSchedules WHERE ScheduleDate =:selected_date
+                                AND Description != :OpportunityLineItemScheduleChangeHandler.UNPLANNED_COMMENT ORDER BY LastModifiedDate DESC)
                             FROM OpportunityLineItem WHERE Id =: opp_line_item_id];
         if(changed_opportunity_line_items.isEmpty())
             throw new OpportunityLineItemNotFoundException('OpportunityLineItem is not found');
@@ -376,31 +405,30 @@ public without sharing class PsoToolController{
         return created_line_item_schedule;
     }
 
-    @TestVisible private List<Stats> getStats(String opp_line_item_id){
+    @TestVisible private List<Stats> getStatsForOppLineItem(String opp_line_item_id){
         List<Stats> stats = new List<Stats>();
-        if(OppLineItemIdToDateRangeToDataTypeToStatisticsEntry.containsKey(opp_line_item_id)){
-            for(Map<String, Planning_statistics__c> stat_entries : OppLineItemIdToDateRangeToDataTypeToStatisticsEntry.get(opp_line_item_id).values()){
-                Stats new_stat = getDefaultNewStat(stat_entries.values().get(0));
-                if(stat_entries.containsKey(PLANNED_STATISTIC_TYPE)){
-                    new_stat.Days = new_stat.Days.split('/').get(0) + '/' + stat_entries.get(PLANNED_STATISTIC_TYPE).Days__c.stripTrailingZeros().toPlainString();
-                    new_stat.Revenue = new_stat.Revenue.split('/').get(0) + '/' + stat_entries.get(PLANNED_STATISTIC_TYPE).Revenue__c.stripTrailingZeros().toPlainString();
-                }
-                if(stat_entries.containsKey(ACTUAL_STATISTIC_TYPE)){
-                    new_stat.Days = stat_entries.get(ACTUAL_STATISTIC_TYPE).Days__c.stripTrailingZeros().toPlainString() + '/' + new_stat.Days.split('/').get(1);
-                    new_stat.Revenue = stat_entries.get(ACTUAL_STATISTIC_TYPE).Revenue__c.stripTrailingZeros().toPlainString() + '/' + new_stat.Revenue.split('/').get(1);
-                }
-                stats.add(new_stat);
-            }
+        if(OppLineItemIdToDateRangeToRawStats.containsKey(opp_line_item_id)){
+            for(RawStats stat_entry : OppLineItemIdToDateRangeToRawStats.get(opp_line_item_id).values())
+                stats.add(getNewStat(stat_entry));
         }
         return stats;
     }
 
-    @TestVisible private Stats getDefaultNewStat(Planning_statistics__c stat_entry){
+    @TestVisible private List<Stats> getStatsForContact(String contact_id){
+        List<Stats> stats = new List<Stats>();
+        if(ContactIdToDateRangeToRawStats.containsKey(contact_id)){
+            for(RawStats stat_entry : ContactIdToDateRangeToRawStats.get(contact_id).values())
+                stats.add(getNewStat(stat_entry));
+        }
+        return stats;
+    }
+
+    @TestVisible private Stats getNewStat(RawStats raw_stat_entry){
         Stats new_stat = new Stats();
-        new_stat.StartDate = stat_entry.Start_Date__c.format();
-        new_stat.EndDate = stat_entry.End_Date__c.format();
-        new_stat.Days = '0/0';
-        new_stat.Revenue = '0/0';
+        new_stat.StartDate = raw_stat_entry.StartDate.format();
+        new_stat.EndDate = raw_stat_entry.EndDate.format();
+        new_stat.Days = raw_stat_entry.ActualDays.stripTrailingZeros().toPlainString() + '/' + raw_stat_entry.PlannedDays.stripTrailingZeros().toPlainString();
+        new_stat.Revenue = raw_stat_entry.ActualRevenue.stripTrailingZeros().toPlainString() + '/' + raw_stat_entry.PlannedRevenue.stripTrailingZeros().toPlainString();
         return new_stat;
     }
 
@@ -453,7 +481,7 @@ public without sharing class PsoToolController{
             jeyson.writeStartArray();
             for(ResourceInfo resource: Resources)
                 jeyson.writeObject(resource);
-            jeyson.writeEndArray(); 
+            jeyson.writeEndArray();
         }
     }
 
@@ -516,6 +544,7 @@ public without sharing class PsoToolController{
         @TestVisible private String LastName;
         public String ContactId;
         public List<Staffing> Staffing;
+        public List<Stats> Statistics;
 
         public Integer compareTo(Object compare_to){
             ResourceInfo resource_info_to_compare = (ResourceInfo)compare_to;
@@ -546,6 +575,24 @@ public without sharing class PsoToolController{
         public String EndDate;
         public String Days;
         public String Revenue;
+    }
+
+    public class RawStats{
+        public Date StartDate;
+        public Date EndDate;
+        public Decimal PlannedDays;
+        public Decimal PlannedRevenue;
+        public Decimal ActualDays;
+        public Decimal ActualRevenue;
+
+        public RawStats(Planning_statistics__c entry){
+            this.StartDate = entry.Start_Date__c;
+            this.EndDate = entry.End_Date__c;
+            this.PlannedDays = 0;
+            this.PlannedRevenue = 0;
+            this.ActualDays = 0;
+            this.ActualRevenue = 0;
+        }
     }
 
     public class OpportunityNotFoundException extends Exception{}
