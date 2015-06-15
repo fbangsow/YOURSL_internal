@@ -17,6 +17,7 @@ Versions:
 
 <html>
     <head><title>PSOTable</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
       <link rel="stylesheet"  href="{!$Resource.datepicker}"></link>
       <link rel="stylesheet"  href="{!$Resource.PsotoolCss}"></link>
        <script type="text/javascript" src="{!$Resource.PsoToolLibs}"></script>
@@ -24,7 +25,15 @@ Versions:
       <script src="/resource/1430742754000/PsoToolMomentjs"></script>
       <script src="/resource/1430888909000/PsoToolUnderscorejs"></script>
 
+   <style>
+ @media only screen and (min-width: 1450px) {
    
+.weekspresence {
+  float: left;
+  width: 70%;
+}
+   }
+   </style>
  
       <script type="text/javascript">
  
@@ -662,6 +671,8 @@ Versions:
                         universalobject = resultobject;
                         //code for template of binding input field of calender
                         var myDataSet1 = $scope.dataval1;
+
+                        $scope.projecthealth=function(){
                         Visualforce.remoting.Manager.invokeAction(
                             '{!$RemoteAction.CtrPSOTable.getProjectHealth}',
 
@@ -706,9 +717,57 @@ Versions:
 
                             }
                         )
-
+                 }
+                  $scope.projecthealth();
                         //caculation for planned and unplanned days
                         $scope.calculationonload = function() {
+                          angular.forEach($scope.dataval.Resources, function(resources, i) {
+                                angular.forEach(resources.Statistics, function(sttcs, i) {
+                                            var strtdate = sttcs.StartDate;
+                                            var enddate = sttcs.EndDate;
+                                            var splitstrtdate = strtdate.split(".");
+                                            var splitenddate = enddate.split(".");
+                                            $(".enddateinput").val(splitenddate[0] + "-" + splitenddate[1] + "-" + splitenddate[2]);
+                                            //differnce between startdate and end date starts
+                                            var oneDay = 86400000; // hours*minutes*seconds*milliseconds
+                                            var firstDate = new Date(splitenddate[2], parseInt(splitenddate[1]) - 1, splitenddate[0]);
+                                            var secondDate = new Date(splitstrtdate[2], parseInt(splitstrtdate[1]) - 1, splitstrtdate[0]);
+                                            var diffDays = Math.round(Math.abs((firstDate.getTime() - secondDate.getTime()) / (oneDay)));
+                                            var cmbne = splitenddate[1] + "-" + splitenddate[0] + "-" + splitenddate[2];
+                                            var weekno = moment(cmbne, "MM-DD-YYYY").startOf('isoweek').week();
+                                            //differnce between startdate and end date ends
+                                            weekno = weekno;
+                                            splitenddate[1] = parseInt(splitenddate[1]);
+
+                                            if (diffDays == 6) {
+                                                sttcs["Day"] = "Week";
+                                                sttcs["wmno"] = weekno;
+                                            } else if (diffDays < 7) {
+                                                if (parseInt(splitenddate[0]) <= 6) {
+                                                    sttcs["Day"] = "Week";
+                                                    sttcs["wmno"] = weekno;
+
+                                                } else {
+
+                                                    sttcs["Day"] = "MWeek";
+                                                    sttcs["wmno"] = weekno;
+                                                }
+
+                                            } else {
+                                                sttcs["Day"] = "Month";
+                                                sttcs["wmno"] = splitenddate[1];
+                                            }
+
+                                            var splitstt = sttcs.Days.split("/");
+                                            var splitsttrev = sttcs.Revenue.split("/");
+                                            if (parseFloat(splitstt[0]) == 0 && parseFloat(splitstt[1]) == 0) {
+                                                sttcs.Days = "-/-"
+                                            }
+                                            if (parseFloat(splitsttrev[0]) == 0 && parseFloat(splitsttrev[1]) == 0) {
+                                                sttcs.Revenue = "-/-"
+                                            }
+                                        });
+                                     });
                             var startdate = $scope.dataval.StartDate;
                             angular.forEach($scope.dataval.Customers, function(Customers, i) {
                                 angular.forEach(Customers.Projects, function(projectss, i) {
@@ -1440,89 +1499,9 @@ Versions:
                                     }
                                 })
                             }
-                            //Filtering of projects based on customer selection
+                         
 
-                        $scope.projects = function(ab1) {
-                            var countforfilterdata = 0;
-                            if (typeof $scope.dataforfilter !== "undefined") {
-                                $(".table2").each(function(co) {
-                                    var a = parseInt($(this).find("thead tr th").height()) + 1;
-                                    if ($(this).attr("id") != "lasttable") {
-                                        $(".table1").each(function(co1) {
-                                            if (co == co1) {
-                                                // $(this).find("thead tr th").attr("style", "height:" + a + "px;padding:1px !important");
-                                            }
-                                        })
-                                    }
-                                })
-                                var a = $("#lasttable thead tr th").height() + 1;
-                                var paddg = $("#lasttable thead tr th").css("padding");
-                                // $("#resourcetable thead tr th").attr("style", "height:" + a + "px;padding:" + paddg + "!important;");
-                                var tda = $("#lasttable  tr td").height();
-                                var tdpaddg = $("#lasttable  tr td").css("padding");
-                                angular.forEach($scope.dataforfilter.Customers, function(Customers, i) {
-                                    angular.forEach(Customers.Projects, function(projectss, i) {
-                                        if (projectss.OpportunityName == ab1.value) {
-                                            countforfilterdata = countforfilterdata + 1;
-                                        }
-                                    });
-                                });
-                            } else {
-                                countforfilterdata = 1;
-                            }
-                            if (ab1.value == "All Opportunity Names") {
-                                countforfilterdata = 1;
-                            }
-                            if (countforfilterdata > 0) {
-                                if (ab1.value != "All Opportunity Names") {
-                                    $(".prjname").each(function() {
-                                        if ($(this).text() == ab1.value && $(this).parent().parent().find(".customername").text() == $scope.persons[parseInt($(".Customers").val())].value) {
-                                            $(this).parent().parent().parent().removeClass("hidedata");
-                                            $(this).parent().parent().parent().next().removeClass("hidedata");
-                                        } else {
-                                            $(this).parent().parent().parent().addClass("hidedata");
-                                            $(this).parent().parent().parent().next().addClass("hidedata");
-                                        }
-                                    })
-                                } else {
-                                    $(".prjname").each(function() {
-                                        if ($(this).parent().parent().find(".customername").text() == $scope.persons[parseInt($(".Customers").val())].value) {
-                                            $(this).parent().parent().parent().removeClass("hidedata");
-                                            $(this).parent().parent().parent().next().removeClass("hidedata");
-                                        } else {
-                                            $(this).parent().parent().parent().addClass("hidedata");
-                                            $(this).parent().parent().parent().next().addClass("hidedata");
-                                        }
-                                    })
-                                }
-                                if ($scope.persons[parseInt($(".Customers").val())].value == "All Account Names") {
-                                    $(".hdng table").each(function() {
-                                        $(this).removeClass("hidedata");
-                                        $(this).next().removeClass("hidedata");
-                                    })
-                                    $(".prjname").each(function() {
-                                        if ($(this).text() != ab1.value) {
-                                            var a = ab1.value;
-                                            $(this).parent().parent().parent().addClass("hidedata");
-                                            $(this).parent().parent().parent().next().addClass("hidedata");
-                                        }
-                                    })
-                                }
-                                if ($scope.persons[parseInt($(".Customers").val())].value == "All Account Names" && ab1.value == "All Opportunity Names") {
-                                    $(".hdng table").each(function() {
-                                        $(this).removeClass("hidedata");
-                                        $(this).next().removeClass("hidedata");
-                                    })
-                                }
-
-                            } else {
-                                $(".appendtxt").text(" ");
-                                $(".appendtxt").append("No results are available for the filtering.")
-                                $(".popup,.blurbackgrund").attr("style", "display:block");
-                                $(".appndbtns").html("<input type='button' value='Cancel' class='cancelbtn'>");
-                            }
-                        }
-
+                      
                     });
 
                 }
@@ -1530,6 +1509,7 @@ Versions:
             }
             //)
         $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
+       
              $scope.calculationandconvertion();
             $scope.headerpop = function() {
                 var strtdate = startdateobj.StartDate;
@@ -1681,17 +1661,18 @@ Versions:
             $scope.disablinginputs();
             $scope.Statatical();
             $scope.plannedorqa();
-     
+              var widthdata=$(".wrapperwidth").width()-$(".custdisplay").width();
+          $(".weekspresence").attr("style","width:"+widthdata+"px");
+          $( window ).resize(function() {
+   var widthdata=$(".wrapperwidth").width()-$(".custdisplay").width();
+          $(".weekspresence").attr("style","width:"+widthdata+"px");
+   });
          })
      //function for close button
     $(document).on("click", ".closebtn", function() {
         $(".blurbackgrund,.popup").attr("style", "display:none");
         dataforna = 0;
     });
- 
-
-       
-
     //function for confrom button
     $(document).on("click", ".cnfrmbtn", function() {
         $(".Cancelfun").removeClass("Cancelfun");
@@ -1742,7 +1723,6 @@ Versions:
 
 
                         if (resultobject.Customers.length > 0) {
-
                             $scope.mainPage = tempService.inputbindingtable(resultobject);
                             $scope.dataval = resultobject;
                             startdateobj = resultobject;
@@ -1752,13 +1732,10 @@ Versions:
                             $scope.stylng = 0;
                             $scope.Staffingpopltion();
                             totalcaluculation();
-                            //previous month's data read only @ 4 AM Germany time on 1st of corresponding month
                             $scope.disablinginputs();
-                            var a = $("#lasttable thead tr th").height() + 2;
-                            var paddg = $("#lasttable thead tr th").css("padding");
-                            $("#resourcetable thead tr th").attr("style", "height:" + 79 + "px;padding:" + paddg + "!important;");
                             $scope.Statatical();
                             $scope.plannedorqa();
+                            $scope.projecthealth();
                             $(".workingweeks .greycolorsat").attr("style", "border-bottom:none !IMPORTANT;");
                             $(".workingweeks tr td:nth-child(3)").attr("style", "border:none !IMPORTANT;display:none;");
                             $(".workingweeks tr td:nth-child(4)").attr("style", "border:none;border-right: none;");
