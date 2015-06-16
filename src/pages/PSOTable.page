@@ -400,7 +400,8 @@ Versions:
                 var projects1 = new Array();
                 if (countforfilterdata == 1) {
                     projects1.push({
-                        "value": "All Opportunity Names"
+                        "value": "All Opportunity Names",
+                        "Id": "0"
                     })
                     angular.forEach($scope.projectdetails, function(a, b) {
 
@@ -415,7 +416,8 @@ Versions:
 
                 } else {
                     projects1.push({
-                        "value": "All Opportunity Names"
+                        "value": "All Opportunity Names",
+                         "Id": "0"
                     })
                     angular.forEach(ab, function(selectedvalue, b) {
 
@@ -537,24 +539,6 @@ Versions:
 
         }
 
-        $(document).on('click', '.clickforselect option', function() {
-
-            if ($(this).is(":selected")) {
-
-                if ($(this).val() == 0) {
-                    $('.clickforselect option').each(function(i, selected) {
-
-                        if ($(this).val() != 0) {
-                            $(this).attr("selected", true);
-                        }
-                    });
-
-                }
-
-
-            }
-
-        });
         $(document).on('click', '.accountname  option', function() {
 
             if ($(this).is(":selected")) {
@@ -573,14 +557,64 @@ Versions:
 
             }
         });
-        //$(document).on('click', '.clickforselect', function() {
-        $scope.oprnameselect = function() {
+
+
+       
+        $scope.oprnameselect = function(a) {
+          
+
+if(a=="0")
+{
+   $('.clickforselect option').each(function(i, selected) {
+            if ($(this).is(":selected")) {
+
+                if ($(this).val() == 0) {
+                    $('.clickforselect option').each(function(i, selected) {
+
+                   
+                            $(this).attr("selected", true);
+                       
+                    });
+
+                }
+
+
+            }
+          });
+ }
+   var count=0;
+   $('.clickforselect option').each(function(i, selected) {
+if ($(this).is(":selected")) {
+count=count+1;
+}
+
+    });
+
+    if(count!=$('.clickforselect option').length)
+{
+  $('.clickforselect option').each(function(i, selected) {
+        if ($(this).val() == 0) {
+          $(this).attr("selected", false);
+        }
+  });
+
+}
+else
+{
+ $('.clickforselect option').each(function(i, selected) {
+        if ($(this).val() == 0) {
+          $(this).attr("selected", true);
+        }
+  });
+
+}
 
             var foo = new Array();
             var idselected = new Array();
-            //$(".oprid").val($scope.projectsSelecteddata);
+          
 
             $('.clickforselect :selected').each(function(i, selected) {
+              
                 foo.push($(selected).text());
                 idselected.push($(selected).val())
 
@@ -608,19 +642,72 @@ Versions:
 
 
         }
+
+                        $scope.projecthealthonload=function(){
+                          Visualforce.remoting.Manager.invokeAction(
+                            '{!$RemoteAction.CtrPSOTable.getProjectHealth}',
+
+                            function(result, event) {
+
+                                var daatjson = htmlDecode(result);
+                                var parsedDaatjson = JSON.parse(daatjson);
+
+
+                                $.each(parsedDaatjson.ReasonsLabelToValue, function(key, value) {
+                                    $(".projecthealthoption").append("<option value='" + key + "'>" + key + "</option>")
+                                    var projecthealth = new Array();
+                                    angular.forEach($scope.dataval.Customers, function(a, b) {
+
+                                        angular.forEach(a.Projects, function(an, b) {
+
+                                            projecthealth.push(an.ProjectStatus)
+                                        })
+                                    });
+
+                                    angular.forEach(projecthealth, function(a, b) {
+
+                                        $(".projecthealthoption").each(function(aprjb) {
+
+                                            if (parseInt(b) == parseInt(aprjb)) {
+                                                if (a != "null") {
+                                                    $(this).find("option").each(function() {
+                                                        if ($(this).val() == a) {
+                                                            $(this).attr("selected", true);
+                                                        }
+                                                    })
+                                                }
+                                            }
+                                        })
+
+                                    });
+
+                                })
+
+
+
+                            }, {
+
+                            }
+                        )
+                 }
         $(document).on("focus", ".clickforselect ", function() {
                 $scope.focusforchange = $(".oprid").val();
 
             })
+        $scope.closefunctn=function(){
+
+           $(".blurbackgrund,.imgldr").attr("style", "display:none");
+        }
             //$(document).on("blur", ".clickforselect ", function() {
         $scope.oppselectedvalue = function() {
 
 
                 var a = $(".oprid").val();
+            
                 var count = "";
 
                 if (typeof $scope.focusforchange !== "undefined") {
-                    count = $scope.focusforchange.localeCompare(a);
+                    count = a.localeCompare($scope.focusforchange);
                     $(".clickforselect").slideToggle('fast');
                 } else {
                     count = 1;
@@ -665,6 +752,7 @@ Versions:
 
                         var daatjson = htmlDecode(result);
                         var resultobject = JSON.parse(daatjson);
+                     if (resultobject.Customers.length > 0) {
                         $scope.mainPage = tempService.inputbindingtable(resultobject);
                         $scope.dataval = resultobject;
                         $scope.focusdata = "";
@@ -672,53 +760,7 @@ Versions:
                         //code for template of binding input field of calender
                         var myDataSet1 = $scope.dataval1;
 
-                        $scope.projecthealth=function(){
-                        Visualforce.remoting.Manager.invokeAction(
-                            '{!$RemoteAction.CtrPSOTable.getProjectHealth}',
-
-                            function(result, event) {
-
-                                var daatjson = htmlDecode(result);
-                                var parsedDaatjson = JSON.parse(daatjson);
-
-                                $.each(parsedDaatjson.ReasonsLabelToValue, function(key, value) {
-                                    $(".projecthealthoption").append("<option value='" + key + "'>" + key + "</option>")
-                                    var projecthealth = new Array();
-                                    angular.forEach($scope.dataval.Customers, function(a, b) {
-
-                                        angular.forEach(a.Projects, function(an, b) {
-
-                                            projecthealth.push(an.ProjectStatus)
-                                        })
-                                    });
-
-                                    angular.forEach(projecthealth, function(a, b) {
-
-                                        $(".projecthealthoption").each(function(aprjb) {
-
-                                            if (parseInt(b) == parseInt(aprjb)) {
-                                                if (a != "null") {
-                                                    $(this).find("option").each(function() {
-                                                        if ($(this).val() == a) {
-                                                            $(this).attr("selected", true);
-                                                        }
-                                                    })
-                                                }
-                                            }
-                                        })
-
-                                    });
-
-                                })
-
-
-
-                            }, {
-
-                            }
-                        )
-                 }
-                  $scope.projecthealth();
+                        $scope.projecthealthonload();
                         //caculation for planned and unplanned days
                         $scope.calculationonload = function() {
                           angular.forEach($scope.dataval.Resources, function(resources, i) {
@@ -1500,7 +1542,16 @@ Versions:
                                 })
                             }
                          
+                     }
+                      else
+                     {
+                      $(".imgldr").attr("style","display:none;");
+                        $(".appendtxt").text(" ");
+                            $(".appendtxt").append("No results are available for the filtering.")
+                            $(".popup,.blurbackgrund").attr("style", "display:block");
+                            $(".appndbtns").html("<input type='button' value='Cancel' class='cancelbtn' >");
 
+                       }
                       
                     });
 
@@ -1735,7 +1786,7 @@ Versions:
                             $scope.disablinginputs();
                             $scope.Statatical();
                             $scope.plannedorqa();
-                            $scope.projecthealth();
+                            $scope.projecthealthonload();
                             $(".workingweeks .greycolorsat").attr("style", "border-bottom:none !IMPORTANT;");
                             $(".workingweeks tr td:nth-child(3)").attr("style", "border:none !IMPORTANT;display:none;");
                             $(".workingweeks tr td:nth-child(4)").attr("style", "border:none;border-right: none;");
@@ -2071,7 +2122,7 @@ Versions:
               
             <td>
           
- <input type="text" class="oprid"/>
+ <input type="text" class="oprid" />
             <dl class="dropdown"> 
   
     <dt>
@@ -2085,7 +2136,7 @@ Versions:
     <dd>
         <div class="mutliSelect">
      
-           <select class="Projects clickforselect" data-ng-model="projectsSelecteddata"  ng-blur="oppselectedvalue()" multiple="true" ng-click="oprnameselect()"> 
+           <select class="Projects clickforselect" data-ng-model="projectsSelecteddata"  ng-blur="oppselectedvalue()" multiple="true" ng-click="oprnameselect(projectsSelecteddata)"> 
    <option ng-repeat="c in projectsselect" value="{{c.Id}}" >{{c.value}}</option>
             </select>
           
