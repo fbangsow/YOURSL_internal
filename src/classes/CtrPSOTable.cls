@@ -10,15 +10,15 @@ public class CtrPSOTable {
 
     public string jsonstring {set; get;}  
     public String DateValue {get; set;}
-    public static Date CurrentDate {get;set;}
      
     public CtrPSOTable(){              
 
     }  
-      @RemoteAction
- public static void  getChangedProjectHealth(String opptrtuntyid,String changedvalue) {
-system.debug('opptrtuntyid'+opptrtuntyid);
-system.debug('changedbd'+changedvalue);
+      
+ @RemoteAction
+  public static void  getChangedProjectHealth(String opptrtuntyid,String changedvalue) {
+  system.debug('opptrtuntyid'+opptrtuntyid);
+  system.debug('changedbd'+changedvalue);
      PsoToolController.getInstance().setProjectHealthReason(opptrtuntyid,changedvalue);
   }
    
@@ -31,16 +31,6 @@ system.debug('changedbd'+changedvalue);
   public static string getProjectHealth() {
 
     return PsoToolController.getInstance().getProjectHealthReasons().JSON();
-  }
-
-   @RemoteAction
-  public static Datetime getCurrentDate() {
-    CurrentDate = system.today();
-    Datetime currentDateTime = (Datetime)CurrentDate;
-    system.debug('!!cur'+CurrentDate);
-    system.debug('!!cur time'+currentDateTime);
-
-    return currentDateTime;
   }
  
   @RemoteAction
@@ -86,19 +76,23 @@ return  PsoToolController.getInstance().setSelectedOpportunities(listofdataforli
   }
 
     
-  public void runWeeklyJob(){          
+  public void runJob(){          
           
       if(DateValue == '')
         ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.WARNING,'Please select Date before running the job'));
       else{
+            String[] myDateOnly = DateValue.split(' ');
+            String[] strDate = myDateOnly[0].split('/');
+            Integer myIntDate = integer.valueOf(strDate[1]);
+            Integer myIntMonth = integer.valueOf(strDate[0]);
+            Integer myIntYear = integer.valueOf(strDate[2]);
+            Date myjobDate = Date.newInstance(myIntYear, myIntMonth, myIntDate);
 
-           batchPSOTool b = new batchPSOTool(DateValue, true,false);
-           Database.executeBatch(b);  
-          //PlanningScheduleUpdate updateSchedule = new PlanningScheduleUpdate(DateValue, true,false);             
+           StatisticsCalculator.getInstance(myjobDate, true).createStatistics();           
       }
   }
   
-   public void runMonthlyJob(){      
+   /*public void runMonthlyJob(){      
    
     if(DateValue == '')
         ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.WARNING,'Please select Date before running the job'));
@@ -108,6 +102,6 @@ return  PsoToolController.getInstance().setSelectedOpportunities(listofdataforli
           //PlanningScheduleUpdate updateSchedule = new PlanningScheduleUpdate(DateValue, false,true);             
       }  
     
-  }
+  }*/
 
 }

@@ -225,6 +225,14 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>PlannedSchedulesEraser</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>PlannedSchedulesEraserTest</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>PlanningScheduleUpdate</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -273,6 +281,14 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>StatisticsCalculator</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>StatisticsCalculatorTest</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>TEST_Kreditor_Invoice_Status_aIns_aUpd</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -295,6 +311,14 @@
     <classAccesses>
         <apexClass>TestQuotePhaseWrapper</apexClass>
         <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>TimeEntriesProcessor</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>TimeEntriesProcessorTest</apexClass>
+        <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
         <apexClass>TimeEntry4FreelancerEditExtension</apexClass>

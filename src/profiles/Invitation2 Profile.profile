@@ -225,6 +225,14 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>PlannedSchedulesEraser</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>PlannedSchedulesEraserTest</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>PlanningScheduleUpdate</apexClass>
         <enabled>false</enabled>
     </classAccesses>
@@ -273,6 +281,14 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>StatisticsCalculator</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>StatisticsCalculatorTest</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>TEST_Kreditor_Invoice_Status_aIns_aUpd</apexClass>
         <enabled>false</enabled>
     </classAccesses>
@@ -294,6 +310,14 @@
     </classAccesses>
     <classAccesses>
         <apexClass>TestQuotePhaseWrapper</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>TimeEntriesProcessor</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>TimeEntriesProcessorTest</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
