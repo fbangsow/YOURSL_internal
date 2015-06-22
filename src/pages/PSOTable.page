@@ -248,6 +248,7 @@ Versions:
                if (scope.$last === true) {
                    $timeout(function() {
                        scope.$emit('ngRepeatFinished');
+                       scope.$emit('ngRepeatFinishedforselectbox');
                    });
                }
            }
@@ -290,6 +291,9 @@ Versions:
    }, {}));
    //Controller Starts Here
    app.controller('MyCtrl', function($scope, $compile, serviceforgetaccount, serviceforgetaccountchange, tempService, $q) {
+         
+
+
        $('.datepickerforbind').datepicker();
        $('.strtdateinput').datepicker({
            changeMonth: true,
@@ -308,7 +312,18 @@ Versions:
                $(".setstrtdateinput").val(parseInt(month) + 1 + " " + year);
            });
        })
+         var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
+ if(localStorage.getItem("datepickerval")!=null)
+       {
+            
+        $scope.splitdata=(localStorage.getItem("datepickerval")).split(" ");
+    
+              var datemnth=monthNames[$scope.splitdata[0]-1];
+              var date=datemnth+" "+$scope.splitdata[1];
+              $(".setstrtdateinput,.strtdateinput").val(date);
+ 
+       }
        $scope.set_color = function(payment) {
            //var convertion=payment.unplanne.replace(",", ".");
            if (payment != "YOUR SL GmbH") {
@@ -331,22 +346,23 @@ Versions:
 
 
        }
-       $scope.recalculateendweek = function() {
+       $scope.rerunJob = function() {
            var dateforjob = $(".datepickerforbind").val();
            var splitenddate = dateforjob.split("/");
            var firstDate = new Date(splitenddate[2], parseInt(splitenddate[0]) - 1, splitenddate[1]);
            var currentDay = firstDate.getDay();
+           var currentDate = firstDate.getDate();
 
            if (dateforjob == "") {
                $(".joberrormsg").text("Please select Date before running the job");
                $('.joberrormsg').fadeIn('fast');
-           } else if (parseInt(currentDay) != 1) {
-               $(".joberrormsg").text("Please select Monday as a date before running the weekly job");
+           } else if (parseInt(currentDay) != 1 && parseInt(currentDate) != 1) {
+               $(".joberrormsg").text("Please select Monday OR 1st of a month as a date before running the job");
                $('.joberrormsg').fadeIn('fast');
            } else {
                $('.joberrormsg').fadeIn('fast');
                $(".joberrormsg").text("The job was successfully submitted, you'll see results in a few minutes");
-               weeklyjob();
+               runjob();
                setTimeout(function() {
                    $('.joberrormsg').fadeOut('slow');
                }, 5000); // <-- time in milliseconds
@@ -356,7 +372,7 @@ Versions:
 
        }
 
-       $scope.recalculateendmonth = function() {
+      /* $scope.recalculateendmonth = function() {
            var dateforjob = $(".datepickerforbind").val();
 
            var splitenddate = dateforjob.split("/");
@@ -380,7 +396,7 @@ Versions:
 
            }
 
-       }
+       }*/
 
        $scope.Customersfilter = function(ab) {
 
@@ -415,6 +431,7 @@ Versions:
                        "value": "All Opportunity Names",
                        "Id": "0"
                    })
+
                    angular.forEach($scope.projectdetails, function(a, b) {
 
                        angular.forEach(a.project, function(an, b) {
@@ -513,7 +530,72 @@ Versions:
            $scope.blisterPackTemplateSelected = $scope.persons[0];
            $scope.projectsSelecteddata = $scope.projectsselect[0];
 
+       $scope.oppvalue=localStorage.getItem("oppname");
+         if($scope.oppvalue!=null)
+         {
+
+
+$(".oprid").val($scope.oppvalue);
+$scope.oppselectedvalue();
+$scope.accountname=localStorage.getItem("accname");
+
+     var projects1 = new Array();
+               if ($scope.accountname == "All Account Names") {
+                   projects1.push({
+                       "value": "All Opportunity Names",
+                       "Id": "0"
+                   })
+                   angular.forEach($scope.projectdetails, function(a, b) {
+
+                       angular.forEach(a.project, function(an, b) {
+                           projects1.push({
+                               "value": an.name,
+                               "Id": an.Id
+                           });
+                       })
+
+                   })
+
+               } else {
+                   projects1.push({
+                       "value": "All Opportunity Names",
+                       "Id": "0"
+                   })
+                   
+                   var Arraydata=new Array()
+if($scope.accountname.indexOf(",")<0)
+{
+
+ Arraydata.push($scope.accountname);
+}
+else
+{
+ Arraydata=$scope.accountname.split(",");
+}
+                   $.each(Arraydata, function(selectedvalue, bdata) {
+
+                       angular.forEach($scope.projectdetails, function(a, b) {
+                           if (a.customer == bdata) {
+                               angular.forEach(a.project, function(an, b) {
+                                   projects1.push({
+                                       "value": an.name,
+                                       "Id": an.Id
+                                   });
+                               })
+                           }
+                       })
+                   })
+
+
+               }
+
+
+
+               $scope.projectsselect = projects1;
+
+         }
        });
+
        $(".multiSel").click(function() {
 
            $(".accountname ").hide();
@@ -545,9 +627,9 @@ Versions:
        });
 
        $scope.accountnamedsply = function(dsplydata) {
-
-           $(".Accountnamedsp").val(dsplydata);
-
+        
+    $(".Accountnamedsp").val(dsplydata);
+       localStorage.setItem("accname",dsplydata);
 
        }
 
@@ -711,7 +793,7 @@ Versions:
 
 
                var a = $(".oprid").val();
-
+          localStorage.setItem("oppname",$(".oprid").val());
                var count = "";
 
                if (typeof $scope.focusforchange !== "undefined") {
@@ -1565,6 +1647,49 @@ Versions:
 
            }
            //)
+  $scope.$on('ngRepeatFinishedforselectbox', function(ngRepeatFinishedEvent) {
+       $scope.oppvalue=localStorage.getItem("oppname");
+
+  if($scope.oppvalue!="")
+         {
+var oppvalusplite=$scope.oppvalue.split(",");
+for(i=0;i<=oppvalusplite.length-1;i++)
+{
+
+
+
+$(".clickforselect option").each(function(){
+
+if($(this).val()==oppvalusplite[i]){
+
+  $(this).attr("selected",true);
+}
+
+})
+
+}
+}
+$scope.accountname=localStorage.getItem("accname");
+ if($scope.accountname!="")
+         {
+$scope.accountnamesplit=$scope.accountname.split(",");
+for(i=0;i<=$scope.accountnamesplit.length-1;i++)
+{
+
+
+
+$(".accountname  option").each(function(){
+
+if($(this).val()==$scope.accountnamesplit[i]){
+
+  $(this).attr("selected",true);
+}
+
+})
+
+}
+}
+  });
        $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
 
                $scope.calculationandconvertion();
@@ -1759,6 +1884,8 @@ Versions:
        $(document).on("click", ".ui-datepicker-close", function() {
 
            var monthno;
+           
+           localStorage.setItem("datepickerval",$(".setstrtdateinput").val());
            var splitdatedatepicker = ($(".setstrtdateinput").val()).split(" ");
            var listofdata = $(".oprid").val();
            var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -2075,20 +2202,15 @@ Versions:
               </apex:facet>
         </apex:actionStatus>
         </apex:outputPanel>
-        <apex:actionFunction action="{!runWeeklyJob}" name="weeklyjob" reRender="panel"/>
-           <apex:actionFunction action="{!runMonthlyJob}" name="Monthlyjob" reRender="panel"/>
+        <apex:actionFunction action="{!runJob}" name="runjob" reRender="panel"/>
+        <!--<apex:actionFunction action="{!runMonthlyJob}" name="Monthlyjob" reRender="panel"/>-->
   <apex:pageBlock >    
   <div class="loginacess">
 <p class="joberrormsg"></p>
-    <span class="psotoolheader">PSO Scheduler 1.2</span> 
-    <input type="button" class="weekl btn" value="Recalculate last Week" ng-click="recalculateendweek()" style="height:20px;width:150px;"/>
-    <input type="button" class="montlyl btn" value="Recalculate End of Month" ng-click="recalculateendmonth()" style="height:20px;width:150px;"/>
-    <!--<apex:commandButton status="counterStatus"  value="Run Weekly Job" action="{!runWeeklyJob}" reRender="counterStatus" />
-    <apex:commandButton style="height:20px;width:150px;" status="counterStatus" value="Run Monthly Job" action="{!runMonthlyJob}"  />-->
-    Date: 
-
-
-    <apex:inputText value="{!DateValue}" size="10" id="demo" style="width:100px;border:1px solid #B8B1B1" styleClass="datepickerforbind" ></apex:inputText> 
+    <span class="psotoolheader">PSO Scheduler 1.4</span> 
+    <input type="button" class="weekl btn" value="Re-run the job" ng-click="rerunJob()" style="height:20px;width:150px;"/>
+   <!-- <input type="button" class="montlyl btn" value="Recalculate End of Month" ng-click="recalculateendmonth()" style="height:20px;width:150px;"/>-->
+    Date: <apex:inputText value="{!DateValue}" size="10" id="demo" style="width:100px;border:1px solid #B8B1B1" styleClass="datepickerforbind" ></apex:inputText> 
     </div>
       <div class="bordervalue">
   <table class="custdetails" >
@@ -2142,7 +2264,7 @@ Versions:
     <dd>
         <div class="mutliSelect">
      
-           <select class="Projects clickforselect" data-ng-model="projectsSelecteddata"  ng-blur="oppselectedvalue()" multiple="true" ng-click="oprnameselect(projectsSelecteddata)"> 
+           <select class="Projects clickforselect" data-ng-model="projectsSelecteddata"  ng-blur="oppselectedvalue()" multiple="true" ng-click="oprnameselect(projectsSelecteddata)" on-finish-render="ngRepeatFinishedforselectbox"> 
    <option ng-repeat="c in projectsselect" value="{{c.Id}}" >{{c.value}}</option>
             </select>
           
