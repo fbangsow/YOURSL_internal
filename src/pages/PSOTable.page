@@ -536,8 +536,10 @@ Versions:
 
 
 $(".oprid").val($scope.oppvalue);
+
 $scope.oppselectedvalue();
 $scope.accountname=localStorage.getItem("accname");
+
 
      var projects1 = new Array();
                if ($scope.accountname == "All Account Names") {
@@ -1649,6 +1651,8 @@ else
            //)
   $scope.$on('ngRepeatFinishedforselectbox', function(ngRepeatFinishedEvent) {
        $scope.oppvalue=localStorage.getItem("oppname");
+       var datatodsply=new Array();
+       var datadsplyopp=new Array();
 
   if($scope.oppvalue!="")
          {
@@ -1663,6 +1667,9 @@ $(".clickforselect option").each(function(){
 if($(this).val()==oppvalusplite[i]){
 
   $(this).attr("selected",true);
+  datatodsply.push($(this).text());
+
+
 }
 
 })
@@ -1683,12 +1690,16 @@ $(".accountname  option").each(function(){
 if($(this).val()==$scope.accountnamesplit[i]){
 
   $(this).attr("selected",true);
+  datadsplyopp.push($(this).text());
 }
 
 })
 
 }
 }
+
+$(".Accountnamedsp").val(datadsplyopp);
+$(".multiSel").val(datatodsply);
   });
        $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
 
