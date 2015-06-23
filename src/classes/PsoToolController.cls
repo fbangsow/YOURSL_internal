@@ -7,7 +7,6 @@ public without sharing class PsoToolController{
     @TestVisible private Date StartDate;
     @TestVisible private Date EndDate;
     @TestVisible private List<Id> OpportunitiesToShow;
-    private List<String> OpportunityLineItemIds;
     private Map<String, Decimal> OppLineItemScheduleIdToNumberOfDays;
     @TestVisible private Map<String, Map<String, RawStats>> OppLineItemIdToDateRangeToRawStats;
     @TestVisible private Map<String, Map<String, RawStats>> ContactIdToDateRangeToRawStats;
@@ -25,7 +24,6 @@ public without sharing class PsoToolController{
     private Integer NumberOfShownMonthes = 2;
 
     private PsoToolController(){
-        OpportunityLineItemIds = new List<String>();
         OpportunitiesToShow = new List<Id>();
         setStartDate(Date.today());
     }
@@ -76,7 +74,7 @@ public without sharing class PsoToolController{
         buildDataStructure(opportunity_line_items);
         List<Planning_statistics__c> planning_statistics_info = [SELECT Data_Type__c, Days__c, End_Date__c, OpportunityLineItemId__c, Revenue__c, Start_Date__c, Time_Type__c, Contact__r.Id
                                         FROM Planning_statistics__c
-                                        WHERE OpportunityLineItemId__c IN :OpportunityLineItemIds AND Start_Date__c >= :this.StartDate AND End_Date__c <= :this.EndDate];
+                                        WHERE Start_Date__c >= :this.StartDate AND End_Date__c <= :this.EndDate];
         processStatistics(planning_statistics_info);
     }
 
@@ -131,7 +129,6 @@ public without sharing class PsoToolController{
         for(Opportunity opp: Opportunities){
             for(OpportunityLineItem item: opp.OpportunityLineItems){
                 contact_ids.add(item.Contact__r.Id);
-                OpportunityLineItemIds.add(item.Id);
             }
         }
         return contact_ids;
