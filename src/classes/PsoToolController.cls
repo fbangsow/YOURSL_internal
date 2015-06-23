@@ -380,21 +380,25 @@ public without sharing class PsoToolController{
         return new_staff;
     }
 
-    public void allocateResource(String opp_line_item_id, Date selected_date, Decimal number_of_days){
+    public Result allocateResource(String opp_line_item_id, Date selected_date, Decimal number_of_days){
         OpportunityLineItemSchedule changed_or_created_line_item_schedule;
         List<OpportunityLineItem> changed_opportunity_line_items = [SELECT UnitPrice, Quantity,
                             (SELECT Quantity, Description FROM OpportunityLineItemSchedules WHERE ScheduleDate =:selected_date
                                 AND Description != :OpportunityLineItemScheduleChangeHandler.UNPLANNED_COMMENT ORDER BY LastModifiedDate DESC)
                             FROM OpportunityLineItem WHERE Id =: opp_line_item_id];
         if(changed_opportunity_line_items.isEmpty())
-            throw new OpportunityLineItemNotFoundException('OpportunityLineItem is not found');
+            return new Result('OpportunityLineItem is not found');
         OpportunityLineItem changed_opportunity_line_item = changed_opportunity_line_items.get(0);
         if(changed_opportunity_line_item.OpportunityLineItemSchedules.size()>0)
             changed_or_created_line_item_schedule = changed_opportunity_line_item.OpportunityLineItemSchedules.get(0);
         else
             changed_or_created_line_item_schedule = createNewOpportunityLineItemSchedule(opp_line_item_id, selected_date);
         changed_or_created_line_item_schedule.Quantity = number_of_days;
-        upsert changed_or_created_line_item_schedule;
+        try{
+            return new Result(Database.upsert(changed_or_created_line_item_schedule));
+        } catch(DmlException e){
+            return new Result(e);
+        }
     }
 
     @TestVisible private OpportunityLineItemSchedule createNewOpportunityLineItemSchedule(String opp_line_item_id, Date selected_date){
@@ -595,7 +599,31 @@ public without sharing class PsoToolController{
         }
     }
 
+    public class Result{
+        public Boolean IsSuccess;
+        public String ErrorMessage;
+        public Database.UpsertResult ReturnedResult;
+        public DmlException ThrownException;
+
+        public Result(Database.UpsertResult result){
+            IsSuccess = result.isSuccess();
+            if(!result.getErrors().isEmpty())
+                ErrorMessage = result.getErrors().get(0).getMessage();
+            ReturnedResult = result;
+        }
+
+        public Result(DmlException e){
+            IsSuccess = false;
+            ErrorMessage = e.getDmlMessage(0);
+            ThrownException = e;
+        }
+
+        public Result(String custom_error_message){
+            IsSuccess = false;
+            ErrorMessage = custom_error_message;
+        }
+    }
+
     public class OpportunityNotFoundException extends Exception{}
-    public class OpportunityLineItemNotFoundException extends Exception{}
     public class OpportunityLineItemQuantityLimitIsReachedException extends Exception{}
 }

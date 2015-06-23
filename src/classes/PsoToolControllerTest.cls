@@ -528,8 +528,10 @@ private class PsoToolControllerTest {
             Date selected_date = Date.newInstance(2015, 3, 31);
             Decimal selected_quantity = 1;
             Test.startTest();
-                new_instance.allocateResource(setup_data.FirstLineItem.Id, selected_date, selected_quantity);
+                PsoToolController.Result result = new_instance.allocateResource(setup_data.FirstLineItem.Id, selected_date, selected_quantity);
             Test.stopTest();
+            System.assert(result.IsSuccess);
+            System.assertEquals(null, result.ErrorMessage);
             List<OpportunityLineItemSchedule> Schedules = [SELECT OpportunityLineItemId, ScheduleDate, Quantity
                                         FROM OpportunityLineItemSchedule
                                         WHERE Description != :OpportunityLineItemScheduleChangeHandler.UNPLANNED_COMMENT
@@ -548,8 +550,10 @@ private class PsoToolControllerTest {
             Date selected_date = Date.newInstance(2015, 1, 10);
             Decimal selected_quantity = 0.5;
             Test.startTest();
-                new_instance.allocateResource(setup_data.FirstLineItem.Id, selected_date, selected_quantity);
+                PsoToolController.Result result = new_instance.allocateResource(setup_data.FirstLineItem.Id, selected_date, selected_quantity);
             Test.stopTest();
+            System.assert(result.IsSuccess);
+            System.assertEquals(null, result.ErrorMessage);
             List<OpportunityLineItemSchedule> Schedules = [SELECT OpportunityLineItemId, ScheduleDate, Quantity
                                         FROM OpportunityLineItemSchedule
                                         WHERE Description != :OpportunityLineItemScheduleChangeHandler.UNPLANNED_COMMENT
@@ -560,22 +564,18 @@ private class PsoToolControllerTest {
         }
     }
 
-    @isTest static void testAllocateResourceThrowsExceptionForUnexistingOpportunityLineItemId(){
+    @isTest static void testAllocateResourceReturnsFailedResult(){
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
             PsoToolController new_instance = PsoToolController.getInstance();
             setup_data.createTestData();
             Date selected_date = Date.newInstance(2015, 1, 10);
             Decimal selected_quantity = 0.5;
-            Boolean exception_is_caught = false;
             Test.startTest();
-                try{
-                    new_instance.allocateResource(setup_data.FirstAccount.Id, selected_date, selected_quantity);
-                } catch(PsoToolController.OpportunityLineItemNotFoundException e){
-                    exception_is_caught = true;
-                }
+                PsoToolController.Result result = new_instance.allocateResource(setup_data.FirstAccount.Id, selected_date, selected_quantity);
             Test.stopTest();
-            System.assertEquals(true, exception_is_caught);
+            System.assert(!result.IsSuccess);
+            System.assertEquals('OpportunityLineItem is not found', result.ErrorMessage);
         }
     }
 
