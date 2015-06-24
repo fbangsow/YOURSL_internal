@@ -253,8 +253,7 @@ public without sharing class TimeEntry4UserExtension {
                         FROM OpportunityLineItem
                         WHERE Leistung_erbracht__c = : false
                         AND Unit__c = : 'Manntag(e)'
-                        AND Opportunity.IsWon = true
-                                                      //AND Contact__c =: currentcontact.Id
+                        AND (Opportunity.IsWon = true OR PricebookEntry.Product2.Name = 'Presales Support')
                         AND Contact__c = : selectedContact
                         AND ServiceDate > : dateNotOlderThanLastMonth
                         AND ServiceDate < : dateNotMoreThanSixMonthInFuture
