@@ -132,7 +132,6 @@ public class StatisticsCalculator {
     }
 
     public void createStatistics(){
-        String query_to_get_previously_created_stats = '';
         List<RawStatistics> statistics = getStatisticalData(WeekStart, WeekEnd, WEEK_TIME_TYPE, getDataType());
         delete [SELECT Id FROM Planning_Statistics__c WHERE Start_Date__c =: WeekStart AND End_Date__c =: WeekEnd AND Data_Type__c =: getDataType()];
         if(ExtendedContext){
@@ -142,6 +141,8 @@ public class StatisticsCalculator {
         insertNewEntries(statistics);
         if(IsPlanned)
             prepareDatesForReplacementOfActualsAndCallEraser();
+        else
+            sendNotification();
     }
 
     private void prepareDatesForReplacementOfActualsAndCallEraser(){
@@ -232,6 +233,25 @@ public class StatisticsCalculator {
         new_record.OpportunityLineItemId__c = stat.OpportunityLineItemId;
         new_record.Revenue__c = stat.Days * stat.SalesPrice;
         return new_record;
+    }
+
+    private void sendNotification(){
+        EmailUtility.getInstance().setSendTo(UserInfo.getUserEmail())
+                                    .setCcTo('c.leffin@yoursl.de')
+                                    .setReplyTo('no_reply@yoursl.de')
+                                    .setSenderDisplayName('PsoTool Team')
+                                    .setSubject('Manual Run Completed')
+                                    .setHtmlBody(getLetterBody())
+                                    .send();
+    }
+
+    private String getLetterBody(){
+        String body = 'Dear ' + UserInfo.getFirstName() + ',<br><br>';
+        body += 'The statistical tool has successfully finised all calculations.<br>';
+        body += 'Please visit <a href="https://' + System.URL.getSalesforceBaseUrl().getHost() + '/apex/PsoTable">the Pso Tool Page</a> to see changes.<br><br>';
+        body += 'Best regards,<br>';
+        body += 'PsoTeam';
+        return body;
     }
 
     public class RawStatistics {
