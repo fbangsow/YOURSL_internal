@@ -688,7 +688,7 @@ private class PsoToolControllerTest {
         }
     }
 
-    @isTest static void testQueryDataDoesntSeeOpportunitiesAndOpportunitiesWhenCheckboxIsNotSet(){
+    @isTest static void testQueryDataDoesntSeeOpportunitiesAndTheirSchedulesWhenCheckboxIsNotSet(){
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
             PsoToolController new_instance = PsoToolController.getInstance();
@@ -704,8 +704,8 @@ private class PsoToolControllerTest {
             System.assertNotEquals(setup_data.FirstOpportunity.Id, new_instance.opportunities.get(0).Id);
             System.assert(new_instance.contactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap.containsKey(setup_data.TestContact.Id));
             Map<String, Map<String, OpportunityLineItem>> opportunitiesToOppLineItemIdToOppLineItems = new_instance.contactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap.get(setup_data.TestContact.Id);
-            System.assertEquals(2, opportunitiesToOppLineItemIdToOppLineItems.values().size());
-            System.assert(opportunitiesToOppLineItemIdToOppLineItems.containsKey(setup_data.FirstOpportunity.Id));
+            System.assertEquals(1, opportunitiesToOppLineItemIdToOppLineItems.values().size());
+            System.assert(!opportunitiesToOppLineItemIdToOppLineItems.containsKey(setup_data.FirstOpportunity.Id));
         }
     }
 
