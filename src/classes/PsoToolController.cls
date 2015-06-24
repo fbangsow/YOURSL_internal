@@ -70,7 +70,8 @@ public without sharing class PsoToolController{
                                         FROM OpportunityLineItemSchedules
                                         WHERE Description !=:OpportunityLineItemScheduleChangeHandler.UNPLANNED_COMMENT)
                                         FROM OpportunityLineItem
-                                        WHERE Contact__r.Id IN :getRelatedContactIds()];
+                                        WHERE Contact__r.Id IN :getRelatedContactIds()
+                                        AND Managed_by_PSO_Tool__c = true];
         buildDataStructure(opportunity_line_items);
         List<Planning_statistics__c> planning_statistics_info = [SELECT Data_Type__c, Days__c, End_Date__c, OpportunityLineItemId__c, Revenue__c, Start_Date__c, Time_Type__c, Contact__r.Id
                                         FROM Planning_statistics__c
