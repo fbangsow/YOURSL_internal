@@ -1947,8 +1947,8 @@ $(".multiSel").val(datatodsply);
            colorcoding();
            $(".Cancelfun").removeClass("Cancelfun");
            $(".Projects ").click();
-            $(".multiSel").val(" ");
-                           $(".multiSel").val("All Opportunity Names");
+            $(".Accountnamedsp").val("All Account Names ");
+            $(".multiSel").val("All Opportunity Names");
        });
        $(document).on("click", ".ui-datepicker-close", function() {
 
