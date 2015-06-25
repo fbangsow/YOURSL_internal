@@ -297,8 +297,8 @@ Versions:
            changeYear: true,
            showButtonPanel: true,
            dateFormat: 'MM YY',
-           minDate: -180,
-           maxDate: +180,
+           minDate: -720,
+           maxDate: +900,
            currentText: "Today:" + $.datepicker.formatDate('MM dd yy', new Date())
        }).focus(function() {
            var thisCalendar = $(this);
@@ -2254,7 +2254,7 @@ $(".multiSel").val(datatodsply);
                }
            } else {
                $(".appendtxt").text(" ");
-               $(".appendtxt").append("" + changedResource.ResourceName + " is not available for the month.")
+               $(".appendtxt").append(" No contingent for " + changedResource.ResourceName + " has been assigned for this month. Please check with Sales Operations Team for adjustments.")
                $(".popup,.blurbackgrund").attr("style", "display:block");
                $(".appndbtns").html("<input type='button' value='Cancel' class='cancelbtn'>");
                cancelclick = 0;
