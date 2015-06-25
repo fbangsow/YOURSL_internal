@@ -291,9 +291,6 @@ Versions:
    }, {}));
    //Controller Starts Here
    app.controller('MyCtrl', function($scope, $compile, serviceforgetaccount, serviceforgetaccountchange, tempService, $q) {
-         
-
-
        $('.datepickerforbind').datepicker();
        $('.strtdateinput').datepicker({
            changeMonth: true,
@@ -332,6 +329,50 @@ Versions:
                }
            }
        }
+                      $scope.fileringonload=function(myDataSet){
+                       var myDataSet=myDataSet;
+             var newthing = [],
+               customer = [],
+               projectload = [];
+           customer.push({
+               "value": "All Account Names",
+               "Id": "0"
+           });
+           projectload.push({
+               "value": "All Opportunity Names",
+               "Id": "0"
+           });
+           angular.forEach(myDataSet, function(a, b) {
+               var project = new Array();
+               angular.forEach(a.Projects, function(an, b) {
+                   projectload.push({
+                       "value": an.OpportunityName,
+                       "Id": an.OpportunityId
+                   });
+                   project.push({
+                       "name": an.OpportunityName,
+                       "Id": an.OpportunityId
+                   });
+               })
+               newthing.push({
+                   "customer": a.AccountName,
+                   "project": project
+               });
+               customer.push({
+                   "value": a.AccountName,
+                   "Id": a.AccountId
+               });
+           })
+           $scope.persons = customer;
+           $scope.projectdetails = newthing;
+           var foo2 = _.unique(projectload, false, function(item, k, v) {
+               return item;
+           });
+           $scope.projectsselect = foo2;
+           $scope.blisterPackTemplateSelected = $scope.persons[0];
+           $scope.projectsSelecteddata = $scope.projectsselect[0];
+
+           }
        $scope.projecthealth = function(opptrtuntyid, changedvalue) {
 
            Visualforce.remoting.Manager.invokeAction(
@@ -489,7 +530,8 @@ Versions:
            }
            startdateobj = resultobject;
            //Display customer and projects information on initial page load
-           var newthing = [],
+           $scope.fileringonload(myDataSet);
+           /*var newthing = [],
                customer = [],
                projectload = [];
            customer.push({
@@ -528,7 +570,7 @@ Versions:
            });
            $scope.projectsselect = foo2;
            $scope.blisterPackTemplateSelected = $scope.persons[0];
-           $scope.projectsSelecteddata = $scope.projectsselect[0];
+           $scope.projectsSelecteddata = $scope.projectsselect[0];*/
 
        $scope.oppvalue=localStorage.getItem("oppname");
          if($scope.oppvalue!=null)
@@ -729,6 +771,15 @@ else
            })
            $(".multiSel").val(foo);
            $(".oprid").val(idselected);
+           /*if(a==0)
+           {
+           $(".oprid").val("0"); 
+           }
+           else
+           {
+            $(".oprid").val(idselected);
+           }*/
+           
 
 
 
@@ -1891,6 +1942,7 @@ $(".multiSel").val(datatodsply);
            cancelclick = 1;
            colorcoding();
            $(".Cancelfun").removeClass("Cancelfun");
+           $(".Projects ").click();
        });
        $(document).on("click", ".ui-datepicker-close", function() {
 
@@ -1904,6 +1956,18 @@ $(".multiSel").val(datatodsply);
                monthno = (monthNames[i] == splitdatedatepicker[0]) ? i : monthno;
            }
            var dateparam = "01." + splitdatedatepicker[0] + "." + splitdatedatepicker[1];
+            Visualforce.remoting.Manager.invokeAction(
+               '{!$RemoteAction.CtrPSOTable.getDataofMonthfilter}',
+               dateparam, 
+               function(resultforfilter, event) {
+                  var daatjsonresultforfilter = htmlDecode(resultforfilter);
+                       var parsedDaatjsonfilter = JSON.parse(daatjsonresultforfilter );
+                       myDataSet = parsedDaatjsonfilter .Customers;
+                           if(myDataSet.length>0)
+                       {
+                           $scope.fileringonload(myDataSet);
+                         }
+               });
 
            Visualforce.remoting.Manager.invokeAction(
                '{!$RemoteAction.CtrPSOTable.getDataofMonth}',
@@ -1915,14 +1979,17 @@ $(".multiSel").val(datatodsply);
                        var parsedDaatjson = JSON.parse(daatjson);
                        var resultobject = parsedDaatjson;
                        $scope.dataforfilter = parsedDaatjson;
+                       $scope.noresults=0;
 
 
                        if (resultobject.Customers.length > 0) {
-                           $scope.mainPage = tempService.inputbindingtable(resultobject);
+                         $scope.mainPage = tempService.inputbindingtable(resultobject);
                            $scope.dataval = resultobject;
                            startdateobj = resultobject;
                            $scope.calculationonload();
                            myDataSet = $scope.dataval.Customers;
+                           //$scope.fileringonload(myDataSet);
+
                            $scope.$apply();
                            $scope.stylng = 0;
                            $scope.Staffingpopltion();
@@ -1935,9 +2002,15 @@ $(".multiSel").val(datatodsply);
                            $(".workingweeks tr td:nth-child(3)").attr("style", "border:none !IMPORTANT;display:none;");
                            $(".workingweeks tr td:nth-child(4)").attr("style", "border:none;border-right: none;");
                            $(".workingweeks input").attr("style", "height:19px;");
+                            $scope.noresults=0;
 
-                       } else {
-
+                       } else { 
+                        $scope.noresults=1;
+                           var datevalue= localStorage.getItem("datepickerval");
+                           var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                                                      var spltdatevalue=datevalue.split(" ");
+                           
+                           $(".strtdateinput").val(monthNames[parseInt(spltdatevalue[0])-1]+" "+spltdatevalue[1]);
                            $(".appendtxt").text(" ");
                            $(".appendtxt").append("No results are available for the filtering.")
                            $(".popup,.blurbackgrund").attr("style", "display:block");

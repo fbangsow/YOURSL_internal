@@ -44,9 +44,20 @@ listofdata=list_of_ids.split(',');
 
 system.debug('@@@'+listofdata);
 system.debug(PsoToolController.getInstance().setSelectedOpportunities(listofdata).setStartDate(myDate).getDataSet().JSON());
+  
     return PsoToolController.getInstance().setSelectedOpportunities(listofdata).setStartDate(myDate).getDataSet().JSON();
   }
+    @RemoteAction
+  public static string getDataofMonthfilter(String dateparam) {
+
+    String[] datefrmt = dateFormatter(dateparam);
+    Date myDate = date.newinstance(Integer.valueOf(datefrmt[2]), Integer.valueOf(datefrmt[1]), Integer.valueOf(datefrmt[0]));
+
  
+//return  PsoToolController.getInstance().setSelectedOpportunities(listofdataforlist).setStartDate(myDate).getDataSet().JSON();
+    return PsoToolController.getInstance().setStartDate(myDate).getAccountsAndOpportunities().JSON();
+
+  }
 
   @RemoteAction
   public static string getDataofMonth(String dateparam,String listofdata) {
@@ -58,6 +69,7 @@ system.debug(PsoToolController.getInstance().setSelectedOpportunities(listofdata
 listofdataforlist=listofdata.split(',');
 return  PsoToolController.getInstance().setSelectedOpportunities(listofdataforlist).setStartDate(myDate).getDataSet().JSON();
     //return PsoToolController.getInstance().setStartDate(myDate).getAccountsAndOpportunities().JSON();
+
   }
 
   @RemoteAction
