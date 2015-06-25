@@ -6,47 +6,47 @@
 // Last modified by: Alexander Faust
 // Last modified date: 07.01.2013
 // Latests changes: 11.12.2012: renamed "Samsung Bank" account number, and excluded this account from Calculate_Sum_DeblistObj Method
-					07.01.2013: exluded charts 1369,11805 and 70505 from listKontorahmen in constructor method	
+					07.01.2013: exluded charts 1369,11805 and 70505 from listKontorahmen in constructor method
 					07.01.2013: exluded debitor invoices with "*W8T*" in name field from collection of mapAusgRgAll (DH)
 					08.09.2014: added two new bank accounts (mapBank5Sparkonto, mapBank6USD)
                     18.02.2015: Changed Opportunity stage name to 'Won'
 // ************************************************************** */
 
 public class CashFlow4 {
-    
+
     private transient Map<Id,Bank_Konto__c> mapBank1Giro = new Map<Id,Bank_Konto__c>();
     private transient Map<Id,Bank_Konto__c> mapBank2 = new Map<Id,Bank_Konto__c>();
     private transient Map<Id,Bank_Konto__c> mapBank3Linie = new Map<Id,Bank_Konto__c>();
     private transient Map<Id,Bank_Konto__c> mapBank4Samsung = new Map<Id,Bank_Konto__c>();
     private transient Map<Id,Bank_Konto__c> mapBank5Sparkonto = new Map<Id,Bank_Konto__c>();
     private transient Map<Id,Bank_Konto__c> mapBank6USD = new Map<Id,Bank_Konto__c>();
-    
+
     private transient Map<Id,Debitoren_Rechnung__c> mapAusgRgAll = new Map<Id,Debitoren_Rechnung__c>();
     private transient Map<Id,Kreditor__c> mapEingRgAll = new Map<Id,Kreditor__c>();
     private transient Map<Id,Account> mapAccountGermanyAll = new  Map<Id,Account>();
     //private transient Map<Id,OpportunityLineItem> mapOpportunityLineItem = new Map<Id,OpportunityLineItem>();
-    
+
     //For all OLIs related to Out/Ingoing invoices
     private transient Map<Id,OpportunityLineItem> mapOpportunityOutLineItem = new Map<Id,OpportunityLineItem>();
     private transient Map<Id,OpportunityLineItem> mapOpportunityInLineItem = new Map<Id,OpportunityLineItem>();
-    
+
     private transient Map<Id,OpportunityLineItem> mapAllOLIS = new Map<Id,OpportunityLineItem>();
-    
+
     //private transient Map<Id,Opportunity> mapOpportunity = new Map<Id,Opportunity>();
-    
+
     //For all Opps related to Out/Ingoing invoices
     private transient Map<Id,Opportunity> mapOpportunityOut = new Map<Id,Opportunity>();
     private transient Map<Id,Opportunity> mapOpportunityIn = new Map<Id,Opportunity>();
     private transient Map<Id,Opportunity> mapOpportunityAll = new Map<Id,Opportunity>();
-    
+
     public Date StartDate{get;set;}
-    
+
     // this will show the bank table
     public transient List<DebListObj__c> ObjBank1{get;set;}
-    
+
     // this will show the not invoiced Opportunity LineItems
     public transient List<DebListObj__c> ObjTurnover{get;set;}
-    
+
     // this will show the budgeted cost alias KreditorInvoices that are unpaid
     public transient List<DebListObj__c> ObjKosten{get;set;}
 
@@ -54,26 +54,26 @@ public class CashFlow4 {
     public transient List<DebListObj__c> ObjMwSt{get;set;}
     private transient List<DebListObj__c> ObjMwStUmsatz{get;set;}
     private transient List<DebListObj__c> ObjMwStKosten{get;set;}
-    
+
     // this will show the unpaid DebitInvoices
     public transient List<DebListObj__c> ObjOPOSDebitInvoices{get;set;}
-    
+
     // this will show the real cost alias KreditorInvoices that are unpaid
     public transient List<DebListObj__c> ObjOPOSKreditInvoices{get;set;}
-    
+
     // this will show the not invoiced Opportunity LineItems VAT
     public transient List<DebListObj__c> ObjCashFlow{get;set;}
-    
+
     // this will show the not invoiced Opportunity LineItems VAT
     public transient List<DebListObj__c> ObjInvestExpenses{get;set;}
-    
+
     // this dates are shown in the VFPage
     // dateToday is used for seperating the dates
     public transient Date dateToday {get;set;}
     public transient Date dateBeforeToday {get;set;}
     public transient Date dateAfterToday {get;set;}
     public transient Date FirstDate {get;set;}
-    
+
     public transient Date date2{get;set;}
     public transient Date date3{get;set;}
     public transient Date date4{get;set;}
@@ -89,15 +89,15 @@ public class CashFlow4 {
     public transient Date date14{get;set;}
     public transient Date date_endWeek3{get;set;}
     public transient Date date_endWeek4{get;set;}
-    public transient Date date_endWeek5{get;set;} 
+    public transient Date date_endWeek5{get;set;}
     public transient Date date_endWeek6{get;set;}
     public transient Date date_endWeek7{get;set;}
     public transient Date date_endWeek8{get;set;}
     public transient Date date_endWeek9{get;set;}
-    public transient Date date_endWeek10{get;set;} 
-    public transient Date date_endWeek11{get;set;} 
-    public transient Date date_endWeek12{get;set;}   
-    
+    public transient Date date_endWeek10{get;set;}
+    public transient Date date_endWeek11{get;set;}
+    public transient Date date_endWeek12{get;set;}
+
     public transient integer calendarWeek3{get;set;}
     public transient integer calendarWeek4{get;set;}
     public transient integer calendarWeek5{get;set;}
@@ -108,8 +108,8 @@ public class CashFlow4 {
     public transient integer calendarWeek10{get;set;}
     public transient integer calendarWeek11{get;set;}
     public transient integer calendarWeek12{get;set;}
-    
-    
+
+
     public transient Double differenz {get;set;}
     public transient Double differenz2 {get;set;}
     public transient Double differenz3 {get;set;}
@@ -123,8 +123,8 @@ public class CashFlow4 {
     public transient DebListObj__c sumUmsatzOPOS{get;set;}
     public transient DebListObj__c sumKosten{get;set;}
     public transient DebListObj__c sumKostenOPOS{get;set;}
-            
-    
+
+
     //debug variables
     public transient Double differenzCol1 {get;set;}
     public transient Double differenzCol2 {get;set;}
@@ -132,17 +132,17 @@ public class CashFlow4 {
     public transient Double differenzCol4 {get;set;}
     public transient Double differenzCol5 {get;set;}
     //end debug variables
-    
+
     public transient List<DebListObj__c> cashFlowBank {get;set;}
-    
+
     private transient Map<Id,Kreditor__c> allPaidCreditInvoices {get;set;}
     private transient Map<Id,Debitoren_Rechnung__c> allPaidDebitInvoices {get;set;}
-    
+
     public transient List<ChartData> myChartData{get;set;}
     // calculation Sum of VAT
     private transient Double SumOfVAT = 0.0;
-    
-    // +++++++++++++++ constructor  +++++++++++++++ 
+
+    // +++++++++++++++ constructor  +++++++++++++++
     public CashFlow4(){
         dateToday = Date.today();
         dateBeforeToday = dateToday.addDays(-1);
@@ -179,8 +179,8 @@ public class CashFlow4 {
         date_endWeek10 = dateToday.addDays(70);//Zehn Wochen
         date_endWeek11 = dateToday.addDays(77);//Elf Wochen
         date_endWeek12 = dateToday.addDays(84);//Zwölf Wochen*/
-        
-        
+
+
         calendarWeek3 = getCalendarWeek(date_endWeek3);
         calendarWeek4 = getCalendarWeek(date_endWeek4);
         calendarWeek5 = getCalendarWeek(date_endWeek5);
@@ -191,9 +191,9 @@ public class CashFlow4 {
         calendarWeek10 = getCalendarWeek(date_endWeek10);
         calendarWeek11 = getCalendarWeek(date_endWeek11);
         calendarWeek12 = getCalendarWeek(date_endWeek12);
-        
-        
-        ObjBank1 = new List<DebListObj__c>(); 
+
+
+        ObjBank1 = new List<DebListObj__c>();
         ObjTurnover = new List<DebListObj__c>();
         ObjKosten = new List<DebListObj__c>();
         ObjMwSt = new List<DebListObj__c>();
@@ -203,43 +203,43 @@ public class CashFlow4 {
         ObjInvestExpenses = new List<DebListObj__c>();
         ObjMwStUmsatz = new List<DebListObj__c>();
         ObjMwStKosten = new List<DebListObj__c>();
-        
+
         myChartData = new List<ChartData>();
-        
+
         // First Date for Beginning selecting Kreditor and Debitor Invoices
         FirstDate = Date.newInstance(2012,7,1);
-        
-        
+
+
         //for all Opps related to outgoing invoices
         Set<Id> setRelatedOutOppIds = new Set<Id>();
-        
+
         //for all Opps related to ingoing invoices
         Set<Id> setRelatedInOppIds = new Set<Id>();
-        
-        Set<Id> setAllPaidCreditInvoices = new Set<Id>();
+
+        //Set<Id> setAllPaidCreditInvoices = new Set<Id>();
         Set<Id> setAllPaidDebitInvoices = new Set<Id>();
         Account aYOURSL = [SELECT Id FROM Account WHERE Name='YOUR SL GmbH' LIMIT 1];
         try{
             mapBank1Giro = new Map<Id,Bank_Konto__c>([
-                                            SELECT Id, Buchungsdatum__c, Betrag__c, 
+                                            SELECT Id, Buchungsdatum__c, Betrag__c,
                                             Waehrung__c From Bank_Konto__c WHERE Kontonummer__c = '667990343']);
            mapBank2  = new Map<Id,Bank_Konto__c>([
-                                            SELECT Id, Buchungsdatum__c, Betrag__c, 
+                                            SELECT Id, Buchungsdatum__c, Betrag__c,
                                             Waehrung__c From Bank_Konto__c WHERE Kontonummer__c = '18379333']);
            mapBank3Linie = new Map<Id,Bank_Konto__c>([
-                                            SELECT Id, Buchungsdatum__c, Betrag__c, 
-                                            Waehrung__c From Bank_Konto__c WHERE Kontonummer__c = '667990343Linie']); 
+                                            SELECT Id, Buchungsdatum__c, Betrag__c,
+                                            Waehrung__c From Bank_Konto__c WHERE Kontonummer__c = '667990343Linie']);
            mapBank4Samsung = new Map<Id,Bank_Konto__c>([
-                                            SELECT Id, Buchungsdatum__c, Betrag__c, 
+                                            SELECT Id, Buchungsdatum__c, Betrag__c,
                                             Waehrung__c From Bank_Konto__c WHERE Kontonummer__c = '18858380']);
            mapBank5Sparkonto = new Map<Id,Bank_Konto__c>([
-                                            SELECT Id, Buchungsdatum__c, Betrag__c, 
+                                            SELECT Id, Buchungsdatum__c, Betrag__c,
                                             Waehrung__c From Bank_Konto__c WHERE Kontonummer__c = '23869250']);
            mapBank6USD = new Map<Id,Bank_Konto__c>([
-                                            SELECT Id, Buchungsdatum__c, Betrag__c, 
-                                            Waehrung__c From Bank_Konto__c WHERE Kontonummer__c = '23821982']);            
-            
-            
+                                            SELECT Id, Buchungsdatum__c, Betrag__c,
+                                            Waehrung__c From Bank_Konto__c WHERE Kontonummer__c = '23821982']);
+
+
         }catch(QueryException ex){
             ApexPages.addMessages(ex);
         }
@@ -248,66 +248,66 @@ public class CashFlow4 {
                                                                         Select Id,Opportunity__c FROM Debitoren_Rechnung__c
                                                                         WHERE Payment_Status__c = 'Paid'
                                                                 ]);
-                                                                
+
                 for(Debitoren_Rechnung__c debInv: allPaidDebitInvoices.values()){
                         if(!setAllPaidDebitInvoices.contains(debInv.Opportunity__c)){
                                 setAllPaidDebitInvoices.add(debInv.Opportunity__c);
                         }
                 }
-            id idSamsungKonto = 'a0oD0000002Njdr';                                    
+            id idSamsungKonto = 'a0oD0000002Njdr';
             mapAusgRgAll = new Map<Id,Debitoren_Rechnung__c>([
                                         SELECT
-                                        /*(SELECT debit_account__c, credit_account__c, Payment_Status__c, Name, 
-                                            Debitor_Invoice__c, Id FROM Ausgangsrechnungsstatus1D__r WHERE debit_account__c != 'a0oD0000002Njdr' AND Payment_Status__c = 'Unpaid'),*/                                   
-                                        Id, Invoice_Amount_total__c, VAT_calc__c,debit_account__c, Due_Date__c, credit_account__c, 
-                                                Invoice_Amount_net__c, Name,Rechnungsnummer__c, Paid__c, Payment_Status__c, 
+                                        /*(SELECT debit_account__c, credit_account__c, Payment_Status__c, Name,
+                                            Debitor_Invoice__c, Id FROM Ausgangsrechnungsstatus1D__r WHERE debit_account__c != 'a0oD0000002Njdr' AND Payment_Status__c = 'Unpaid'),*/
+                                        Id, Invoice_Amount_total__c, VAT_calc__c,debit_account__c, Due_Date__c, credit_account__c,
+                                                Invoice_Amount_net__c, Name,Rechnungsnummer__c, Paid__c, Payment_Status__c,
                                                 Opportunity__c FROM Debitoren_Rechnung__c WHERE Payment_Status__c = 'Unpaid' AND Invoice_date__c >= :FirstDate AND Due_Date__c <= :date_endWeek12 AND (NOT Name LIKE '%W8T%') ORDER BY Invoice_date__c  ]);
             for(Debitoren_Rechnung__c oneDebInvoice : mapAusgRgAll.values()){
                 if(!setRelatedOutOppIds.contains(oneDebInvoice.Opportunity__c) /*&& oneDebInvoice.Ausgangsrechnungsstatus1D__r.size() > 0*/){
                         setRelatedOutOppIds.add(oneDebInvoice.Opportunity__c);
                 }
-                
+
             }
         }catch(QueryException ex){
             ApexPages.addMessages(ex);
         }
         try{
-                
-                
-                
-                
-            List<Chart_of_Accounts__c> listKontorahmen = new List<Chart_of_Accounts__c>([SELECT c.Name, c.Id From Chart_of_Accounts__c c 
+
+
+
+
+            List<Chart_of_Accounts__c> listKontorahmen = new List<Chart_of_Accounts__c>([SELECT c.Name, c.Id From Chart_of_Accounts__c c
             WHERE c.Name = '1000' OR c.Name = '1000' OR c.Name = '1200' OR c.Name = '1361' OR c.Name = '1362' OR c.Name = '1365' OR c.Name = '631' OR c.Name='1369' OR c.Name='11805' OR c.Name='70505']);
             mapEingRgAll = new Map<Id,Kreditor__c>([
-                                    SELECT 
-                                        (SELECT debit_account__c, credit_account__c, Payment_Status__c, Name, 
+                                    SELECT
+                                        (SELECT debit_account__c, credit_account__c, Payment_Status__c, Name,
                                             Kreditor_Invoice__c, Id FROM Kreditor_Invoice_Status__r WHERE debit_account__c NOT IN :listKontorahmen AND Payment_Status__c = 'Unpaid'),
-                                    Ueberweisungsbetrag__c, VAT_calc__c, Opportunity__c, Invoice_due_on__c, 
+                                    Ueberweisungsbetrag__c, VAT_calc__c, Opportunity__c, Invoice_due_on__c,
                                     Invoice_date__c, Invoice_amount__c, Invoice_Number__c, Budget__c, Name,
-                                    Amount_Total__c, Account__c 
+                                    Amount_Total__c, Account__c
                                     FROM Kreditor__c WHERE Invoice_date__c >= :FirstDate AND Invoice_due_on__c <= :date_endWeek12 AND Payment_Status__c = 'Unpaid' ORDER BY Invoice_date__c]);
             for(Kreditor__c oneKreditorInvoice : mapEingRgAll.values()){
                 if(!setRelatedInOppIds.contains(oneKreditorInvoice.Opportunity__c)){
                         setRelatedInOppIds.add(oneKreditorInvoice.Opportunity__c);
                 }
             }
-            
+            /*
             allPaidCreditInvoices = new Map<Id,Kreditor__c>([
-                                    SELECT 
-                                        (SELECT debit_account__c, credit_account__c, Payment_Status__c, Name, 
+                                    SELECT
+                                        (SELECT debit_account__c, credit_account__c, Payment_Status__c, Name,
                                             Kreditor_Invoice__c, Id FROM Kreditor_Invoice_Status__r WHERE debit_account__c NOT IN :listKontorahmen AND Payment_Status__c = 'Paid'),
-                                    Ueberweisungsbetrag__c, VAT_calc__c, Opportunity__c, Invoice_due_on__c, 
+                                    Ueberweisungsbetrag__c, VAT_calc__c, Opportunity__c, Invoice_due_on__c,
                                     Invoice_date__c, Invoice_amount__c, Invoice_Number__c, Budget__c, Name,
-                                    Amount_Total__c, Account__c 
+                                    Amount_Total__c, Account__c
                                     FROM Kreditor__c WHERE Payment_Status__c = 'Paid' ORDER BY Invoice_date__c]);
-                                    
+
                         for(Kreditor__c oneKredInv : allPaidCreditInvoices.values()){
                                 if(!setAllPaidCreditInvoices.contains(oneKredInv.Opportunity__c)){
                                         setAllPaidCreditInvoices.add(oneKredInv.Opportunity__c);
                                 }
-                        }
-            
-            
+                        }*/
+
+
         }catch(QueryException ex){
             ApexPages.addMessages(ex);
         }
@@ -316,85 +316,85 @@ public class CashFlow4 {
         }catch(QueryException ex){
             ApexPages.addMessages(ex);
         }
-        
+
         try{
-                
-                
+
+
                         mapOpportunityIn = new Map<Id,Opportunity>([ SELECT Id, Name, AccountId,(SELECT Id FROM OpportunityLineItems WHERE Leistung_erbracht__c = FALSE ) FROM Opportunity
                                                 WHERE StageName = 'Won' AND Name != '° Urlaub/Krankheit/Feiertage' AND Id IN :setRelatedInOppIds]);
-                                                
+
                         mapOpportunityOut = new Map<Id,Opportunity>([ SELECT Id, Name, AccountId,(SELECT Id FROM OpportunityLineItems WHERE Leistung_erbracht__c = FALSE ) FROM Opportunity
                                                 WHERE StageName = 'Won' AND Name != '° Urlaub/Krankheit/Feiertage' AND Id IN :setRelatedOutOppIds]);
-                        
+
                         mapOpportunityAll = new Map<Id,Opportunity>([ SELECT Id, Name, AccountId,Expected_date_of_payment__c ,(SELECT Id FROM OpportunityLineItems WHERE Leistung_erbracht__c = FALSE and (ServiceDate <=: date_endWeek12) AND (NOT PricebookEntry.Name LIKE 'UNBILLABLE%')) FROM Opportunity
                                                 WHERE (StageName = 'Won' OR ForecastCategoryName='Commit') AND Name != '° Urlaub/Krankheit/Feiertage' AND AccountId !=:aYOURSL.Id /*AND Id NOT IN :setRelatedOutOppIds AND Id NOT IN:setRelatedInOppIds AND Id NOT IN:setAllPaidCreditInvoices AND Id NOT IN: setAllPaidDebitInvoices*/]);
-                        
+
         }catch(QueryException ex){
             ApexPages.addMessages(ex);
         }
-    
+
         try{
-                                         
+
                         mapOpportunityInLineItem = new Map<Id,OpportunityLineItem>([
                                                 SELECT UnitPrice, Startdatum__c, ServiceDate, OpportunityId,
                                                 Opportunity.Name, Opportunity.CloseDate, Opportunity.Id,
                                                 Opportunity.Expected_date_of_payment__c, Opportunity.AccountId,
                                                 Sales_Price_hrs__c, Quantity, ListPrice, Leistung_erbracht__c, Id,
                                                 Erwarteter_Zahlungseingang__c,
-                                                (SELECT ScheduleDate, Quantity, Id FROM OpportunityLineItemSchedules) 
-                                                FROM OpportunityLineItem 
+                                                (SELECT ScheduleDate, Quantity, Id FROM OpportunityLineItemSchedules)
+                                                FROM OpportunityLineItem
                                                 WHERE Opportunity.StageName = 'Won'
-                                                AND Opportunity.Name != '° Urlaub/Krankheit/Feiertage' 
+                                                AND Opportunity.Name != '° Urlaub/Krankheit/Feiertage'
                                                 AND Opportunity.Id IN :setRelatedInOppIds
                                                 AND Leistung_erbracht__c = FALSE]);
-                                                
-                                                
+
+
                         mapOpportunityOutLineItem = new Map<Id,OpportunityLineItem>([
                                                 SELECT UnitPrice, Startdatum__c, ServiceDate, OpportunityId,
                                                 Opportunity.Name, Opportunity.CloseDate, Opportunity.Id,
                                                 Opportunity.Expected_date_of_payment__c, Opportunity.AccountId,
                                                 Sales_Price_hrs__c, Quantity, ListPrice, Leistung_erbracht__c, Id,
                                                 Erwarteter_Zahlungseingang__c,
-                                                (SELECT ScheduleDate, Quantity, Id FROM OpportunityLineItemSchedules) 
-                                                FROM OpportunityLineItem 
+                                                (SELECT ScheduleDate, Quantity, Id FROM OpportunityLineItemSchedules)
+                                                FROM OpportunityLineItem
                                                 WHERE Opportunity.StageName = 'Won'
-                                                AND Opportunity.Name != '° Urlaub/Krankheit/Feiertage' 
+                                                AND Opportunity.Name != '° Urlaub/Krankheit/Feiertage'
                                                 AND Opportunity.Id IN :setRelatedOutOppIds
                                                 AND Leistung_erbracht__c = FALSE]);
-                                                
+
                         mapAllOLIS = new Map<Id,OpportunityLineItem>([
                                                 SELECT UnitPrice, Startdatum__c, ServiceDate, OpportunityId,
                                                 Opportunity.Name, Opportunity.CloseDate, Opportunity.Id,
                                                 Opportunity.Expected_date_of_payment__c, Opportunity.AccountId,
                                                 Sales_Price_hrs__c, Quantity, ListPrice, Leistung_erbracht__c, Id,
                                                 Erwarteter_Zahlungseingang__c,PricebookEntry.Name,
-                                                (SELECT ScheduleDate, Quantity, Id FROM OpportunityLineItemSchedules) 
-                                                FROM OpportunityLineItem 
+                                                (SELECT ScheduleDate, Quantity, Id FROM OpportunityLineItemSchedules)
+                                                FROM OpportunityLineItem
                                                 WHERE (Opportunity.StageName = 'Won'
                                                 OR Opportunity.ForecastCategoryName='Commit')
                                                 AND Opportunity.Name != '° Urlaub/Krankheit/Feiertage'
                                                 AND (NOT PricebookEntry.Name LIKE 'UNBILLABLE%')
                                                 AND Opportunity.AccountId !=:aYOURSL.Id
                                                 /*AND Opportunity.Id NOT IN: setRelatedOutOppIds
-                                                AND Opportunity.Id NOT IN: setRelatedInOppIds 
+                                                AND Opportunity.Id NOT IN: setRelatedInOppIds
                                                 AND Opportunity.Id NOT IN: setAllPaidDebitInvoices
                                                 AND Opportunity.Id NOT IN: setAllPaidCreditInvoices*/
                                                 AND ServiceDate <=: date_endWeek12
                                                 AND Leistung_erbracht__c = FALSE]);
-                        
+
 
         }catch(QueryException ex){
             ApexPages.addMessages(ex);
         }
-        
-        
+
+
         try{
 
         }catch(QueryException ex){
             ApexPages.addMessages(ex);
         }
-        
-        
+
+
         Fill_Bank();
         Fill_Turnover();
         Fill_OPOSDebitInvoices();
@@ -402,14 +402,14 @@ public class CashFlow4 {
         Fill_InvestExpenses();
         Fill_ObjCashFlow();
         //Fill_MwSt();
-        
+
     }// END contructor public CashFlow4(ApexPages.StandardController stdController)
-    
-    
+
+
     private Integer getCalendarWeek(Date theDate){
         //Date baseDate = Date.newInstance(2006,1,1);
         //return Math.Mod((baseDate.daysBetween(theDate))/7,52)+1;
-        
+
         //return Math.Mod(Math.round((theDate.dayOfYear()/7)+1),52)+1;
         //return Math.Mod(Math.round((theDate.dayOfYear()/7)),52)+1;
         datetime dt;
@@ -419,16 +419,16 @@ public class CashFlow4 {
         return integer.valueof(dt.Format('w'));
         //return Math.ceil((Double)(theDate.dayOfYear()) / 7).intValue();
     } // END private Integer getCalendarWeek(Date theDate)
-    
+
     public void Fill_InvestExpenses(){
-        
+
         //sumUmsatz = Calculate_SUM_DebListObj(ObjUmsatz);
         sumUmsatzOPOS = Calculate_SUM_DebListObj(ObjOPOSDebitInvoices);
         sumKosten = Calculate_SUM_DebListObj(ObjKosten);
         sumTurnover = Calculate_SUM_DebListObj(ObjTurnover);
         //sumKostenOPOS = Calculate_SUM_DebListObj(ObjOPOSKreditInvoices);
-        
-        
+
+
         DebListObj__c oneRow = new DebListObj__c(
                 RowName__c='Ein-/Ausgaben',
                 debDueDate01__c = (sumUmsatzOPOS.debDueDate01__c + sumTurnover.debDueDate01__c) - sumKosten.debDueDate01__c,
@@ -457,38 +457,38 @@ public class CashFlow4 {
                 debDueDate24__c = (sumUmsatzOPOS.debDueDate24__c + sumTurnover.debDueDate24__c) - sumKosten.debDueDate24__c,
                 debDueDate25__c = (sumUmsatzOPOS.debDueDate25__c + sumTurnover.debDueDate25__c) - sumKosten.debDueDate25__c
         );
-        
+
         ObjInvestExpenses.add(oneRow);
-        
+
     }
-    
+
     public void Fill_Bank(){
-        
+
         Double giroStand = 0.0;
-        
+
         for(Bank_Konto__c oneBank : mapBank1Giro.values()){
 				if(oneBank.Betrag__c != null){
                 	giroStand += oneBank.Betrag__c;
 				}
         }// END for(Bank_Konto__c oneBank : mapBank1Giro.values())
-        
-   
-        
+
+
+
         ObjBank1.add(new DebListObj__c(
                                                 RowName__c = '667990343 Girokonto',
                                                 debDueDate01__c = giroStand
                                                                         )
         );
 
-        
+
         Double dFestgeldStand = 0.0;
         for(Bank_Konto__c oneBank : mapBank2.values()){
 				if(oneBank.Betrag__c != null){
                         dFestgeldStand += oneBank.Betrag__c;
 				}
-                
-                
-        }// END for(Bank_Konto__c oneBank : mapBank1Giro.values())        
+
+
+        }// END for(Bank_Konto__c oneBank : mapBank1Giro.values())
         ObjBank1.add(new DebListObj__c( RowName__c = '18379333 Festgeld',
                                 debDueDate01__c = dFestgeldStand,
                                 debDueDate02__c = dFestgeldStand,
@@ -522,9 +522,9 @@ public class CashFlow4 {
         	if(oneBank.Betrag__c != null){
                         dLinieStand += oneBank.Betrag__c;
         	}
-                        
-        }// END for(Bank_Konto__c oneBank : mapBank1Giro.values())   
-             
+
+        }// END for(Bank_Konto__c oneBank : mapBank1Giro.values())
+
         ObjBank1.add(new DebListObj__c( RowName__c = '667990343 Linie',
                                 debDueDate01__c = dLinieStand,
                                 debDueDate02__c = dLinieStand,
@@ -552,15 +552,15 @@ public class CashFlow4 {
                                 debDueDate24__c = dLinieStand,
                                 debDueDate25__c = dLinieStand
                                 ));
-                                
+
         Double dSamsungStand = 0.0;
         for(Bank_Konto__c oneBank : mapBank4Samsung.values()){
         		if( oneBank.Betrag__c != null){
                         dSamsungStand += oneBank.Betrag__c;
         		}
-                        
-        }// END for(Bank_Konto__c oneBank : mapBank1Giro.values())   
-             
+
+        }// END for(Bank_Konto__c oneBank : mapBank1Giro.values())
+
         ObjBank1.add(new DebListObj__c( RowName__c = '18858380 Samsung (Transfer)',
                                 debDueDate01__c = dSamsungStand,
                                 debDueDate02__c = dSamsungStand,
@@ -588,15 +588,15 @@ public class CashFlow4 {
                                 debDueDate24__c = dSamsungStand,
                                 debDueDate25__c = dSamsungStand
                                 ));
-        
+
         Double dSparkontoStand = 0.0;
         for(Bank_Konto__c oneBank : mapBank5Sparkonto.values()){
         		if( oneBank.Betrag__c != null){
                         dSparkontoStand += oneBank.Betrag__c;
         		}
-                        
-        }  
-             
+
+        }
+
         ObjBank1.add(new DebListObj__c( RowName__c = '23869250 Sparkonto',
                                 debDueDate01__c = dSparkontoStand,
                                 debDueDate02__c = dSparkontoStand,
@@ -623,16 +623,16 @@ public class CashFlow4 {
                                 debDueDate23__c = dSparkontoStand,
                                 debDueDate24__c = dSparkontoStand,
                                 debDueDate25__c = dSparkontoStand
-                                ));        
-        
+                                ));
+
         Double dUSDStand = 0.0;
         for(Bank_Konto__c oneBank : mapBank6USD.values()){
         		if( oneBank.Betrag__c != null){
                         dUSDStand += oneBank.Betrag__c;
         		}
-                        
-        }  
-             
+
+        }
+
         ObjBank1.add(new DebListObj__c( RowName__c = '23821982 USD',
                                 debDueDate01__c = dUSDStand,
                                 debDueDate02__c = dUSDStand,
@@ -659,48 +659,48 @@ public class CashFlow4 {
                                 debDueDate23__c = dUSDStand,
                                 debDueDate24__c = dUSDStand,
                                 debDueDate25__c = dUSDStand
-                                ));        
-      
+                                ));
+
 
     } // END public void Fill_Bank()
-    
 
-    
-    
+
+
+
     public void Fill_Kosten(){
-       
+
         List<Kreditor__c> listEingRg = mapEingRgAll.values();
-        
+
         for(Kreditor__c oneEinRg : listEingRg){
             Double dSumCurrentMonth = 0.0;
             Double dSumTillLastMonth = 0.0;
             Double dSumLastMonth = 0.0;
             Double dSumNextMonth = 0.0;
-            
+
             // to calc the VAT
             Double dSumCurrentMonthVAT = 0.0;
             Double dSumTillLastMonthVAT = 0.0;
             Double dSumLastMonthVAT = 0.0;
             Double dSumNextMonthVAT = 0.0;
-            
+
             DebListObj__c oneRowEinRg = new DebListObj__c(RowName__c = oneEinRg.Name + '; RgNr: ' + oneEinRg.Invoice_Number__c );
                 DebListObj__c oneRowMwst = new DebListObj__c(RowName__c = oneEinRg.Name + '; RgNr: ' + oneEinRg.Invoice_Number__c );
-            
+
                 oneRowEinRg = initRow(oneRowEinRg);
                 oneRowMwst = initRow(oneRowMwst);
-                
+
   			String sUrl = System.URL.getSalesforceBaseUrl().getHost();
-            
+
             sUrl = 'https://'
-                            + sUrl.substring(2,6) 
+                            + sUrl.substring(2,6)
                             + 'salesforce.com'
                             + '/'
                             + oneEinRg.Id;
-                            
+
 			oneRowEinRg.link__c = sUrl;
-            
+
             for(Kreditor_Invoice_Status__c oneEinRgSt : oneEinRg.Kreditor_Invoice_Status__r){
-                
+
                     if(oneEinRg.Invoice_due_on__c < dateToday){
                         oneRowEinRg.Overdue__c = true;
                         oneRowEinRg.debDueDate01__c = oneEinRg.Amount_total__c;
@@ -744,7 +744,7 @@ public class CashFlow4 {
                     }else if(oneEinRg.Invoice_due_on__c == date12){
                         oneRowEinRg.debDueDate13__c =oneEinRg.Amount_total__c;
                         oneRowMwst.debDueDate13__c =oneEinRg.VAT_calc__c;
-                        
+
                     }else if(oneEinRg.Invoice_due_on__c == date13){
                         oneRowEinRg.debDueDate14__c =oneEinRg.Amount_total__c;
                         oneRowMwst.debDueDate14__c =oneEinRg.VAT_calc__c;
@@ -782,18 +782,18 @@ public class CashFlow4 {
                         oneRowEinRg.debDueDate25__c += oneEinRg.Amount_total__c;
                         oneRowMwst.debDueDate25__c +=oneEinRg.VAT_calc__c;
                     }
-                        
-                        
-                    
-                           
+
+
+
+
             }// END for(Kreditor_Invoice_Status__c oneEinRgSt : oneEinRg.Kreditor_Invoice_Status__r)
             ObjKosten.add(oneRowEinRg);
             ObjMwStKosten.add(oneRowMwst);
-                     
+
         }// END for(Kreditor__c oneEinRg : listEingRg)
     }// END public void Fill_Kosten()
-    
-    
+
+
         private DebListObj__c initRow(DebListObj__c oneRow){
                 oneRow.debDueDate01__c = 0.0;
                 oneRow.debDueDate02__c = 0.0;
@@ -820,14 +820,14 @@ public class CashFlow4 {
                 oneRow.debDueDate23__c = 0.0;
                 oneRow.debDueDate24__c = 0.0;
                 oneRow.debDueDate25__c = 0.0;
-                
+
                 return oneRow;
-        }   
-        
-        
+        }
+
+
     private DebListObj__c Calculate_SUM_DebListObj(List<DebListObj__c> ListTable){
         Double[] doubleSumArray = new Double[]{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-        
+
         for(DebListObj__c oneRow : ListTable){
         		if(oneRow.RowName__c != '18858380 Samsung (Transfer)'){//dont sum up Samsung account into cashFlow
 	                if(oneRow.debDueDate01__c != null && oneRow.debDueDate01__c != 0.0){
@@ -907,7 +907,7 @@ public class CashFlow4 {
 	                }
         		}//if(oneRow.RowName__c != '18858380 Samsung (Transfer)')
         }//for(DebListObj__c oneRow : ListTable)
-        DebListObj__c OneRow = new DebListObj__c (RowName__c = 'Summe', 
+        DebListObj__c OneRow = new DebListObj__c (RowName__c = 'Summe',
                                         debDueDate01__c = doubleSumArray[0],
                                         debDueDate02__c = doubleSumArray[1],
                                         debDueDate03__c = doubleSumArray[2],
@@ -936,11 +936,11 @@ public class CashFlow4 {
                                         );
         return OneRow;
     }// END private DebListObj__c Calculate_SUM_DebListObj(List<DebListObj__c> ListTable)
-  
-    
-    
+
+
+
     public void Fill_OPOSDebitInvoices(){
-        
+
                 for(Debitoren_Rechnung__c oneDebRg : mapAusgRgAll.values()){
                 		System.debug('**********DEBUG: ID: '+oneDebRg.Id);
                 		System.debug('**********DEBUG: Opp: '+oneDebRg.Opportunity__c);
@@ -948,29 +948,29 @@ public class CashFlow4 {
                         //DebListObj__c oneRow = new DebListObj__c(RowName__c = oneDebRg.Name + ' ; '+ mapOpportunityOut.get(oneDebRg.Opportunity__c).Name);
                         /*String sOppName = mapOpportunityOut.get(oneDebRg.Opportunity__c).Name;
                         if(sOppName == null){
-                        	oneRow = new DebListObj__c(RowName__c = oneDebRg.Name);	
+                        	oneRow = new DebListObj__c(RowName__c = oneDebRg.Name);
                         }else{
                         	oneRow = new DebListObj__c(RowName__c = oneDebRg.Name + ' ; '+ sOppName);
                         }*/
-                        
+
                         if(mapOpportunityOut.containsKey(oneDebRg.Opportunity__c)){
                         	oneRow = new DebListObj__c(RowName__c = oneDebRg.Name + ' ; '+ mapOpportunityOut.get(oneDebRg.Opportunity__c).Name);
                         }else{
                         	oneRow = new DebListObj__c(RowName__c = oneDebRg.Name);
                         }
-                         
+
                         oneRow = initRow(oneRow);
                         String sUrl = System.URL.getSalesforceBaseUrl().getHost();
-            
+
 			            sUrl = 'https://'
-			                            + sUrl.substring(2,6) 
+			                            + sUrl.substring(2,6)
 			                            + 'salesforce.com'
 			                            + '/'
 			                            + oneDebRg.Id;
-			                            
+
 						oneRow.link__c = sUrl;
-            
-                        
+
+
                         //oneRowMwst = initRow(oneRowMwst);
                         if(oneDebRg.Due_Date__c < dateToday){
                                 oneRow.Overdue__c = true;
@@ -1048,16 +1048,16 @@ public class CashFlow4 {
             }else if(oneDebRg.Due_Date__c > date_endWeek11 && oneDebRg.Due_Date__c <= date_endWeek12){
                 oneRow.debDueDate25__c += oneDebRg.Invoice_Amount_total__c;
             }
-                        
+
                         ObjOPOSDebitInvoices.add(oneRow);
                         //ObjMwStUmsatz.add(oneRowMwst);
     }
-        
-        
-        
+
+
+
     }// END public void Fill_OPOSDebitInvoices()
-    
-    
+
+
     public void Fill_ObjCashFlow(){
         //Double sumBank1 = Calculate_SUM_DebListObj(ObjBank1);
         //DebListObj__c sumKostenOPOS = Calculate_SUM_DebListObj(ObjOPOSKreditInvoices);
@@ -1065,119 +1065,119 @@ public class CashFlow4 {
         //ObjOPOSDebitInvoices
         //ObjOPOSKreditInvoices
         //DebListObj__c sumUmsatz = Calculate_SUM_DebListObj(ObjUmsatz);
-        
-                
+
+
         DebListObj__c sumBank = Calculate_SUM_DebListObj(ObjBank1);
         DebListObj__c sumUmsatzOPOS = Calculate_SUM_DebListObj(ObjOPOSDebitInvoices);
         DebListObj__c sumKosten = Calculate_SUM_DebListObj(ObjKosten);
-        
-        
+
+
         DebListObj__c cashFlow = new DebListObj__c (
                 RowName__c = 'Cash Flow'
         );
-        
-        
+
+
         cashFlow.debDueDate01__c = ObjBank1[0].debDueDate01__c + ObjBank1[1].debDueDate01__c + ObjBank1[2].debDueDate01__c + ObjInvestExpenses[0].debDueDate01__c;
-        
+
                 ObjBank1[0].debDueDate02__c = ObjBank1[0].debDueDate01__c + ObjInvestExpenses[0].debDueDate01__c;
-        
+
         cashFlow.debDueDate02__c = ObjBank1[0].debDueDate02__c + ObjBank1[1].debDueDate02__c + ObjBank1[2].debDueDate02__c + ObjInvestExpenses[0].debDueDate02__c;
-        
+
                 ObjBank1[0].debDueDate03__c = ObjBank1[0].debDueDate02__c + ObjInvestExpenses[0].debDueDate02__c;
-                
+
         cashFlow.debDueDate03__c = ObjBank1[0].debDueDate03__c + ObjBank1[1].debDueDate03__c + ObjBank1[2].debDueDate03__c + ObjInvestExpenses[0].debDueDate03__c;
-                
+
                 ObjBank1[0].debDueDate04__c = ObjBank1[0].debDueDate03__c + ObjInvestExpenses[0].debDueDate03__c;
-        
+
         cashFlow.debDueDate04__c = ObjBank1[0].debDueDate04__c + ObjBank1[1].debDueDate04__c + ObjBank1[2].debDueDate04__c + ObjInvestExpenses[0].debDueDate04__c;
-        
+
                 ObjBank1[0].debDueDate05__c = ObjBank1[0].debDueDate04__c + ObjInvestExpenses[0].debDueDate04__c;
-                
+
         cashFlow.debDueDate05__c = ObjBank1[0].debDueDate05__c + ObjBank1[1].debDueDate05__c + ObjBank1[2].debDueDate05__c + ObjInvestExpenses[0].debDueDate05__c;
-        
+
                 ObjBank1[0].debDueDate06__c = ObjBank1[0].debDueDate05__c + ObjInvestExpenses[0].debDueDate05__c;
-                
+
         cashFlow.debDueDate06__c = ObjBank1[0].debDueDate06__c + ObjBank1[1].debDueDate06__c + ObjBank1[2].debDueDate06__c + ObjInvestExpenses[0].debDueDate06__c;
-        
+
                 ObjBank1[0].debDueDate07__c = ObjBank1[0].debDueDate06__c + ObjInvestExpenses[0].debDueDate06__c;
-        
+
         cashFlow.debDueDate07__c = ObjBank1[0].debDueDate07__c + ObjBank1[1].debDueDate07__c + ObjBank1[2].debDueDate07__c + ObjInvestExpenses[0].debDueDate07__c;
-        
+
                 ObjBank1[0].debDueDate08__c = ObjBank1[0].debDueDate07__c + ObjInvestExpenses[0].debDueDate07__c;
-                
+
         cashFlow.debDueDate08__c = ObjBank1[0].debDueDate08__c + ObjBank1[1].debDueDate08__c + ObjBank1[2].debDueDate08__c + ObjInvestExpenses[0].debDueDate08__c;
-        
-                ObjBank1[0].debDueDate09__c = ObjBank1[0].debDueDate08__c + ObjInvestExpenses[0].debDueDate08__c;       
-                
+
+                ObjBank1[0].debDueDate09__c = ObjBank1[0].debDueDate08__c + ObjInvestExpenses[0].debDueDate08__c;
+
         cashFlow.debDueDate09__c = ObjBank1[0].debDueDate09__c + ObjBank1[1].debDueDate09__c + ObjBank1[2].debDueDate09__c + ObjInvestExpenses[0].debDueDate09__c;
-        
+
                 ObjBank1[0].debDueDate10__c = ObjBank1[0].debDueDate09__c + ObjInvestExpenses[0].debDueDate09__c;
-                
+
         cashFlow.debDueDate10__c = ObjBank1[0].debDueDate10__c + ObjBank1[1].debDueDate10__c + ObjBank1[2].debDueDate10__c + ObjInvestExpenses[0].debDueDate10__c;
-        
+
                 ObjBank1[0].debDueDate11__c = ObjBank1[0].debDueDate10__c + ObjInvestExpenses[0].debDueDate10__c;
-                
+
         cashFlow.debDueDate11__c = ObjBank1[0].debDueDate11__c + ObjBank1[1].debDueDate11__c + ObjBank1[2].debDueDate11__c + ObjInvestExpenses[0].debDueDate11__c;
-        
+
                 ObjBank1[0].debDueDate12__c = ObjBank1[0].debDueDate11__c + ObjInvestExpenses[0].debDueDate11__c;
-        
+
         cashFlow.debDueDate12__c = ObjBank1[0].debDueDate12__c + ObjBank1[1].debDueDate12__c + ObjBank1[2].debDueDate12__c + ObjInvestExpenses[0].debDueDate12__c;
-        
+
                 ObjBank1[0].debDueDate13__c = ObjBank1[0].debDueDate12__c + ObjInvestExpenses[0].debDueDate12__c;
-                
+
         cashFlow.debDueDate13__c = ObjBank1[0].debDueDate13__c + ObjBank1[1].debDueDate13__c + ObjBank1[2].debDueDate13__c + ObjInvestExpenses[0].debDueDate13__c;
-        
+
                 ObjBank1[0].debDueDate14__c = ObjBank1[0].debDueDate13__c + ObjInvestExpenses[0].debDueDate13__c;
-                
+
         cashFlow.debDueDate14__c = ObjBank1[0].debDueDate14__c + ObjBank1[1].debDueDate14__c + ObjBank1[2].debDueDate14__c + ObjInvestExpenses[0].debDueDate14__c;
-        
+
                 ObjBank1[0].debDueDate15__c = ObjBank1[0].debDueDate14__c + ObjInvestExpenses[0].debDueDate14__c;
-                
+
         cashFlow.debDueDate15__c = ObjBank1[0].debDueDate15__c + ObjBank1[1].debDueDate15__c + ObjBank1[2].debDueDate15__c + ObjInvestExpenses[0].debDueDate15__c;
-        
+
                 ObjBank1[0].debDueDate16__c = ObjBank1[0].debDueDate15__c + ObjInvestExpenses[0].debDueDate15__c;
-        
+
         cashFlow.debDueDate16__c = ObjBank1[0].debDueDate16__c + ObjBank1[1].debDueDate16__c + ObjBank1[2].debDueDate16__c + ObjInvestExpenses[0].debDueDate16__c;
-        
+
                 ObjBank1[0].debDueDate17__c = ObjBank1[0].debDueDate16__c + ObjInvestExpenses[0].debDueDate16__c;
-                
+
         cashFlow.debDueDate17__c = ObjBank1[0].debDueDate17__c + ObjBank1[1].debDueDate17__c + ObjBank1[2].debDueDate17__c + ObjInvestExpenses[0].debDueDate17__c;
-        
+
                 ObjBank1[0].debDueDate18__c = ObjBank1[0].debDueDate17__c + ObjInvestExpenses[0].debDueDate17__c;
-                
+
         cashFlow.debDueDate18__c = ObjBank1[0].debDueDate18__c + ObjBank1[1].debDueDate18__c + ObjBank1[2].debDueDate18__c + ObjInvestExpenses[0].debDueDate18__c;
-        
+
                 ObjBank1[0].debDueDate19__c = ObjBank1[0].debDueDate18__c + ObjInvestExpenses[0].debDueDate18__c;
-                
+
         cashFlow.debDueDate19__c = ObjBank1[0].debDueDate19__c + ObjBank1[1].debDueDate19__c + ObjBank1[2].debDueDate19__c + ObjInvestExpenses[0].debDueDate19__c;
-        
+
                 ObjBank1[0].debDueDate20__c = ObjBank1[0].debDueDate19__c + ObjInvestExpenses[0].debDueDate19__c;
-                
+
         cashFlow.debDueDate20__c = ObjBank1[0].debDueDate20__c + ObjBank1[1].debDueDate20__c + ObjBank1[2].debDueDate20__c + ObjInvestExpenses[0].debDueDate20__c;
-        
+
                 ObjBank1[0].debDueDate21__c = ObjBank1[0].debDueDate20__c + ObjInvestExpenses[0].debDueDate20__c;
-                
+
         cashFlow.debDueDate21__c = ObjBank1[0].debDueDate21__c + ObjBank1[1].debDueDate21__c + ObjBank1[2].debDueDate21__c + ObjInvestExpenses[0].debDueDate21__c;
-        
+
                 ObjBank1[0].debDueDate22__c = ObjBank1[0].debDueDate21__c + ObjInvestExpenses[0].debDueDate21__c;
-        
+
         cashFlow.debDueDate22__c = ObjBank1[0].debDueDate22__c + ObjBank1[1].debDueDate22__c + ObjBank1[2].debDueDate22__c + ObjInvestExpenses[0].debDueDate22__c;
-        
+
                 ObjBank1[0].debDueDate23__c = ObjBank1[0].debDueDate22__c + ObjInvestExpenses[0].debDueDate22__c;
-                
+
         cashFlow.debDueDate23__c = ObjBank1[0].debDueDate23__c + ObjBank1[1].debDueDate23__c + ObjBank1[2].debDueDate23__c + ObjInvestExpenses[0].debDueDate23__c;
-        
+
                 ObjBank1[0].debDueDate24__c = ObjBank1[0].debDueDate23__c + ObjInvestExpenses[0].debDueDate23__c;
-        
+
         cashFlow.debDueDate24__c = ObjBank1[0].debDueDate24__c + ObjBank1[1].debDueDate24__c + ObjBank1[2].debDueDate24__c + ObjInvestExpenses[0].debDueDate24__c;
-        
+
                 ObjBank1[0].debDueDate25__c = ObjBank1[0].debDueDate24__c + ObjInvestExpenses[0].debDueDate24__c;
-                
+
         cashFlow.debDueDate25__c = ObjBank1[0].debDueDate25__c + ObjBank1[1].debDueDate25__c + ObjBank1[2].debDueDate25__c + ObjInvestExpenses[0].debDueDate25__c;
-                
+
         ObjCashFlow.add(cashFlow);
-        
-        
+
+
         myChartData.add(new ChartData(10000000.00,ObjBank1[0].debDueDate01__c,cashFlow.debDueDate01__c,ObjInvestExpenses[0].debDueDate01__c,sumTurnover.debDueDate01__c,sumUmsatzOPOS.debDueDate01__c,sumKosten.debDueDate01__c,String.valueOf(dateToday),135000.00));
         myChartData.add(new ChartData(10000000.00,ObjBank1[0].debDueDate02__c,cashFlow.debDueDate02__c,ObjInvestExpenses[0].debDueDate02__c,sumTurnover.debDueDate02__c,sumUmsatzOPOS.debDueDate02__c,sumKosten.debDueDate02__c,String.valueOf(dateAfterToday),135000.00));
         myChartData.add(new ChartData(10000000.00,ObjBank1[0].debDueDate03__c,cashFlow.debDueDate03__c,ObjInvestExpenses[0].debDueDate03__c,sumTurnover.debDueDate03__c,sumUmsatzOPOS.debDueDate03__c,sumKosten.debDueDate03__c,String.valueOf(date2),135000.00));
@@ -1204,9 +1204,9 @@ public class CashFlow4 {
         myChartData.add(new ChartData(10000000.00,ObjBank1[0].debDueDate24__c,cashFlow.debDueDate24__c,ObjInvestExpenses[0].debDueDate24__c,sumTurnover.debDueDate24__c,sumUmsatzOPOS.debDueDate24__c,sumKosten.debDueDate24__c,String.valueOf('CW '+calendarWeek11),135000.00));
         myChartData.add(new ChartData(10000000.00,ObjBank1[0].debDueDate17__c,cashFlow.debDueDate25__c,ObjInvestExpenses[0].debDueDate25__c,sumTurnover.debDueDate25__c,sumUmsatzOPOS.debDueDate25__c,sumKosten.debDueDate25__c,String.valueOf('CW '+calendarWeek12),135000.00));
         //cashFlow.debDueDate01__c,String.valueOf(dateToday)));
-        
-        
-        
+
+
+
     /*  myChartData.add(new ChartData(cashFlow.debDueDate01__c,String.valueOf(dateToday)));
         myChartData.add(new ChartData(cashFlow.debDueDate02__c,String.valueOf(dateAfterToday)));
         myChartData.add(new ChartData(cashFlow.debDueDate03__c,String.valueOf(date2)));
@@ -1232,15 +1232,15 @@ public class CashFlow4 {
         myChartData.add(new ChartData(cashFlow.debDueDate23__c,String.valueOf('CW '+calendarWeek10)));
         myChartData.add(new ChartData(cashFlow.debDueDate24__c,String.valueOf('CW '+calendarWeek11)));
         myChartData.add(new ChartData(cashFlow.debDueDate25__c,String.valueOf('CW '+calendarWeek12)));*/
-        
-        
-  
+
+
+
     }//public void Fill_ObjCashFlow()
-    
+
     private boolean checkForEmptyRows(DebListObj__c obj){
         boolean flag = false;
-        
-        
+
+
                 if (obj.debDueDate01__c != 0.0){
                         flag = true;
                 }else if(obj.debDueDate02__c != 0.0){
@@ -1292,53 +1292,53 @@ public class CashFlow4 {
                 }else if(obj.debDueDate25__c != 0.0){
                         flag = true;
                 }
-        
+
         return flag;
     }
-    
+
     public void Fill_Turnover(){
         List<Opportunity> listOpps = mapOpportunityAll.values();
-        
+
         List<OpportunityLineItem> listOLI = mapAllOLIS.values();
         DebListObj__c oneRow;
         DebListObj__c oneRowMwst;
-        
-        
+
+
         for(Opportunity oneOpp : listOpps){
             oneRow = new DebListObj__c(RowName__c=oneOpp.Name);
             oneRowMwst = new DebListObj__c(RowName__c=oneOpp.Name);
-                    
+
             oneRow = initRow(oneRow);
             oneRowMwst = initRow(oneRowMwst);
-            
+
             String sUrl = System.URL.getSalesforceBaseUrl().getHost();
-            
+
             sUrl = 'https://'
-                            + sUrl.substring(2,6) 
+                            + sUrl.substring(2,6)
                             + 'salesforce.com'
                             + '/'
                             + oneOpp.Id;
-                            
+
 			oneRow.link__c = sUrl;
-            
-            
-            
+
+
+
             if(!oneOpp.OpportunityLineItems.isEmpty()){
                 List<OpportunityLineItem> listOLIofOneOpp = oneOpp.OpportunityLineItems;
-                
+
                 for(OpportunityLineItem oneOLI2: listOLIofOneOpp){
-                        
-                        
+
+
                     OpportunityLineItem oneOLI = mapAllOLIS.get(oneOLI2.Id);
-                    
+
                     /*
                      SELECT UnitPrice, Startdatum__c, ServiceDate, OpportunityId,
                                                 Opportunity.Name, Opportunity.CloseDate, Opportunity.Id,
                                                 Opportunity.Expected_date_of_payment__c, Opportunity.AccountId,
                                                 Sales_Price_hrs__c, Quantity, ListPrice, Leistung_erbracht__c, Id,
                                                 Erwarteter_Zahlungseingang__c,PricebookEntry.Name,
-                                                (SELECT ScheduleDate, Quantity, Id FROM OpportunityLineItemSchedules) 
-                                                FROM OpportunityLineItem 
+                                                (SELECT ScheduleDate, Quantity, Id FROM OpportunityLineItemSchedules)
+                                                FROM OpportunityLineItem
                                                 WHERE (Opportunity.StageName = 'Geschlossene und gewonnene'
                                                 OR Opportunity.ForecastCategoryName='Commit')
                                                 AND Opportunity.Name != '° Urlaub/Krankheit/Feiertage'
@@ -1346,22 +1346,22 @@ public class CashFlow4 {
                                                 AND Opportunity.AccountId !=:aYOURSL.Id
                                                 AND ServiceDate <=: date_endWeek12
                                                 AND Leistung_erbracht__c = FALSE]);
-                                                
+
                     */
-                    
+
                     //System.debug('****** DEBUG OppName'+ oneOpp.Name+' OLIName '+oneOLI.PricebookEntry.Name+'  ServiceDate '+oneOLI.ServiceDate+' Price '+oneOLI.UnitPrice+'  Quantity '+oneOLI.Quantity);
-                    
-                    
+
+
                     /*oneRow = new DebListObj__c(RowName__c=oneOpp.Name);
                     oneRowMwst = new DebListObj__c(RowName__c=oneOpp.Name);
-                    
+
                     oneRow = initRow(oneRow);
                     oneRowMwst = initRow(oneRowMwst);*/
-                    
+
                    /*if(!oneOLI.OpportunityLineItemSchedules.isEmpty()){
                         List<OpportunityLineItemSchedule> listOLISch = oneOLI.OpportunityLineItemSchedules;
                             for(OpportunityLineItemSchedule olisch: listOLISch){
-                                
+
                                 Date dateNext10thOfM = olisch.ScheduleDate.addMonths(1).toStartOfMonth().addDays(10);
                                                                 if(dateNext10thOfM == dateToday){
                                         oneRow.debDueDate01__c += (oneOLI.UnitPrice * olisch.Quantity)* 1.19;
@@ -1439,10 +1439,10 @@ public class CashFlow4 {
                                         oneRow.debDueDate25__c += (oneOLI.UnitPrice * olisch.Quantity)* 1.19;
                                         oneRowMwst.debDueDate25__c += (oneOLI.UnitPrice * olisch.Quantity)*0.19;
                                 }
-                                
-                                
+
+
                             }// END for(OpportunityLineItemSchedule olisch: listOLISch)
-                            
+
                     }else{ // if(oneOLI.OpportunityLineItemSchedules.isEmpty())*/
 
                         Date expectedPayingDate = oneOLI.ServiceDate.addMonths(1).toStartOfMonth().addDays(Integer.valueOf(oneOpp.Expected_date_of_payment__c)==null?0:Integer.valueOf(oneOpp.Expected_date_of_payment__c));
@@ -1525,25 +1525,25 @@ public class CashFlow4 {
                                         oneRow.debDueDate25__c += (oneOLI.UnitPrice * oneOLI.Quantity) * 1.19;
                                         oneRowMwst.debDueDate25__c += (oneOLI.UnitPrice * oneOLI.Quantity)*0.19;
                                 }
-                                
+
                        }//END if(expectedPayingDate <= date_endWeek12)
-                        
-                        
-                                
-                                
-                        
-                        
+
+
+
+
+
+
                     //}// END if(oneOLI.OpportunityLineItemSchedules.isEmpty())
                 }// for(OpportunityLineItem oneOLI: listOLIofOneOpp)
             if(checkForEmptyRows(oneRow)){
-                ObjTurnover.add(oneRow);        
+                ObjTurnover.add(oneRow);
             }
-                
+
             /*if( mapAccountGermanyAll.containsKey(oneOpp.AccountId)){
                 ObjMwstUmsatz.add(oneRowMwst);
                  }*///END if( mapAccountGermanyAll.containsKey(oneOpp.AccountId))
-  
-                
+
+
             }// END if(!oneOpp.OpportunityLineItems.isEmpty())
 
         }// for(Opportunity oneOpp : listOpps)
@@ -1559,7 +1559,7 @@ public class CashFlow4 {
         public decimal creditInvoice{get;set;}
         public String sDate{get;set;}
         public decimal redLine{get;set;}
-        
+
         public ChartData(decimal scale,decimal bank,decimal cashFlow,decimal investExpenses,decimal debitInvoiceForecast, decimal debitInvoiceD,decimal creditInvoice, String sDate,decimal redLine){
                 this.scale = scale;
                 this.sDate = sDate;
@@ -1572,7 +1572,7 @@ public class CashFlow4 {
                 this.redLine = redLine;
         }
     }
-    
+
 }// END public with sharing class CashFlow4
 
 //============ ATTIC ========= UNUSED BY MAYBE HELPFULL METHODS BELOW =============================
@@ -1583,30 +1583,30 @@ public class CashFlow4 {
         DebListObj__c oneRow;
         DebListObj__c oneRowMwst;
         for(Opportunity oneOpp : listOpps){
-            
+
             Double dSumTillLastMonth = 0.0;
             Double dSumCurrentMonth = 0.0;
             Double dSumLastMonth = 0.0;
             Double dSumNextMonth = 0.0;
             // dateToday = Date.today();
-            
+
             if(!oneOpp.OpportunityLineItems.isEmpty()){
                 List<OpportunityLineItem> listOLIofOneOpp = oneOpp.OpportunityLineItems;
-                
+
                 for(OpportunityLineItem oneOLI2: listOLIofOneOpp){
                         // get list of OLI with Schedules as SubQuery
-                        
+
                     OpportunityLineItem oneOLI = mapOpportunityOutLineItem.get(oneOLI2.Id);
                     oneRow = new DebListObj__c(RowName__c=oneOpp.Name);
                     oneRowMwst = new DebListObj__c(RowName__c=oneOpp.Name);
-                    
+
                     oneRow = initRow(oneRow);
                     oneRowMwst = initRow(oneRowMwst);
-                    
+
                     if(!oneOLI.OpportunityLineItemSchedules.isEmpty()){
                         List<OpportunityLineItemSchedule> listOLISch = oneOLI.OpportunityLineItemSchedules;
                             for(OpportunityLineItemSchedule olisch: listOLISch){
-                                
+
                                 Date dateNext10thOfM = olisch.ScheduleDate.addMonths(1).toStartOfMonth().addDays(10);
                                                                 if(dateNext10thOfM == dateToday){
                                         oneRow.debDueDate01__c = oneOLI.UnitPrice * olisch.Quantity;
@@ -1654,13 +1654,13 @@ public class CashFlow4 {
                                         oneRow.debDueDate15__c = oneOLI.UnitPrice * olisch.Quantity;
                                         oneRowMwst.debDueDate15__c = (oneOLI.UnitPrice * olisch.Quantity)*0.19;
                                 }
-                                
-                                
+
+
                             }// END for(OpportunityLineItemSchedule olisch: listOLISch)
-                            
+
                     }else{ // if(oneOLI.OpportunityLineItemSchedules.isEmpty())
 
-                        
+
                         if(oneOLI.Erwarteter_Zahlungseingang__c == dateToday){
                                 oneRow.debDueDate01__c = oneOLI.UnitPrice * oneOLI.Quantity;
                                 oneRowMwst.debDueDate01__c = (oneOLI.UnitPrice * oneOLI.Quantity)*0.19;
@@ -1707,23 +1707,23 @@ public class CashFlow4 {
                                 oneRow.debDueDate15__c = oneOLI.UnitPrice * oneOLI.Quantity;
                                 oneRowMwst.debDueDate15__c = (oneOLI.UnitPrice * oneOLI.Quantity)*0.19;
                         }
-                        
-                        
+
+
                     }// END if(oneOLI.OpportunityLineItemSchedules.isEmpty())
                 }// for(OpportunityLineItem oneOLI: listOLIofOneOpp)
-            
-            ObjUmsatz.add(oneRow);    
+
+            ObjUmsatz.add(oneRow);
             if( mapAccountGermanyAll.containsKey(oneOpp.AccountId)){
                 ObjMwstUmsatz.add(oneRowMwst);
                  }//END if( mapAccountGermanyAll.containsKey(oneOpp.AccountId))
-  
-                
+
+
             }// END if(!oneOpp.OpportunityLineItems.isEmpty())
 
         }// for(Opportunity oneOpp : listOpps)
 
     }// END public void Fill_Umsatz()*/
-    
+
        /* public void Fill_MwSt(){
         DebListObj__c SumObjMwStUmsatz = Calculate_SUM_DebListObj(ObjMwStUmsatz);
         DebListObj__c SumObjMwStKosten = Calculate_SUM_DebListObj(ObjMwStKosten);
