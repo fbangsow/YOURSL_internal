@@ -372,6 +372,7 @@ Versions:
            $scope.blisterPackTemplateSelected = $scope.persons[0];
            $scope.projectsSelecteddata = $scope.projectsselect[0];
 
+
            }
        $scope.projecthealth = function(opptrtuntyid, changedvalue) {
 
@@ -890,12 +891,15 @@ else
                    $(".blurbackgrund,.imgldr").attr("style", "display:block")
 
                    serviceforgetaccountchange(a, datestring).then(function(result) {
-                       $(".hdng").attr("style", "display:block");
-                       $(".msg").attr("style", "display:none");
+                       
+                       
+
 
                        var daatjson = htmlDecode(result);
                        var resultobject = JSON.parse(daatjson);
                        if (resultobject.Customers.length > 0) {
+                       $(".hdng").attr("style", "display:block");
+                       $(".msg").attr("style", "display:none");
                            $scope.mainPage = tempService.inputbindingtable(resultobject);
                            $scope.dataval = resultobject;
                            $scope.focusdata = "";
@@ -1943,6 +1947,8 @@ $(".multiSel").val(datatodsply);
            colorcoding();
            $(".Cancelfun").removeClass("Cancelfun");
            $(".Projects ").click();
+            $(".multiSel").val(" ");
+                           $(".multiSel").val("All Opportunity Names");
        });
        $(document).on("click", ".ui-datepicker-close", function() {
 
@@ -1963,10 +1969,9 @@ $(".multiSel").val(datatodsply);
                   var daatjsonresultforfilter = htmlDecode(resultforfilter);
                        var parsedDaatjsonfilter = JSON.parse(daatjsonresultforfilter );
                        myDataSet = parsedDaatjsonfilter .Customers;
-                           if(myDataSet.length>0)
-                       {
+                       
                            $scope.fileringonload(myDataSet);
-                         }
+                        
                });
 
            Visualforce.remoting.Manager.invokeAction(
@@ -2003,6 +2008,8 @@ $(".multiSel").val(datatodsply);
                            $(".workingweeks tr td:nth-child(4)").attr("style", "border:none;border-right: none;");
                            $(".workingweeks input").attr("style", "height:19px;");
                             $scope.noresults=0;
+                            $(".wrapperwidth").attr("style","display:block;");
+                            $(".msg").attr("style", "display:none");
 
                        } else { 
                         $scope.noresults=1;
@@ -2015,6 +2022,9 @@ $(".multiSel").val(datatodsply);
                            $(".appendtxt").append("No results are available for the filtering.")
                            $(".popup,.blurbackgrund").attr("style", "display:block");
                            $(".appndbtns").html("<input type='button' value='Cancel' class='cancelbtn'>");
+                           $(".wrapperwidth").attr("style","display:none;");
+                           $(".msg").attr("style", "display:block;");
+                           
                        }
                    }
                }, {
