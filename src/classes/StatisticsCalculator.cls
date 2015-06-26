@@ -247,10 +247,10 @@ public class StatisticsCalculator {
 
     private String getLetterBody(){
         String body = 'Dear ' + UserInfo.getFirstName() + ',<br><br>';
-        body += 'The statistical tool has successfully finised all calculations.<br>';
-        body += 'Please visit <a href="https://' + System.URL.getSalesforceBaseUrl().getHost() + '/apex/PsoTable">the Pso Tool Page</a> to see changes.<br><br>';
-        body += 'Best regards,<br>';
-        body += 'PsoTeam';
+        body += 'this is a notification that the <a href="https://' + System.URL.getSalesforceBaseUrl().getHost() + '/apex/PsoTable">PSO TOOL</a> has successfully processed the time frame from ' + WeekStart.format() + '-' + WeekEnd.format() + '.<br><br>';
+        body += 'If this email is sent on Monday or the first of a month in the morning it is because of an automated scheduled run.<br>';
+        body += 'If this email is sent on a different time it is because you have manually started it.<br><br>';
+        body += 'Your Salesforce Team.';
         return body;
     }
 
