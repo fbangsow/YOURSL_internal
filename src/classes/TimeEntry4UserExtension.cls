@@ -102,9 +102,10 @@ public without sharing class TimeEntry4UserExtension {
             mapContacts = new Map<Id, Contact>([
                                                    SELECT Id, Name, FirstName, LastName
                                                    FROM Contact WHERE
-                                                   Id IN: contactIds
+                                                   (Id IN: contactIds
                                                    OR
-                                                   AccountId = : sAccountId
+                                                   AccountId = : sAccountId)
+                                                   AND Inactive__c = false
                                                ]);
 
 
@@ -337,7 +338,7 @@ public without sharing class TimeEntry4UserExtension {
                     if(!opp.Name.contains('Urlaub')){
                         options.add(new SelectOption(opp.Id, opp.Name + ' (' + opp.ForeCastCategoryName + ')' ));
                     }
-                    
+
                 }
             } else {
                 options.add(new SelectOption('noopp', 'No Opportunity assigned'));
@@ -361,9 +362,9 @@ public without sharing class TimeEntry4UserExtension {
                         Decimal dHoursLeft = proofHoursLeft(oppLI);
                         String description = String.isEmpty(oppLI.Description)? '' : trimDescription(oppLI.Description);
                         //options.add(new SelectOption(oppLI.Id, tempDate.month()+' '+oppLI.PricebookEntry.Name + ' ' + oppLI.Quantity +'[E]'+ ' '+oppLI.Total_booked_days__c+' / '+oppLI.Total_Realization__c+' % [B]'+ ' '+oppLI.Total_Booked_Unbillable__c+' [UB]'+' '+tempDate.month()+' '+tempDate.year()));
-                        options.add(new SelectOption(oppLI.Id, GPL.padIntegerWithZero(oppLI.ServiceDate.month()) 
-                            + ' ' + GPL.padDoubleWithZero(Double.valueOf(oppLI.Total_Realization__c)) 
-                            + '% ' + +GPL.padDoubleWithZero(Double.valueOf(dHoursLeft.setScale(2))) 
+                        options.add(new SelectOption(oppLI.Id, GPL.padIntegerWithZero(oppLI.ServiceDate.month())
+                            + ' ' + GPL.padDoubleWithZero(Double.valueOf(oppLI.Total_Realization__c))
+                            + '% ' + +GPL.padDoubleWithZero(Double.valueOf(dHoursLeft.setScale(2)))
                             + ' ' + oppLI.PricebookEntry.Name
                             + ' ' +  description
                             ));
@@ -383,9 +384,9 @@ public without sharing class TimeEntry4UserExtension {
                         Decimal dHoursLeft = proofHoursLeft(oppLI);
                         String description = String.isEmpty(oppLI.Description)? '' : trimDescription(oppLI.Description);
                         //options.add(new SelectOption(oppLI.Id, tempDate.month()+' '+oppLI.PricebookEntry.Name + ' ' + oppLI.Quantity +'[E]'+ ' '+oppLI.Total_booked_days__c+' / '+oppLI.Total_Realization__c+' % [B]'+ ' '+oppLI.Total_Booked_Unbillable__c+' [UB]'+' '+tempDate.month()+' '+tempDate.year()));
-                        options.add(new SelectOption(oppLI.Id, GPL.padIntegerWithZero(oppLI.ServiceDate.month()) 
-                            + ' ' + GPL.padDoubleWithZero(Double.valueOf(oppLI.Total_Realization__c)) 
-                            + '% ' + +GPL.padDoubleWithZero(Double.valueOf(dHoursLeft.setScale(2))) 
+                        options.add(new SelectOption(oppLI.Id, GPL.padIntegerWithZero(oppLI.ServiceDate.month())
+                            + ' ' + GPL.padDoubleWithZero(Double.valueOf(oppLI.Total_Realization__c))
+                            + '% ' + +GPL.padDoubleWithZero(Double.valueOf(dHoursLeft.setScale(2)))
                             + ' ' + oppLI.PricebookEntry.Name
                             + ' ' +  description
                             ));
@@ -405,12 +406,12 @@ public without sharing class TimeEntry4UserExtension {
                         Decimal dHoursLeft = proofHoursLeft(oppLI);
 
                         //options.add(new SelectOption(oppLI.Id, tempDate.month()+' '+oppLI.PricebookEntry.Name + ' ' + oppLI.Quantity +'[E]'+ ' '+oppLI.Total_booked_days__c+' / '+oppLI.Total_Realization__c+' % [B]'+ ' '+oppLI.Total_Booked_Unbillable__c+' [UB]'+' '+tempDate.month()+' '+tempDate.year()));
-                        
+
                         String description = String.isEmpty(oppLI.Description)? '' : trimDescription(oppLI.Description);
 
-                        options.add(new SelectOption(oppLI.Id, GPL.padIntegerWithZero(oppLI.ServiceDate.month()) 
-                            + ' ' + GPL.padDoubleWithZero(Double.valueOf(oppLI.Total_Realization__c.setScale(2))) 
-                            + '% ' + +GPL.padDoubleWithZero(Double.valueOf(dHoursLeft.setScale(2))) 
+                        options.add(new SelectOption(oppLI.Id, GPL.padIntegerWithZero(oppLI.ServiceDate.month())
+                            + ' ' + GPL.padDoubleWithZero(Double.valueOf(oppLI.Total_Realization__c.setScale(2)))
+                            + '% ' + +GPL.padDoubleWithZero(Double.valueOf(dHoursLeft.setScale(2)))
                             + ' ' + oppLI.PricebookEntry.Name
                             + ' ' +  description
                             ));
@@ -438,14 +439,14 @@ public without sharing class TimeEntry4UserExtension {
 
 
     private static String trimDescription(String description){
-        
+
         description.replace('(', '');
         description.replace(')', '');
         description.replace('...', '');
         if(description.length() > 50){
             return '(' + description.substring(0, 49) + '...)';
         }else{
-            return '(' + description + ')' ;  
+            return '(' + description + ')' ;
         }
     }
 
