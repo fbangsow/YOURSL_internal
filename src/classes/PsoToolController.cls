@@ -601,7 +601,6 @@ public without sharing class PsoToolController{
         public Boolean IsSuccess;
         public String ErrorMessage;
         public Database.UpsertResult ReturnedResult;
-        public DmlException ThrownException;
 
         public Result(Database.UpsertResult result){
             IsSuccess = result.isSuccess();
@@ -613,7 +612,6 @@ public without sharing class PsoToolController{
         public Result(DmlException e){
             IsSuccess = false;
             ErrorMessage = e.getDmlMessage(0);
-            ThrownException = e;
         }
 
         public Result(String custom_error_message){
