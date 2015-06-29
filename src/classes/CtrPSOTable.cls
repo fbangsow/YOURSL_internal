@@ -73,13 +73,25 @@ return  PsoToolController.getInstance().setSelectedOpportunities(listofdataforli
   }
 
   @RemoteAction
-  public static void savefunction(String LineItemIdMap, String selectedDate, Decimal  numberOfHours) {
+  public static String runjobvalue( String selectedDate) {
+    
+    Boolean IsPlanned=true;
+
+    String[] datefrmt = dateFormatter(selectedDate);
+    Date JobDate = date.newinstance(Integer.valueOf(datefrmt[2]), Integer.valueOf(datefrmt[0]), Integer.valueOf(datefrmt[1]));
+    
+   String dates = StatisticsCalculator.getInstance(JobDate, IsPlanned).getDatesToBeDisplayed().JSON();
+return dates;
+  }
+    @RemoteAction
+  public static PsoToolController.Result savefunction(String LineItemIdMap, String selectedDate, Decimal  numberOfHours) {
     system.debug(numberOfHours);
 
     String[] datefrmt = dateFormatter(selectedDate);
     Date myDate = date.newinstance(Integer.valueOf(datefrmt[2]), Integer.valueOf(datefrmt[1]), Integer.valueOf(datefrmt[0]));
-    PsoToolController.getInstance().allocateResource(LineItemIdMap, myDate, numberOfHours / 8);
-
+    
+    PsoToolController.Result result =PsoToolController.getInstance().allocateResource(LineItemIdMap, myDate, numberOfHours / 8);
+return result;
   }
 
   public static String[] dateFormatter(String dateString) {

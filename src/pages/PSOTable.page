@@ -321,6 +321,79 @@ Versions:
               $(".setstrtdateinput,.strtdateinput").val(date);
  
        }
+       $scope.rerunJobforerror=function(){
+
+           var dateforjob = $(".datepickerforbind").val();
+           var splitenddate = dateforjob.split("/");
+           var firstDate = new Date(splitenddate[2], parseInt(splitenddate[0]) - 1, splitenddate[1]);
+           var currentDay = firstDate.getDay();
+           var currentDate = firstDate.getDate();
+
+           if (dateforjob == "") {
+               $(".joberrormsg").text("Please select Date before running the job");
+               $('.joberrormsg').fadeIn('fast');
+           } else if (parseInt(currentDay) != 1 && parseInt(currentDate) != 1) {
+               $(".joberrormsg").text("Please select Monday OR 1st of a month as a date before running the job");
+               $('.joberrormsg').fadeIn('fast');
+           } else {
+              
+
+           
+        var datefordatepicker=$(".datepickerforbind").val();
+        var date=datefordatepicker.toString().replace("/",".");
+        
+        date=date.replace("/",".")
+     Visualforce.remoting.Manager.invokeAction(
+                                       '{!$RemoteAction.CtrPSOTable.runjobvalue}',
+                                       date,
+                                       function(result, event) {
+                                       
+                                       var daatjson = htmlDecode(result);
+           var resultforerrormsg = JSON.parse(daatjson);
+                     $(".appendtxt").text(" ");
+                     
+                           if(resultforerrormsg.PlannedMonthEnd)
+                           {
+ 
+$(".popup1 .appendtxt").append("Please read below information carefully and click on OK to submit the job:</br>"+
+ "It calculates weekly  planned statistics starting from "+resultforerrormsg.PlannedWeekStart+"until "+resultforerrormsg.PlannedWeekEnd+"</br> It calculates weekly actual statistics starting from "+resultforerrormsg.ActualWeekStart+" until "+resultforerrormsg.ActualWeekEnd+"</br>It calculates monthly  planned statistics starting from "+resultforerrormsg.PlannedMonthStart+"  until "+resultforerrormsg.PlannedMonthEnd+"</br>It calculates monthly actual statistics starting from "+resultforerrormsg.ActualMonthStart+" until "+resultforerrormsg.ActualMonthEnd); 
+                           }
+                           else
+                           {
+
+                            $(".popup1 .appendtxt").append("Please read below information carefully and click on OK to submit the job:</br> It calculates planned statistics starting from "
+ +resultforerrormsg.PlannedWeekStart+"  until "+resultforerrormsg.PlannedWeekEnd+ "</br>It calculates actual statistics starting from "
+ +resultforerrormsg.ActualWeekStart+" until "+resultforerrormsg.ActualWeekEnd);
+                           }
+                           
+                           $(".popup1,.blurbackgrund").attr("style", "display:block");
+                            $(".popup1").attr("style", "display:block;width:38%;left:27%");
+//$(".appndbtns").html('');
+
+                                       }, {
+
+                                           escape: true
+                                       }
+                                   );
+}
+
+       }
+         $scope.rerunJob = function() {
+        
+          $('.joberrormsg').fadeIn('fast');
+               $(".joberrormsg").text("The job was successfully submitted, you'll see results in a few minutes");
+
+
+
+
+               runjob();
+               setTimeout(function() {
+                   $('.joberrormsg').fadeOut('slow');
+               }, 5000); // <-- time in milliseconds
+
+ $(".popup1,.blurbackgrund").attr("style", "display:none");
+       }
+
        $scope.set_color = function(payment) {
            //var convertion=payment.unplanne.replace(",", ".");
            if (payment != "YOUR SL GmbH") {
@@ -388,57 +461,8 @@ Versions:
 
 
        }
-       $scope.rerunJob = function() {
-           var dateforjob = $(".datepickerforbind").val();
-           var splitenddate = dateforjob.split("/");
-           var firstDate = new Date(splitenddate[2], parseInt(splitenddate[0]) - 1, splitenddate[1]);
-           var currentDay = firstDate.getDay();
-           var currentDate = firstDate.getDate();
-
-           if (dateforjob == "") {
-               $(".joberrormsg").text("Please select Date before running the job");
-               $('.joberrormsg').fadeIn('fast');
-           } else if (parseInt(currentDay) != 1 && parseInt(currentDate) != 1) {
-               $(".joberrormsg").text("Please select Monday OR 1st of a month as a date before running the job");
-               $('.joberrormsg').fadeIn('fast');
-           } else {
-               $('.joberrormsg').fadeIn('fast');
-               $(".joberrormsg").text("The job was successfully submitted, you'll see results in a few minutes");
-               runjob();
-               setTimeout(function() {
-                   $('.joberrormsg').fadeOut('slow');
-               }, 5000); // <-- time in milliseconds
-
-           }
-
-
-       }
-
-      /* $scope.recalculateendmonth = function() {
-           var dateforjob = $(".datepickerforbind").val();
-
-           var splitenddate = dateforjob.split("/");
-           var firstDate = new Date(splitenddate[2], parseInt(splitenddate[0]) - 1, splitenddate[1]);
-           var currentDay = firstDate.getDate();
-
-           if (dateforjob == "") {
-               $(".joberrormsg").text("Please select Date before running the job");
-               $('.joberrormsg').fadeIn('fast');
-           } else if (parseInt(currentDay) != 1) {
-               $(".joberrormsg").text("Please select 1st as a date before running the monthly job");
-               $('.joberrormsg').fadeIn('fast');
-           } else {
-               $('.joberrormsg').fadeIn('fast');
-               $(".joberrormsg").text("The job was successfully submitted, you'll see results in a few minutes");
-               Monthlyjob();
-               setTimeout(function() {
-                   $('.joberrormsg').fadeOut('slow');
-               }, 5000); // <-- time in milliseconds
-
-
-           }
-
-       }*/
+     
+     
 
        $scope.Customersfilter = function(ab) {
 
@@ -1535,7 +1559,17 @@ else
                                    Visualforce.remoting.Manager.invokeAction(
                                        '{!$RemoteAction.CtrPSOTable.savefunction}',
                                        mnthtolmt, date, value,
-                                       function(result, event) {}, {
+                                       function(result, event) {
+                                        if(!result.IsSuccess)
+                                        {
+                                          $(".appendtxt").text(" ");
+                           $(".appendtxt").append(result.ErrorMessage)
+                           $(".popup,.blurbackgrund").attr("style", "display:block");
+                           $(".appndbtns").html("<input type='button' value='Cancel' class='cancelbtn' >");
+                            }
+
+                                       }, {
+
                                            escape: true
                                        }
                                    );
@@ -1940,6 +1974,12 @@ $(".multiSel").val(datatodsply);
        });
        //function for confrom button ends here
        //function for cancel button starts here
+       
+       $(document).on("click", ".cancelbtn1", function() {
+           $(".blurbackgrund,.popup1").attr("style", "display:none");
+          
+       });
+       
        $(document).on("click", ".cancelbtn", function() {
            $(".blurbackgrund,.popup").attr("style", "display:none");
            $(".Cancelfun").val($('.Cancelfun').attr('id'));
@@ -2048,6 +2088,8 @@ $(".multiSel").val(datatodsply);
                // Subscribe to a topic. JSON-encoded update will be returned
                // in the callback
                $.cometd.subscribe('/topic/ResourceChanges', function(message) {
+                if(message)
+                {
 
                    var pushtopic = message;
                    var valueforcell;
@@ -2129,6 +2171,12 @@ $(".multiSel").val(datatodsply);
                            })
                        }
                    })
+                }
+                else
+                {
+                  $(".joberrormsg").text("Streaming API exceeds limits for the day. Data you are seeing may not be"+ "the latest.Please refresh the page to get latest data.")
+                }
+
                });
            });
        })(j)
@@ -2286,6 +2334,13 @@ $(".multiSel").val(datatodsply);
                 <div><p class="appendtxt"></p></div>
                 <div class="footer"><div class="appndbtns"></div></div>
             </div>
+
+
+            <div class="popup1">
+                <div class="header"></div>
+                <div><p class="appendtxt"></p></div>
+                <div class="footer"><div class="appndbtns"><input type="button" class="weekl btn" value="OK" ng-click="rerunJob()" /><input type="button" value="Cancel" class="cancelbtn1"/></div></div>
+            </div>
             <apex:form >
 <input type="text" style="height:1px  !important;border:0px !important"/>
             <apex:outputPanel id="panel">
@@ -2302,7 +2357,8 @@ $(".multiSel").val(datatodsply);
   <div class="loginacess">
 <p class="joberrormsg"></p>
     <span class="psotoolheader">PSO Scheduler 1.4</span> 
-    <input type="button" class="weekl btn" value="Re-run the job" ng-click="rerunJob()" style="height:20px;width:150px;"/>
+<input type="button" class="weekl btn" value="Re-run the job" ng-click="rerunJobforerror()" style="height:20px;width:150px;"/>
+
    <!-- <input type="button" class="montlyl btn" value="Recalculate End of Month" ng-click="recalculateendmonth()" style="height:20px;width:150px;"/>-->
     Date: <apex:inputText value="{!DateValue}" size="10" id="demo" style="width:100px;border:1px solid #B8B1B1" styleClass="datepickerforbind" ></apex:inputText> 
     </div>
