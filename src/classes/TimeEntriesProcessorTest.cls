@@ -92,6 +92,7 @@ private class TimeEntriesProcessorTest {
 
         public SetupDataClass() {
             this.TestUser = UserUtility.createNewUser(DesiredProfile);
+            this.TestUser.Can_rebook_timesheets__c = true;
             insert TestUser;
         }
 
