@@ -2357,7 +2357,7 @@ $(".multiSel").val(datatodsply);
   <div class="loginacess">
 <p class="joberrormsg"></p>
     <span class="psotoolheader">PSO Scheduler 1.4</span> 
-<input type="button" class="weekl btn" value="Re-run the job" ng-click="rerunJobforerror()" style="height:20px;width:150px;"/>
+<input type="button" class="weekl btn" value="Recalculate previous (split) week" ng-click="rerunJobforerror()" style="height:20px;width:200px;"/>
 
    <!-- <input type="button" class="montlyl btn" value="Recalculate End of Month" ng-click="recalculateendmonth()" style="height:20px;width:150px;"/>-->
     Date: <apex:inputText value="{!DateValue}" size="10" id="demo" style="width:100px;border:1px solid #B8B1B1" styleClass="datepickerforbind" ></apex:inputText> 
