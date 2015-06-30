@@ -38,6 +38,17 @@ Versions:
   z-index: 9;
   display: none;
 }
+.appndbtns1 {
+  float: right;
+}
+.appndbtns1 input {
+  width: 50px;
+  height: 25px !important;
+  background: green;
+  border: 1px solid green;
+  color: white;
+  margin-right: 20px;
+}
     .appendtxt::first-letter
    {
 text-transform: uppercase;
@@ -312,10 +323,10 @@ text-transform: uppercase;
       
       $scope.streamingerror=function(){
 
-                              $(".popup,.blurbackgrund1").attr("style", "display:none;");
+                              $(".popup,.blurbackgrund1,.blurbackgrund").attr("style", "display:none;");
       }
        $scope.saveerror = function() {
-                              $(".popup,.blurbackgrund").attr("style", "display:none");
+                              $(".popup,.blurbackgrund,.blurbackgrund1").attr("style", "display:none");
                               $(".Cancelfun").val($('.Cancelfun').attr('id'));
           
            colorcoding();
@@ -1283,6 +1294,17 @@ else
                                            a.currentTarget.value = "";
 
                                        }
+                                       if((currentvalue/0.25).toString().indexOf(".")>0)
+                                       {
+                                         $(".appendtxt").text("Value entered "+currentvalue+" is not divisible by 0.25 hours, please enter a value which is divisible by 0.25 hours(15 minutes).For example: 3.0 or 3.25 or 3.5 or 3.75 are valid numbers.");
+                                           $(".blurbackgrund,.popup").attr("style", "display:block");
+                                           $(".appndbtns").html(" ");
+                                           $(".appndbtns").html("<input type='button' value='Cancel' class='cancelbtn'>");
+                                           $(a.target).addClass('Cancelfun');
+                                           cancelclick = 0;
+                                           return false;
+                                       }
+                                       
                                        var cmbineprnt = b + "/" + c + "/" + d;
                                        var totalhours = "";
                                        $scope.ResourceName = $scope.dataval.Customers[b].Projects[c].Resources[d].ResourceName;
@@ -1774,7 +1796,7 @@ else
                            $(".appendtxt").text(" ");
                            $(".appendtxt").append("No results are available for the filtering.")
                            $(".popup,.blurbackgrund").attr("style", "display:block");
-                           $(".appndbtns").html("<input type='button' value='Cancel' class='cancelbtn' >");
+                           $(".appndbtns").html("<input type='button' value='Ok' class='cancelbtn' >");
 
                        }
 
@@ -2027,7 +2049,7 @@ $(".multiSel").val(datatodsply);
        });
        
        $(document).on("click", ".cancelbtn", function() {
-           $(".blurbackgrund,.popup").attr("style", "display:none");
+           $(".blurbackgrund,.blurbackgrund1,.popup").attr("style", "display:none");
            $(".Cancelfun").val($('.Cancelfun').attr('id'));
            cancelclick = 1;
            colorcoding();
@@ -2107,7 +2129,7 @@ $(".multiSel").val(datatodsply);
                            $(".appendtxt").text(" ");
                            $(".appendtxt").append("No results are available for the filtering.")
                            $(".popup,.blurbackgrund").attr("style", "display:block");
-                           $(".appndbtns").html("<input type='button' value='Cancel' class='cancelbtn'>");
+                           $(".appndbtns").html("<input type='button' value='Ok' class='cancelbtn'>");
                            $(".wrapperwidth").attr("style","display:none;");
                            $(".msg").attr("style", "display:block;");
                            
@@ -2141,7 +2163,7 @@ $(".multiSel").val(datatodsply);
                         $(".appendtxt").text(" ");
                            $(".appendtxt").append("Resource Availability table is not being synced up with latest changes automatically, please refresh the page to get the latest data." + error)
                            $(".popup,.blurbackgrund1").attr("style", "display:block");
-                           //$(".appndbtns").html("<input type='button' value='Cancel' class='cancelbtn'>");
+                           $(".appndbtns").html(" ");
                            $(".imgldr").attr("style", "display:none");
                            angular.element($(".appndbtns")).append($compile("<input type='button' value='OK' class='' ng-click='streamingerror()'>")($scope));
                       
@@ -2401,7 +2423,7 @@ $(".multiSel").val(datatodsply);
             <div class="popup1">
                 <div class="header"></div>
                 <div><p class="appendtxt"></p></div>
-                <div class="footer"><div class="appndbtns"><input type="button" class="weekl btn" value="OK" ng-click="rerunJob()" /><input type="button" value="Cancel" class="cancelbtn1"/></div></div>
+                <div class="footer"><div class="appndbtns1"><input type="button" class="weekl btn" value="OK" ng-click="rerunJob()" /><input type="button" value="Cancel" class="cancelbtn1"/></div></div>
             </div>
             <apex:form >
 <input type="text" style="height:1px  !important;border:0px !important"/>
