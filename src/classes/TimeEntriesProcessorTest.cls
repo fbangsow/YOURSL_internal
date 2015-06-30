@@ -194,13 +194,13 @@ private class TimeEntriesProcessorTest {
             this.ThirdTimeEntry.Billable__c = true;
             this.ThirdTimeEntry.Opportunity_Product_ID__c = this.SecondLineItem.Id;
             this.ThirdTimeEntry.Date__c = Date.newInstance(2015, 1, 10);
-            this.ThirdTimeEntry.Time__c = 8;
+            this.ThirdTimeEntry.Time__c = 4;
             this.ThirdTimeEntry.Opportunity__c = this.FirstOpportunity.Id;
             this.ForthTimeEntry = new TimeEntry__c();
             this.ForthTimeEntry.Billable__c = true;
             this.ForthTimeEntry.Opportunity_Product_ID__c = this.SecondLineItem.Id;
             this.ForthTimeEntry.Date__c = Date.newInstance(2015, 1, 3);
-            this.ForthTimeEntry.Time__c = 8;
+            this.ForthTimeEntry.Time__c = 4;
             this.ForthTimeEntry.Opportunity__c = this.FirstOpportunity.Id;
             insert new List<Sobject> {this.FirstTimeEntry, this.SecondTimeEntry, this.ThirdTimeEntry, this.ForthTimeEntry};
         }
