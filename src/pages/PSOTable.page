@@ -26,6 +26,24 @@ Versions:
       <script src="/resource/1430888909000/PsoToolUnderscorejs"></script>
 
    <style>
+.blurbackgrund1
+{
+     position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: #000000;
+  opacity: 0.5;
+  z-index: 9;
+  display: none;
+}
+    .appendtxt::first-letter
+   {
+text-transform: uppercase;
+
+   }
+
  @media only screen and (min-width: 1450px) {
    
 .weekspresence {
@@ -291,6 +309,30 @@ Versions:
    }, {}));
    //Controller Starts Here
    app.controller('MyCtrl', function($scope, $compile, serviceforgetaccount, serviceforgetaccountchange, tempService, $q) {
+      
+      $scope.streamingerror=function(){
+
+                              $(".popup,.blurbackgrund1").attr("style", "display:none;");
+      }
+       $scope.saveerror = function() {
+                              $(".popup,.blurbackgrund").attr("style", "display:none");
+                              $(".Cancelfun").val($('.Cancelfun').attr('id'));
+          
+           colorcoding();
+           $(".Cancelfun").removeClass("Cancelfun");
+             
+                                   $(".totalforcalndr").each(function(no) {
+                                       $(this).find("td").each(function(no1) {
+                                         if(no1>3)
+                                        {
+                                           $(this).remove();
+                                         }
+                                       });
+                                   });
+            totalcaluculation();
+
+           $(".Projects ").click();
+                           }
        $('.datepickerforbind').datepicker();
        $('.strtdateinput').datepicker({
            changeMonth: true,
@@ -352,18 +394,17 @@ Versions:
            var resultforerrormsg = JSON.parse(daatjson);
                      $(".appendtxt").text(" ");
                      
-                           if(resultforerrormsg.PlannedMonthEnd)
+                                  if(resultforerrormsg.PlannedMonthEnd)
                            {
  
-$(".popup1 .appendtxt").append("Please read below information carefully and click on OK to submit the job:</br>"+
- "It calculates weekly  planned statistics starting from "+resultforerrormsg.PlannedWeekStart+"until "+resultforerrormsg.PlannedWeekEnd+"</br> It calculates weekly actual statistics starting from "+resultforerrormsg.ActualWeekStart+" until "+resultforerrormsg.ActualWeekEnd+"</br>It calculates monthly  planned statistics starting from "+resultforerrormsg.PlannedMonthStart+"  until "+resultforerrormsg.PlannedMonthEnd+"</br>It calculates monthly actual statistics starting from "+resultforerrormsg.ActualMonthStart+" until "+resultforerrormsg.ActualMonthEnd); 
+$(".popup1 .appendtxt").append("Please confirm the following actions:</br>- planned statistics will be created from "+resultforerrormsg.PlannedWeekStart+" to "+resultforerrormsg.PlannedWeekEnd
+ +"</br>- planned schedules will be replaced with time entries from  <p style='marg in:0px;margin-left:14px;'>"+resultforerrormsg.ActualWeekStart+" to "+resultforerrormsg.ActualWeekEnd+"</p>- actual statistics will be created from  "+resultforerrormsg.ActualWeekStart+" to "+resultforerrormsg.ActualWeekEnd+"</br>- planned statistics will be created from "+resultforerrormsg.PlannedMonthStart+"  to "+resultforerrormsg.PlannedMonthEnd+"</br>- actual statistics will be created from "+resultforerrormsg.ActualMonthStart+" to "+resultforerrormsg.ActualMonthEnd); 
                            }
                            else
                            {
 
-                            $(".popup1 .appendtxt").append("Please read below information carefully and click on OK to submit the job:</br> It calculates planned statistics starting from "
- +resultforerrormsg.PlannedWeekStart+"  until "+resultforerrormsg.PlannedWeekEnd+ "</br>It calculates actual statistics starting from "
- +resultforerrormsg.ActualWeekStart+" until "+resultforerrormsg.ActualWeekEnd);
+                            $(".popup1 .appendtxt").append("Please confirm the following actions:</br>- planned statistics will be created from "+resultforerrormsg.PlannedWeekStart+" to "+resultforerrormsg.PlannedWeekEnd
+ +"</br>- planned schedules will be replaced with time entries from  <p style='margin:0px;margin-left:14px;'>"+resultforerrormsg.ActualWeekStart+" to "+resultforerrormsg.ActualWeekEnd+"</p>- actual statistics will be created from  "+resultforerrormsg.ActualWeekStart+" to "+resultforerrormsg.ActualWeekEnd);
                            }
                            
                            $(".popup1,.blurbackgrund").attr("style", "display:block");
@@ -1541,6 +1582,7 @@ else
                                    var value;
                                    if (currentvalue == "") {
                                        value = 0;
+
                                    } else {
                                        value = parseFloat(currentvalue);
                                    }
@@ -1555,7 +1597,7 @@ else
                                    }
 
 
-                                   $(".Cancelfun").removeClass("Cancelfun");
+                                 $(".Cancelfun").removeClass("Cancelfun");
                                    Visualforce.remoting.Manager.invokeAction(
                                        '{!$RemoteAction.CtrPSOTable.savefunction}',
                                        mnthtolmt, date, value,
@@ -1565,8 +1607,11 @@ else
                                           $(".appendtxt").text(" ");
                            $(".appendtxt").append(result.ErrorMessage)
                            $(".popup,.blurbackgrund").attr("style", "display:block");
-                           $(".appndbtns").html("<input type='button' value='Cancel' class='cancelbtn' >");
+                           angular.element($(".appndbtns")).html(" ");
+                           angular.element($(".appndbtns")).append($compile("<input type='button' value='OK' class='' ng-click='saveerror()'>")($scope));
+                           $(a.target).addClass('Cancelfun');
                             }
+                         
 
                                        }, {
 
@@ -1576,6 +1621,7 @@ else
 
                                }
                            }
+
                            $scope.plannedorqa = function() {
 
 
@@ -2085,11 +2131,29 @@ $(".multiSel").val(datatodsply);
                        Authorization: 'OAuth {!$Api.Session_ID}'
                    }
                });
+
+                $.cometd.addListener('/meta/unsuccessful', function(streamingfailure)
+              {
+                  var error = streamingfailure.error;
+                  var status = streamingfailure.successful;
+                  if (!status)
+                  { 
+                        $(".appendtxt").text(" ");
+                           $(".appendtxt").append("Resource Availability table is not being synced up with latest changes automatically, please refresh the page to get the latest data." + error)
+                           $(".popup,.blurbackgrund1").attr("style", "display:block");
+                           //$(".appndbtns").html("<input type='button' value='Cancel' class='cancelbtn'>");
+                           $(".imgldr").attr("style", "display:none");
+                           angular.element($(".appndbtns")).append($compile("<input type='button' value='OK' class='' ng-click='streamingerror()'>")($scope));
+                      
+                    //$(".joberrormsg").text(");
+                      // Reconnected
+                  }                
+              });      
+
                // Subscribe to a topic. JSON-encoded update will be returned
-               // in the callback
-               $.cometd.subscribe('/topic/ResourceChanges', function(message) {
-                if(message)
-                {
+               // in the callback              
+                $.cometd.subscribe('/topic/ResourceChanges', function(message) {
+              
 
                    var pushtopic = message;
                    var valueforcell;
@@ -2171,13 +2235,10 @@ $(".multiSel").val(datatodsply);
                            })
                        }
                    })
-                }
-                else
-                {
-                  $(".joberrormsg").text("Streaming API exceeds limits for the day. Data you are seeing may not be"+ "the latest.Please refresh the page to get latest data.")
-                }
+             
 
-               });
+               });    
+
            });
        })(j)
 
@@ -2328,8 +2389,9 @@ $(".multiSel").val(datatodsply);
          <apex:pageMessages id="showmsg"></apex:pageMessages>        
           <p class="dataforprint" style="display:none;"> </p>
         <div data-ng-controller="MyCtrl" id="contid">
-            <div class="blurbackgrund"></div>
-            <div class="popup">
+            <div class="blurbackgrund1" ng-show="showhide"></div>
+            <div class="blurbackgrund" ng-show="showhide"></div>
+            <div class="popup" ng-show="showhide">
                 <div class="header"></div>
                 <div><p class="appendtxt"></p></div>
                 <div class="footer"><div class="appndbtns"></div></div>
