@@ -2423,7 +2423,7 @@ $(".multiSel").val(datatodsply);
             <div class="popup1">
                 <div class="header"></div>
                 <div><p class="appendtxt"></p></div>
-                <div class="footer"><div class="appndbtns1"><input type="button" class="weekl btn" value="OK" ng-click="rerunJob()" /><input type="button" value="Cancel" class="cancelbtn1"/></div></div>
+                <div class="footer"><div class="appndbtns1"><input type="button" class="cancelbtn1" value="OK" ng-click="rerunJob()" /><input type="button" value="Cancel" class="cancelbtn1"/></div></div>
             </div>
             <apex:form >
 <input type="text" style="height:1px  !important;border:0px !important"/>
