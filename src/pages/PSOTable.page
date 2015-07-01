@@ -409,17 +409,17 @@ text-transform: uppercase;
                            {
  
 $(".popup1 .appendtxt").append("Please confirm the following actions:</br>- planned statistics will be created from "+resultforerrormsg.PlannedWeekStart+" to "+resultforerrormsg.PlannedWeekEnd
- +"</br>- planned schedules will be replaced with time entries from  <p style='marg in:0px;margin-left:14px;'>"+resultforerrormsg.ActualWeekStart+" to "+resultforerrormsg.ActualWeekEnd+"</p>- actual statistics will be created from  "+resultforerrormsg.ActualWeekStart+" to "+resultforerrormsg.ActualWeekEnd+"</br>- planned statistics will be created from "+resultforerrormsg.PlannedMonthStart+"  to "+resultforerrormsg.PlannedMonthEnd+"</br>- actual statistics will be created from "+resultforerrormsg.ActualMonthStart+" to "+resultforerrormsg.ActualMonthEnd); 
+ +"</br>- planned schedules will be replaced with time entries from "+resultforerrormsg.ActualWeekStart+" to "+resultforerrormsg.ActualWeekEnd+"</br>- actual statistics will be created from  "+resultforerrormsg.ActualWeekStart+" to "+resultforerrormsg.ActualWeekEnd+"</br>- planned statistics will be created from "+resultforerrormsg.PlannedMonthStart+"  to "+resultforerrormsg.PlannedMonthEnd+"</br>- actual statistics will be created from "+resultforerrormsg.ActualMonthStart+" to "+resultforerrormsg.ActualMonthEnd); 
                            }
                            else
                            {
 
                             $(".popup1 .appendtxt").append("Please confirm the following actions:</br>- planned statistics will be created from "+resultforerrormsg.PlannedWeekStart+" to "+resultforerrormsg.PlannedWeekEnd
- +"</br>- planned schedules will be replaced with time entries from  <p style='margin:0px;margin-left:14px;'>"+resultforerrormsg.ActualWeekStart+" to "+resultforerrormsg.ActualWeekEnd+"</p>- actual statistics will be created from  "+resultforerrormsg.ActualWeekStart+" to "+resultforerrormsg.ActualWeekEnd);
+ +"</br>- planned schedules will be replaced with time entries from "+resultforerrormsg.ActualWeekStart+" to "+resultforerrormsg.ActualWeekEnd+"</br>- actual statistics will be created from  "+resultforerrormsg.ActualWeekStart+" to "+resultforerrormsg.ActualWeekEnd);
                            }
                            
                            $(".popup1,.blurbackgrund").attr("style", "display:block");
-                            $(".popup1").attr("style", "display:block;width:38%;left:27%");
+                            $(".popup1").attr("style", "display:block;width:48%;left:27%");
 //$(".appndbtns").html('');
 
                                        }, {
@@ -1299,7 +1299,7 @@ else
                                          $(".appendtxt").text("Value entered "+currentvalue+" is not divisible by 0.25 hours, please enter a value which is divisible by 0.25 hours(15 minutes).For example: 3.0 or 3.25 or 3.5 or 3.75 are valid numbers.");
                                            $(".blurbackgrund,.popup").attr("style", "display:block");
                                            $(".appndbtns").html(" ");
-                                           $(".appndbtns").html("<input type='button' value='Cancel' class='cancelbtn'>");
+                                           $(".appndbtns").html("<input type='button' value='OK' class='cancelbtn'>");
                                            $(a.target).addClass('Cancelfun');
                                            cancelclick = 0;
                                            return false;
@@ -1796,7 +1796,7 @@ else
                            $(".appendtxt").text(" ");
                            $(".appendtxt").append("No results are available for the filtering.")
                            $(".popup,.blurbackgrund").attr("style", "display:block");
-                           $(".appndbtns").html("<input type='button' value='Ok' class='cancelbtn' >");
+                           $(".appndbtns").html("<input type='button' value='OK' class='cancelbtn' >");
 
                        }
 
@@ -2129,7 +2129,7 @@ $(".multiSel").val(datatodsply);
                            $(".appendtxt").text(" ");
                            $(".appendtxt").append("No results are available for the filtering.")
                            $(".popup,.blurbackgrund").attr("style", "display:block");
-                           $(".appndbtns").html("<input type='button' value='Ok' class='cancelbtn'>");
+                           $(".appndbtns").html("<input type='button' value='OK' class='cancelbtn'>");
                            $(".wrapperwidth").attr("style","display:none;");
                            $(".msg").attr("style", "display:block;");
                            
@@ -2440,7 +2440,7 @@ $(".multiSel").val(datatodsply);
   <apex:pageBlock >    
   <div class="loginacess">
 <p class="joberrormsg"></p>
-    <span class="psotoolheader">PSO Scheduler 1.4</span> 
+    <span class="psotoolheader">PSO Scheduler 2.0</span> 
 <input type="button" class="weekl btn" value="Recalculate previous (split) week" ng-click="rerunJobforerror()" style="height:20px;width:200px;"/>
 
    <!-- <input type="button" class="montlyl btn" value="Recalculate End of Month" ng-click="recalculateendmonth()" style="height:20px;width:150px;"/>-->
