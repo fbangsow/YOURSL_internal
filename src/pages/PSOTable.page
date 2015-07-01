@@ -419,7 +419,7 @@ $(".popup1 .appendtxt").append("Please confirm the following actions:</br>- plan
                            }
                            
                            $(".popup1,.blurbackgrund").attr("style", "display:block");
-                            $(".popup1").attr("style", "display:block;width:48%;left:27%");
+                            $(".popup1").attr("style", "display:block;width:35%;left:27%");
 //$(".appndbtns").html('');
 
                                        }, {
