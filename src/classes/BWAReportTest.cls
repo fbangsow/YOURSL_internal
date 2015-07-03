@@ -88,6 +88,9 @@ private class BWAReportTest {
     	Chart_of_Accounts__c chAcc1, chAcc2;
     	list<Debitoren_Rechnung__c> listAusgRechs = new list<Debitoren_Rechnung__c>();
     	list<Debitor_Invoice_Status__c> listAusgRechStatus = new list<Debitor_Invoice_Status__c>();
+        Account test_account = new Account();
+        test_account.Name = 'First company';
+        insert test_account;
     	Opportunity test_opportunity = new Opportunity();
         test_opportunity.Name = 'YOUR SL GmbH';
         test_opportunity.StageName = 'YOUR SL GmbH';
@@ -95,6 +98,7 @@ private class BWAReportTest {
         test_opportunity.CloseDate = Date.newInstance(2015, 1, 1);
         test_opportunity.Managed_by_PSO_Tool__c = true;
         test_opportunity.Projektstatus__c = 'Terrible';
+        test_opportunity.AccountId = test_account.Id;
         insert test_opportunity;
 
     	Opportunity opp = [Select Id, AccountId, account.name FROM Opportunity limit 1];
