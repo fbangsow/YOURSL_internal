@@ -567,7 +567,7 @@
     </pageAccesses>
     <pageAccesses>
         <apexPage>PSOTable</apexPage>
-        <enabled>false</enabled>
+        <enabled>true</enabled>
     </pageAccesses>
     <pageAccesses>
         <apexPage>ProductResourceForecast</apexPage>
