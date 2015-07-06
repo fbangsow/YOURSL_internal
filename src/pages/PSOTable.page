@@ -82,6 +82,22 @@ text-transform: uppercase;
            return '';
        }
    }
+
+   function enableMondayAndFirst(date) {
+ 
+    var day = date.getDay();
+    var firstDate = date.getDate();
+   // If day == 1 then it is MOnday
+   if (day == 1 || firstDate ==1) {
+   
+   return [true] ; 
+   
+   } else { 
+   
+   return [false] ;
+   }
+  
+}
    var startdateobj;
    var cancelclick = 1;
    var dataforna = 0;
@@ -320,6 +336,7 @@ text-transform: uppercase;
    }, {}));
    //Controller Starts Here
    app.controller('MyCtrl', function($scope, $compile, serviceforgetaccount, serviceforgetaccountchange, tempService, $q) {
+
       
       $scope.streamingerror=function(){
 
@@ -344,12 +361,15 @@ text-transform: uppercase;
 
            $(".Projects ").click();
                            }
-       $('.datepickerforbind').datepicker();
+       $('.datepickerforbind').datepicker(
+       {
+         beforeShowDay: enableMondayAndFirst
+       });
        $('.strtdateinput').datepicker({
            changeMonth: true,
            changeYear: true,
            showButtonPanel: true,
-           dateFormat: 'MM YY',
+           dateFormat: 'MM YY',        
            minDate: -720,
            maxDate: +900,
            currentText: "Today:" + $.datepicker.formatDate('MM dd yy', new Date())
@@ -362,6 +382,7 @@ text-transform: uppercase;
                $(".setstrtdateinput").val(parseInt(month) + 1 + " " + year);
            });
        })
+       
          var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
  if(localStorage.getItem("datepickerval")!=null)
@@ -2059,6 +2080,7 @@ $(".multiSel").val(datatodsply);
             $(".multiSel").val("All Opportunity Names");
        });
        $(document).on("click", ".ui-datepicker-close", function() {
+        $(".blurbackgrund,.imgldr").attr("style", "display:block");
 
            var monthno;
            
@@ -2118,6 +2140,7 @@ $(".multiSel").val(datatodsply);
                             $scope.noresults=0;
                             $(".wrapperwidth").attr("style","display:block;");
                             $(".msg").attr("style", "display:none");
+                            $(".blurbackgrund,.imgldr").attr("style", "display:none");
 
                        } else { 
                         $scope.noresults=1;
@@ -2132,6 +2155,7 @@ $(".multiSel").val(datatodsply);
                            $(".appndbtns").html("<input type='button' value='OK' class='cancelbtn'>");
                            $(".wrapperwidth").attr("style","display:none;");
                            $(".msg").attr("style", "display:block;");
+                           $(".blurbackgrund,.imgldr").attr("style", "display:none");
                            
                        }
                    }
