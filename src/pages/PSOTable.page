@@ -25,44 +25,7 @@ Versions:
       <script src="/resource/1430742754000/PsoToolMomentjs"></script>
       <script src="/resource/1430888909000/PsoToolUnderscorejs"></script>
 
-   <style>
-.blurbackgrund1
-{
-     position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  background-color: #000000;
-  opacity: 0.5;
-  z-index: 9;
-  display: none;
-}
-.appndbtns1 {
-  float: right;
-}
-.appndbtns1 input {
-  width: 50px;
-  height: 25px !important;
-  background: green;
-  border: 1px solid green;
-  color: white;
-  margin-right: 20px;
-}
-    .appendtxt::first-letter
-   {
-text-transform: uppercase;
 
-   }
-
- @media only screen and (min-width: 1450px) {
-   
-.weekspresence {
-  float: left;
-  width: 70%;
-}
-   }
-   </style>
  
       <script type="text/javascript">
  
@@ -337,7 +300,7 @@ text-transform: uppercase;
    //Controller Starts Here
    app.controller('MyCtrl', function($scope, $compile, serviceforgetaccount, serviceforgetaccountchange, tempService, $q) {
 
-      
+ 
       $scope.streamingerror=function(){
 
                               $(".popup,.blurbackgrund1,.blurbackgrund").attr("style", "display:none;");
@@ -371,15 +334,36 @@ text-transform: uppercase;
            showButtonPanel: true,
            dateFormat: 'MM YY',        
            minDate: -720,
-           maxDate: +900,
-           currentText: "Today:" + $.datepicker.formatDate('MM dd yy', new Date())
+           maxDate: +900
+          
+           //currentText: "Today:" + $.datepicker.formatDate('MM dd yy', new Date())
+
        }).focus(function() {
+//var date=localStorage.getItem("datepickerval");
+//var splitdate=date.split(" ");
+
+//$(".ui-datepicker-month").val(parseInt(splitdate[0]))
+var classdata=($(".strtdateinput").attr("class")).split(" ");
+
+
+if(typeof classdata[2]!=="undefined")
+{
+  
+ 
+  var date=localStorage.getItem("datepickerval");
+var splitdate=date.split(" ");
+var a=parseInt(splitdate[0])-1;
+$(".ui-datepicker-month").val(a);
+$(".strtdateinput").removeClass("onff");
+
+}
            var thisCalendar = $(this);
            $('.ui-datepicker-calendar').detach();
            $('.ui-datepicker-close').click(function() {
                var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
                var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
                $(".setstrtdateinput").val(parseInt(month) + 1 + " " + year);
+             
            });
        })
        
@@ -629,46 +613,7 @@ $(".popup1 .appendtxt").append("Please confirm the following actions:</br>- plan
            startdateobj = resultobject;
            //Display customer and projects information on initial page load
            $scope.fileringonload(myDataSet);
-           /*var newthing = [],
-               customer = [],
-               projectload = [];
-           customer.push({
-               "value": "All Account Names",
-               "Id": "0"
-           });
-           projectload.push({
-               "value": "All Opportunity Names",
-               "Id": "0"
-           });
-           angular.forEach(myDataSet, function(a, b) {
-               var project = new Array();
-               angular.forEach(a.Projects, function(an, b) {
-                   projectload.push({
-                       "value": an.OpportunityName,
-                       "Id": an.OpportunityId
-                   });
-                   project.push({
-                       "name": an.OpportunityName,
-                       "Id": an.OpportunityId
-                   });
-               })
-               newthing.push({
-                   "customer": a.AccountName,
-                   "project": project
-               });
-               customer.push({
-                   "value": a.AccountName,
-                   "Id": a.AccountId
-               });
-           })
-           $scope.persons = customer;
-           $scope.projectdetails = newthing;
-           var foo2 = _.unique(projectload, false, function(item, k, v) {
-               return item;
-           });
-           $scope.projectsselect = foo2;
-           $scope.blisterPackTemplateSelected = $scope.persons[0];
-           $scope.projectsSelecteddata = $scope.projectsselect[0];*/
+          
 
        $scope.oppvalue=localStorage.getItem("oppname");
          if($scope.oppvalue!=null)
@@ -749,7 +694,7 @@ else
        })
        $(".dropdown dt a").on('click', function() {
 
-           $(this).parent().parent().parent().find("dd select").slideToggle('fast');
+           $(this).parent().parent().parent().find("dd .mutliSelect").slideToggle('fast');
        });
 
        $(".dropdown dd ul li a").on('click', function() {
@@ -765,7 +710,7 @@ else
        $(document).bind('click', function(e) {
 
            var $clicked = $(e.target);
-           if (!$clicked.parents().hasClass("dropdown")) $(".dropdown dd select").hide();
+           if (!$clicked.parents().hasClass("dropdown")) $(".dropdown dd .mutliSelect").hide();
        });
 
        $scope.accountnamedsply = function(dsplydata) {
@@ -1398,7 +1343,7 @@ else
                                                            if (a.currentTarget.value != "") {
                                                                if (rsultdata == 1) {
                                                                    return false;
-                                                               } else if (resstfnga.SpecialOccasion == true) {
+                                                               } else if (resstfnga.SpecialOccasion == true && resstfnga.Staff == 8 ) {
                                                                    $(".appendtxt").text(" ");
                                                                    $(".appendtxt").text("This Resource is not available at this day");
                                                                    $(".blurbackgrund,.popup").attr("style", "display:block");
@@ -1467,6 +1412,7 @@ else
                                }
                                //color coding uneversial function starts here
                            $scope.settingcolor = function(a) {
+
                                if (parseFloat(a.currentTarget.value) == 8) {
                                    $(a.target).addClass('greencolor');
                                } else if (parseFloat(a.currentTarget.value) < 8) {
@@ -1793,7 +1739,7 @@ else
 
 
                                                    $(this).val(b.Staff);
-                                                   if (b.SpecialOccasion == true) {
+                                                   if (b.SpecialOccasion == true ) {                                                    
                                                        $(this).attr("disabled", "true");
                                                        $(this).addClass("holiday");
                                                    } else if (parseFloat(b.Staff) == 8) {
@@ -2035,7 +1981,9 @@ $(".multiSel").val(datatodsply);
                var widthdata = $(".wrapperwidth").width() - $(".custdisplay").width();
                $(".weekspresence").attr("style", "width:" + widthdata + "px");
                $(window).resize(function() {
+
                    var widthdata = $(".wrapperwidth").width() - $(".custdisplay").width();
+                   widthdata=parseInt(widthdata)-1;
                    $(".weekspresence").attr("style", "width:" + widthdata + "px");
                });
            })
@@ -2080,6 +2028,8 @@ $(".multiSel").val(datatodsply);
             $(".multiSel").val("All Opportunity Names");
        });
        $(document).on("click", ".ui-datepicker-close", function() {
+
+     $(".strtdateinput").addClass("onff");
         $(".blurbackgrund,.imgldr").attr("style", "display:block");
 
            var monthno;
@@ -2141,7 +2091,7 @@ $(".multiSel").val(datatodsply);
                             $(".wrapperwidth").attr("style","display:block;");
                             $(".msg").attr("style", "display:none");
                             $(".blurbackgrund,.imgldr").attr("style", "display:none");
-
+                   
                        } else { 
                         $scope.noresults=1;
                            var datevalue= localStorage.getItem("datepickerval");
@@ -2154,9 +2104,9 @@ $(".multiSel").val(datatodsply);
                            $(".popup,.blurbackgrund").attr("style", "display:block");
                            $(".appndbtns").html("<input type='button' value='OK' class='cancelbtn'>");
                            $(".wrapperwidth").attr("style","display:none;");
-                           $(".msg").attr("style", "display:block;");
-                           $(".blurbackgrund,.imgldr").attr("style", "display:none");
                            
+                           $(".blurbackgrund,.imgldr").attr("style", "display:none");
+                           $(".blurbackgrund,.msg").attr("style", "display:block;");
                        }
                    }
                }, {
@@ -2489,9 +2439,9 @@ $(".multiSel").val(datatodsply);
     </dt>
   
     <dd>
-        <div class="mutliSelect">
+        <div class="mutliSelect accountname">
        <!-- data-ng-change="projects(projectsSelecteddata)"-->
-               <select class="Customers accountname" ng-click="accountnamedsply(blisterPackTemplateSelected);" data-ng-model="blisterPackTemplateSelected" data-ng-change="Customersfilter(blisterPackTemplateSelected)"  multiple="true">
+               <select class="Customers " ng-click="accountnamedsply(blisterPackTemplateSelected);" data-ng-model="blisterPackTemplateSelected" data-ng-change="Customersfilter(blisterPackTemplateSelected)"  multiple="true">
  <option ng-repeat="c in persons" value="{{c.value}}" ng-selected="model.value == c.Id">{{c.value}}</option>
                      </select>
            
@@ -2520,9 +2470,9 @@ $(".multiSel").val(datatodsply);
     </dt>
   
     <dd>
-        <div class="mutliSelect">
+        <div class="mutliSelect clickforselect">
      
-           <select class="Projects clickforselect" data-ng-model="projectsSelecteddata"  ng-blur="oppselectedvalue()" multiple="true" ng-click="oprnameselect(projectsSelecteddata)" on-finish-render="ngRepeatFinishedforselectbox"> 
+           <select class="Projects" data-ng-model="projectsSelecteddata"  ng-blur="oppselectedvalue()" multiple="true" ng-click="oprnameselect(projectsSelecteddata)" on-finish-render="ngRepeatFinishedforselectbox"> 
    <option ng-repeat="c in projectsselect" value="{{c.Id}}" >{{c.value}}</option>
             </select>
           
