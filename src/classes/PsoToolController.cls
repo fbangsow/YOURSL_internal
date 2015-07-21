@@ -293,7 +293,7 @@ public without sharing class PsoToolController{
         Staffing new_staff = new Staffing();
         new_staff.Day = time_entry.ScheduleDate.format();
         new_staff.Staff = time_entry.Quantity*WORKING_HOURS_IN_DAY;
-        new_staff.SpecialOccasion = false;
+        new_staff.HoursOff = 0;
         return new_staff;
     }
 
@@ -364,8 +364,8 @@ public without sharing class PsoToolController{
         }
         else {
             existing_stuffing.get(new_item_to_add.Day).Staff += new_item_to_add.Staff;
-            if(new_item_to_add.SpecialOccasion)
-                existing_stuffing.get(new_item_to_add.Day).SpecialOccasion = new_item_to_add.SpecialOccasion;
+            if(new_item_to_add.HoursOff > 0)
+                existing_stuffing.get(new_item_to_add.Day).HoursOff += new_item_to_add.HoursOff;
         }
         return existing_stuffing;
     }
@@ -374,7 +374,7 @@ public without sharing class PsoToolController{
         Staffing new_staff = new Staffing();
         new_staff.Day = item.ServiceDate.format();
         new_staff.Staff = item.Quantity*WORKING_HOURS_IN_DAY;
-        new_staff.SpecialOccasion = true;
+        new_staff.HoursOff = item.Quantity*WORKING_HOURS_IN_DAY;
         return new_staff;
     }
 
@@ -536,7 +536,7 @@ public without sharing class PsoToolController{
     public class Staffing {
         public String Day;
         public Decimal Staff;
-        public Boolean SpecialOccasion;
+        public Decimal HoursOff;
     }
 
     public class ResourceInfo implements Comparable{

@@ -342,7 +342,7 @@ private class PsoToolControllerTest {
             Test.stopTest();
             System.assertEquals(setup_data.Schedule.ScheduleDate, Date.parse(staffing.Day));
             System.assertEquals(setup_data.Schedule.Quantity*8, staffing.Staff);
-            System.assertEquals(false, staffing.SpecialOccasion);
+            System.assertEquals(0, staffing.HoursOff);
         }
     }
 
@@ -467,11 +467,11 @@ private class PsoToolControllerTest {
             PsoToolController.Staffing first_staffing = new PsoToolController.Staffing ();
             first_staffing.Day = Date.newInstance(2015, 1, 15).format();
             first_staffing.Staff = 0.5;
-            first_staffing.SpecialOccasion = false;
+            first_staffing.HoursOff = 0.1;
             PsoToolController.Staffing another_staffing_in_the_same_day = new PsoToolController.Staffing ();
             another_staffing_in_the_same_day.Day =  Date.newInstance(2015, 1, 15).format();
             another_staffing_in_the_same_day.Staff = 0.4;
-            another_staffing_in_the_same_day.SpecialOccasion = true;
+            another_staffing_in_the_same_day.HoursOff = 0.5;
             Map<String, PsoToolController.Staffing> existing_staffing = new Map<String, PsoToolController.Staffing>();
             existing_staffing.put(first_staffing.Day, first_staffing);
             Test.startTest();
@@ -479,7 +479,7 @@ private class PsoToolControllerTest {
             Test.stopTest();
             System.assertEquals(1, result_staffing.values().size());
             System.assertEquals(0.9, result_staffing.values().get(0).Staff);
-            System.assertEquals(true, result_staffing.values().get(0).SpecialOccasion);
+            System.assertEquals(0.6, result_staffing.values().get(0).HoursOff);
         }
     }
 
@@ -490,11 +490,11 @@ private class PsoToolControllerTest {
             PsoToolController.Staffing first_staffing = new PsoToolController.Staffing ();
             first_staffing.Day = Date.newInstance(2015, 1, 15).format();
             first_staffing.Staff = 0.5;
-            first_staffing.SpecialOccasion = false;
+            first_staffing.HoursOff = 0;
             PsoToolController.Staffing another_staffing = new PsoToolController.Staffing();
             another_staffing.Day =  Date.newInstance(2015, 3, 23).format();
             another_staffing.Staff = 0.4;
-            another_staffing.SpecialOccasion = false;
+            another_staffing.HoursOff = 0;
             Map<String, PsoToolController.Staffing> existing_staffing = new Map<String, PsoToolController.Staffing>();
             existing_staffing.put(first_staffing.Day, first_staffing);
             Test.startTest();
@@ -516,7 +516,7 @@ private class PsoToolControllerTest {
             Test.stopTest();
             System.assertEquals(setup_data.HolidayLineItem.ServiceDate, Date.parse(single_staffing.Day));
             System.assertEquals(setup_data.HolidayLineItem.Quantity*PsoToolController.WORKING_HOURS_IN_DAY, single_staffing.Staff);
-            System.assertEquals(true, single_staffing.SpecialOccasion);
+            System.assertEquals(setup_data.HolidayLineItem.Quantity*PsoToolController.WORKING_HOURS_IN_DAY, single_staffing.HoursOff);
         }
     }
 
