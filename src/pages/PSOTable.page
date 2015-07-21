@@ -26,9 +26,10 @@ Versions:
       <script src="/resource/1430888909000/PsoToolUnderscorejs"></script>
 
 
- 
+
       <script type="text/javascript">
- 
+ var flagnxt=1;
+         var flag=1;
        var weekdays = {};
    weekdays['1'] = "MO";
    weekdays['2'] = "TU";
@@ -190,6 +191,8 @@ Versions:
 
                        if (weekdays[k] == "SA" || weekdays[k] == "SU") {
 
+
+
                            data = data + '<td><input name="' + a + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="inputfields plnperhur" disabled="true"></td>';
                        } else {
 
@@ -338,31 +341,47 @@ Versions:
           
            //currentText: "Today:" + $.datepicker.formatDate('MM dd yy', new Date())
 
+       }).click(function(){
+      
+          
+          $(".strtdateinput").addClass("onff");var classdata=($(".strtdateinput").attr("class")).split(" ");
+//alert(typeof classdata[2]);
+
+if(typeof classdata[2]!=="undefined")
+{
+ 
+//alert('1'); 
+  var date=localStorage.getItem("datepickerval");
+var splitdate=date.split(" ");
+var a=parseInt(splitdate[0])-1;
+ $(".ui-datepicker-month option").each(function(){
+$(this).attr("selected",false);
+if($(this).val()==a)
+{
+
+$(this).attr("selected",true);
+}
+ }) 
+$(".ui-datepicker-month").val(a);
+
+$(".strtdateinput").removeClass("onff");
+
+}
+
+
        }).focus(function() {
 //var date=localStorage.getItem("datepickerval");
 //var splitdate=date.split(" ");
 
 //$(".ui-datepicker-month").val(parseInt(splitdate[0]))
-var classdata=($(".strtdateinput").attr("class")).split(" ");
 
-
-if(typeof classdata[2]!=="undefined")
-{
-  
- 
-  var date=localStorage.getItem("datepickerval");
-var splitdate=date.split(" ");
-var a=parseInt(splitdate[0])-1;
-$(".ui-datepicker-month").val(a);
-$(".strtdateinput").removeClass("onff");
-
-}
            var thisCalendar = $(this);
            $('.ui-datepicker-calendar').detach();
            $('.ui-datepicker-close').click(function() {
                var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
                var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
                $(".setstrtdateinput").val(parseInt(month) + 1 + " " + year);
+               //$(".strtdateinput").removeClass("onff");
              
            });
        })
@@ -382,19 +401,12 @@ $(".strtdateinput").removeClass("onff");
        $scope.rerunJobforerror=function(){
 
            var dateforjob = $(".datepickerforbind").val();
-           var splitenddate = dateforjob.split("/");
-           var firstDate = new Date(splitenddate[2], parseInt(splitenddate[0]) - 1, splitenddate[1]);
-           var currentDay = firstDate.getDay();
-           var currentDate = firstDate.getDate();
-
+         
            if (dateforjob == "") {
                $(".joberrormsg").text("Please select Date before running the job");
                $('.joberrormsg').fadeIn('fast');
-           } else if (parseInt(currentDay) != 1 && parseInt(currentDate) != 1) {
-               $(".joberrormsg").text("Please select Monday OR 1st of a month as a date before running the job");
-               $('.joberrormsg').fadeIn('fast');
-           } else {
-              
+           }
+          else {             
 
            
         var datefordatepicker=$(".datepickerforbind").val();
@@ -720,6 +732,96 @@ else
 
        }
 
+$(document).ready(function(){
+
+
+          localStorage.setItem("datepickervalmonth",null);
+  localStorage.setItem("datepickervalmonthfordata",null);
+  flag==1;
+  flagnxt=1;
+       })
+$(document).on('click','.ui-datepicker-prev',function(){
+  
+
+  if(flag==1 && localStorage.getItem("datepickervalmonthfordata")=="null")
+  {
+
+   var date=localStorage.getItem("datepickerval");
+
+var splitdate=date.split(" ");
+var a=parseInt(splitdate[0])-1;
+  $(".ui-datepicker-month option").each(function(){
+
+if($(this).val()==a-1)
+{
+  localStorage.setItem("datepickervalmonth",a-1);
+  localStorage.setItem("datepickervalmonthfordata",a-1);
+  
+$(this).attr("selected",true);
+}
+ }) 
+  flag=0;
+}
+else
+{
+var data=localStorage.getItem("datepickervalmonth");
+
+  $(".ui-datepicker-month option").each(function(){
+
+if($(this).val()==parseInt(data)-1)
+{
+    localStorage.setItem("datepickervalmonth",parseInt(data)-1);
+      localStorage.setItem("datepickervalmonthfordata",parseInt(data)-1);
+   
+$(this).attr("selected",true);
+}
+ }) 
+
+
+}
+ })
+
+
+$(document).on('click','.ui-datepicker-next',function(){
+
+  if(flagnxt==1 && localStorage.getItem("datepickervalmonth")=="null")
+  {
+
+   var date=localStorage.getItem("datepickerval");
+
+var splitdate=date.split(" ");
+var a=parseInt(splitdate[0])-1;
+
+  $(".ui-datepicker-month option").each(function(){
+
+if($(this).val()==a+1)
+{
+  localStorage.setItem("datepickervalmonth",a-1);
+  localStorage.setItem("datepickervalmonthfordata",a-1);
+  
+$(this).attr("selected",true);
+}
+ }) 
+  flagnxt=0;
+}
+else
+{
+var data=localStorage.getItem("datepickervalmonthfordata");
+
+  $(".ui-datepicker-month option").each(function(){
+
+if($(this).val()==parseInt(data)+1)
+{
+    localStorage.setItem("datepickervalmonthfordata",parseInt(data)+1);
+    localStorage.setItem("datepickervalmonth",parseInt(data)+1);
+   
+$(this).attr("selected",true);
+}
+ }) 
+
+
+}
+ })
        $(document).on('click', '.accountname  option', function() {
 
            if ($(this).is(":selected")) {
@@ -1978,6 +2080,11 @@ $(".multiSel").val(datatodsply);
                $scope.disablinginputs();
                $scope.Statatical();
                $scope.plannedorqa();
+    
+              
+           
+ 
+           
                var widthdata = $(".wrapperwidth").width() - $(".custdisplay").width();
                $(".weekspresence").attr("style", "width:" + widthdata + "px");
                $(window).resize(function() {
@@ -2029,6 +2136,10 @@ $(".multiSel").val(datatodsply);
        });
        $(document).on("click", ".ui-datepicker-close", function() {
 
+          localStorage.setItem("datepickervalmonth",null);
+  localStorage.setItem("datepickervalmonthfordata",null);
+   flagnxt=1;
+          flag=1;
      $(".strtdateinput").addClass("onff");
         $(".blurbackgrund,.imgldr").attr("style", "display:block");
 
@@ -2132,7 +2243,7 @@ $(".multiSel").val(datatodsply);
               {
                   var error = streamingfailure.error;
                   var status = streamingfailure.successful;
-                  if (!status)
+                  if (!status && error !="undefined")
                   { 
                         $(".appendtxt").text(" ");
                            $(".appendtxt").append("Resource Availability table is not being synced up with latest changes automatically, please refresh the page to get the latest data." + error)
