@@ -796,8 +796,8 @@ var a=parseInt(splitdate[0])-1;
 
 if($(this).val()==a+1)
 {
-  localStorage.setItem("datepickervalmonth",a-1);
-  localStorage.setItem("datepickervalmonthfordata",a-1);
+  localStorage.setItem("datepickervalmonth",a+1);
+  localStorage.setItem("datepickervalmonthfordata",a+1);
   
 $(this).attr("selected",true);
 }
@@ -1445,7 +1445,7 @@ $(this).attr("selected",true);
                                                            if (a.currentTarget.value != "") {
                                                                if (rsultdata == 1) {
                                                                    return false;
-                                                               } else if (resstfnga.SpecialOccasion == true && resstfnga.Staff == 8 ) {
+                                                               } else if (resstfnga.HoursOff == 8  ) {
                                                                    $(".appendtxt").text(" ");
                                                                    $(".appendtxt").text("This Resource is not available at this day");
                                                                    $(".blurbackgrund,.popup").attr("style", "display:block");
@@ -1841,7 +1841,8 @@ $(this).attr("selected",true);
 
 
                                                    $(this).val(b.Staff);
-                                                   if (b.SpecialOccasion == true ) {                                                    
+
+                                                   if (parseInt(b.HoursOff) == parseInt(b.Staff) ) {                                                    
                                                        $(this).attr("disabled", "true");
                                                        $(this).addClass("holiday");
                                                    } else if (parseFloat(b.Staff) == 8) {
@@ -2243,7 +2244,8 @@ $(".multiSel").val(datatodsply);
               {
                   var error = streamingfailure.error;
                   var status = streamingfailure.successful;
-                  if (!status && error !="undefined")
+                  
+                  if (!status && typeof error !=="undefined")
                   { 
                         $(".appendtxt").text(" ");
                            $(".appendtxt").append("Resource Availability table is not being synced up with latest changes automatically, please refresh the page to get the latest data." + error)
@@ -2307,8 +2309,10 @@ $(".multiSel").val(datatodsply);
                                    if (colorvl == "N/A") {
                                        $(this).addClass('nacolor');
                                    }
+                                   var adata=this;
                                    angular.forEach($scope.dataval.Resources, function(resource, i) {
                                        if (resource.ContactId == pushtopic.data.sobject.ContactId__c) {
+                                       
                                            if (resource.Staffing != "") {
                                                var count = 0;
                                                angular.forEach(resource.Staffing, function(sttfng, i) {
@@ -2320,6 +2324,17 @@ $(".multiSel").val(datatodsply);
                                                    if (newdateinput1.getFullYear() == jsonnewdate1.getFullYear() && newdateinput1.getMonth() == jsonnewdate1.getMonth() && newdateinput1.getDate() == jsonnewdate1.getDate()) {
                                                        sttfng.Staff = vl;
                                                        count = count + 1;
+                                                        if(parseInt(sttfng.HoursOff) !=0 && parseInt(sttfng.Staff)!=0)
+                                                {
+
+                                         if (parseInt(sttfng.HoursOff) == parseInt(sttfng.Staff) ) { 
+
+                                           $(adata).removeClass('greencolor greycolor redcolor nacolor white');                                        
+                                                       $(this).attr("disabled", "true");
+                                                       $(adata).addClass("holiday");
+                                                     
+                                                   } 
+                                                     }
                                                    }
                                                });
                                            } else {
@@ -2336,8 +2351,13 @@ $(".multiSel").val(datatodsply);
                                                    "Staff": vl
                                                });
                                            }
-                                       }
+
+                                             
+                                     
+                                     }
                                    });
+
+                             
                                }
                            })
                        }
