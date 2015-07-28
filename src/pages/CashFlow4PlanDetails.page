@@ -1,0 +1,209 @@
+<apex:page id="thePage" Controller="CashFlow4" tabStyle="Account" >
+<!-- *********************************************************** -->
+<!-- Created by: Alexander Faust/Alexander Erdikler/Chris Sandra Schautt  -->
+<!-- Custom Controller "CashFlow4" due to no standard controller operations  -->
+<!-- Visualforce Page Access: System Administrator/YOUR SL System Administrator-->
+<!-- Last modified by:  Alexander Faust-->
+<!-- Last modified date: 06.12.2012 -->
+<!-- *********************************************************** -->
+
+<apex:includeScript value="{!URLFOR($Resource.jQuery, 'jquery-ui-1.9.2.custom/js/jquery-1.8.3.js')}"  />
+<apex:includeScript value="{!URLFOR($Resource.jQuery, 'jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.js')}"  />
+<apex:includeScript value="{!URLFOR($Resource.jQuery, 'jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js')}"  />
+<apex:stylesheet value="{!URLFOR($Resource.jQuery, 'jquery-ui-1.9.2.custom/css/ui-lightness/jquery-ui-1.9.2.custom.css')}"  />
+
+<script>
+
+
+    function collapse(){//pageblocksections collapsed by default
+        twistSection(document.getElementById('thePage:theForm:PageblockTurnover:pbsPageBlockUmsatz').childNodes[0].childNodes[0]);
+        twistSection(document.getElementById('thePage:theForm:PageblockOPOSD:pbsPageBlockOPOS').childNodes[0].childNodes[0]);
+        twistSection(document.getElementById('thePage:theForm:PageblockKosten:pbsPageBlockKosten').childNodes[0].childNodes[0]);
+    }
+
+    var sHeaderVal;
+    var sRowVal;
+    //jQuery's onLoad method
+    jQuery(document).ready(function($){
+        collapse();
+
+        var mouseX = 0;
+        var mouseY = 0;
+        //tracking mouse for tooltip position
+        $(document).mousemove( function(e) {
+            mouseX = e.pageX;
+            mouseY = e.pageY;
+        });
+
+        //handler for clicks on "column" element
+        $('[id*="Column"]:not([id*="Name"])').click(function(){
+            //find the element containing "name" for row value (project-/invoice name)
+            sRowVal = $(this).parent().find('[id*="Name"]').text();
+            //some string manipulation to build id for corresponding "date" element
+            var sIdFull = $(this).attr("id");
+            var pos = sIdFull.lastIndexOf(':');
+            var sId = sIdFull.substr(pos+1);
+            var sHeaderId = sId+'header';
+            //get the text of the "date"
+            sHeaderVal = $('div[id*="'+sHeaderId+'"]').text();
+
+
+            //finally add the tooltip to mouse position +5 px
+            $('<div id="tooltip">' + 'Name: '+sRowVal+' <br>Date: '+sHeaderVal + '</div>').css( {
+                position: 'absolute',
+                display: 'none',
+                //top: y + 5,
+                //left: x + 5,
+                top: mouseY+5,
+                left: mouseX+5,
+                border: '3px solid #ECF1EF',
+                padding: '2px',
+                'background-color': '#ECF1EF',
+                opacity: 1.0
+            //}).appendTo("body").fadeIn(200)
+            }).appendTo("body").fadeIn(0);
+      })
+
+      //hide all tooltips is mouse leaves "column" element
+      $('[id*="Column"]').mouseleave(function(){
+                $('div#tooltip').hide();
+      })
+
+});
+</script>
+<!-- standardController="DebListObj__c" tabStyle="Debitoren_Rechnung__c"-->
+    <apex:sectionHeader title="YOUR SL Cash Flow" id="secHeader" />
+    <apex:messages id="error" />
+    <apex:form id="theForm">
+    <apex:outputLink value="{!URLFOR($Page.CashFlow4Plan)}">View Chart</apex:outputLink><br/>
+    <apex:outputLink value="{!URLFOR($Page.CashFlow4PlanForecast)}">View Forecast</apex:outputLink><br/><br/>
+        <apex:pageBlock id="PageblockOPOSD" title="Erwarteter Zahlungseingang Debitoren (in Rechnung gestellt)" >
+            <apex:pageBlockSection id="pbsPageBlockOPOS" title="" collapsible="true">
+                <apex:pageBlockTable id="TableOPOSDeb" value="{!ObjOPOSDebitInvoices}" var="item" style="width:3500px" >
+                    <apex:column id="TableOPOSColumnName" headerValue="Name" style="width:700px">
+                        <a href="{!item.Link__c}" style="{!IF(item.Overdue__c == TRUE,'width:700px;color:red','width:700px')}" target="_blank">{!item.RowName__c}</a>
+                    </apex:column>
+                    <apex:column id="TableOPOSColumnToday" value="{!item.debDueDate01__c}" headerValue="{!''}{!dateToday}" style="{!IF(item.debDueDate01__c > 0,'width:200px;background-color:#ECF1EF;color:green','width:200px')}"/>
+                    <apex:column id="TableOPOSColumnAfterToday" value="{!item.debDueDate02__c}" headerValue="{!''}{!dateAfterToday}" style="{!IF(item.debDueDate02__c > 0,'width:200px;background-color:#ECF1EF;color:green','width:200px')}"/>
+                    <apex:column id="TableOPOSColumn2" value="{!item.debDueDate03__c}" headerValue="{!''} {!date2}" style="{!IF(item.debDueDate03__c > 0,'width:200px;background-color:#ECF1EF;color:green','width:200px')}"/>
+                    <apex:column id="TableOPOSColumn3" value="{!item.debDueDate04__c}" headerValue="{!''}{!date3}" style="{!IF(item.debDueDate04__c > 0,'width:200px;background-color:#ECF1EF;color:green','width:200px')}"/>
+                    <apex:column id="TableOPOSColumn4" value="{!item.debDueDate05__c}" headerValue="{!''}{!date4}" style="{!IF(item.debDueDate05__c > 0,'width:200px;background-color:#ECF1EF;color:green','width:200px')}"/>
+                    <apex:column id="TableOPOSColumn5" value="{!item.debDueDate06__c}" headerValue="{!''}{!date5}" style="{!IF(item.debDueDate06__c > 0,'width:200px;background-color:#ECF1EF;color:green','width:200px')}"/>
+                    <apex:column id="TableOPOSColumn6" value="{!item.debDueDate07__c}" headerValue="{!''}{!date6}" style="{!IF(item.debDueDate07__c > 0,'width:200px;background-color:#ECF1EF;color:green','width:200px')}"/>
+                    <apex:column id="TableOPOSColumn7" value="{!item.debDueDate08__c}" headerValue="{!''}{!date7}" style="{!IF(item.debDueDate08__c > 0,'width:200px;background-color:#ECF1EF;color:green','width:200px')}"/>
+                    <apex:column id="TableOPOSColumn8" value="{!item.debDueDate09__c}" headerValue="{!''}{!date8}" style="{!IF(item.debDueDate09__c > 0,'width:200px;background-color:#ECF1EF;color:green','width:200px')}"/>
+                    <apex:column id="TableOPOSColumn9" value="{!item.debDueDate10__c}" headerValue="{!''}{!date9}" style="{!IF(item.debDueDate10__c > 0,'width:200px;background-color:#ECF1EF;color:green','width:200px')}"/>
+                    <apex:column id="TableOPOSColumn10" value="{!item.debDueDate11__c}" headerValue="{!''}{!date10}" style="{!IF(item.debDueDate11__c > 0,'width:200px;background-color:#ECF1EF;color:green','width:200px')}"/>
+                    <apex:column id="TableOPOSColumn11" value="{!item.debDueDate12__c}" headerValue="{!''}{!date11}" style="{!IF(item.debDueDate12__c > 0,'width:200px;background-color:#ECF1EF;color:green','width:200px')}"/>
+                    <apex:column id="TableOPOSColumn12" value="{!item.debDueDate13__c}" headerValue="{!''}{!date12}" style="{!IF(item.debDueDate13__c > 0,'width:200px;background-color:#ECF1EF;color:green','width:200px')}"/>
+                    <apex:column id="TableOPOSColumn13" value="{!item.debDueDate14__c}" headerValue="{!''}{!date13}" style="{!IF(item.debDueDate14__c > 0,'width:200px;background-color:#ECF1EF;color:green','width:200px')}"/>
+                    <apex:column id="TableOPOSColumn14" value="{!item.debDueDate15__c}" headerValue="{!''}{!date14}" style="{!IF(item.debDueDate15__c > 0,'width:200px;background-color:#ECF1EF;color:green','width:200px')}"/>
+                    <apex:column id="TableOPOSColumn15" value="{!item.debDueDate16__c}" headerValue="{!'KW '}{!calendarWeek3}" style="{!IF(item.debDueDate16__c > 0,'width:200px;background-color:#ECF1EF;color:green','width:200px')}"/>
+                    <apex:column id="TableOPOSColumn16" value="{!item.debDueDate17__c}" headerValue="{!'KW '}{!calendarWeek4}" style="{!IF(item.debDueDate17__c > 0,'width:200px;background-color:#ECF1EF;color:green','width:200px')}"/>
+                    <apex:column id="TableOPOSColumn17" value="{!item.debDueDate18__c}" headerValue="{!'KW '}{!calendarWeek5}" style="{!IF(item.debDueDate18__c > 0,'width:200px;background-color:#ECF1EF;color:green','width:200px')}"/>
+                    <apex:column id="TableOPOSColumn18" value="{!item.debDueDate19__c}" headerValue="{!'KW '}{!calendarWeek6}" style="{!IF(item.debDueDate19__c > 0,'width:200px;background-color:#ECF1EF;color:green','width:200px')}"/>
+                    <apex:column id="TableOPOSColumn19" value="{!item.debDueDate20__c}" headerValue="{!'KW '}{!calendarWeek7}" style="{!IF(item.debDueDate20__c > 0,'width:200px;background-color:#ECF1EF;color:green','width:200px')}"/>
+                    <apex:column id="TableOPOSColumn20" value="{!item.debDueDate21__c}" headerValue="{!'KW '}{!calendarWeek8}" style="{!IF(item.debDueDate21__c > 0,'width:200px;background-color:#ECF1EF;color:green','width:200px')}"/>
+                    <apex:column id="TableOPOSColumn21" value="{!item.debDueDate22__c}" headerValue="{!'KW '}{!calendarWeek9}" style="{!IF(item.debDueDate22__c > 0,'width:200px;background-color:#ECF1EF;color:green','width:200px')}"/>
+                    <apex:column id="TableOPOSColumn22" value="{!item.debDueDate23__c}" headerValue="{!'KW '}{!calendarWeek10}" style="{!IF(item.debDueDate23__c > 0,'width:200px;background-color:#ECF1EF;color:green','width:200px')}"/>
+                    <apex:column id="TableOPOSColumn23" value="{!item.debDueDate24__c}" headerValue="{!'KW '}{!calendarWeek11}" style="{!IF(item.debDueDate24__c > 0,'width:200px;background-color:#ECF1EF;color:green','width:200px')}"/>
+                    <apex:column id="TableOPOSColumn24" value="{!item.debDueDate25__c}" headerValue="{!'KW '}{!calendarWeek12}" style="{!IF(item.debDueDate25__c > 0,'width:200px;background-color:#ECF1EF;color:green','width:200px')}"/>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection id="pbsPageBlockOPOSSumme" title="" >
+                <apex:pageBlockTable id="TableOPOSSumme" value="{!sumUmsatzOPOS}" var="item" style="width:3500px" >
+                    <apex:column id="TableOPOSSummeColumnName" value="{!item.RowName__c}" headerValue="Name" style="{!IF(item.Overdue__c == TRUE,'width:700px;color:red','width:700px')}"/>
+                    <apex:column id="TableOPOSSummeColumnToday" value="{!item.debDueDate01__c}" headerValue="{!''}{!dateToday}" style="width:200px"/>
+                    <apex:column id="TableOPOSSummeColumnAfterToday" value="{!item.debDueDate02__c}" headerValue="{!''}{!dateAfterToday}" style="width:200px"/>
+                    <apex:column id="TableOPOSSummeColumn2" value="{!item.debDueDate03__c}" headerValue="{!''} {!date2}" style="width:200px"/>
+                    <apex:column id="TableOPOSSummeColumn3" value="{!item.debDueDate04__c}" headerValue="{!''}{!date3}" style="width:200px"/>
+                    <apex:column id="TableOPOSSummeColumn4" value="{!item.debDueDate05__c}" headerValue="{!''}{!date4}" style="width:200px"/>
+                    <apex:column id="TableOPOSSummeColumn5" value="{!item.debDueDate06__c}" headerValue="{!''}{!date5}" style="width:200px"/>
+                    <apex:column id="TableOPOSSummeColumn6" value="{!item.debDueDate07__c}" headerValue="{!''}{!date6}" style="width:200px"/>
+                    <apex:column id="TableOPOSSummeColumn7" value="{!item.debDueDate08__c}" headerValue="{!''}{!date7}" style="width:200px"/>
+                    <apex:column id="TableOPOSSummeColumn8" value="{!item.debDueDate09__c}" headerValue="{!''}{!date8}" style="width:200px"/>
+                    <apex:column id="TableOPOSSummeColumn9" value="{!item.debDueDate10__c}" headerValue="{!''}{!date9}" style="width:200px"/>
+                    <apex:column id="TableOPOSSummeColumn10" value="{!item.debDueDate11__c}" headerValue="{!''}{!date10}" style="width:200px"/>
+                    <apex:column id="TableOPOSSummeColumn11" value="{!item.debDueDate12__c}" headerValue="{!''}{!date11}" style="width:200px"/>
+                    <apex:column id="TableOPOSSummeColumn12" value="{!item.debDueDate13__c}" headerValue="{!''}{!date12}" style="width:200px"/>
+                    <apex:column id="TableOPOSSummeColumn13" value="{!item.debDueDate14__c}" headerValue="{!''}{!date13}" style="width:200px"/>
+                    <apex:column id="TableOPOSSummeColumn14" value="{!item.debDueDate15__c}" headerValue="{!''}{!date14}" style="width:200px"/>
+                    <apex:column id="TableOPOSSummeColumn15" value="{!item.debDueDate16__c}" headerValue="{!'KW '}{!calendarWeek3}" style="width:200px"/>
+                    <apex:column id="TableOPOSSummeColumn16" value="{!item.debDueDate17__c}" headerValue="{!'KW '}{!calendarWeek4}" style="width:200px"/>
+                    <apex:column id="TableOPOSSummeColumn17" value="{!item.debDueDate18__c}" headerValue="{!'KW '}{!calendarWeek5}" style="width:200px"/>
+                    <apex:column id="TableOPOSSummeColumn18" value="{!item.debDueDate19__c}" headerValue="{!'KW '}{!calendarWeek6}" style="width:200px"/>
+                    <apex:column id="TableOPOSSummeColumn19" value="{!item.debDueDate20__c}" headerValue="{!'KW '}{!calendarWeek7}" style="width:200px"/>
+                    <apex:column id="TableOPOSSummeColumn20" value="{!item.debDueDate21__c}" headerValue="{!'KW '}{!calendarWeek8}" style="width:200px"/>
+                    <apex:column id="TableOPOSSummeColumn21" value="{!item.debDueDate22__c}" headerValue="{!'KW '}{!calendarWeek9}" style="width:200px"/>
+                    <apex:column id="TableOPOSSummeColumn22" value="{!item.debDueDate23__c}" headerValue="{!'KW '}{!calendarWeek10}" style="width:200px"/>
+                    <apex:column id="TableOPOSSummeColumn23" value="{!item.debDueDate24__c}" headerValue="{!'KW '}{!calendarWeek11}" style="width:200px"/>
+                    <apex:column id="TableOPOSSummeColumn24" value="{!item.debDueDate25__c}" headerValue="{!'KW '}{!calendarWeek12}" style="width:200px"/>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:pageBlock id="PageblockKosten" title="Erwarteter Zahlungsausgang Kreditoren" >
+            <apex:pageBlockSection id="pbsPageBlockKosten" collapsible="true" title="">
+                <apex:pageBlockTable id="TableKosten" value="{!ObjKosten}" var="item" style="width:3500px" >
+                    <apex:column id="TableKostenColumnName" headerValue="Name" style="width:700px">
+                        <a href="{!item.Link__c}" style="{!IF(item.Overdue__c == TRUE,'width:700px;color:red','width:700px')}" target="_blank">{!item.RowName__c}</a>
+                    </apex:column>
+                    <apex:column id="TableKostenColumnToday" value="{!item.debDueDate01__c}" headerValue="{!''}{!dateToday}" style="{!IF(item.debDueDate01__c > 0,'width:200px;background-color:#ECF1EF;color:red','width:200px')}"/>
+                    <apex:column id="TableKostenColumnAfterToday" value="{!item.debDueDate02__c}" headerValue="{!''}{!dateAfterToday}" style="{!IF(item.debDueDate02__c > 0,'width:200px;background-color:#ECF1EF;color:red','width:200px')}"/>
+                    <apex:column id="TableKostenColumn2" value="{!item.debDueDate03__c}" headerValue="{!''} {!date2}" style="{!IF(item.debDueDate03__c > 0,'width:200px;background-color:#ECF1EF;color:red','width:200px')}"/>
+                    <apex:column id="TableKostenColumn3" value="{!item.debDueDate04__c}" headerValue="{!''}{!date3}" style="{!IF(item.debDueDate04__c > 0,'width:200px;background-color:#ECF1EF;color:red','width:200px')}"/>
+                    <apex:column id="TableKostenColumn4" value="{!item.debDueDate05__c}" headerValue="{!''}{!date4}" style="{!IF(item.debDueDate05__c > 0,'width:200px;background-color:#ECF1EF;color:red','width:200px')}"/>
+                    <apex:column id="TableKostenColumn5" value="{!item.debDueDate06__c}" headerValue="{!''}{!date5}" style="{!IF(item.debDueDate06__c > 0,'width:200px;background-color:#ECF1EF;color:red','width:200px')}"/>
+                    <apex:column id="TableKostenColumn6" value="{!item.debDueDate07__c}" headerValue="{!''}{!date6}" style="{!IF(item.debDueDate07__c > 0,'width:200px;background-color:#ECF1EF;color:red','width:200px')}"/>
+                    <apex:column id="TableKostenColumn7" value="{!item.debDueDate08__c}" headerValue="{!''}{!date7}" style="{!IF(item.debDueDate08__c > 0,'width:200px;background-color:#ECF1EF;color:red','width:200px')}"/>
+                    <apex:column id="TableKostenColumn8" value="{!item.debDueDate09__c}" headerValue="{!''}{!date8}" style="{!IF(item.debDueDate09__c > 0,'width:200px;background-color:#ECF1EF;color:red','width:200px')}"/>
+                    <apex:column id="TableKostenColumn9" value="{!item.debDueDate10__c}" headerValue="{!''}{!date9}" style="{!IF(item.debDueDate10__c > 0,'width:200px;background-color:#ECF1EF;color:red','width:200px')}"/>
+                    <apex:column id="TableKostenColumn10" value="{!item.debDueDate11__c}" headerValue="{!''}{!date10}" style="{!IF(item.debDueDate11__c > 0,'width:200px;background-color:#ECF1EF;color:red','width:200px')}"/>
+                    <apex:column id="TableKostenColumn11" value="{!item.debDueDate12__c}" headerValue="{!''}{!date11}" style="{!IF(item.debDueDate12__c > 0,'width:200px;background-color:#ECF1EF;color:red','width:200px')}"/>
+                    <apex:column id="TableKostenColumn12" value="{!item.debDueDate13__c}" headerValue="{!''}{!date12}" style="{!IF(item.debDueDate13__c > 0,'width:200px;background-color:#ECF1EF;color:red','width:200px')}"/>
+                    <apex:column id="TableKostenColumn13" value="{!item.debDueDate14__c}" headerValue="{!''}{!date13}" style="{!IF(item.debDueDate14__c > 0,'width:200px;background-color:#ECF1EF;color:red','width:200px')}"/>
+                    <apex:column id="TableKostenColumn14" value="{!item.debDueDate15__c}" headerValue="{!''}{!date14}" style="{!IF(item.debDueDate15__c > 0,'width:200px;background-color:#ECF1EF;color:red','width:200px')}"/>
+                    <apex:column id="TableKostenColumn15" value="{!item.debDueDate16__c}" headerValue="{!'KW '}{!calendarWeek3}" style="{!IF(item.debDueDate16__c > 0,'width:200px;background-color:#ECF1EF;color:red','width:200px')}"/>
+                    <apex:column id="TableKostenColumn16" value="{!item.debDueDate17__c}" headerValue="{!'KW '}{!calendarWeek4}" style="{!IF(item.debDueDate17__c > 0,'width:200px;background-color:#ECF1EF;color:red','width:200px')}"/>
+                    <apex:column id="TableKostenColumn17" value="{!item.debDueDate18__c}" headerValue="{!'KW '}{!calendarWeek5}" style="{!IF(item.debDueDate18__c > 0,'width:200px;background-color:#ECF1EF;color:red','width:200px')}"/>
+                    <apex:column id="TableKostenColumn18" value="{!item.debDueDate19__c}" headerValue="{!'KW '}{!calendarWeek6}" style="{!IF(item.debDueDate19__c > 0,'width:200px;background-color:#ECF1EF;color:red','width:200px')}"/>
+                    <apex:column id="TableKostenColumn19" value="{!item.debDueDate20__c}" headerValue="{!'KW '}{!calendarWeek7}" style="{!IF(item.debDueDate20__c > 0,'width:200px;background-color:#ECF1EF;color:red','width:200px')}"/>
+                    <apex:column id="TableKostenColumn20" value="{!item.debDueDate21__c}" headerValue="{!'KW '}{!calendarWeek8}" style="{!IF(item.debDueDate21__c > 0,'width:200px;background-color:#ECF1EF;color:red','width:200px')}"/>
+                    <apex:column id="TableKostenColumn21" value="{!item.debDueDate22__c}" headerValue="{!'KW '}{!calendarWeek9}" style="{!IF(item.debDueDate22__c > 0,'width:200px;background-color:#ECF1EF;color:red','width:200px')}"/>
+                    <apex:column id="TableKostenColumn22" value="{!item.debDueDate23__c}" headerValue="{!'KW '}{!calendarWeek10}" style="{!IF(item.debDueDate23__c > 0,'width:200px;background-color:#ECF1EF;color:red','width:200px')}"/>
+                    <apex:column id="TableKostenColumn23" value="{!item.debDueDate24__c}" headerValue="{!'KW '}{!calendarWeek11}" style="{!IF(item.debDueDate24__c > 0,'width:200px;background-color:#ECF1EF;color:red','width:200px')}"/>
+                    <apex:column id="TableKostenColumn24" value="{!item.debDueDate25__c}" headerValue="{!'KW '}{!calendarWeek12}" style="{!IF(item.debDueDate25__c > 0,'width:200px;background-color:#ECF1EF;color:red','width:200px')}"/>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection id="pbsPageBlockKostenSumme" title="">
+                <apex:pageBlockTable id="TableKostenSumme" value="{!sumKosten}" var="item" style="width:3500px" >
+                        <apex:column id="TableKostenSummeColumnName" value="{!item.RowName__c}" headerValue="Name" style="{!IF(item.Overdue__c == TRUE,'width:700px;color:red','width:700px')}"/>
+                        <apex:column id="TableKostenSummeColumnToday" value="{!item.debDueDate01__c}" headerValue="{!''}{!dateToday}" style="width:200px"/>
+                        <apex:column id="TableKostenSummeColumnAfterToday" value="{!item.debDueDate02__c}" headerValue="{!''}{!dateAfterToday}" style="width:200px"/>
+                        <apex:column id="TableKostenSummeColumn2" value="{!item.debDueDate03__c}" headerValue="{!''} {!date2}" style="width:200px"/>
+                        <apex:column id="TableKostenSummeColumn3" value="{!item.debDueDate04__c}" headerValue="{!''}{!date3}" style="width:200px"/>
+                        <apex:column id="TableKostenSummeColumn4" value="{!item.debDueDate05__c}" headerValue="{!''}{!date4}" style="width:200px"/>
+                        <apex:column id="TableKostenSummeColumn5" value="{!item.debDueDate06__c}" headerValue="{!''}{!date5}" style="width:200px"/>
+                        <apex:column id="TableKostenSummeColumn6" value="{!item.debDueDate07__c}" headerValue="{!''}{!date6}" style="width:200px"/>
+                        <apex:column id="TableKostenSummeColumn7" value="{!item.debDueDate08__c}" headerValue="{!''}{!date7}" style="width:200px"/>
+                        <apex:column id="TableKostenSummeColumn8" value="{!item.debDueDate09__c}" headerValue="{!''}{!date8}" style="width:200px"/>
+                        <apex:column id="TableKostenSummeColumn9" value="{!item.debDueDate10__c}" headerValue="{!''}{!date9}" style="width:200px"/>
+                        <apex:column id="TableKostenSummeColumn10" value="{!item.debDueDate11__c}" headerValue="{!''}{!date10}" style="width:200px"/>
+                        <apex:column id="TableKostenSummeColumn11" value="{!item.debDueDate12__c}" headerValue="{!''}{!date11}" style="width:200px"/>
+                        <apex:column id="TableKostenSummeColumn12" value="{!item.debDueDate13__c}" headerValue="{!''}{!date12}" style="width:200px"/>
+                        <apex:column id="TableKostenSummeColumn13" value="{!item.debDueDate14__c}" headerValue="{!''}{!date13}" style="width:200px"/>
+                        <apex:column id="TableKostenSummeColumn14" value="{!item.debDueDate15__c}" headerValue="{!''}{!date14}" style="width:200px"/>
+                        <apex:column id="TableKostenSummeColumn15" value="{!item.debDueDate16__c}" headerValue="{!'KW '}{!calendarWeek3}" style="width:200px"/>
+                        <apex:column id="TableKostenSummeColumn16" value="{!item.debDueDate17__c}" headerValue="{!'KW '}{!calendarWeek4}" style="width:200px"/>
+                        <apex:column id="TableKostenSummeColumn17" value="{!item.debDueDate18__c}" headerValue="{!'KW '}{!calendarWeek5}" style="width:200px"/>
+                        <apex:column id="TableKostenSummeColumn18" value="{!item.debDueDate19__c}" headerValue="{!'KW '}{!calendarWeek6}" style="width:200px"/>
+                        <apex:column id="TableKostenSummeColumn19" value="{!item.debDueDate20__c}" headerValue="{!'KW '}{!calendarWeek7}" style="width:200px"/>
+                        <apex:column id="TableKostenSummeColumn20" value="{!item.debDueDate21__c}" headerValue="{!'KW '}{!calendarWeek8}" style="width:200px"/>
+                        <apex:column id="TableKostenSummeColumn21" value="{!item.debDueDate22__c}" headerValue="{!'KW '}{!calendarWeek9}" style="width:200px"/>
+                        <apex:column id="TableKostenSummeColumn22" value="{!item.debDueDate23__c}" headerValue="{!'KW '}{!calendarWeek10}" style="width:200px"/>
+                        <apex:column id="TableKostenSummeColumn23" value="{!item.debDueDate24__c}" headerValue="{!'KW '}{!calendarWeek11}" style="width:200px"/>
+                        <apex:column id="TableKostenSummeColumn24" value="{!item.debDueDate25__c}" headerValue="{!'KW '}{!calendarWeek12}" style="width:200px"/>
+                    </apex:pageBlockTable>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>
