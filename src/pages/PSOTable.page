@@ -1861,10 +1861,11 @@ $(this).attr("selected",true);
 
                                                    $(this).val(b.Staff);
 
-                                                   if (parseInt(b.HoursOff) == parseInt(b.Staff) ) {                                                    
+                                                   if (parseFloat(b.HoursOff) == parseFloat(b.Staff) ) {                                                    
                                                        $(this).attr("disabled", "true");
                                                        $(this).addClass("holiday");
-                                                   } else if (parseFloat(b.Staff) == 8) {
+                                                   } else
+                                                    if (parseFloat(b.Staff) == 8) {
                                                        $(this).addClass("greencolor");
                                                    } else if (parseFloat(b.Staff) < 8) {
                                                        $(this).addClass("greycolor");
@@ -2392,7 +2393,7 @@ else if ((verOffset=nAgt.indexOf("Chrome"))!=-1) {
                                                         if(parseInt(sttfng.HoursOff) !=0 && parseInt(sttfng.Staff)!=0)
                                                 {
 
-                                         if (parseInt(sttfng.HoursOff) == parseInt(sttfng.Staff) ) { 
+                                         if (parseFloat(sttfng.HoursOff) == parseFloat(sttfng.Staff) ) { 
 
                                            $(adata).removeClass('greencolor greycolor redcolor nacolor white');                                        
                                                        $(this).attr("disabled", "true");
