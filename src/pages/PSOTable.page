@@ -310,10 +310,10 @@ Versions:
       }
        $scope.saveerror = function() {
                               $(".popup,.blurbackgrund,.blurbackgrund1").attr("style", "display:none");
-                              $(".Cancelfun").val($('.Cancelfun').attr('id'));
+                              $(".cancelfun").val($('.cancelfun').attr('id'));
           
            colorcoding();
-           $(".Cancelfun").removeClass("Cancelfun");
+           $(".cancelfun").removeClass("cancelfun");
              
                                    $(".totalforcalndr").each(function(no) {
                                        $(this).find("td").each(function(no1) {
@@ -628,6 +628,7 @@ $(".popup1 .appendtxt").append("Please confirm the following actions:</br>- plan
            myDataSet = resultobject.Customers;
            if (!resultobject.IsAllowedToRunScript) {
 
+
                $(".loginacess").attr("style", "display:none;")
            }
            startdateobj = resultobject;
@@ -635,7 +636,7 @@ $(".popup1 .appendtxt").append("Please confirm the following actions:</br>- plan
            $scope.fileringonload(myDataSet);
           
 
-       $scope.oppvalue=localStorage.getItem("oppname");
+       /*$scope.oppvalue=localStorage.getItem("oppname");
          if($scope.oppvalue!=null)
          {
 
@@ -700,7 +701,7 @@ else
 
                $scope.projectsselect = projects1;
 
-         }
+         }*/
        });
 
        $(".multiSel").click(function() {
@@ -1387,7 +1388,7 @@ $(this).attr("selected",true);
                                            $(".blurbackgrund,.popup").attr("style", "display:block");
                                            $(".appndbtns").html(" ");
                                            $(".appndbtns").html("<input type='button' value='OK' class='cancelbtn'>");
-                                           $(a.target).addClass('Cancelfun');
+                                           $(a.target).addClass('cancelfun');
                                            cancelclick = 0;
                                            return false;
                                        }
@@ -1434,18 +1435,18 @@ $(this).attr("selected",true);
                                        }
                                        //validation for more than 12hrs
                                        if (parseFloat(a.currentTarget.value) > 8 && parseFloat(a.currentTarget.value) <= 12) {
-                                           $(a.target).addClass('Cancelfun');
+                                           $(a.target).addClass('cancelfun');
                                            $(".appendtxt").text("This is " + a.currentTarget.value + " hours for this day");
                                            $(".blurbackgrund,.popup").attr("style", "display:block");
                                            $(".appndbtns").html("<input type='button' value='Confirm' class='cnfrmbtn' ng-click='functionnot(" + a.currentTarget.value + "," + cmbineprnt + "," + g + "," + totalhours + "," + $(a.target).attr("id") + ")'><input type='button' value='Cancel' class='cancelbtn'>");
-                                           $(a.target).addClass('Cancelfun');
+                                           $(a.target).addClass('cancelfun');
                                            cancelclick = 0;
                                        } else if (parseFloat(a.currentTarget.value) > 12) {
                                            $(".appendtxt").text("This is exceeding more than 12 hours for this day");
                                            $(".blurbackgrund,.popup").attr("style", "display:block");
                                            $(".appndbtns").html(" ");
                                            $(".appndbtns").html("<input type='button' value='Cancel' class='cancelbtn'>");
-                                           $(a.target).addClass('Cancelfun');
+                                           $(a.target).addClass('cancelfun');
                                            cancelclick = 0;
                                            return false;
                                        }
@@ -1470,7 +1471,7 @@ $(this).attr("selected",true);
                                                                    $(".blurbackgrund,.popup").attr("style", "display:block");
                                                                    $(".appndbtns").html(" ");
                                                                    $(".appndbtns").html("<input type='button' value='Cancel' class='cancelbtn'>");
-                                                                   $(a.target).addClass('Cancelfun');
+                                                                   $(a.target).addClass('cancelfun');
                                                                    cancelclick = 0;
                                                                } else if (resstfnga.Staff == "N/A") {
                                                                    a.currentTarget.value = "";
@@ -1479,7 +1480,7 @@ $(this).attr("selected",true);
                                                                    $(".appndbtns").html("<input type='button' value='Ok' class='closebtn'>")
                                                                    dataforna = 1;
                                                                } else if (parseFloat(resstfnga.Staff) + parseFloat(a.currentTarget.value) > 8) {
-                                                                   $(a.target).addClass('Cancelfun');
+                                                                   $(a.target).addClass('cancelfun');
                                                                    if ($scope.focusdata != "") {
                                                                        var recal = $scope.focusdata - parseFloat(a.currentTarget.value);
                                                                        var data = parseFloat(resstfnga.Staff) - recal
@@ -1489,20 +1490,20 @@ $(this).attr("selected",true);
                                                                        totalhours = hoyrssum.toFixed(2);
                                                                    }
                                                                    if (totalhours > 8) {
-                                                                       $(a.target).addClass('Cancelfun');
+                                                                       $(a.target).addClass('cancelfun');
                                                                        $(".appendtxt").text("This is " + totalhours + " hours for this day");
                                                                        $(".blurbackgrund,.popup").attr("style", "display:block");
                                                                        $(".appndbtns").html("<input type='button' value='Confirm' class='cnfrmbtn' ng-click='functionnot(" + a.currentTarget.value + "," + cmbineprnt + "," + g + "," + totalhours + "," + $(a.target).attr("id") + ")'><input type='button' value='Cancel' class='cancelbtn'>");
-                                                                       $(a.target).addClass('Cancelfun');
+                                                                       $(a.target).addClass('cancelfun');
                                                                        cancelclick = 0;
                                                                    }
                                                                    if (totalhours > 12) {
-                                                                       $(a.target).addClass('Cancelfun');
+                                                                       $(a.target).addClass('cancelfun');
                                                                        $(".appendtxt").text("This is " + totalhours + " hours for this day");
                                                                        $(".blurbackgrund,.popup").attr("style", "display:block");
                                                                        $(".appndbtns").html(" ");
                                                                        $(".appndbtns").html("<input type='button' value='Cancel' class='cancelbtn'>");
-                                                                       $(a.target).addClass('Cancelfun');
+                                                                       $(a.target).addClass('cancelfun');
                                                                        cancelclick = 0;
                                                                    }
                                                                } else {
@@ -1707,7 +1708,7 @@ $(this).attr("selected",true);
                                    }
 
 
-                                 $(".Cancelfun").removeClass("Cancelfun");
+                                 $(".cancelfun").removeClass("cancelfun");
                                    Visualforce.remoting.Manager.invokeAction(
                                        '{!$RemoteAction.CtrPSOTable.savefunction}',
                                        mnthtolmt, date, value,
@@ -1719,7 +1720,7 @@ $(this).attr("selected",true);
                            $(".popup,.blurbackgrund").attr("style", "display:block");
                            angular.element($(".appndbtns")).html(" ");
                            angular.element($(".appndbtns")).append($compile("<input type='button' value='OK' class='' ng-click='saveerror()'>")($scope));
-                           $(a.target).addClass('Cancelfun');
+                           $(a.target).addClass('cancelfun');
                             }
                          
 
@@ -2168,7 +2169,7 @@ else if ((verOffset=nAgt.indexOf("Chrome"))!=-1) {
        });
        //function for confrom button
        $(document).on("click", ".cnfrmbtn", function() {
-           $(".Cancelfun").removeClass("Cancelfun");
+           $(".cancelfun").removeClass("cancelfun");
            $(".blurbackgrund,.popup").attr("style", "display:none");
            clickedfoedata = 1;
            var splitdata = $(this).attr("ng-click").split("(");
@@ -2193,10 +2194,10 @@ else if ((verOffset=nAgt.indexOf("Chrome"))!=-1) {
        
        $(document).on("click", ".cancelbtn", function() {
            $(".blurbackgrund,.blurbackgrund1,.popup").attr("style", "display:none");
-           $(".Cancelfun").val($('.Cancelfun').attr('id'));
+           $(".cancelfun").val($('.cancelfun').attr('id'));
            cancelclick = 1;
            colorcoding();
-           $(".Cancelfun").removeClass("Cancelfun");
+           $(".cancelfun").removeClass("cancelfun");
            $(".Projects ").click();
             $(".Accountnamedsp").val("All Account Names ");
             $(".multiSel").val("All Opportunity Names");
@@ -2500,19 +2501,19 @@ else if ((verOffset=nAgt.indexOf("Chrome"))!=-1) {
    }
    //function for colorsetting
    function colorcoding() {
-       $(".Cancelfun").removeClass('greencolor greycolor redcolor nacolor white');
-       if ($(".Cancelfun").val() == "8") {
-           $(".Cancelfun").addClass("greencolor");
-       } else if (parseFloat($(".Cancelfun").val()) < 8) {
-           $(".Cancelfun").addClass("greycolor");
-       } else if (parseFloat($(".Cancelfun").val()) > 8) {
-           $(".Cancelfun").addClass("redcolor");
-       } else if ($(".Cancelfun").val() == "N/A") {
-           $(".Cancelfun").addClass("nacolor");
-       } else if ($(".Cancelfun").val() == "") {
-           $(".Cancelfun").addClass("white");
+       $(".cancelfun").removeClass('greencolor greycolor redcolor nacolor white');
+       if ($(".cancelfun").val() == "8") {
+           $(".cancelfun").addClass("greencolor");
+       } else if (parseFloat($(".cancelfun").val()) < 8) {
+           $(".cancelfun").addClass("greycolor");
+       } else if (parseFloat($(".cancelfun").val()) > 8) {
+           $(".cancelfun").addClass("redcolor");
+       } else if ($(".cancelfun").val() == "N/A") {
+           $(".cancelfun").addClass("nacolor");
+       } else if ($(".cancelfun").val() == "") {
+           $(".cancelfun").addClass("white");
        }
-       $(".Cancelfun").removeClass('Cancelfun');
+       $(".cancelfun").removeClass('cancelfun');
    }
 
    /*
@@ -2561,7 +2562,7 @@ else if ((verOffset=nAgt.indexOf("Chrome"))!=-1) {
                    $(".popup,.blurbackgrund").attr("style", "display:block");
                    $(".appndbtns").html("<input type='button' value='Cancel' class='cancelbtn'>");
                    cancelclick = 0;
-                   $(a.target).addClass('Cancelfun');
+                   $(a.target).addClass('cancelfun');
                    return 1;
                }
            } else {
@@ -2570,7 +2571,7 @@ else if ((verOffset=nAgt.indexOf("Chrome"))!=-1) {
                $(".popup,.blurbackgrund").attr("style", "display:block");
                $(".appndbtns").html("<input type='button' value='Cancel' class='cancelbtn'>");
                cancelclick = 0;
-               $(a.target).addClass('Cancelfun');
+               $(a.target).addClass('cancelfun');
                return 1;
            }
        }
@@ -2792,3 +2793,4 @@ else if ((verOffset=nAgt.indexOf("Chrome"))!=-1) {
 </body>
 </html>
 </apex:page>
+
