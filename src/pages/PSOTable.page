@@ -2613,7 +2613,7 @@ Versions:
   <apex:pageBlock >    
   <div class="loginacess">
 <p class="joberrormsg"></p>
-    <span class="psotoolheader">PSO Scheduler 2.0</span> 
+    <span class="psotoolheader">PSO Scheduler 2.1</span> 
 <input type="button" class="weekl btn" value="Recalculate previous (split) week" ng-click="rerunJobforerror()" style="height:20px;width:200px;"/>
 
    <!-- <input type="button" class="montlyl btn" value="Recalculate End of Month" ng-click="recalculateendmonth()" style="height:20px;width:150px;"/>-->
