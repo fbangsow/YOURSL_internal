@@ -53,7 +53,7 @@ private class JobApplicationsControllerTest {
         }
     }
 
-    @isTest static void testSubmitSavesApplication() {
+    @isTest static void testSubmitShowsValidationMessages() {
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
             setup_data.createTestData();
@@ -63,7 +63,7 @@ private class JobApplicationsControllerTest {
                 PageReference result_page = setup_data.ClassUnderTest.submit();
             Test.stopTest();
             List<Apexpages.Message> messages = ApexPages.getMessages();
-            System.assertEquals(2, messages.size());
+            System.assertEquals(3, messages.size());
         }
     }
 
