@@ -161,6 +161,14 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>JobApplicationsController</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>JobApplicationsControllerTest</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>Kreditor_afterAllTest</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -422,6 +430,10 @@
         <enabled>true</enabled>
     </pageAccesses>
     <pageAccesses>
+        <apexPage>ApplyForJob</apexPage>
+        <enabled>false</enabled>
+    </pageAccesses>
+    <pageAccesses>
         <apexPage>BWAPage</apexPage>
         <enabled>true</enabled>
     </pageAccesses>
@@ -559,6 +571,10 @@
     </pageAccesses>
     <pageAccesses>
         <apexPage>InvitationPageNo</apexPage>
+        <enabled>false</enabled>
+    </pageAccesses>
+    <pageAccesses>
+        <apexPage>JobPositions</apexPage>
         <enabled>false</enabled>
     </pageAccesses>
     <pageAccesses>
