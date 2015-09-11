@@ -72,6 +72,7 @@ public without sharing class JobApplicationsController {
         is_valid &= isCoverLetterSmallEnough();
         is_valid &= isOtherFileSmallEnough();
         is_valid &= isConfirmationCheckboxTicked();
+        is_valid &= isCandidateSourceSelected();
         return is_valid;
     }
 
@@ -135,6 +136,14 @@ public without sharing class JobApplicationsController {
     private Boolean isConfirmationCheckboxTicked(){
         if(ConfirmationCheckbox == false){
             ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'You have to tick the confirmation checkbox'));
+            return false;
+        }
+        return true;
+    }
+
+    private Boolean isCandidateSourceSelected(){
+        if(!(Application.Candidate_Source__c != null && Application.Candidate_Source__c != 'default')){
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'Please specify how did you hear about this job'));
             return false;
         }
         return true;

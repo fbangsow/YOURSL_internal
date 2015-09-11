@@ -68,7 +68,7 @@
                             </span>
                         </div>
                     </apex:outputLabel>
-                    <apex:inputField value = "{!Application.Salary__c}" label = "Expected annual salary (€)" required="true"/>
+                    <apex:inputField value = "{!Application.Salary__c}" required="true"/>
                 </apex:pageBlockSectionItem>
                 <apex:pageBlockSectionItem>
                     <apex:outputLabel value = "Starting date">
@@ -172,7 +172,7 @@
                 <apex:outputField value = "{!Application.Last_Name__c}"/>
                 <apex:outputField value = "{!Application.Email__c}"/>
                 <apex:outputField value = "{!Application.Phone__c}"/>
-                <apex:outputField value = "{!Application.Salary__c}" label = "Expected annual salary (€)"/>
+                <apex:outputField value = "{!Application.Salary__c}"/>
                 <apex:outputField value = "{!Application.Start_date__c}"/>
                 <apex:inputField value = "{!Application.Street__c}"/>
                 <apex:inputField value = "{!Application.ZIP_Code__c}"/>
