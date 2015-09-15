@@ -26,6 +26,9 @@
 private class CashFlow4_Test {
 
     static testMethod void CashFlow4_Test() {
+        Account your_sl = new Account();
+        your_sl.Name = 'YOUR SL GmbH';
+        insert your_sl;
         Chart_of_Accounts__c vat0 = new Chart_of_Accounts__c();
         vat0.Account_Description__c = 'Abziehbare Vorsteuer';
         vat0.Account_Type__c = 'Finanzen';
