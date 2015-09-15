@@ -1,7 +1,6 @@
 <apex:page showHeader = "false" sidebar = "false" controller = "JobApplicationsController">
     <style type="text/css">
     .pbBody td, .detailList th {
-        color: #606060 !important;
         font: 12px Arial, sans-serif;
         line-height: 20px;
     }
@@ -35,7 +34,7 @@
                 <apex:outputField label = "Our offer" value = "{!SelectedPositionObject.Educational_Requirements__c}"/>
             </apex:pageBlockSection>
             <apex:pageBlockButtons rendered = "{!(SelectedPosition != null && SelectedPosition != 'default')}" location = "bottom">
-                <apex:commandButton action="{!apply}" value="Apply for {!SelectedPositionObject.Job_Title__c}"/>
+                <apex:commandButton action="{!apply}" value="Apply for {!SelectedPositionObject.Job_Title__c} position"/>
             </apex:pageBlockButtons>
         </apex:pageBlock>
     </apex:form>

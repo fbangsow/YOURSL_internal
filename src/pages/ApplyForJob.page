@@ -25,7 +25,6 @@
     }
 
     .pbBody td, .detailList th, .requiredText {
-        color: #606060 !important;
         font: 12px Arial, sans-serif;
         line-height: 20px;
     }
