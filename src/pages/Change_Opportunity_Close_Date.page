@@ -1,15 +1,15 @@
 <apex:page standardController="Opportunity"
     extensions="ClsOppChangeCloseDate" action="{!init}">
-    
+
 <!-- *********************************************************** -->
 <!-- Created by: Alexander Erdikler - YOUR SL  -->
 <!-- Comment for using the controller/controllers like this:  -->
 <!-- We are using cancel from the standard controller and override the save function -->
-<!-- Visualforce Page Access: please allow all Profiles/People who need access to the close date, 
+<!-- Visualforce Page Access: please allow all Profiles/People who need access to the close date,
 //				access to this apex_class and the visualforce page Change_Opportunity_Close_Date.page-->
 <!-- Last modified by: Alexander Erdikler -->
 <!-- Last modified date: 2012-11-09 -->
-<!-- *********************************************************** --> 
+<!-- *********************************************************** -->
 
     <apex:form id="FormChangeCloseDate1">
       <apex:pageMessages />
@@ -17,8 +17,11 @@
             <apex:pageBlockSection id="pbs1">
                 <apex:outputField value="{!oppWrapper.oneOpp.CloseDate}" id="pbs1o2" />
             </apex:pageBlockSection>
+            <apex:pageBlockButtons location="top" rendered="{!oppWrapper.oneOpp.Managed_by_PSO_Tool__c}">
+                <apex:commandButton action="{!redirectToOpportunityView}" value="Return to Opportunity"/>
+            </apex:pageBlockButtons>
         </apex:pageBlock>
-        <apex:pageBlock id="pb2" mode="edit">
+        <apex:pageBlock id="pb2" mode="edit" rendered = "{!NOT(oppWrapper.oneOpp.Managed_by_PSO_Tool__c)}">
             <apex:pageBlockButtons location="top">
                 <apex:commandButton action="{!savenewdate}" value="{!$Label.SaveButton}" id="btn1"/>
                 <apex:commandButton action="{!cancel}" value="{!$Label.CancelButton}" id="btn2"/>
@@ -27,5 +30,5 @@
                     <apex:inputField value="{!oppWrapper.oneOpp.CloseDate}" />
                 </apex:pageBlockSection>
         </apex:pageBlock>
-    </apex:form> 
+    </apex:form>
 </apex:page>
