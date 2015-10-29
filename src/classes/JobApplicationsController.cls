@@ -163,6 +163,8 @@ public without sharing class JobApplicationsController {
     @TestVisible private void insertApplication(){
         Application.Position__c = SelectedPosition;
         Application.Picklist__c = '05 New';
+        Application.Apllication_Date__c = Date.today();
+        Application.Chanel__c = 'Active Application';
         insert Application;
         insertPicture();
         insertCV();
