@@ -22,8 +22,8 @@
 		<apex:pageBlockSection id="theReportBlockSection" >
 			<apex:pageBlockTable id="ReportTable" value="{!listChartData}" var="item">
 			<apex:column id="ReportTableRowName" value="{!item.rowName}" headerValue="Bezeichnung" />
-			<apex:column id="ReportTableTotalValue" value="{!item.totalValue}" headerValue="Summe €" />
-			<apex:column id="ReportTablePercStr" value="{!item.totalPercStr}" headerValue="% Umsatz" />
+			<apex:column id="ReportTableTotalValue" value="{!item.totalValue}" headerValue="Summe €" style="text-align: right;"/>
+			<apex:column id="ReportTablePercStr" value="{!item.totalPercStr}" headerValue="% von Gesamtleistung" style="text-align: right;"/>
 			</apex:pageBlockTable>
 		</apex:pageBlockSection>
 	</apex:pageBlock>
