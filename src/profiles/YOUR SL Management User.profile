@@ -478,6 +478,10 @@
         <enabled>true</enabled>
     </pageAccesses>
     <pageAccesses>
+        <apexPage>CertificationsView</apexPage>
+        <enabled>false</enabled>
+    </pageAccesses>
+    <pageAccesses>
         <apexPage>ChangePassword</apexPage>
         <enabled>true</enabled>
     </pageAccesses>
@@ -897,6 +901,10 @@
     <userPermissions>
         <enabled>true</enabled>
         <name>ScheduleReports</name>
+    </userPermissions>
+    <userPermissions>
+        <enabled>true</enabled>
+        <name>SelectFilesFromSalesforce</name>
     </userPermissions>
     <userPermissions>
         <enabled>true</enabled>

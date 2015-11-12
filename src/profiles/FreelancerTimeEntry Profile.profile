@@ -478,6 +478,10 @@
         <enabled>false</enabled>
     </pageAccesses>
     <pageAccesses>
+        <apexPage>CertificationsView</apexPage>
+        <enabled>false</enabled>
+    </pageAccesses>
+    <pageAccesses>
         <apexPage>ChangePassword</apexPage>
         <enabled>false</enabled>
     </pageAccesses>
@@ -677,5 +681,9 @@
     <userPermissions>
         <enabled>true</enabled>
         <name>PasswordNeverExpires</name>
+    </userPermissions>
+    <userPermissions>
+        <enabled>true</enabled>
+        <name>SelectFilesFromSalesforce</name>
     </userPermissions>
 </Profile>

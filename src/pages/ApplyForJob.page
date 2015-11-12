@@ -1,4 +1,4 @@
-<apex:page showHeader = "false" sidebar = "false" controller = "JobApplicationsController" language = "en">
+<apex:page showHeader="false" sidebar="false" controller="JobApplicationsController" language="en">
 <style type="text/css">
     div.tooltip {
         width: 20px;
@@ -40,117 +40,117 @@
         color: white;
     }
 </style>
-    <apex:form enctype = "multipart/form-data">
-        <apex:pageMessages/>
-        <apex:pageBlock rendered = "{!BeforeInsert}" mode="maindetail">
-            <apex:pageBlockSection columns = "1">
-                <apex:pageBlockSectionItem>
-                    <apex:outputLabel value = "Available Positions" for = "PositionsSelectList"/>
-                    <apex:outputPanel id = "PositionsSelectList">
+    <apex:form enctype="multipart/form-data">
+        <apex:pageMessages />
+        <apex:pageBlock rendered="{!BeforeInsert}" mode="maindetail">
+            <apex:pageBlockSection columns="1">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Available Positions" for="PositionsSelectList"/>
+                    <apex:outputPanel id="PositionsSelectList">
                         <div class = "requiredInput">
                             <div class = "requiredBlock"></div>
-                            <apex:selectList value = "{!SelectedPosition}" label = "Available Positions" multiselect = "false" size = "1" required = "true">
-                                <apex:selectOptions value = "{!AvailablePositions}"/>
+                            <apex:selectList value="{!SelectedPosition}" label="Available Positions" multiselect="false" size="1" required="true">
+                                <apex:selectOptions value="{!AvailablePositions}"/>
                             </apex:selectList>
                         </div>
                     </apex:outputPanel>
                 </apex:pageBlockSectionItem>
-                <apex:inputField value = "{!Application.First_Name__c}" required = "true"/>
-                <apex:inputField value = "{!Application.Last_Name__c}" required = "true"/>
-                <apex:inputField value = "{!Application.Email__c}" required = "true"/>
-                <apex:inputField value = "{!Application.Phone__c}" required = "true"/>
-                <apex:pageBlockSectionItem>
-                    <apex:outputLabel value = "Salary">
+                <apex:inputField value="{!Application.First_Name__c}" required="true"/>
+                <apex:inputField value="{!Application.Last_Name__c}" required="true"/>
+                <apex:inputField value="{!Application.Email__c}" required="true"/>
+                <apex:inputField value="{!Application.Phone__c}" required="true"/>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Salary">
                         <div class = "helpOrb tooltip" style = "position:relative;left:10px">
                             <span>
                                If you have any comments about your salary expectation please let us know
                             </span>
                         </div>
                     </apex:outputLabel>
-                    <apex:inputField value = "{!Application.Salary__c}" required="true"/>
+                    <apex:inputField value="{!Application.Salary__c}" required="true"/>
                 </apex:pageBlockSectionItem>
-                <apex:pageBlockSectionItem>
-                    <apex:outputLabel value = "Starting date">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Starting date">
                         <div class = "helpOrb tooltip" style = "position:relative;left:10px">
                             <span>
                                If you have any comments about your start date please let us know
                             </span>
                         </div>
                     </apex:outputLabel>
-                    <apex:inputField value = "{!Application.Start_date__c}" required="true"/>
+                    <apex:inputField value="{!Application.Start_Date__c}" required="true"/>
                 </apex:pageBlockSectionItem>
-                <apex:inputField value = "{!Application.Notes_to_the_Application__c}"/>
-                <apex:inputField value = "{!Application.Street__c}" required = "true"/>
-                <apex:inputField value = "{!Application.ZIP_Code__c}" required = "true"/>
-                <apex:inputField value = "{!Application.City__c}" required = "true"/>
-                <apex:inputField value = "{!Application.Country__c}" required = "true"/>
-                <apex:pageBlockSectionItem>
-                    <apex:outputLabel value = "How did you hear about this job?" for = "Sources"/>
-                    <apex:outputPanel id = "Sources">
+                <apex:inputField value="{!Application.Notes_to_the_Application__c}"/>
+                <apex:inputField value="{!Application.Street__c}" required="true"/>
+                <apex:inputField value="{!Application.ZIP_Code__c}" required="true"/>
+                <apex:inputField value="{!Application.City__c}" required="true"/>
+                <apex:inputField value="{!Application.Country__c}" required="true"/>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="How did you hear about this job?" for="Sources"/>
+                    <apex:outputPanel id="Sources">
                         <div class = "requiredInput">
                             <div class = "requiredBlock"></div>
-                            <apex:selectList value = "{!Application.Candidate_Source__c}" size = "1">
-                                <apex:selectOptions value = "{!CandidateSourceOptions}"/>
+                            <apex:selectList value="{!Application.Candidate_Source__c}" size="1">
+                                <apex:selectOptions value="{!CandidateSourceOptions}"/>
                             </apex:selectList>
                         </div>
                     </apex:outputPanel>
                 </apex:pageBlockSectionItem>
-                <apex:inputField value = "{!Application.Skype__c}" required = "false"/>
-                <apex:inputField value = "{!Application.LinkedIn__c}" required = "false"/>
-                <apex:inputField value = "{!Application.XING__c}" required = "false"/>
-                <apex:pageBlockSectionItem>
-                    <apex:outputLabel value = "Picture" for = "file">
+                <apex:inputField value="{!Application.Skype__c}" required="false"/>
+                <apex:inputField value="{!Application.LinkedIn__c}" required="false"/>
+                <apex:inputField value="{!Application.XING__c}" required="false"/>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Picture" for="file">
                         <div class = "helpOrb tooltip" style = "position:relative;left:10px">
                             <span>
                                Supported formats: jpg, png, gif. Maximum picture size: 500Kb. Recomended resolution: 300*300px
                             </span>
                         </div>
                     </apex:outputLabel>
-                    <apex:inputFile lang = "en" value = "{!Picture.Body}" filename = "{!Picture.Name}" filesize = "{!Picture.BodyLength}" id = "file" accept = "image/jpg, image/jpeg, image/png, image/gif"/>
+                    <apex:inputFile lang="en" value="{!Picture.Body}" filename="{!Picture.Name}" filesize="{!Picture.BodyLength}" id="file" accept="image/jpg, image/jpeg, image/png, image/gif"/>
                 </apex:pageBlockSectionItem>
                 <apex:pageBlockSectionItem >
-                    <apex:outputLabel value = "CV" for = "file">
+                    <apex:outputLabel value="CV" for="file">
                         <div class = "helpOrb tooltip" style = "position:relative;left:10px">
                             <span>
                                Supported formats: pdf, doc, docx. Maximum document size: 5Mb. CV is required
                             </span>
                         </div>
                     </apex:outputLabel>
-                    <apex:outputPanel>
+                    <apex:outputPanel >
                         <div class = "requiredInput">
                             <div class = "requiredBlock"></div>
-                            <apex:inputFile value = "{!CurriculumVitae.Body}" filename = "{!CurriculumVitae.Name}" filesize="{!CurriculumVitae.BodyLength}" id = "file" accept = "application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
+                            <apex:inputFile value="{!CurriculumVitae.Body}" filename="{!CurriculumVitae.Name}" filesize="{!CurriculumVitae.BodyLength}" id="file" accept="application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
                         </div>
                     </apex:outputPanel>
                 </apex:pageBlockSectionItem>
                 <apex:pageBlockSectionItem >
-                    <apex:outputLabel value = "Cover Letter" for = "file">
+                    <apex:outputLabel value="Cover Letter" for="file">
                         <div class = "helpOrb tooltip" style = "position:relative;left:10px">
                             <span>
                                Supported formats: pdf, doc, docx. Maximum document size: 5Mb.
                             </span>
                         </div>
                     </apex:outputLabel>
-                    <apex:inputFile value = "{!CoverLetter.Body}" filename = "{!CoverLetter.Name}" filesize="{!CoverLetter.BodyLength}" id = "file" accept = "application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
+                    <apex:inputFile value="{!CoverLetter.Body}" filename="{!CoverLetter.Name}" filesize="{!CoverLetter.BodyLength}" id="file" accept="application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
                 </apex:pageBlockSectionItem>
                 <apex:pageBlockSectionItem >
-                    <apex:outputLabel value = "Other file" for = "file">
+                    <apex:outputLabel value="Other file" for="file">
                         <div class = "helpOrb tooltip" style = "position:relative;left:10px">
                             <span>
                                Supported formats: pdf, doc, docx. Maximum document size: 5Mb
                             </span>
                         </div>
                     </apex:outputLabel>
-                    <apex:inputFile value = "{!OtherFile.Body}" filename = "{!OtherFile.Name}" filesize = "{!OtherFile.BodyLength}" id = "file" accept = "application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
+                    <apex:inputFile value="{!OtherFile.Body}" filename="{!OtherFile.Name}" filesize="{!OtherFile.BodyLength}" id="file" accept="application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
                 </apex:pageBlockSectionItem>
                 <apex:pageBlockSectionItem >
-                    <apex:inputCheckbox id = "ConfirmationCheckbox" value = "{!ConfirmationCheckbox}" label = "I agree with everything, just submit my application"/>
-                    <apex:outputLabel value = "{!AcknowledgeCheckboxText}" for="ConfirmationCheckbox">
+                    <apex:inputCheckbox id="ConfirmationCheckbox" value="{!ConfirmationCheckbox}" label="I agree with everything, just submit my application"/>
+                    <apex:outputLabel value="{!AcknowledgeCheckboxText}" for="ConfirmationCheckbox">
                         <span><br/><br/>{!AcknowledgeText}</span>
                     </apex:outputLabel>
                 </apex:pageBlockSectionItem>
                 <apex:pageBlockSectionItem >
-                    <apex:outputLabel value = ""/>
+                    <apex:outputLabel value=""/>
                     <span class = "pbSubExtra">
                         <span class = "requiredLegend">
                             <span class = "requiredExampleOuter">
@@ -161,26 +161,26 @@
                     </span>
                 </apex:pageBlockSectionItem>
             </apex:pageBlockSection>
-            <apex:pageBlockButtons location = "bottom" id = "SaveButton">
-                <apex:commandButton value = "Submit Application" action = "{!submit}"/>
+            <apex:pageBlockButtons location="bottom" id="SaveButton">
+                <apex:commandButton value="Submit Application" action="{!submit}"/>
             </apex:pageBlockButtons>
         </apex:pageBlock>
-        <apex:pageBlock mode = "maindetail" rendered = "{!NOT(BeforeInsert)}">
-            <apex:pageBlockSection columns = "1">
-                <apex:outputField value = "{!Application.First_Name__c}"/>
-                <apex:outputField value = "{!Application.Last_Name__c}"/>
-                <apex:outputField value = "{!Application.Email__c}"/>
-                <apex:outputField value = "{!Application.Phone__c}"/>
-                <apex:outputField value = "{!Application.Salary__c}"/>
-                <apex:outputField value = "{!Application.Start_date__c}"/>
-                <apex:inputField value = "{!Application.Street__c}"/>
-                <apex:inputField value = "{!Application.ZIP_Code__c}"/>
-                <apex:inputField value = "{!Application.City__c}"/>
-                <apex:inputField value = "{!Application.Country__c}"/>
-                <apex:inputField value = "{!Application.Candidate_Source__c}" label = "How did you hear about this job?"/>
-                <apex:outputField value = "{!Application.Skype__c}"/>
-                <apex:outputField value = "{!Application.LinkedIn__c}"/>
-                <apex:outputField value = "{!Application.XING__c}"/>
+        <apex:pageBlock mode="maindetail" rendered="{!NOT(BeforeInsert)}">
+            <apex:pageBlockSection columns="1">
+                <apex:outputField value="{!Application.First_Name__c}"/>
+                <apex:outputField value="{!Application.Last_Name__c}"/>
+                <apex:outputField value="{!Application.Email__c}"/>
+                <apex:outputField value="{!Application.Phone__c}"/>
+                <apex:outputField value="{!Application.Salary__c}"/>
+                <apex:outputField value="{!Application.Start_Date__c}"/>
+                <apex:inputField value="{!Application.Street__c}"/>
+                <apex:inputField value="{!Application.ZIP_Code__c}"/>
+                <apex:inputField value="{!Application.City__c}"/>
+                <apex:inputField value="{!Application.Country__c}"/>
+                <apex:inputField value="{!Application.Candidate_Source__c}" label="How did you hear about this job?"/>
+                <apex:outputField value="{!Application.Skype__c}"/>
+                <apex:outputField value="{!Application.LinkedIn__c}"/>
+                <apex:outputField value="{!Application.XING__c}"/>
             </apex:pageBlockSection>
         </apex:pageBlock>
     </apex:form>

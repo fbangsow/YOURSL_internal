@@ -482,6 +482,10 @@
         <enabled>true</enabled>
     </pageAccesses>
     <pageAccesses>
+        <apexPage>CertificationsView</apexPage>
+        <enabled>false</enabled>
+    </pageAccesses>
+    <pageAccesses>
         <apexPage>ChangePassword</apexPage>
         <enabled>true</enabled>
     </pageAccesses>
@@ -676,6 +680,10 @@
     <userLicense>Salesforce</userLicense>
     <userPermissions>
         <enabled>true</enabled>
+        <name>ActivateOrder</name>
+    </userPermissions>
+    <userPermissions>
+        <enabled>true</enabled>
         <name>ApiEnabled</name>
     </userPermissions>
     <userPermissions>
@@ -841,6 +849,10 @@
     <userPermissions>
         <enabled>true</enabled>
         <name>InboundMigrationToolsUser</name>
+    </userPermissions>
+    <userPermissions>
+        <enabled>true</enabled>
+        <name>InstallPackaging</name>
     </userPermissions>
     <userPermissions>
         <enabled>true</enabled>
@@ -1017,6 +1029,10 @@
     <userPermissions>
         <enabled>true</enabled>
         <name>ScheduleReports</name>
+    </userPermissions>
+    <userPermissions>
+        <enabled>true</enabled>
+        <name>SelectFilesFromSalesforce</name>
     </userPermissions>
     <userPermissions>
         <enabled>true</enabled>

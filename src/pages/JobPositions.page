@@ -1,4 +1,4 @@
-<apex:page showHeader = "false" sidebar = "false" controller = "JobApplicationsController">
+<apex:page showHeader="false" sidebar="false" controller="JobApplicationsController">
     <style type="text/css">
     .pbBody td, .detailList th {
         font: 12px Arial, sans-serif;
@@ -16,24 +16,24 @@
         color: white;
     }
     </style>
-    <apex:form>
-        <apex:pageMessages/>
-        <apex:pageBlock mode = "maindetail">
-            <apex:pageBlockSection columns = "1">
-                <apex:selectList value = "{!SelectedPosition}" label = "Available Positions" multiselect = "false" size = "1" required = "true">
-                    <apex:selectOptions value = "{!AvailablePositions}"/>
+    <apex:form >
+        <apex:pageMessages />
+        <apex:pageBlock mode="maindetail">
+            <apex:pageBlockSection columns="1">
+                <apex:selectList value="{!SelectedPosition}" label="Available Positions" multiselect="false" size="1" required="true">
+                    <apex:selectOptions value="{!AvailablePositions}"/>
                     <apex:actionSupport event="onchange" reRender="details" />
                 </apex:selectList>
             </apex:pageBlockSection>
         </apex:pageBlock>
-        <apex:pageBlock mode = "maindetail" id = 'details'>
-            <apex:pageBlockSection columns = "1" rendered = "{!(SelectedPosition != null && SelectedPosition != 'default')}">
-                <apex:outputField label = "Our position" value = "{!SelectedPositionObject.Job_Description__c}"/>
-                <apex:outputField label = "Your tasks" value = "{!SelectedPositionObject.Responsibilities__c}"/>
-                <apex:outputField label = "Your profile" value = "{!SelectedPositionObject.Skills_Required__c}"/>
-                <apex:outputField label = "Our offer" value = "{!SelectedPositionObject.Educational_Requirements__c}"/>
+        <apex:pageBlock mode="maindetail" id="details">
+            <apex:pageBlockSection columns="1" rendered="{!(SelectedPosition != null && SelectedPosition != 'default')}">
+                <apex:outputField label="Our position" value="{!SelectedPositionObject.Job_Description__c}"/>
+                <apex:outputField label="Your tasks" value="{!SelectedPositionObject.Responsibilities__c}"/>
+                <apex:outputField label="Your profile" value="{!SelectedPositionObject.Skills_Required__c}"/>
+                <apex:outputField label="Our offer" value="{!SelectedPositionObject.Educational_Requirements__c}"/>
             </apex:pageBlockSection>
-            <apex:pageBlockButtons rendered = "{!(SelectedPosition != null && SelectedPosition != 'default')}" location = "bottom">
+            <apex:pageBlockButtons rendered="{!(SelectedPosition != null && SelectedPosition != 'default')}" location="bottom">
                 <apex:commandButton action="{!apply}" value="Apply for {!SelectedPositionObject.Job_Title__c} position"/>
             </apex:pageBlockButtons>
         </apex:pageBlock>

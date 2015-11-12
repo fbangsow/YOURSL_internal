@@ -482,6 +482,10 @@
         <enabled>true</enabled>
     </pageAccesses>
     <pageAccesses>
+        <apexPage>CertificationsView</apexPage>
+        <enabled>false</enabled>
+    </pageAccesses>
+    <pageAccesses>
         <apexPage>ChangePassword</apexPage>
         <enabled>true</enabled>
     </pageAccesses>
@@ -674,6 +678,10 @@
         <enabled>true</enabled>
     </pageAccesses>
     <userLicense>Salesforce</userLicense>
+    <userPermissions>
+        <enabled>true</enabled>
+        <name>ActivateOrder</name>
+    </userPermissions>
     <userPermissions>
         <enabled>true</enabled>
         <name>ApiEnabled</name>
@@ -1021,6 +1029,10 @@
     <userPermissions>
         <enabled>true</enabled>
         <name>ScheduleReports</name>
+    </userPermissions>
+    <userPermissions>
+        <enabled>true</enabled>
+        <name>SelectFilesFromSalesforce</name>
     </userPermissions>
     <userPermissions>
         <enabled>true</enabled>

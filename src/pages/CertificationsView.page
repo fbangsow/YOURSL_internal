@@ -1,0 +1,11 @@
+<apex:page showHeader="false" standardController="User" extensions="CertificationsViewExtension">
+    <br/><br/>
+    <apex:repeat value="{!Certifications}" var="Certification">
+        <apex:outputText value="{!Certification.Certification_Type__r.Badge__c}" escape = "false" style="float:left;"/>
+    </apex:repeat>
+    <apex:form>
+        <apex:outputPanel id="InputHiddenFields">
+            <apex:inputhidden value="{!User.Contact_ID__c}" />
+        </apex:outputPanel>
+    </apex:form>
+</apex:page>

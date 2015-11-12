@@ -478,6 +478,10 @@
         <enabled>false</enabled>
     </pageAccesses>
     <pageAccesses>
+        <apexPage>CertificationsView</apexPage>
+        <enabled>false</enabled>
+    </pageAccesses>
+    <pageAccesses>
         <apexPage>ChangePassword</apexPage>
         <enabled>false</enabled>
     </pageAccesses>
@@ -676,6 +680,10 @@
     </userPermissions>
     <userPermissions>
         <enabled>true</enabled>
+        <name>ActivateOrder</name>
+    </userPermissions>
+    <userPermissions>
+        <enabled>true</enabled>
         <name>ApiEnabled</name>
     </userPermissions>
     <userPermissions>
@@ -716,7 +724,15 @@
     </userPermissions>
     <userPermissions>
         <enabled>true</enabled>
+        <name>CreateReductionOrder</name>
+    </userPermissions>
+    <userPermissions>
+        <enabled>true</enabled>
         <name>CreateTopics</name>
+    </userPermissions>
+    <userPermissions>
+        <enabled>true</enabled>
+        <name>EditActivatedOrders</name>
     </userPermissions>
     <userPermissions>
         <enabled>true</enabled>
@@ -756,6 +772,10 @@
     </userPermissions>
     <userPermissions>
         <enabled>true</enabled>
+        <name>LightningExperienceUser</name>
+    </userPermissions>
+    <userPermissions>
+        <enabled>true</enabled>
         <name>ManageCssUsers</name>
     </userPermissions>
     <userPermissions>
@@ -769,6 +789,10 @@
     <userPermissions>
         <enabled>true</enabled>
         <name>RunReports</name>
+    </userPermissions>
+    <userPermissions>
+        <enabled>true</enabled>
+        <name>SelectFilesFromSalesforce</name>
     </userPermissions>
     <userPermissions>
         <enabled>true</enabled>
