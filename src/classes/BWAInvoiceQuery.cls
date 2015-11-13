@@ -424,7 +424,7 @@ public class BWAInvoiceQuery {
     }
 
     private String getString(Double value){
-        return ((double)math.round((decimal)(value*100))/100).intValue().format();
+        return Decimal.valueOf(value).setScale(2).toPlainString();
     }
 
 

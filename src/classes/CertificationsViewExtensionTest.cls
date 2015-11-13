@@ -1,6 +1,6 @@
 @isTest
 private class CertificationsViewExtensionTest {
-    @isTest static void testConstructorQueriesCertifications() {
+    @isTest static void testConstructorFindsCertifications() {
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
             setup_data.createTestData();
@@ -9,6 +9,17 @@ private class CertificationsViewExtensionTest {
             Test.stopTest();
             System.assertEquals(1, setup_data.ClassUnderTest.Certifications.size(), 'It should contain one test certification');
             System.assertEquals(setup_data.AdminCertification.Id, setup_data.ClassUnderTest.Certifications.get(0).Id, 'It should be exactly the certification we created in tests');
+        }
+    }
+
+    @isTest static void testConstructorFindsNoCertifications() {
+        SetupDataClass setup_data = new SetupDataClass();
+        System.runAs(setup_data.TestUser) {
+            setup_data.createTestDataWithoutCertifications();
+            Test.startTest();
+                setup_data.initializeClass();
+            Test.stopTest();
+            System.assertEquals(0, setup_data.ClassUnderTest.Certifications.size(), 'It should contain one test certification');
         }
     }
 
@@ -37,6 +48,12 @@ private class CertificationsViewExtensionTest {
             updateUser();
             createCertificationType();
             createCertification();
+        }
+
+        public void createTestDataWithoutCertifications() {
+            createContact();
+            updateUser();
+            createCertificationType();
         }
 
         private void createCertificationType(){
