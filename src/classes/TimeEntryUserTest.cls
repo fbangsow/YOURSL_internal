@@ -128,10 +128,22 @@ private class TimeEntryUserTest {
 			//Opportunity
 			Opportunity testOpp4User = new Opportunity(Pricebook2Id= temppb.Id,Name ='TestOpp4User' ,AccountId= testAcc.Id,  CloseDate= System.today().addDays(-9), StageName = stageWON.MasterLabel);
 			insert testOpp4User;
+      //Task Category
+      Task_Category__c oTaskCategory1=new Task_Category__c();
+      oTaskCategory1.name='TaskCategory1';
+      oTaskCategory1.Description__c='TestDesc';
+      oTaskCategory1.Opportunity__c=testOpp4User.id;
+      insert oTaskCategory1;
 
 			//Opportunity
 			Opportunity testOppPreSales = new Opportunity(Pricebook2Id= temppb.Id,Name ='TestOppPreSales' ,AccountId= testAcc.Id,  CloseDate= System.today().addDays(-9), StageName = stageWON.MasterLabel);
 			insert testOppPreSales;
+      //Task Category
+      Task_Category__c oTaskCategory=new Task_Category__c();
+      oTaskCategory.name='TaskCategory1';
+      oTaskCategory.Description__c='TestDesc';
+      oTaskCategory.Opportunity__c=testOppPreSales.id;
+      insert oTaskCategory;
 
 			Opportunity testOppInternal = new Opportunity(Pricebook2Id= temppb.Id, Name ='TestOppInternal' ,AccountId= accYOURSL.Id,  CloseDate= System.today().addDays(-9), StageName = stageWON.MasterLabel);
 			insert testOppInternal;
@@ -273,6 +285,8 @@ private class TimeEntryUserTest {
 			tE4.getOpportunityLineItemList();
 			tE4.selectedOpp = testOppPreSales.Id;
 			tE4.selectedTask = testOppLineItemPreSales.Id;
+      // Change Made By Sudipta
+      tE4.getTaskCategories();
 			tE4.save();
 
 			controller = new ApexPages.StandardController(timeE_internal);

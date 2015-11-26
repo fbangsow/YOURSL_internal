@@ -60,6 +60,8 @@ public without sharing class TimeEntry4UserExtension {
     private Map<Id, OpportunityLineItem> mapOpportuntiyLineItemInternal;
     private Map<Id, Contact> mapContacts;
 
+    //Selected Task Category is saved in this Varibale
+    public String SelectedTaskCategory {get;set;}
 
     //fill dropdown list with contact
     public List<SelectOption> getSelectedContactList() {
@@ -533,6 +535,11 @@ public without sharing class TimeEntry4UserExtension {
             PageReference prOLI = new ApexPages.StandardController(oneOLI).view();
             newTime.Opportunity_Product_ID__c = (Id)selectedTask;
             newTime.Daily_Rate__c = oneOLI.UnitPrice;
+            //adding the new task category
+            if (SelectedTaskCategory!='False')
+            {
+              newTime.Task_Category__c=SelectedTaskCategory;
+            }
 
             String sUrlRewrite = System.URL.getSalesforceBaseUrl().getHost();
             // c.cs7.visual.force.com
@@ -646,7 +653,11 @@ public without sharing class TimeEntry4UserExtension {
             PageReference prOLI = new ApexPages.StandardController(oneOLI).view();
             newTime.Opportunity_Product_ID__c = (Id)selectedTask;
             newTime.Daily_Rate__c = oneOLI.UnitPrice;
-
+            //adding the new task category
+            if (SelectedTaskCategory!='False')
+            {
+              newTime.Task_Category__c=SelectedTaskCategory;
+            }
             String sUrlRewrite = System.URL.getSalesforceBaseUrl().getHost();
             // c.cs7.visual.force.com
             sUrlRewrite = 'https://'
@@ -683,4 +694,17 @@ public without sharing class TimeEntry4UserExtension {
         return null;
     }// PageReference save_and_new()
 
+
+    //This method gets all the Task Category for the selected Opportunity
+    public List<SelectOption> getTaskCategories()
+    {
+      List <Task_Category__c> ListTaskCategory=[select id,name From Task_Category__c where Opportunity__c = : selectedOpp];
+      List<SelectOption> options = new List<SelectOption>();
+      options.add(new SelectOption('False','Please Select The Task Category'));
+      for (Task_Category__c oTaskCategory: ListTaskCategory)
+      {
+        options.add(new SelectOption(oTaskCategory.id,oTaskCategory.Name));
+      }
+      return options;
+    }
 }
