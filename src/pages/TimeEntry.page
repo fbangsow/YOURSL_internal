@@ -8,8 +8,8 @@
 
 <style type="text/css">
     .myClass { width: 400px; height:150px; }
-    
-    
+
+
 #dhtmltooltip{
     position: absolute;
     width: 150px;
@@ -22,17 +22,17 @@
     filter: progid:DXImageTransform.Microsoft.Shadow(color=gray,direction=135);
 }
 
-    
+
 </style>
-      
+
 <apex:pagemessages id="messages"/>
 
 
 <script>
     //$j = jQuery.noConflict();
-    
+
     function lockForm(){
-        jQuery('[id*="saveBtn"],[id*="saveAndNewBtn"],[id*="cancelBtn"],[id*="date"],[id*="description"],[id*="selectedContactList22"],[id*="selectedProjectType22"],[id*="selectedOpp22"],[id*="selectedTask22"],[id*="time"],[id*="billable"]').attr('disabled',true);
+        jQuery('[id*="saveBtn"],[id*="saveAndNewBtn"],[id*="cancelBtn"],[id*="date"],[id*="description"],[id*="selectedContactList22"],[id*="selectedProjectType22"],[id*="selectedOpp22"],[id*="selectedTask22"],[id*="time"],[id*="billable"],[id*="selectedTask23"]').attr('disabled',true);
     }
     function unlockForm(){
         jQuery('[id*="saveBtn"],[id*="saveAndNewBtn"],[id*="cancelBtn"],[id*="date"],[id*="description"],[id*="selectedContactList22"],[id*="selectedProjectType22"],[id*="selectedOpp22"],[id*="selectedTask22"],[id*="time"],[id*="billable"]').attr('disabled',false);
@@ -52,24 +52,29 @@ function setFocus() {
 <!-- <apex:actionFunction id="rerender3_PRF" name="rerender3_PRF" rerender="pbs3,pbs4,pbs5,messages" status="updateinfo" >
     <apex:param name="secondParam" assignTo="{!selectedProjectType}" value="" />
 </apex:actionFunction> -->
-<apex:actionFunction id="rerender3_PRF" name="rerender3_PRF" rerender="pbs3,pbs4,pbs5,messages" status="updateinfo" >
+<apex:actionFunction id="rerender3_PRF" name="rerender3_PRF" rerender="pbs3,pbs9,pbs4,pbs5,messages" status="updateinfo" >
     <apex:param name="secondParam" assignTo="{!selectedProjectType}" value="" />
 </apex:actionFunction>
-<apex:actionFunction id="rerender4_PRF" name="rerender4_PRF" rerender="pbs4,pbs5,messages" status="updateinfo" >
+<apex:actionFunction id="rerender4_PRF" name="rerender4_PRF" rerender="pbs4,pbs9,pbs5,messages" status="updateinfo" >
     <apex:param name="thirdParam" assignTo="{!selectedOpp}" value="" />
 </apex:actionFunction>
-<apex:actionFunction id="rerender5" name="rerender5" rerender="pbs5,messages" status="updateinfo" >
+<apex:actionFunction id="rerender5" name="rerender5" rerender="pbs5,pbs9,messages" status="updateinfo" >
     <apex:param name="fourthParam" assignTo="{!selectedTask}" value="" />
 </apex:actionFunction>
-<apex:actionFunction id="rerender6" name="rerender6" rerender="pbs3,pbs4,pbs5,pbs8,messages" status="updateinfo" >
+<apex:actionFunction id="rerender6" name="rerender6" rerender="pbs3,pbs4,pbs5,pbs8,pbs9,messages" status="updateinfo" >
     <apex:param name="sixthParam" assignTo="{!selectedContact}" value="" />
 </apex:actionFunction>
 <apex:actionFunction id="rerender8" name="rerender8" rerender="messages" >
     <apex:param name="eigthParam" assignTo="{!billableFlag}" value="" />
 </apex:actionFunction>
-<apex:actionFunction id="rerender7" action="{!refresh}" name="rerender7" rerender="pbs4,pbs5,pbs7,messages" status="updateinfo" >
+<apex:actionFunction id="rerender7" action="{!refresh}" name="rerender7" rerender="pbs4,pbs5,pbs7,pbs9,messages" status="updateinfo" >
     <!--  <apex:param name="ninethParam" assignTo="{!refresh}" value="" />-->
 </apex:actionFunction>
+<!--Change Made By Sudipta Karmakar -->
+<apex:actionFunction id="rerender9" name="rerender9" rerender="pbs4,pbs5,pbs7,pbs9,messages" status="updateinfo">
+    <apex:param name="ninthParam" assignTo="{!SelectedTaskCategory}" value="" />
+</apex:actionFunction>
+
 
 <apex:pageBlock title="Add Time" id="pageblock1">
 
@@ -84,7 +89,7 @@ function setFocus() {
 
 <table>
     <tr>
-        <td align="left" valign="top" width="100" height="35"><b>Contact</b></td>   
+        <td align="left" valign="top" width="100" height="35"><b>Contact</b></td>
         <td align="left" valign="top" width="100" height="35">
         <apex:pageBlockSection id="pbs8" columns="1">
             <apex:pageBlockSectionItem >
@@ -98,19 +103,19 @@ function setFocus() {
     <tr>
         <td align="left" valign="top" width="100" height="35">
         <b>Date</b>
-        
-        
+
+
 
                 <div id="dhtmltooltip"></div>
-                
+
                 <script type="text/javascript">
-                
+
                 /***********************************************
                 * Cool DHTML tooltip script- © Dynamic Drive DHTML code library (www.dynamicdrive.com)
                 * This notice MUST stay intact for legal use
                 * Visit Dynamic Drive at http://www.dynamicdrive.com/ for full source code
                 ***********************************************/
-                
+
                 var offsetxpoint=-60 //Customize x offset of tooltip
                 var offsetypoint=10 //Customize y offset of tooltip
                 var ie=document.all
@@ -118,15 +123,15 @@ function setFocus() {
                 var enabletip=false
                 if (ie||ns6)
                     var tipobj=document.all? document.all["dhtmltooltip"] : document.getElementById? document.getElementById("dhtmltooltip") : ""
-                
+
                 function ietruebody(){
                     return (document.compatMode && document.compatMode!="BackCompat")? document.documentElement : document.body
                 }
-                
+
                 function ddrivetip(thetext, thecolor, thewidth){
                 if (ns6||ie){
                     if (typeof thewidth!="undefined") tipobj.style.width=thewidth+"px"
-                        if (typeof thecolor!="undefined" && thecolor!="") 
+                        if (typeof thecolor!="undefined" && thecolor!="")
                             tipobj.style.backgroundColor=thecolor
                             tipobj.innerHTML=thetext
                             tipobj.style.top = "30px"
@@ -134,7 +139,7 @@ function setFocus() {
                             return false
                     }
                 }
-                
+
                 function positiontip(e){
                     if (enabletip){
                         var curX=(ns6)?e.pageX : event.clientX+ietruebody().scrollLeft;
@@ -142,9 +147,9 @@ function setFocus() {
                         //Find out how close the mouse is to the corner of the window
                         var rightedge=ie&&!window.opera? ietruebody().clientWidth-event.clientX-offsetxpoint : window.innerWidth-e.clientX-offsetxpoint-20
                         var bottomedge=ie&&!window.opera? ietruebody().clientHeight-event.clientY-offsetypoint : window.innerHeight-e.clientY-offsetypoint-20
-                        
+
                         var leftedge=(offsetxpoint<0)? offsetxpoint*(-1) : -1000
-                        
+
                         //if the horizontal distance isn't enough to accomodate the width of the context menu
                         if (rightedge<tipobj.offsetWidth)
                         //move the horizontal position of the menu to the left by it's width
@@ -154,18 +159,18 @@ function setFocus() {
                         else
                         //position the horizontal position of the menu where the mouse is positioned
                         tipobj.style.left=curX+offsetxpoint+"px"
-                        
+
                         //same concept with the vertical position
                         if (bottomedge<tipobj.offsetHeight)
                             tipobj.style.top=ie? ietruebody().scrollTop+event.clientY-tipobj.offsetHeight-offsetypoint+"px" : window.pageYOffset+e.clientY-tipobj.offsetHeight-offsetypoint+"px"
                         else
                             tipobj.style.top=curY+offsetypoint+"px"
                             tipobj.style.visibility="visible"
-                            
-                        
+
+
                     }
                 }
-                
+
                 function hideddrivetip(){
                     if (ns6||ie){
                         enabletip=false
@@ -175,14 +180,14 @@ function setFocus() {
                         tipobj.style.width=''
                     }
                 }
-                
+
                 document.onmousemove=positiontip
-                
+
                 </script>
         <img src="/s.gif" alt="" class="helpOrb" title="" onmouseout="hideddrivetip()" onmouseover="ddrivetip('Date can not be earlier than 3 days ago','#E3C030', 200)">
         </img>
 
-        </td>   
+        </td>
         <!-- <td align="left" valign="top"><apex:pageBlockSection ><apex:pageBlockSectionItem helpText="Date can not be earlier than 3 days ago"><apex:inputField value="{!TimeEntry__c.Date__c}" onChange="rerender2(this.value)"/><apex:outputText value=""/></apex:pageBlockSectionItem></apex:pageBlockSection></td> -->
         <td align="left" valign="top" width="100" height="35">
         <apex:pageBlockSection id="pbs2" columns="1">
@@ -193,10 +198,10 @@ function setFocus() {
         </td>
     </tr>
     <tr>
-        <td align="left" valign="top" width="100" height="35"><b>Type</b></td>  
+        <td align="left" valign="top" width="100" height="35"><b>Type</b></td>
         <td align="left" valign="top" width="100" height="35">
         <apex:pageBlockSection id="pbs3" columns="1">
-            <apex:pageBlockSectionItem >                                                
+            <apex:pageBlockSectionItem >
             <apex:selectList id="selectedProjectType22" value="{!selectedProjectType}" size="1"  onChange="rerender3_PRF(this.value)">
                 <apex:selectOptions id="projectItem" value="{!ProjectTypeList}"/>
             </apex:selectList>
@@ -205,7 +210,7 @@ function setFocus() {
         </td>
     </tr>
     <tr>
-        <td align="left" valign="top"  width="100" height="35"><b>Project</b></td>  
+        <td align="left" valign="top"  width="100" height="35"><b>Project</b></td>
         <td align="left" valign="top" width="100" height="35">
             <apex:pageBlockSection id="pbs4" columns="1">
             <apex:pageBlockSectionItem >
@@ -221,19 +226,38 @@ function setFocus() {
             <b>Task</b>
             <img src="/s.gif" alt="" class="helpOrb" title="" onmouseout="hideddrivetip()" onmouseover="ddrivetip('Time in Hours, e.g. 1,25','#E3C030', 100)">
             </img>
-        </td>   
+        </td>
         <td align="left" valign="top" width="80" height="35">
             <apex:pageBlockSection id="pbs5" columns="1">
             <apex:pageBlockSectionItem >
-                <apex:selectList id="selectedTask22" size="1"  value="{!selectedTask}" onChange="rerender5(this.value)" >
+                <apex:selectList id="selectedTask22" size="1"  value="{!selectedTask}" onChange="rerender5(this.value),rerender9(this.value)" >
                     <apex:selectOptions id="taskItem" value="{!OpportunityLineItemList}"/>
                 </apex:selectList>
                 </apex:pageBlockSectionItem>
-            </apex:pageBlockSection>        
+            </apex:pageBlockSection>
         </td>
     </tr>
+<!-- Changes Made By Sudipta Karmakar -->
     <tr>
-        <td align="left" valign="top"  width="100" height="35"><b>Time</b></td> 
+        <td align="left" valign="top"  width="80" height="35">
+            <b>Task Category</b>
+            <img src="/s.gif" alt="" class="helpOrb" title="" onmouseout="hideddrivetip()" onmouseover="ddrivetip('Task Category')">
+            </img>
+        </td>
+        <td align="left" valign="top" width="80" height="35">
+            <apex:pageBlockSection id="pbs9" columns="1">
+            <apex:pageBlockSectionItem >
+                <apex:selectList id="selectedTask23" size="1"  value="{!SelectedTaskCategory}"  >
+                    <apex:selectOptions id="taskCategory" value="{!TaskCategories}"/>
+                </apex:selectList>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td align="left" valign="top"  width="100" height="35"><b>Time</b></td>
         <!-- <td align="left" valign="top"><apex:pageBlockSection ><apex:pageBlockSectionItem helpText="Time in Hours, e.g. 1,25"> <apex:inputField value="{!TimeEntry__c.Time__c}"/> <apex:outputText value=""/> </apex:pageBlockSectionItem></apex:pageBlockSection></td> -->
         <td align="left" valign="top" width="100" height="35">
             <apex:pageBlockSection id="pbs6" columns="1">
@@ -265,8 +289,8 @@ function setFocus() {
         <apex:actionStatus startText="Please wait while updating..." onstart="lockForm()" onstop="unlockForm()" startStyle="color: black; background-color:#E3C030; padding:6px; margin:0px;" stopText="" id="updateinfo"/>
         </td>
     </tr>
-    
-</table>            
+
+</table>
 </apex:pageBlock>
 
 </apex:form>
