@@ -1,9 +1,8 @@
 <apex:page showHeader="false" standardController="User" extensions="CertificationsViewExtension">
-    <br/><br/>
     <apex:pageMessages/>
     <apex:repeat value="{!Certifications}" var="Certification">
         <apex:outputLink value="/{!Certification.Certification_Type__r.Id}" target="parent">
-            <apex:outputText value="{!Certification.Certification_Type__r.Badge__c}" escape = "false" style="float:left;"/>
+            <apex:outputText value="{!Certification.Certification_Type__r.Badge__c}" escape = "false" style="float:left;padding-top: 20px;"/>
         </apex:outputLink>
     </apex:repeat>
     <apex:form>
