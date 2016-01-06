@@ -18,7 +18,8 @@ public without sharing class PsoToolController{
         '00e20000000kdol' => 'System Administrator',
         '00eD0000001QniK' => 'YOUR SL Assistance',
         '00eD0000001hihX' => 'YOUR SL Management User',
-        '00eD0000001higZ' => 'YOUR SL System Administrator'
+        '00eD0000001higZ' => 'YOUR SL System Administrator',
+        '00e57000001Qso8' => 'YOUR SL PSO Lead'
         };
     public static final String COMPANY_NAME = 'YOUR SL GmbH';
     private Integer NumberOfShownMonthes = 2;
