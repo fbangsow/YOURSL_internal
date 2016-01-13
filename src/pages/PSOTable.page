@@ -121,7 +121,7 @@
                          //var enddate="31.9.2015";
                          var splitstrtdate = strtdate.split(".");
                          var splitenddate = enddate.split(".");
-                         
+
                          var date = new Date(splitstrtdate[2], parseInt(splitstrtdate[1]) - 1, splitstrtdate[0]);
                          var dateforenddate = new Date(splitenddate[2], parseInt(splitenddate[1]) - 1, splitenddate[0]);
                          //difference between start date and end date
@@ -173,7 +173,7 @@
                                  } else if (dt == 32) {
                                      dt = 1;
                                      month = month + 1;
-                                     
+
                                  }
                              }
 
@@ -183,33 +183,33 @@
 
                 weekno1 = moment(cmbne, "MM-DD-YYYY").startOf('isoweek').week();
                              weekno1 = weekno1;
-             
-                          
+
+
             if(yearChange)
             {
   if (weekdays[k] == "MO") {
     year=year-1;
 
-                var month=13;                        
+                var month=13;
          data = data + '<td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td><td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')" ></input></td>';
-       
+
   }
   else if (weekdays[k] == "SU") {
                 year=year-1;
 
-                var month=13;                        
+                var month=13;
     data = data + '<td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields"  disabled="true"></td><td><input type="text" name="' + weekno1 + '"  class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td><td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')" ></input></td><td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields"  disabled="true"></td><td><input type="text" name="' + weekno1 + '"  class="mwdadot inputfields" disabled="true"></td>';
 
-                                  
+
                                  }
                                  else
                                  {
                 year=year-1;
 
-                var month=13;            
-                     
+                var month=13;
+
                 data = data + '<td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields"  disabled="true"></td><td><input type="text" name="' + weekno1 + '"  class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td><td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')" ></input></td>';
-            
+
             }
 
 yearChange=false;
@@ -229,14 +229,14 @@ yearChange=false;
                              } else if (j == parseInt(diffDays)) {
 
                                  var month1 = parseInt(month) + 1;
-                                
+
                                  if(parseInt(month1)-1==12)
                                  {
 
                                     year=year;
                 //var weekno1 = weeksInYear(year);
-                var month=13;            
-                             
+                var month=13;
+
              data = data + '<td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="inputfields plnperhur" disabled="true"></td>';                     }
                                  else
                                  {
@@ -248,12 +248,12 @@ yearChange=false;
                                      data = data + '<td><input name="' + a + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="inputfields plnperhur" disabled="true"></td>';
                                  } else {
 
-            
+
                                      data = data + '<td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="inputfields plnperhur" disabled="true"></td>';
                                  }
                              }
                              } else if (weekdays[k] == "SA" || weekdays[k] == "SU") {
-                             
+
                                  if (weekdays[k] == "SU") {
                                     if (parseInt(dt) == 1) {
                                          data = data + '<td><input type="text" name="' + weekno1 + '"  class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td><td><input name="' + a + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="drdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="dadot inputfields" disabled="true"></td>';
@@ -266,7 +266,7 @@ yearChange=false;
 
                                      if (parseInt(dt) == 1) {
 
-            
+
                                          data = data + '<td><input type="text" name="' + weekno1 + '"  class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '"  class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td><td><input name="' + a + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '"  ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td>';
                                      } else {
 
@@ -281,7 +281,7 @@ yearChange=false;
                                          data = data + '<td><input type="text" name="' + month + '"  class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input name="' + month + '" type="text" class="inputfields plnperhur" disabled="true"></td><td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '"  ng-model-ngblur ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')" ></input></td>';
                                      } else {
 
-            
+
                                          data = data + '<td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields"  disabled="true"></td><td><input type="text" name="' + weekno1 + '"  class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td><td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')" ></input></td>';
                                      }
                                  } else {
@@ -1112,7 +1112,7 @@ yearChange=false;
 
                          if (count != 0) {
                              $(".blurbackgrund,.imgldr").attr("style", "display:block");
-                             
+
 
                              serviceforgetaccountchange(a, datestring).then(function(result) {
                                 var daatjson = htmlDecode(result);
@@ -1144,26 +1144,26 @@ yearChange=false;
                                                  var secondDate = new Date(splitstrtdate[2], parseInt(splitstrtdate[1]) - 1, splitstrtdate[0]);
                                                  var diffDays = Math.round(Math.abs((firstDate.getTime() - secondDate.getTime()) / (oneDay)));
                                                  var cmbne = splitenddate[1] + "-" + splitenddate[0] + "-" + splitenddate[2];
-                                                 
+
 
                                                  var weekno = moment(cmbne, "MM-DD-YYYY").startOf('isoweek').week();
                                                  //differnce between startdate and end date ends
                                                  weekno = weekno;
                                                  splitenddate[1] = parseInt(splitenddate[1]);
-                                                                  
+
                                                  if (diffDays == 6) {
                                                      sttcs["Day"] = "Week";
                                                      sttcs["wmno"] = weekno;
                                                  } else if (diffDays < 7) {
-                                                    
-                                                    
+
+
                                                      if (parseInt(splitenddate[0]) <= 6) {
                                                          sttcs["Day"] = "Week";
                                                          sttcs["wmno"] = weekno;
 
                                                      } else {
                                                                  sttcs["Day"] = "MWeek";
-                                                         sttcs["wmno"] = weekno;   
+                                                         sttcs["wmno"] = weekno;
                                                      }
 
                                                  } else {
@@ -1256,9 +1256,9 @@ yearChange=false;
 
                                                              } else {
                                                                 sttcs["Day"] = "MWeek";
-                                                         sttcs["wmno"] = weekno;   
-             
-                                                        
+                                                         sttcs["wmno"] = weekno;
+
+
                                                              }
 
                                                          } else {
@@ -1838,10 +1838,10 @@ yearChange=false;
 
                                                      $(th).parent().find(".mwdrdot").each(function() {
                                                          var newdateinput = $(this).attr("name");
-                                                         
+
                                                          if (b.Day == "MWeek") {
                                                              if (parseInt(b.wmno) == parseInt(newdateinput)) {
-                                                              
+
 
                                                                  $(this).val(b.Days);
                                                              }
@@ -1874,7 +1874,7 @@ yearChange=false;
                                                      $(th).parent().find(".mdadot").each(function() {
                                                          var newdateinput = $(this).attr("name");
                                                          if (b.Day == "Month") {
-                                                          
+
                                                              if (parseInt(b.wmno) == parseInt(newdateinput) - 1) {
                                                                  $(this).val(b.Revenue);
                                                              }
@@ -1883,7 +1883,7 @@ yearChange=false;
                                                      $(th).parent().find(".mdrdot").each(function() {
                                                          var newdateinput = $(this).attr("name");
                                                          if (b.Day == "Month") {
-                                                         
+
                                                             parseInt(b.wmno) == parseInt(newdateinput) - 1
                                                              if (parseInt(b.wmno) == parseInt(newdateinput) - 1) {
                                                                  $(this).val(b.Days);
@@ -2084,7 +2084,7 @@ yearChange=false;
                                  var cmbne = month + "-" + dt + "-" + year;
                                  var weekno = moment(cmbne, "MM-DD-YYYY").startOf('isoweek').week();
 
-           
+
                                  if (j == 0) {
                                      if (k <= 4 || k == 7) {
                                          if (weekdays[k] == "SU") {
@@ -2107,11 +2107,11 @@ yearChange=false;
                                      }
                                  } else if (j == parseInt(diffDays)) {
                                      var month1 = parseInt(month) + 1;
-                                
-                                 
+
+
                                      heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;' class='weekhead' ><br/><span class='spanbirder' style='padding: 0% 3px 0 3px !important;'>KW-" + weekno + "</span><br/><span >" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>S.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th>";
-                                 
-                                
+
+
                                  } else if (weekdays[k] == "MO") {
                                      if (dt == 1) {
                                          heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>S.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border:0;' class='weekhead' ><span class='emptyclass' style='border-bottom: 1px solid #B8B1B1;padding: 0px 6px 0px 0px;'>" + monthNames[month - 1] + "</span><span class='spanbirder' style='padding: 0px;'></span><br/><br/><span class='brdrdtls' style='  border-top: 1px solid #B8B1B1;padding: 0px 2px 0px 4px;'>" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th>";
@@ -2224,7 +2224,7 @@ yearChange=false;
                                  }
 
                              }
-                             // In Chrome, the true version is after "Chrome" 
+                             // In Chrome, the true version is after "Chrome"
                              else if ((verOffset = nAgt.indexOf("Chrome")) != -1) {
                                  browserName = "Chrome";
                                  fullVersion = nAgt.substring(verOffset + 7);
@@ -2399,7 +2399,7 @@ yearChange=false;
                          });
 
                          // Subscribe to a topic. JSON-encoded update will be returned
-                         // in the callback              
+                         // in the callback
                          $.cometd.subscribe('/topic/ResourceChanges', function(message) {
 
 
@@ -2651,7 +2651,7 @@ yearChange=false;
                 </head>
                 <body data-ng-app="myApp">
                {{dataval}}
-                     <apex:pageMessages id="showmsg"></apex:pageMessages>        
+                     <apex:pageMessages id="showmsg"></apex:pageMessages>
                       <p class="dataforprint" style="display:none;"> </p>
                     <div data-ng-controller="MyCtrl" id="contid">
                         <div class="blurbackgrund1" ng-show="showhide"></div>
@@ -2672,7 +2672,7 @@ yearChange=false;
             <input type="text" style="height:1px  !important;border:0px !important"/>
                         <apex:outputPanel id="panel">
                         <apex:actionStatus id="counterStatus" startText="The job was successfully submitted, you'll see results in a few minutes"  onStart="document.body.style.cursor = 'wait';return true;" onStop="document.body.style.cursor = 'default';return true;" >
-                        <apex:facet name="start" >   
+                        <apex:facet name="start" >
                           </apex:facet>
                         <apex:facet name="stop">
                           </apex:facet>
@@ -2680,14 +2680,14 @@ yearChange=false;
                     </apex:outputPanel>
                     <apex:actionFunction action="{!runJob}" name="runjob" reRender="panel"/>
                     <!--<apex:actionFunction action="{!runMonthlyJob}" name="Monthlyjob" reRender="panel"/>-->
-              <apex:pageBlock >    
+              <apex:pageBlock >
               <div class="loginacess">
             <p class="joberrormsg"></p>
-                <span class="psotoolheader">PSO Scheduler 2.1</span> 
+                <span class="psotoolheader">PSO Scheduler 2.1</span>
             <input type="button" class="weekl btn" value="Recalculate previous (split) week" ng-click="rerunJobforerror()" style="height:20px;width:200px;"/>
 
                <!-- <input type="button" class="montlyl btn" value="Recalculate End of Month" ng-click="recalculateendmonth()" style="height:20px;width:150px;"/>-->
-                Date: <apex:inputText value="{!DateValue}" size="10" id="demo" style="width:100px;border:1px solid #B8B1B1" styleClass="datepickerforbind" ></apex:inputText> 
+                Date: <apex:inputText value="{!DateValue}" size="10" id="demo" style="width:100px;border:1px solid #B8B1B1" styleClass="datepickerforbind" ></apex:inputText>
                 </div>
                   <div class="bordervalue">
               <table class="custdetails" >
@@ -2695,73 +2695,73 @@ yearChange=false;
                                 <td>Account:</td>
                                 <td>
 
-             <dl class="dropdown"> 
-              
+             <dl class="dropdown">
+
                 <dt>
-               
-                 <!-- <span class="hida">Select</span>    
+
+                 <!-- <span class="hida">Select</span>
                   <p class="multiSel"></p>  -->
                  <a href="#" class="">
                     <input type="text" class="Accountnamedsp" value="All Account Names" autofocus="true"/>
                 </a>
-               
+
                 </dt>
-              
+
                 <dd>
                     <div class="mutliSelect accountname">
                    <!-- data-ng-change="projects(projectsSelecteddata)"-->
                            <select class="Customers " ng-click="accountnamedsply(blisterPackTemplateSelected);" data-ng-model="blisterPackTemplateSelected" data-ng-change="Customersfilter(blisterPackTemplateSelected)"  multiple="true">
              <option ng-repeat="c in persons" value="{{c.value}}" ng-selected="model.value == c.Id">{{c.value}}</option>
                                  </select>
-                       
+
 
                     </div>
                 </dd>
-             
+
             </dl>
-                           
-                            
+
+
                                  </td>
-                       
+
                             <td>Opportunity:</td>
-                          
+
                         <td>
-                      
+
              <input type="text" class="oprid" />
-                        <dl class="dropdown"> 
-              
+                        <dl class="dropdown">
+
                 <dt>
-               
+
                  <a href="#">
                     <input type="text" class="multiSel" value="All Opportunity Names" />
                 </a>
-               
+
                 </dt>
-              
+
                 <dd>
                     <div class="mutliSelect clickforselect">
-                 
-                       <select class="Projects" data-ng-model="projectsSelecteddata"  ng-blur="oppselectedvalue()" multiple="true" ng-click="oprnameselect(projectsSelecteddata)" on-finish-render="ngRepeatFinishedforselectbox"> 
+
+                       <select class="Projects" data-ng-model="projectsSelecteddata"  ng-blur="oppselectedvalue()" multiple="true" ng-click="oprnameselect(projectsSelecteddata)" on-finish-render="ngRepeatFinishedforselectbox">
                <option ng-repeat="c in projectsselect" value="{{c.Id}}" >{{c.value}}</option>
                         </select>
-                      
+
 
                     </div>
                 </dd>
-             
+
             </dl>
                     </td>
-               
+
                     <td>Start Month :</td>
                     <td><input type="text" class="strtdateinput" /><input type="text" class="setstrtdateinput" style="display:none;"/></td>
                 </tr>
             </table>
             </div>
               </apex:pageBlock>
-            </apex:form>         
+            </apex:form>
                        <img src="/resource/1433350802000/loader" class="imgldr"/>
-                       
-                       
+
+
             <div class="hdng wrapperwidth" >
                 <div class="custdisplay">
                     <div data-ng-repeat="dataval in dataval.Customers" class="custvalues" on-finish-render="ngRepeatFinished">
@@ -2770,7 +2770,7 @@ yearChange=false;
                                 <tr ><td  style="text-align:left;width:5px;padding-top:10px;">Acc:</td><td style="text-align:left;padding-top:10px" class="customername"><a ng-href="/{{dataval.AccountId}}" target="_blank">{{dataval.AccountName}}</a></td></tr>
                                 <tr><td  style="text-align:left;vertical-align:top;">Opp:</td><td  style="text-align:left;vertical-align: top;" class="prjname"><a ng-href="/{{dataval1.OpportunityId}}" target="_blank">{{dataval1.OpportunityName}}</a></td></tr>
                                 <tr><td  style="text-align:left;">PM:</td><td  style="text-align:left;"><a ng-href="/{{dataval1.ProjectManagerId}}" target="_blank">{{dataval1.OurProjectManager}}</a></td></tr>
-                                <tr><td> </td><td> <p style='position:relative;left:-32px;margin:0px;padding:0px;'> 
+                                <tr><td> </td><td> <p style='position:relative;left:-32px;margin:0px;padding:0px;'>
                                 <a ng-href="/apex/OpportunityLineItemsEdit?id={{dataval1.OpportunityId}}" target="_blank" style="text-decoration:none;"><input type="button" style="height:20px;width:87px;"  value="Change Quantity" class="btn"/></a> <input type="button" style="height:20px;width:87px;margin-right:5px;" value="Project Health"  class="btn"/><select class="projecthealthoption" data-ng-model="projecthealth1"  style="min-height:20px !important" ng-change="projecthealth(dataval1.OpportunityId,projecthealth1);"> </select></p></td><td> </td></tr>
                             </table>
                             <div  class="Resourcesection" >
@@ -2820,7 +2820,7 @@ yearChange=false;
                                 <tr ><td  style="text-align:left;width:5px;padding-top:10px;">Acc:</td><td style="text-align:left;padding-top:10px" class="customername"><a ng-href="/{{dataval.AccountId}}" target="_blank">{{dataval.AccountName}}</a></td></tr>
                                 <tr><td  style="text-align:left;vertical-align:top;">Opp:</td><td  style="text-align:left;vertical-align: top;" class="prjname"><a ng-href="/{{dataval1.OpportunityId}}" target="_blank">{{dataval1.OpportunityName}}</a></td></tr>
                                 <tr><td  style="text-align:left;">PM:</td><td  style="text-align:left;"><a ng-href="/{{dataval1.ProjectManagerId}}" target="_blank">{{dataval1.OurProjectManager}}</a></td></tr>
-                                <tr><td> </td><td> <p style='position:relative;left:-32px;margin:0px;padding:0px;'> 
+                                <tr><td> </td><td> <p style='position:relative;left:-32px;margin:0px;padding:0px;'>
                                 <a ng-href="/apex/OpportunityLineItemsEdit?id={{dataval1.OpportunityId}}" target="_blank" style="text-decoration:none;"><input type="button" style="height:20px;width:87px;"  value="Change Quantity" class="btn"/></a> <input type="button" style="height:20px;width:87px;" value="Project Health"  class="btn"/><select class="projecthealthoption" data-ng-model="projecthealth1"  style="min-height:20px !important" ng-change="projecthealth(dataval1.OpportunityId,projecthealth1);"> </select></p></td><td> </td></tr>
                             </table>
                                 <div class="table2" >
@@ -2863,7 +2863,7 @@ yearChange=false;
                 </div>
             </div>
              <p class="msg">Please select Opportunities you want to see using the filters above.</p>
-            
+
             </body>
 
             </html>
