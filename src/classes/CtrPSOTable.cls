@@ -8,31 +8,31 @@
 ---------------------------------------*/
 public class CtrPSOTable {
 
-    public string jsonstring {set; get;}  
+    public string jsonstring {set; get;}
     public String DateValue {get; set;}
-     
-    public CtrPSOTable(){              
 
-    }  
-      
+    public CtrPSOTable(){
+
+    }
+
  @RemoteAction
   public static void  getChangedProjectHealth(String opptrtuntyid,String changedvalue) {
   system.debug('opptrtuntyid'+opptrtuntyid);
   system.debug('changedbd'+changedvalue);
      PsoToolController.getInstance().setProjectHealthReason(opptrtuntyid,changedvalue);
   }
-   
+
   @RemoteAction
   public static string getAccount() {
 
-    return PsoToolController.getInstance().getAccountsAndOpportunities().JSON();
+    return PsoToolController.getInstance().getFilterValues().JSON();
   }
     @RemoteAction
   public static string getProjectHealth() {
 
     return PsoToolController.getInstance().getProjectHealthReasons().JSON();
   }
- 
+
   @RemoteAction
   public static string getAccountsonload(String list_of_ids,String dateparam) {
 
@@ -44,7 +44,7 @@ listofdata=list_of_ids.split(',');
 
 system.debug('@@@'+listofdata);
 system.debug(PsoToolController.getInstance().setSelectedOpportunities(listofdata).setStartDate(myDate).getDataSet().JSON());
-  
+
     return PsoToolController.getInstance().setSelectedOpportunities(listofdata).setStartDate(myDate).getDataSet().JSON();
   }
     @RemoteAction
@@ -53,9 +53,9 @@ system.debug(PsoToolController.getInstance().setSelectedOpportunities(listofdata
     String[] datefrmt = dateFormatter(dateparam);
     Date myDate = date.newinstance(Integer.valueOf(datefrmt[2]), Integer.valueOf(datefrmt[1]), Integer.valueOf(datefrmt[0]));
 
- 
+
 //return  PsoToolController.getInstance().setSelectedOpportunities(listofdataforlist).setStartDate(myDate).getDataSet().JSON();
-    return PsoToolController.getInstance().setStartDate(myDate).getAccountsAndOpportunities().JSON();
+    return PsoToolController.getInstance().setStartDate(myDate).getFilterValues().JSON();
 
   }
 
@@ -68,18 +68,18 @@ system.debug(PsoToolController.getInstance().setSelectedOpportunities(listofdata
      list<String> listofdataforlist=new list<String>();
 listofdataforlist=listofdata.split(',');
 return  PsoToolController.getInstance().setSelectedOpportunities(listofdataforlist).setStartDate(myDate).getDataSet().JSON();
-    //return PsoToolController.getInstance().setStartDate(myDate).getAccountsAndOpportunities().JSON();
+    //return PsoToolController.getInstance().setStartDate(myDate).getFilterValues().JSON();
 
   }
 
   @RemoteAction
   public static String runjobvalue( String selectedDate) {
-    
+
     Boolean IsPlanned=true;
 
     String[] datefrmt = dateFormatter(selectedDate);
     Date JobDate = date.newinstance(Integer.valueOf(datefrmt[2]), Integer.valueOf(datefrmt[0]), Integer.valueOf(datefrmt[1]));
-    
+
    String dates = StatisticsCalculator.getInstance(JobDate, IsPlanned).getDatesToBeDisplayed().JSON();
 return dates;
   }
@@ -89,7 +89,7 @@ return dates;
 
     String[] datefrmt = dateFormatter(selectedDate);
     Date myDate = date.newinstance(Integer.valueOf(datefrmt[2]), Integer.valueOf(datefrmt[1]), Integer.valueOf(datefrmt[0]));
-    
+
     PsoToolController.Result result =PsoToolController.getInstance().allocateResource(LineItemIdMap, myDate, numberOfHours / 8);
 return result;
   }
@@ -99,9 +99,9 @@ return result;
     return dateString.split('[.]{1}[\\s]?');
   }
 
-    
-  public void runJob(){          
-          
+
+  public void runJob(){
+
       if(DateValue == '')
         ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.WARNING,'Please select Date before running the job'));
       else{
@@ -112,20 +112,20 @@ return result;
             Integer myIntYear = integer.valueOf(strDate[2]);
             Date myjobDate = Date.newInstance(myIntYear, myIntMonth, myIntDate);
 
-           StatisticsCalculator.getInstance(myjobDate, true).createStatistics();           
+           StatisticsCalculator.getInstance(myjobDate, true).createStatistics();
       }
   }
-  
-   /*public void runMonthlyJob(){      
-   
+
+   /*public void runMonthlyJob(){
+
     if(DateValue == '')
         ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.WARNING,'Please select Date before running the job'));
-    else{              
+    else{
            batchPSOTool b = new batchPSOTool(DateValue,false,true);
-           Database.executeBatch(b);  
-          //PlanningScheduleUpdate updateSchedule = new PlanningScheduleUpdate(DateValue, false,true);             
-      }  
-    
+           Database.executeBatch(b);
+          //PlanningScheduleUpdate updateSchedule = new PlanningScheduleUpdate(DateValue, false,true);
+      }
+
   }*/
 
 }

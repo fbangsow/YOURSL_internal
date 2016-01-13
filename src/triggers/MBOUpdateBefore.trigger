@@ -11,8 +11,8 @@
 
 trigger MBOUpdateBefore on Ziel__c (before insert, before update) {
 
-	//Invoking handler class to update the Owner for MBO from the selected Contact 
+	//Invoking handler class to update the Owner for MBO from the selected Contact
     MBOTriggerHandler handler = new MBOTriggerHandler();
-    handler.handleTrigger(trigger.new);
-    
+    //handler.handleTrigger(trigger.new);
+
 }

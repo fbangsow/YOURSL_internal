@@ -1,0 +1,10 @@
+<apex:page sidebar="false" showHeader="false">
+  <br/>
+  <h1>OKR - Objectives and Key Results</h1>
+  <br/><br/>
+  In the future you will find here the company, team and your personal objectives and key results.
+  <br/>This feature is under construction.
+  <br/><br/>
+  <img id="theImage" src="https://c.eu4.content.force.com/servlet/servlet.ImageServer?id=01557000003vfkL&oid=00D3E000000CnAR&lastMod=1448284180000"/>
+
+</apex:page>

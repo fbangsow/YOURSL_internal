@@ -26,6 +26,7 @@ public without sharing class PsoToolController{
 
     private PsoToolController(){
         OpportunitiesToShow = new List<Id>();
+        ContactIdsToContacts = new Map<String, Contact>();
         setStartDate(Date.today());
     }
 
@@ -44,11 +45,10 @@ public without sharing class PsoToolController{
     public PsoToolDataSetWrapper getDataSet(){
         DataSet = new PsoToolDataSetWrapper();
         queryData();
-        ContactIdsToContacts = new Map<String, Contact>();
         DataSet.StartDate = this.StartDate.format();
         DataSet.EndDate = this.EndDate.format();
         DataSet.Customers = getCustomers(true);
-        DataSet.Resources = getResourcesAvailabilityData();
+        DataSet.Resources = getResourcesAvailabilityData(true);
         return DataSet;
     }
 
@@ -227,6 +227,8 @@ public without sharing class PsoToolController{
         new_project.ProjectStatus = opp.Projektstatus__c;
         if(with_resources)
             new_project.Resources = getResources(opp);
+        else
+            populateContactIdsToContactsMap(opp);
         return new_project;
     }
 
@@ -250,6 +252,13 @@ public without sharing class PsoToolController{
         }
         countPlannedDaysAndFilterStaffingByDates(resources);
         return resources.values();
+    }
+
+    private void populateContactIdsToContactsMap(Opportunity opp){
+        for(OpportunityLineItem line_item: opp.OpportunityLineItems){
+            if(line_item.Contact__r != null)
+                ContactIdsToContacts.put(line_item.Contact__r.Id, line_item.Contact__r);
+        }
     }
 
     @TestVisible private Resource getResource(String opp_id, OpportunityLineItem line_item){
@@ -313,7 +322,7 @@ public without sharing class PsoToolController{
         }
     }
 
-    @TestVisible private List<ResourceInfo> getResourcesAvailabilityData(){
+    @TestVisible private List<ResourceInfo> getResourcesAvailabilityData(Boolean with_staffing){
         Map<String, ResourceInfo> contactIdToResourceAvailabilityData = new Map<String, ResourceInfo>();
         for(String contact_id: ContactIdsToContacts.keySet()){
             if(!contactIdToResourceAvailabilityData.containsKey(contact_id)){
@@ -324,10 +333,11 @@ public without sharing class PsoToolController{
                 newInfo.AccountName = ContactIdsToContacts.get(contact_id).Account.Name;
                 newInfo.Staffing = new List<Staffing>();
                 newInfo.ContactId = contact_id;
-                newInfo.Statistics = getStatsForContact(contact_id);
+                if(with_staffing)
+                    newInfo.Statistics = getStatsForContact(contact_id);
                 contactIdToResourceAvailabilityData.put(contact_id, newInfo);
             }
-            if(ContactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap.containsKey(contact_id)){
+            if(with_staffing && ContactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap.containsKey(contact_id)){
                 contactIdToResourceAvailabilityData.get(contact_id).Staffing.addAll(getStaffingForResource(ContactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap.get(contact_id).values()));
             }
         }
@@ -435,12 +445,13 @@ public without sharing class PsoToolController{
         return new_stat;
     }
 
-    public AccountsAndTheirOpportunities getAccountsAndOpportunities(){
-        AccountsAndTheirOpportunities accounts_and_opportunities = new AccountsAndTheirOpportunities();
+    public FilterValues getFilterValues(){
+        FilterValues filter_values = new FilterValues();
         getOpportunities();
-        accounts_and_opportunities.Customers = getCustomers(false);
-        accounts_and_opportunities.IsAllowedToRunScript = PROFILE_ID_TO_PROFILE_NAME_FOR_ADMIN_MODE.containsKey(UserInfo.getProfileId());
-        return accounts_and_opportunities;
+        filter_values.Customers = getCustomers(false);
+        filter_values.Resources = getResourcesAvailabilityData(false);
+        filter_values.IsAllowedToRunScript = PROFILE_ID_TO_PROFILE_NAME_FOR_ADMIN_MODE.containsKey(UserInfo.getProfileId());
+        return filter_values;
     }
 
     public ProjectHealthReasons getProjectHealthReasons(){
@@ -488,8 +499,9 @@ public without sharing class PsoToolController{
         }
     }
 
-    public class AccountsAndTheirOpportunities{
+    public class FilterValues{
         public List<Customer> Customers;
+        public List<ResourceInfo> Resources;
         public Boolean IsAllowedToRunScript;
 
         public String JSON(){

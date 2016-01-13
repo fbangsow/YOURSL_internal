@@ -394,7 +394,7 @@ private class PsoToolControllerTest {
                             WHERE Id =: setup_data.SecondOpportunity.Id];
             new_instance.getResources(opp);
             Test.startTest();
-                List<PsoToolController.ResourceInfo> staffing = new_instance.getResourcesAvailabilityData();
+                List<PsoToolController.ResourceInfo> staffing = new_instance.getResourcesAvailabilityData(true);
             Test.stopTest();
             System.assertEquals(1, staffing.size());
             System.assertEquals(setup_data.TestContact.FirstName + ' ' + setup_data.TestContact.LastName, staffing.get(0).ResourceName);
@@ -764,7 +764,7 @@ private class PsoToolControllerTest {
         }
     }
 
-    @isTest static void testGetAccountsAndOpportunitiesReturnsTheListWith2AccountsEachOfWhichHasAProject() {
+    @isTest static void testgetFilterValuesReturnsTheListWith2AccountsEachOfWhichHasAProject() {
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
             PsoToolController new_instance = PsoToolController.getInstance();
@@ -772,10 +772,10 @@ private class PsoToolControllerTest {
             new_instance.endDate = Date.newInstance(2015, 3, 31);
             setup_data.createTestData();
             Test.startTest();
-                Object data_set = PsoToolController.getInstance().getAccountsAndOpportunities();
+                Object data_set = PsoToolController.getInstance().getFilterValues();
             Test.stopTest();
-            System.assert(data_set instanceof PsoToolController.AccountsAndTheirOpportunities, 'Method should return an instance of AccountsAndTheirOpportunities class');
-            PsoToolController.AccountsAndTheirOpportunities data_set_object = (PsoToolController.AccountsAndTheirOpportunities)data_set;
+            System.assert(data_set instanceof PsoToolController.FilterValues, 'Method should return an instance of FilterValues class');
+            PsoToolController.FilterValues data_set_object = (PsoToolController.FilterValues)data_set;
             System.assertEquals(2, data_set_object.Customers.size());
             System.assertEquals(1, data_set_object.Customers.get(0).Projects.size());
             System.assertEquals(1, data_set_object.Customers.get(1).Projects.size());
@@ -783,7 +783,7 @@ private class PsoToolControllerTest {
         }
     }
 
-    @isTest static void testGetAccountsAndOpportunitiesReturnsJson() {
+    @isTest static void testgetFilterValuesReturnsJson() {
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
             PsoToolController new_instance = PsoToolController.getInstance();
@@ -791,7 +791,7 @@ private class PsoToolControllerTest {
             new_instance.endDate = Date.newInstance(2015, 3, 31);
             setup_data.createTestData();
             Test.startTest();
-                String json = PsoToolController.getInstance().getAccountsAndOpportunities().JSON();
+                String json = PsoToolController.getInstance().getFilterValues().JSON();
             Test.stopTest();
             System.assertNotEquals(null, json);
         }
