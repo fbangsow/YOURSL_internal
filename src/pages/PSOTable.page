@@ -47,6 +47,11 @@
                  }
              }
 
+             function roundNumber(number, decimals) { // Arguments: number to round, number of decimal places
+				var newnumber = new Number(number+'').toFixed(parseInt(decimals));
+				return parseFloat(newnumber);
+			}
+
 			function businessDays(st) {
 				// Copy date
 
@@ -225,14 +230,14 @@
     year=year-1;
 
                 var month=13;
-         data = data + '<td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td><td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')" ></input></td>';
+         data = data + '<td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields planned_utilization" disabled="true"></td><td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')" ></input></td>';
 
   }
   else if (weekdays[k] == "SU") {
                 year=year-1;
 
                 var month=13;
-    data = data + '<td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields"  disabled="true"></td><td><input type="text" name="' + weekno1 + '"  class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td><td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')" ></input></td><td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields"  disabled="true"></td><td><input type="text" name="' + weekno1 + '"  class="mwdadot inputfields" disabled="true"></td>';
+    data = data + '<td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields"  disabled="true"></td><td><input type="text" name="' + weekno1 + '"  class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields planned_utilization" disabled="true"></td><td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')" ></input></td><td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields"  disabled="true"></td><td><input type="text" name="' + weekno1 + '"  class="mwdadot inputfields" disabled="true"></td>';
 
 
                                  }
@@ -242,7 +247,7 @@
 
                 var month=13;
 
-                data = data + '<td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields"  disabled="true"></td><td><input type="text" name="' + weekno1 + '"  class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td><td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')" ></input></td>';
+                data = data + '<td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields"  disabled="true"></td><td><input type="text" name="' + weekno1 + '"  class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields planned_utilization" disabled="true"></td><td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')" ></input></td>';
 
             }
 
@@ -271,7 +276,7 @@ yearChange=false;
                 //var weekno1 = weeksInYear(year);
                 var month=13;
 
-             data = data + '<td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="inputfields plnperhur" disabled="true"></td>';                     }
+             data = data + '<td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="inputfields plnperhur" disabled="true"></td><td><input type="text" name="' + month1 + '" class="inputfields planned_utilization" disabled="true"></td>';                     }
                                  else
                                  {
 
@@ -279,18 +284,18 @@ yearChange=false;
 
 
 
-                                     data = data + '<td><input name="' + a + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="inputfields plnperhur" disabled="true"></td>';
+                                     data = data + '<td><input name="' + a + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="inputfields plnperhur" disabled="true"></td><td><input type="text" name="' + month1 + '" class="inputfields planned_utilization" disabled="true"></td>';
                                  } else {
 
 
-                                     data = data + '<td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="inputfields plnperhur" disabled="true"></td>';
+                                     data = data + '<td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="inputfields plnperhur" disabled="true"></td><td><input type="text" name="' + month1 + '" class="inputfields planned_utilization" disabled="true"></td>';
                                  }
                              }
                              } else if (weekdays[k] == "SA" || weekdays[k] == "SU") {
 
                                  if (weekdays[k] == "SU") {
                                     if (parseInt(dt) == 1) {
-                                         data = data + '<td><input type="text" name="' + weekno1 + '"  class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td><td><input name="' + a + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="drdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="dadot inputfields" disabled="true"></td>';
+                                         data = data + '<td><input type="text" name="' + weekno1 + '"  class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields planned_utilization" disabled="true"></td><td><input name="' + a + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="drdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="dadot inputfields" disabled="true"></td>';
                                      } else {
                                           weekno1 = moment(cmbne, "MM-DD-YYYY").startOf('isoweek').week();
                                          weekno1 = weekno1;
@@ -301,7 +306,7 @@ yearChange=false;
                                      if (parseInt(dt) == 1) {
 
 
-                                         data = data + '<td><input type="text" name="' + weekno1 + '"  class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '"  class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td><td><input name="' + a + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '"  ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td>';
+                                         data = data + '<td><input type="text" name="' + weekno1 + '"  class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '"  class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields planned_utilization" disabled="true"></td><td><input name="' + a + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '"  ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td>';
                                      } else {
 
                                          data = data + '<td><input name="' + a + '"  ng-model-ngblur="' + weekdays[k] + dt + month + year + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-model="' + weekdays[k] + dt + month + year + '" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td>';
@@ -312,11 +317,11 @@ yearChange=false;
                                  if (parseInt(dt) == 1) {
                                      if (weekdays[k] == "MO") {
 
-                                         data = data + '<td><input type="text" name="' + month + '"  class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input name="' + month + '" type="text" class="inputfields plnperhur" disabled="true"></td><td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '"  ng-model-ngblur ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')" ></input></td>';
+                                         data = data + '<td><input type="text" name="' + month + '"  class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input name="' + month + '" type="text" class="inputfields plnperhur" disabled="true"></td><td><input name="' + month + '" type="text" class="inputfields planned_utilization" disabled="true"></td><td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '"  ng-model-ngblur ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')" ></input></td>';
                                      } else {
 
 
-                                         data = data + '<td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields"  disabled="true"></td><td><input type="text" name="' + weekno1 + '"  class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td><td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')" ></input></td>';
+                                         data = data + '<td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields"  disabled="true"></td><td><input type="text" name="' + weekno1 + '"  class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields planned_utilization" disabled="true"></td><td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')" ></input></td>';
                                      }
                                  } else {
 
@@ -331,7 +336,7 @@ yearChange=false;
                                  k++;
                              }
                          }
-                         data = "<td style='padding:0 5px !important'>{{dataval2.SalesPrice}}</td><td style='padding:0 5px !important'>{{dataval2.soldrev}} </td><td style='padding:0 5px !important'>{{dataval2.plnndreven}} </td><td style='padding:0 5px !important'>{{dataval2.LastModifiedDate|date:'d MMM yyyy'}}</td><td class='Staffing' style='display:none;'>{{dataval2.Staffing}}</td><td class='statical' style='display:none;'>{{dataval2.Statistics}}</td><td class='plnnedperq' style='display:none;'>{{dataval2.plndperq}}</td><td class='companyname widderclumn' ng-style='set_color(dataval2.AccountName)' >{{dataval2.AccountName}}</td><td class='contactidloop' style='display:none;'>{{dataval2.ContactId}}</td>" + data;
+                         data = "<td style='padding:0 5px !important'>{{dataval2.SalesPrice}}</td><td style='padding:0 5px !important'>{{dataval2.soldrev}} </td><td style='padding:0 5px !important'>{{dataval2.plnndreven}} </td><td style='padding:0 5px !important'>{{dataval2.LastModifiedDate|date:'d MMM yyyy'}}</td><td class='Staffing' style='display:none;'>{{dataval2.Staffing}}</td><td class='statical' style='display:none;'>{{dataval2.Statistics}}</td><td class='plnnedperq' style='display:none;'>{{dataval2.plndperq}}</td><td class='plnnedutlz' style='display:none;'>{{dataval2.planned_utilization}}</td><td class='companyname widderclumn' ng-style='set_color(dataval2.AccountName)' >{{dataval2.AccountName}}</td><td class='contactidloop' style='display:none;'>{{dataval2.ContactId}}</td>" + data;
                          return data;
                      }
                  }
@@ -819,7 +824,6 @@ yearChange=false;
 
                  $(document).ready(function() {
 
-
                      sessionStorage.setItem("datepickervalmonth", null);
                      sessionStorage.setItem("datepickervalmonthfordata", null);
 
@@ -1186,6 +1190,24 @@ yearChange=false;
 	                                                 }
 	                                             });
 	                                         });
+
+                                 			var localplanedformont1 = $scope.localobject($scope.dataval.StartDate, $scope.dataval.Resources[i].Staffing, true);
+											resources.planned_utilization = [];
+											var holidays = 0;
+											angular.forEach(workinDaysInPeriod, function(mnthtolmt, key) {
+												 angular.forEach(localplanedformont1, function(lclplnd, plndkey) {
+												     for (var key1 in lclplnd) {
+												         var obj = {};
+												         if (parseFloat(key) == parseFloat(key1)) {
+												             holidays = parseFloat(mnthtolmt - resources.plndperq[key-1][key]) - parseFloat(lclplnd[key1]);
+												             obj[key] = roundNumber((parseFloat(lclplnd[key1]) * 100) / parseFloat(mnthtolmt - holidays),1) + '%';
+												             resources.planned_utilization.push(obj);
+												         }
+
+												     }
+												 });
+											});
+
                                              angular.forEach(resources.Statistics, function(sttcs, i) {
                                                  var strtdate = sttcs.StartDate;
                                                  var enddate = sttcs.EndDate;
@@ -1331,7 +1353,7 @@ yearChange=false;
                                              })
                                          })
                                      }
-                                     $scope.localobject = function(strtdate, objt) {
+                                     $scope.localobject = function(strtdate, objt, onlyWorkDays) {
                                          var startmonth = (strtdate).split(".");
                                          var localplanedformont = [];
                                          for (i = parseInt(startmonth[1]); i <= parseInt(startmonth[1]) + 2; i++) {
@@ -1343,7 +1365,9 @@ yearChange=false;
                                                  if (parseInt(dateformonthtolimit[1]) == i) {
                                                      if (stff.Staff == "") {
                                                          stff.Staff = 0;
-
+                                                     }
+                                                     if(onlyWorkDays && stff.HoursOff>0 && stff.Staff>0){
+                                                     	stff.Staff = stff.Staff - stff.HoursOff;
                                                      }
                                                      plnddayspermnth = plnddayspermnth + parseFloat(stff.Staff) / 8;
                                                  }
@@ -1878,6 +1902,37 @@ yearChange=false;
                                                  });
 
                                              }
+                                         });
+
+										$(".plnnedutlz").each(function() {
+                                             var jsondata1 = $(this).text();
+                                             if (jsondata1 != "[]" && jsondata1 != "") {
+                                                 var th = $(this);
+                                                 var jsonstrngfy = JSON.parse(jsondata1);
+                                                 angular.forEach(jsonstrngfy, function(monthtofind, i) {
+                                                     angular.forEach(monthtofind, function(valueofmonth, i) {
+
+                                                         $(th).parent().find(".planned_utilization").each(function() {
+                                                             var newdateinput = $(this).attr("name");
+
+                                                             if (parseInt(i) == parseInt(newdateinput) - 1) {
+
+                                                                 $(this).val(valueofmonth);
+                                                                 if (parseFloat(valueofmonth) < 0) {
+                                                                     $(this).removeClass('greencolor greycolor redcolor nacolor white');
+                                                                     $(this).addClass("redcolor");
+
+
+                                                                 } else {
+
+                                                                     $(this).removeClass('greencolor greycolor redcolor nacolor white');
+                                                                 }
+                                                             }
+                                                         });
+                                                     });
+                                                 });
+
+                                             }
                                          })
                                      }
 
@@ -2163,30 +2218,30 @@ yearChange=false;
                                      var month1 = parseInt(month) + 1;
 
 
-                                     heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;' class='weekhead' ><br/><span class='spanbirder' style='padding: 0% 3px 0 3px !important;'>KW-" + weekno + "</span><br/><span >" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>S.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th>";
+                                     heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;' class='weekhead' ><br/><span class='spanbirder' style='padding: 0% 3px 0 3px !important;'>KW-" + weekno + "</span><br/><span >" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>S.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>U.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th>";
 
 
                                  } else if (weekdays[k] == "MO") {
                                      if (dt == 1) {
-                                         heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>S.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border:0;' class='weekhead' ><span class='emptyclass' style='border-bottom: 1px solid #B8B1B1;padding: 0px 6px 0px 0px;'>" + monthNames[month - 1] + "</span><span class='spanbirder' style='padding: 0px;'></span><br/><br/><span class='brdrdtls' style='  border-top: 1px solid #B8B1B1;padding: 0px 2px 0px 4px;'>" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th>";
+                                         heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>S.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>U.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border:0;' class='weekhead' ><span class='emptyclass' style='border-bottom: 1px solid #B8B1B1;padding: 0px 6px 0px 0px;'>" + monthNames[month - 1] + "</span><span class='spanbirder' style='padding: 0px;'></span><br/><br/><span class='brdrdtls' style='  border-top: 1px solid #B8B1B1;padding: 0px 2px 0px 4px;'>" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th>";
                                      } else {
                                          heade = heade + "<th style='text-align:center;border:0;' class='weekhead' ><span class='emptyclass'></span></br><span class='spanbirder'></span><br/><span class='brdrdtls' >" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th>";
                                      }
                                  } else if (weekdays[k] == "WE") {
                                      if (dt == 1) {
-                                         heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>S.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:left;border:none;' class='weekhead' ><span class='emptyclass'>" + monthNames[month - 1] + "</span><br/><span class='spanbirder' style='padding: 0 0px 0 0px;'>KW-" + weekno + "</span><br/><span class='wd'>" + weekdays[k] + '<br/><span class="wd1">' + dt + "</span></th>";
+                                         heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>S.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>U.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:left;border:none;' class='weekhead' ><span class='emptyclass'>" + monthNames[month - 1] + "</span><br/><span class='spanbirder' style='padding: 0 0px 0 0px;'>KW-" + weekno + "</span><br/><span class='wd'>" + weekdays[k] + '<br/><span class="wd1">' + dt + "</span></th>";
                                      } else {
                                          heade = heade + "<th style='text-align:left;border:none;' class='weekhead' ><span class='emptyclass'></span></br><span class='spanbirder' style='padding: 0 0px 0 0px;'>KW-" + weekno + "</span><br/><span class='wd'>" + weekdays[k] + '<br/><span class="wd1">' + dt + "</span></th>";
                                      }
                                  } else if (weekdays[k] == "SU") {
                                      if (dt == 1) {
-                                         heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>S.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border:0;' class='weekhead' ><span class='emptyclass' style='border-bottom: 1px solid #B8B1B1;padding: 0px 6px 0px 0px;'>" + monthNames[month - 1] + "</span><span class='spanbirder' style='padding: 0px;'></span><br/><br/><span class='brdrdtls' style='  border-top: 1px solid #B8B1B1;padding: 0px 2px 0px 4px;'>" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th>";
+                                         heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>S.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>U.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border:0;' class='weekhead' ><span class='emptyclass' style='border-bottom: 1px solid #B8B1B1;padding: 0px 6px 0px 0px;'>" + monthNames[month - 1] + "</span><span class='spanbirder' style='padding: 0px;'></span><br/><br/><span class='brdrdtls' style='  border-top: 1px solid #B8B1B1;padding: 0px 2px 0px 4px;'>" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th>";
                                      } else {
                                          heade = heade + "<th style='text-align:center;border:0;' class='weekhead' ><span class='emptyclass'></span></br><span class='spanbirder' style='border-right:1px solid #B8B1B1;'></span><br/><span class='brdrdtls' >" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th>";
                                      }
                                  } else {
                                      if (dt == 1) {
-                                         heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>S.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:left;border:none;' class='weekhead' ><span class='emptyclass'>" + monthNames[month - 1] + "</span><br/><span class='spanbirder'></span><br/><span class='brdrdtls'>" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th>";
+                                         heade = heade + "<th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>D.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>R.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>S.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:center;border-right:0;padding:0;border-top:none;border:none;' class='weekhead' ><p style='border-top: 1px solid #BBB4B4;border-right: 1px solid #BBB4B4;margin: 0px;'>U.</p><span style='border-right: 1px solid #BBB4B4;padding: 5px 33px 18px 0px;'></span></th><th style='text-align:left;border:none;' class='weekhead' ><span class='emptyclass'>" + monthNames[month - 1] + "</span><br/><span class='spanbirder'></span><br/><span class='brdrdtls'>" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th>";
                                      } else {
                                          heade = heade + "<th style='text-align:left;border:none;' class='weekhead' ><span class='emptyclass'></span></br><span class='spanbirder'></span><br/><span class='brdrdtls'>" + weekdays[k] + '</span><br/><span class="brdrdtls1"> ' + dt + "</span></th>";
                                      }
@@ -2543,7 +2598,6 @@ yearChange=false;
                                                     var workinDaysInPeriod = {};
 													workinDaysInPeriod[1] = businessDays($scope.dataval.StartDate);
 													workinDaysInPeriod[2] = businessDays($scope.dataval.EndDate);
-
 													var localplanedformont1 = $scope.localobject($scope.dataval.StartDate, $scope.dataval.Resources[i].Staffing);
 													resource.plndperq = [];
 													angular.forEach(workinDaysInPeriod, function(mnthtolmt, key) {
@@ -2560,9 +2614,24 @@ yearChange=false;
 														 });
 													});
 
+													var localplanedformont1 = $scope.localobject($scope.dataval.StartDate, $scope.dataval.Resources[i].Staffing, true);
+													resource.planned_utilization = [];
+													var holidays = 0;
+													angular.forEach(workinDaysInPeriod, function(mnthtolmt, key) {
+														 angular.forEach(localplanedformont1, function(lclplnd, plndkey) {
+														     for (var key1 in lclplnd) {
+														         var obj = {};
+														         if (parseFloat(key) == parseFloat(key1)) {
+														             holidays = parseFloat(mnthtolmt - resource.plndperq[key-1][key]) - parseFloat(lclplnd[key1]);
+														             obj[key] = roundNumber((parseFloat(lclplnd[key1]) * 100) / parseFloat(mnthtolmt - holidays),1) + '%';
+														             resource.planned_utilization.push(obj);
+														         }
+
+														     }
+														 });
+													});
 													$scope.$apply();
 													$scope.plannedorqa();
-													// setTimeout(function(){ $scope.plannedorqa(); }, 10000);
                                                  }
 
                                              });
@@ -2832,7 +2901,7 @@ yearChange=false;
                        <img src="/resource/1433350802000/loader" class="imgldr"/>
 
 
-            <div class="hdng wrapperwidth" >
+            <div class="hdng wrapperwidth" id="mainContent">
                 <div class="custdisplay">
                     <div data-ng-repeat="dataval in dataval.Customers" class="custvalues" on-finish-render="ngRepeatFinished">
                         <div data-ng-repeat="dataval1 in dataval.Projects" >
@@ -2933,6 +3002,7 @@ yearChange=false;
                 </div>
             </div>
              <p class="msg">Please select Opportunities you want to see using the filters above.</p>
+
             </body>
 
             </html>
