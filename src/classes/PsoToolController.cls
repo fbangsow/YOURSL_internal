@@ -2,11 +2,14 @@ public without sharing class PsoToolController{
     private static Map<Id, PsoToolController> UserIdToPsoToolInstance= new Map<Id, PsoToolController>();
     @TestVisible private PsoToolDataSetWrapper DataSet;
     @TestVisible private List<Opportunity> Opportunities;
-    @TestVisible private Map<String, Contact> ContactIdsToContacts;
+    @TestVisible private Map<Id, Contact> ContactIdsToContacts;
     @TestVisible private Map<String, Map<String, Map<String, OpportunityLineItem>>> ContactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap;
     @TestVisible private Date StartDate;
     @TestVisible private Date EndDate;
     @TestVisible private List<Id> OpportunitiesToShow;
+    private Set<Id> ContactsToShow;
+    private Boolean ShowAllOpportunities;
+    private Boolean ShowAllContacts;
     private Map<String, Decimal> OppLineItemScheduleIdToNumberOfDays;
     @TestVisible private Map<String, Map<String, RawStats>> OppLineItemIdToDateRangeToRawStats;
     @TestVisible private Map<String, Map<String, RawStats>> ContactIdToDateRangeToRawStats;
@@ -26,7 +29,10 @@ public without sharing class PsoToolController{
 
     private PsoToolController(){
         OpportunitiesToShow = new List<Id>();
-        ContactIdsToContacts = new Map<String, Contact>();
+        ContactsToShow = new Set<Id>();
+        ContactIdsToContacts = new Map<Id, Contact>();
+        ShowAllOpportunities = false;
+        ShowAllContacts = false;
         setStartDate(Date.today());
     }
 
@@ -47,9 +53,19 @@ public without sharing class PsoToolController{
         queryData();
         DataSet.StartDate = this.StartDate.format();
         DataSet.EndDate = this.EndDate.format();
-        DataSet.Customers = getCustomers(true);
-        DataSet.Resources = getResourcesAvailabilityData(true);
+        if(opportunitiesFilterIsUsed())
+            DataSet.Customers = getCustomers(true);
+        if(contactsFilterIsUsed())
+            DataSet.Resources = getResourcesAvailabilityData(true);
         return DataSet;
+    }
+
+    private Boolean opportunitiesFilterIsUsed(){
+        return (!OpportunitiesToShow.isEmpty() || ShowAllOpportunities);
+    }
+
+    private Boolean contactsFilterIsUsed(){
+        return (!ContactsToShow.isEmpty() || ShowAllContacts);
     }
 
     public PsoToolController setStartDate(Date passed_date){
@@ -60,7 +76,24 @@ public without sharing class PsoToolController{
     }
 
     public PsoToolController setSelectedOpportunities(List<Id> selected_opportunities){
+        ShowAllOpportunities = false;
         this.OpportunitiesToShow = selected_opportunities;
+        return this;
+    }
+
+    public PsoToolController showAllOpportunities(){
+        ShowAllOpportunities = true;
+        return this;
+    }
+
+    public PsoToolController setSelectedContacts(List<Id> selected_contacts){
+        ShowAllContacts = false;
+        this.ContactsToShow = new Set<Id> (selected_contacts);
+        return this;
+    }
+
+    public PsoToolController showAllContacts(){
+        ShowAllContacts = true;
         return this;
     }
 
@@ -71,9 +104,10 @@ public without sharing class PsoToolController{
                                         FROM OpportunityLineItemSchedules
                                         WHERE Description !=:OpportunityLineItemScheduleChangeHandler.UNPLANNED_COMMENT)
                                         FROM OpportunityLineItem
-                                        WHERE Contact__r.Id IN :getRelatedContactIds()
+                                        WHERE Contact__r.Id IN :getContactIdsToShow()
                                         AND (Managed_by_PSO_Tool__c = true OR Opportunity.Name LIKE : (SPECIAL_OPPORTUNITY + '%'))];
         buildDataStructure(opportunity_line_items);
+        buildContactIdsToContactsMap();
         List<Planning_statistics__c> planning_statistics_info = [SELECT Data_Type__c, Days__c, End_Date__c, OpportunityLineItemId__c, Revenue__c, Start_Date__c, Time_Type__c, Contact__r.Id
                                         FROM Planning_statistics__c
                                         WHERE Start_Date__c >= :this.StartDate AND End_Date__c <= :this.EndDate];
@@ -95,10 +129,12 @@ public without sharing class PsoToolController{
     }
 
     @TestVisible private List<Id> getOpportunitiesToShow(){
-        if(OpportunitiesToShow.isEmpty())
+        if(ShowAllOpportunities || (ShowAllContacts && OpportunitiesToShow.isEmpty()) || (!ContactsToShow.isEmpty() && OpportunitiesToShow.isEmpty()))
             return getRelatedOpportunityIds();
-        else
+        else if(!OpportunitiesToShow.isEmpty())
             return OpportunitiesToShow;
+        else
+            return new List<Id>();
     }
 
     private List<Id> getRelatedOpportunityIds(){
@@ -126,13 +162,20 @@ public without sharing class PsoToolController{
         return opportunityIds;
     }
 
+    private Set<Id> getContactIdsToShow(){
+        if(ShowAllContacts || (ShowAllOpportunities && ContactsToShow.isEmpty()) || (!OpportunitiesToShow.isEmpty() && ContactsToShow.isEmpty()))
+            return getRelatedContactIds();
+        else if(!ContactsToShow.isEmpty())
+            return ContactsToShow;
+        else
+            return new Set<Id>();
+    }
+
     private Set<Id> getRelatedContactIds(){
         Set<Id> contact_ids = new Set<Id>();
-        for(Opportunity opp: Opportunities){
-            for(OpportunityLineItem item: opp.OpportunityLineItems){
+        for(Opportunity opp: Opportunities)
+            for(OpportunityLineItem item: opp.OpportunityLineItems)
                 contact_ids.add(item.Contact__r.Id);
-            }
-        }
         return contact_ids;
     }
 
@@ -151,6 +194,13 @@ public without sharing class PsoToolController{
                 }
             }
         }
+    }
+
+    private void buildContactIdsToContactsMap(){
+        for(Opportunity opp: Opportunities)
+            for(OpportunityLineItem line_item: opp.OpportunityLineItems)
+                if(line_item.Contact__r != null)
+                    ContactIdsToContacts.put(line_item.Contact__r.Id, line_item.Contact__r);
     }
 
     private Map<String, Map<String, OpportunityLineItem>> getOpportunityIdToOpportunityLineItemMap(OpportunityLineItem item){
@@ -227,16 +277,14 @@ public without sharing class PsoToolController{
         new_project.ProjectStatus = opp.Projektstatus__c;
         if(with_resources)
             new_project.Resources = getResources(opp);
-        else
-            populateContactIdsToContactsMap(opp);
         return new_project;
     }
 
     @TestVisible private List<Resource> getResources(Opportunity opp){
         Map<String, Resource> resources = new Map<String, Resource> ();
         for(OpportunityLineItem line_item: opp.OpportunityLineItems){
-            if(line_item.Contact__r != null)
-                ContactIdsToContacts.put(line_item.Contact__r.Id, line_item.Contact__r);
+            if(!ContactsToShow.isEmpty() && !ContactsToShow.contains(line_item.Contact__r.Id))
+                continue;
             String key_for_map = line_item.Contact__r.Name + line_item.Product2.Name;
             if(!resources.containsKey(key_for_map)){
                 resources.put(line_item.Contact__r.Name + line_item.Product2.Name, getResource(opp.Id, line_item));
@@ -252,13 +300,6 @@ public without sharing class PsoToolController{
         }
         countPlannedDaysAndFilterStaffingByDates(resources);
         return resources.values();
-    }
-
-    private void populateContactIdsToContactsMap(Opportunity opp){
-        for(OpportunityLineItem line_item: opp.OpportunityLineItems){
-            if(line_item.Contact__r != null)
-                ContactIdsToContacts.put(line_item.Contact__r.Id, line_item.Contact__r);
-        }
     }
 
     @TestVisible private Resource getResource(String opp_id, OpportunityLineItem line_item){
@@ -324,7 +365,8 @@ public without sharing class PsoToolController{
 
     @TestVisible private List<ResourceInfo> getResourcesAvailabilityData(Boolean with_staffing){
         Map<String, ResourceInfo> contactIdToResourceAvailabilityData = new Map<String, ResourceInfo>();
-        for(String contact_id: ContactIdsToContacts.keySet()){
+        Set<Id> contacts_to_show = getContactsToShow();
+        for(String contact_id: contacts_to_show){
             if(!contactIdToResourceAvailabilityData.containsKey(contact_id)){
                 ResourceInfo newInfo = new ResourceInfo();
                 newInfo.ResourceName = ContactIdsToContacts.get(contact_id).Name;
@@ -342,6 +384,15 @@ public without sharing class PsoToolController{
             }
         }
         return contactIdToResourceAvailabilityData.values();
+    }
+
+    private Set<Id> getContactsToShow(){
+        if(ContactsToShow.isEmpty())
+            return ContactIdsToContacts.keySet();
+        else{
+            ContactsToShow.retainAll(ContactIdsToContacts.keySet());
+            return ContactsToShow;
+        }
     }
 
     @TestVisible private List<Staffing> getStaffingForResource(List<Map<String, OpportunityLineItem>> opp_line_item_id_to_opportunity_line_item){
@@ -483,8 +534,10 @@ public without sharing class PsoToolController{
             jeyson.writeStartObject();
             jeyson.writeStringField('StartDate', StartDate);
             jeyson.writeStringField('EndDate', EndDate);
-            jeyson.writeObjectField('Customers', Customers);
-            sortAndWriteResources(jeyson);
+            if(Customers != null)
+                jeyson.writeObjectField('Customers', Customers);
+            if(Resources != null)
+                sortAndWriteResources(jeyson);
             jeyson.writeEndObject();
             return jeyson.getAsString();
         }
