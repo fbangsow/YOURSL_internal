@@ -107,7 +107,6 @@ public without sharing class PsoToolController{
                                         WHERE Contact__r.Id IN :getContactIdsToShow()
                                         AND (Managed_by_PSO_Tool__c = true OR Opportunity.Name LIKE : (SPECIAL_OPPORTUNITY + '%'))];
         buildDataStructure(opportunity_line_items);
-        buildContactIdsToContactsMap();
         List<Planning_statistics__c> planning_statistics_info = [SELECT Data_Type__c, Days__c, End_Date__c, OpportunityLineItemId__c, Revenue__c, Start_Date__c, Time_Type__c, Contact__r.Id
                                         FROM Planning_statistics__c
                                         WHERE Start_Date__c >= :this.StartDate AND End_Date__c <= :this.EndDate];
@@ -126,6 +125,7 @@ public without sharing class PsoToolController{
                                         Project_Start_Date__c <= :this.EndDate AND
                                         Project_End_Date__c >= :this.StartDate
                                         AND Managed_by_PSO_Tool__c = true];
+        buildContactIdsToContactsMap();
     }
 
     @TestVisible private List<Id> getOpportunitiesToShow(){
@@ -498,6 +498,8 @@ public without sharing class PsoToolController{
 
     public FilterValues getFilterValues(){
         FilterValues filter_values = new FilterValues();
+        ShowAllOpportunities = true;
+        ShowAllContacts = true;
         getOpportunities();
         filter_values.Customers = getCustomers(false);
         filter_values.Resources = getResourcesAvailabilityData(false);
