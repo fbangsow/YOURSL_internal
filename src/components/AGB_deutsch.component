@@ -1,0 +1,314 @@
+<apex:component >
+        <apex:outputtext >
+            <div style="page-break-after: always;">
+                <table border="0" cellspacing="0" cellpadding="0" width="600px"
+                    id="AGB.de">
+                    <tr>
+                        <td align="left" valign="top" width="292px">
+
+                            <p
+                                style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px">
+                                <strong>Allgemeine Verkaufs- und Lieferbedingungen der
+                                    YOUR SL GmbH</strong><br /> <br /> <strong>1. Geltungsbereich</strong><br />
+                                <br />
+                            </p>
+
+                            <p
+                                style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify">
+                                Soweit nicht ausdrücklich und schriftlich anders bestimmt,
+                                liegen diese Bedingungen allen Angeboten zugrunde, die von der
+                                YOUR SL GmbH abgegeben werden. Aufträge von Bestellern, denen
+                                diese Bedingungen bekannt sind, gelten als zu diesen Bedingungen
+                                erteilt, sofern nicht ausdrücklich und schriftlich anders
+                                bestimmt.</p>
+
+                            <p
+                                style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px">
+                                <br /> <strong>2. Zustandekommen des Vertrages</strong><br />
+                                <br />
+                            </p>
+
+                            <p
+                                style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify">
+                                Die Angebote von der YOUR SL GmbH sind freibleibend, sofern sie
+                                im Angebotstext nicht ausdrücklich als bindend bezeichnet sind.
+                                Ein Vertrag kommt erst durch schriftliche Annahme einer
+                                Bestellung durch die YOUR SL GmbH (Auftragsbestätigung) oder
+                                durch Ausführung des Auftrags, z.B. Auslieferung, Übermittlung,
+                                Download oder Freischaltung zustande. Für den Vertragsinhalt ist
+                                die schriftliche Auftragsbestätigung maßgebend, sofern eine
+                                solche erfolgt.</p>
+
+                            <p
+                                style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify">
+                                <br /> Mündliche Nebenabreden bedürfen zu ihrer Wirksamkeit
+                                schriftlicher Bestätigung, die nur von der YOUR SL GmbH erteilt
+                                werden kann. Die YOUR SL GmbH behält sich vor, Irrtümer in ihren
+                                Angeboten, Rechnungen und Mitteilungen, wie z. B. Schreib- und
+                                Rechenfehler und die aus ihnen abgeleiteten Ergebnisse,
+                                jederzeit zu berichtigen. Eigenschaften und Funktionen der
+                                abgebildeten Produkte und Leistungen in den Broschüren bzw. auf
+                                den Webseiten gelten dann als zugesicherte Eigenschaft im Sinne
+                                von § 463 BGB, wenn diese ausdrücklich und schriftlich im
+                                Vertrag oder in der Auftragsbestätigung zugesichert wurden.
+                            </p>
+
+                            <p
+                                style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px">
+                                <br /> <strong>3. Lieferung und Gefahrübergang</strong><br />
+                                <br />
+                            </p>
+
+                            <p
+                                style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify">
+                                Die angegebenen Lieferzeiten beginnen mit dem Datum der
+                                Auftragsbestätigung. Lieferzeitangaben erfolgen nach bestem
+                                Wissen, begründen jedoch keine Verbindlichkeit. Auch bei
+                                ausdrücklich garantierten Lieferterminen entbinden die YOUR SL
+                                GmbH höhere Gewalt, Streiks, Aussperrungen oder von der YOUR SL
+                                GmbH nicht verschuldete Lieferverzögerungen der Zubringerfirmen
+                                von jeglicher Haftung. Teillieferungen und Teilrechnungen für
+                                funktionsfähige Einheiten sind zulässig. Die Gefahr geht bei der
+                                Auslieferung des Kaufgegenstandes aus dem Werk auf den Besteller
+                                über. Die Transportkosten von Hauptlieferung und eventueller
+                                Teillieferung trägt grundsätzlich der Käufer.</p>
+
+                            <p
+                                style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px">
+                                <br /> <strong>4. Preise</strong><br /> <br />
+                            </p>
+
+                            <p
+                                style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify">
+                                Alle Preise verstehen sich in Euro und gelten jeweils für
+                                Lieferung ab Werk. Eine Änderung der Kostenlage berechtigt die
+                                YOUR SL GmbH zur Preisanpassung, falls zwischen dem Datum der
+                                Auftragsbestätigung und dem vorgesehenen Liefertermin mehr als 2
+                                Monate liegen. Alle Preise verstehen sich zuzüglich
+                                Verpackungs-, Transport-, Transportversicherungskosten,
+                                Reisekosten und Auslagen sowie der Umsatzsteuer/gesetzlichen
+                                Mehrwertsteuer.</p>
+
+                            <p
+                                style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px">
+                                <br /> <strong>5. Zahlung und Eigentumsvorbehalt</strong><br />
+                                <br />
+                            </p>
+
+                            <p
+                                style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify">
+                                Sämtliche Lieferungen erfolgen ausschließlich unter erweitertem
+                                Eigentumsvorbehalt. Rechnungen über Waren- und elektronisch
+                                übertragene Lieferungen sind ohne jeden Abzug sofort netto
+                                fällig. Schecks werden nicht entgegengenommen, Zahlungen mit
+                                Kartensystemen, wie z. B. MasterCard und Visa werden akzeptiert.
+                                Die YOUR SL GmbH behält sich das Eigentum an den
+                                Liefergegenständen so lange vor, bis sämtliche Forderungen der
+                                YOUR SL GmbH aus Geschäften mit dem Besteller restlos beglichen
+                                sind. Erfolgt die Zahlung des Kaufpreises nicht wie vereinbart,
+                                behält sich die YOUR SL GmbH die Geltendmachung von
+                                Verzugszinsen vor, die – sofern nicht ein höherer Verzugsschaden
+                                nachgewiesen wird – in Höhe von 3% über dem jeweiligen
+                                Diskontsatz der Europäischen Zentralbank berechnet werden.</p>
+
+                            <p
+                                style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify">
+                                <br /> Die YOUR SL GmbH ist nach Ablauf eines Monats ab
+                                Eintritt des Verzugs berechtigt, die Liefergegenstände
+                                zurückzufordern und vom Vertrag zurückzutreten. Rechnungen sind
+                                für die YOUR SL GmbH in spesenfreier Weise zu begleichen. Dies
+                                gilt insbesondere für Zahlungen aus dem Ausland. Wird bei
+                                vereinbartem Lastschrifteinzug oder Scheckzahlung eine
+                                Lastschrift oder ein Scheck nicht eingelöst oder wurde das
+                                individuelle Kundenkreditlimit überzogen, so erfolgen alle
+                                weiteren Lieferungen – auch Rückstandsauflösungen – nur gegen
+                                Nachnahme / Barzahlung.
+                            </p>
+
+                            <p
+                                style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify">
+                                <br /> Dies berechtigt den Kunden nicht zur
+                                Annahmeverweigerung, im Übrigen bleibt der Kaufvertrag bestehen.
+                                Noch ausstehende Lieferungen werden bis zur endgültigen
+                                Bezahlung aller im Verzug befindlichen Rechnungen
+                                zurückgehalten. Der Käufer ist nicht berechtigt, wegen
+                                Gewährleistungsansprüchen Zahlungen zurückzuhalten oder wegen
+                                nicht anerkannter Gegenforderungen den Kaufpreis anzurechnen.
+                            </p>
+
+                            <p
+                                style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px">
+                                <br /> <strong>6. Gewährleistung</strong><br /> <br />
+                            </p>
+
+                            <p
+                                style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify">
+                                Die YOUR SL GmbH gewährleistet, dass der Kaufgegenstand im
+                                Zeitpunkt des Gefahrübergangs frei von Sachmängeln ist. Die
+                                Mängelansprüche verfallen nach 3 Monaten. Die Frist beginnt mit
+                                der Übergabe der Kaufsache an Sie. Treten während dieser Frist
+                                Fehler an der Kaufsache, auf die den Wert und die Tauglichkeit
+                                nicht nur unerheblich beeinträchtigen, wird die YOUR SL GmbH
+                                diese Fehler nach Eingang der Fehlermeldung unverzüglich
+                                beheben. Voraussetzung für die Fehlerbehebung ist, dass die
+                                Fehlerauswirkungen reproduzierbar sind, von Ihnen ausreichend
+                                beschrieben wurden und der Fehler<br /> <br />
+
+
+                            </p></td>
+                        <td align="left" valign="top"></td>
+                        <td align="left" valign="top" width="292px">
+
+                            <p
+                                style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px">
+                            </p>
+
+                            <p
+                                style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify">
+                                der YOUR SL GmbH unverzüglich gemeldet wurde. Die Gewährleistung
+                                erfolgt durch Nachbesserung, die nach Wahl der YOUR SL GmbH auch
+                                in Form der unentgeltlichen Lieferung erfolgen kann. Zum Zwecke
+                                der Nachbesserung übernimmt die YOUR SL GmbH die Ihnen
+                                entstehenden erforderlichen Aufwendungen. Bei Fehlschlagen der
+                                Nachbesserung wird Ihnen das Recht vorbehalten, nach Ihrer Wahl
+                                zu mindern oder vom Vertrag zurückzutreten. Es gilt die
+                                gesetzliche Garantiezeit (ausgenommen bei Eingriff an den
+                                Gegenständen, unüblicher oder außergewöhnlicher Gebrauch,
+                                Verschleißartikel sowie alle Gebraucht-, Vorführ- und
+                                Messegeräte). Erkennbare Mängel müssen unverzüglich nach
+                                Lieferung, spätestens nach 2 Tagen, verborgene Mängel
+                                unverzüglich nach Entdeckung schriftlich gerügt werden.
+                                Transportschäden sind keine Garantiefälle, hier haftet i. d. R.
+                                der Transporteur.</p>
+
+                            <p
+                                style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify">
+                                <br /> Es gilt der Zustand der Ware, in dem diese die YOUR SL
+                                GmbH erreicht. Bei berechtigter, fristgerechter Mängelrüge
+                                erhält der Käufer nach Wahl der YOUR SL GmbH Nachbesserung,
+                                Umtausch oder Warengutschrift. Ein weitergehender Schadensersatz
+                                ist in jedem Fall ausgeschlossen. Die Garantiezeit wird durch
+                                eine Garantieleistung nicht verlängert, auch nicht für ersetzte
+                                und reparierte Teile. Rücksendungen an die YOUR SL GmbH sind
+                                grundsätzlich vorher mit der Serviceabteilung abzusprechen.
+                            </p>
+
+                            <p
+                                style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify">
+                                <br /> Rücksendungen erfolgen auf Gefahr des Käufers, sind
+                                sorgfältig zu verpacken – damit auf dem Transportweg keine
+                                Beschädigungen auftreten können – und frei Haus an die YOUR SL
+                                GmbH zurückzusenden. Wird die Ware „unfrei“ zurückgeschickt, so
+                                hat YOUR SL GmbH das Recht, die Annahme zu verweigern oder die
+                                verauslagten Gebühren zu berechnen.
+                            </p>
+
+                            <p
+                                style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify">
+                                <br /> Rücksendungen von Transportschäden gehen zu Lasten des
+                                Absenders. Reparatursendungen, die nicht unter die
+                                Gewährleistung fallen, werden gegen Berechnung ausgeführt. Die
+                                Erstellung eines Kostenvoranschlages ist gebührenpflichtig, auch
+                                wenn die Reparatur danach auf Kundenwunsch nicht durchgeführt
+                                werden soll. Bei Rücksendungen von Ware, die keinen Fehler
+                                zeigt, werden ebenfalls die entsendenden Prüfkosten in Rechnung
+                                gestellt.
+                            </p>
+
+                            <p
+                                style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px">
+                                <br /> <strong>7. Rücktrittsrecht, Schadenersatz und
+                                    Zurückbehaltungsrecht</strong><br /> <br />
+                            </p>
+
+                            <p
+                                style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify">
+                                Der Besteller kann vom Vertrag zurücktreten, wenn die YOUR SL
+                                GmbH mit der Lieferung oder Herstellung der bestellten Ware über
+                                eine vom Besteller gesetzte angemessene Nachfrist hinaus im
+                                Verzuge ist und dem Besteller ein längeres Zuwarten nach Treu
+                                und Glauben nicht zugemutet werden kann. Für Schäden ist die
+                                Haftung ausgeschlossen, sofern der Schadenseintritt nicht auf
+                                einer grob fahrlässigen Pflichtverletzung der YOUR SL GmbH oder
+                                auf einer vorsätzlichen oder grob fahrlässigen Pflichtverletzung
+                                eines gesetzlichen Vertreters von YOUR SL GmbH beruht.</p>
+
+                            <p
+                                style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify">
+                                <br /> Auf Grund gesetzlicher Zurückhaltungsrechte dürfen
+                                fällige Zahlungen vom Besteller nur in einem Umfang
+                                zurückgehalten werden, der in angemessenem Verhältnis zu dem
+                                Wert der von der YOUR SL GmbH noch nicht vertragsgemäß
+                                erbrachten Teile der Lieferung steht, die deswegen vom Besteller
+                                noch nicht genutzt werden können. Ein Widerruf des Vertrages
+                                nach § 355 Abs. 1 BGB ist gem. §3 Abs.1 FernAbsG bzw. § 312d Abs
+                                1 BGB nach Ablauf einer Frist von 2 Wochen nach Eingang der
+                                ersten Sendung ausgeschlossen. Der Widerruf muss keine
+                                Begründung enthalten und schriftlich, auf einem dauerhaften
+                                Datenträger oder durch Rücksendung der Sache erfolgen.
+                            </p>
+
+                            <p
+                                style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify">
+                                <br /> Zur Fristwahrung genügt die rechtzeitige Absendung des
+                                Widerrufs an uns. Von dem Widerruf sind Waren und
+                                Dienstleistungen nach §3 Abs. 2 FernAbsG bzw. § 312d Abs. 4.2
+                                BGB ausgeschlossen. Im Falle der Geltendmachung des
+                                Widerrufsrechtes des Verbrauchers ist die YOUR SL GmbH
+                                verpflichtet, den bereits gezahlten Kaufpreis wieder
+                                zurückzuerstatten; der Käufer hat in diesem Fall keine
+                                Lizenzrechte bzw. Nutzungsrechte an überlassenen Daten,
+                                Trademarks oder überlassener Software und verpflichtet sich,
+                                diese zeitgleich zum Widerruf des Kaufvertrages zu löschen. Nach
+                                Eingang Ihres Widerrufs sind wir verpflichtet, eventuelle
+                                Zahlungen zurückzuerstatten und der Käufer ist verpflichtet,
+                                unsere Lieferung auf unsere Kosten und Gefahr zurückzusenden.
+                                Die Rücksendung hat grundsätzlich per Einschreiben-Rückschein zu
+                                erfolgen. Der Empfänger hat die Lieferung sofort auf
+                                Transportschäden zu untersuchen und etwaige Schäden sofort,
+                                schriftlich der YOUR SL GmbH und der Transportgesellschaft zu
+                                melden.
+                            </p>
+
+                            <p
+                                style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify">
+                                <br /> Der Empfänger ist selbst für die Einhaltung der
+                                Meldefrist der jeweiligen Transportgesellschaft verantwortlich.
+                                Eine verspätete Meldung bewirkt fast immer die Ablehnung von
+                                Schadensersatzansprüchen durch die Transportgesellschaft. Die
+                                YOUR SL GmbH übernimmt die Abwicklung mit der
+                                Transportversicherung – soweit abgeschlossen – und lässt dem
+                                Käufer deren Leistung zukommen. Für zerbrochene oder beschädigte
+                                Verpackungen oder Umverpackungen übernehmen die meisten
+                                Transporteure, die Transportversicherung und auch die YOUR SL
+                                GmbH keine Haftung.
+                            </p>
+
+                            <p
+                                style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px">
+                                <br /> <strong>8. Teilnichtigkeit</strong><br /> <br />
+                            </p>
+
+                            <p
+                                style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify">
+                                Sollte eine Bestimmung dieser Geschäftsbedingungen oder einer
+                                sonstigen Vereinbarung unwirksam sein, so wird die Wirksamkeit
+                                von allen anderen Bestimmungen nicht berührt, an Stelle der
+                                unwirksamen Bestimmungen tritt eine dem Sinn der Bestimmung am
+                                nächsten liegende.</p>
+
+                            <p
+                                style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px">
+                                <br /> <strong>9. Erfüllungsort und Gerichtsstand</strong><br />
+                                <br />
+                            </p>
+
+                            <p
+                                style="font-family: Verdana, Sans-serif; font-size: 6pt; line-height: 128%; margin-top: 0px; margin-bottom: 0px; text-align: justify">
+                                Erfüllungsort und Gerichtsstand ist Berlin. Anzuwenden ist das
+                                Recht der Bundesrepublik Deutschland.</p></td>
+                    </tr>
+                </table>
+            </div>
+        </apex:outputtext>
+</apex:component>
