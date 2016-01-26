@@ -7,9 +7,9 @@ public without sharing class PsoToolController{
     @TestVisible private Date StartDate;
     @TestVisible private Date EndDate;
     @TestVisible private List<Id> OpportunitiesToShow;
-    private Set<Id> ContactsToShow;
-    private Boolean ShowAllOpportunities;
-    private Boolean ShowAllContacts;
+    @TestVisible private Set<Id> ContactsToShow;
+    @TestVisible private Boolean ShowAllOpportunities;
+    @TestVisible private Boolean ShowAllContacts;
     private Map<String, Decimal> OppLineItemScheduleIdToNumberOfDays;
     @TestVisible private Map<String, Map<String, RawStats>> OppLineItemIdToDateRangeToRawStats;
     @TestVisible private Map<String, Map<String, RawStats>> ContactIdToDateRangeToRawStats;
@@ -656,12 +656,12 @@ public without sharing class PsoToolController{
         public Decimal ActualRevenue;
 
         public RawStats(Planning_statistics__c entry){
-            this.StartDate = entry.Start_Date__c;
-            this.EndDate = entry.End_Date__c;
-            this.PlannedDays = 0;
-            this.PlannedRevenue = 0;
-            this.ActualDays = 0;
-            this.ActualRevenue = 0;
+            StartDate = entry.Start_Date__c;
+            EndDate = entry.End_Date__c;
+            PlannedDays = 0;
+            PlannedRevenue = 0;
+            ActualDays = 0;
+            ActualRevenue = 0;
         }
     }
 
