@@ -1,0 +1,36 @@
+<apex:page sidebar="false" name="PSOTable2" controller="PsoTable2Controller">
+	<apex:includeScript value="{!URLFOR($Resource.jQuery_2_2_0)}"/>
+	<apex:includeScript value="{!URLFOR($Resource.StreamingApiScripts,'json2.js')}"/>
+	<apex:includeScript value="{!URLFOR($Resource.StreamingApiScripts,'Cometd.js')}"/>
+	<apex:includeScript value="{!URLFOR($Resource.StreamingApiScripts,'jquery.cometd.js')}"/>
+	<apex:includeScript value="{!URLFOR($Resource.jQuery_ui_1_11_4,'jquery-ui.min.js')}"/>
+	<apex:includeScript value="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js" />
+	<apex:includeScript value="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular-cookies.min.js" />
+	<apex:includeScript value="{!URLFOR($Resource.PsoTable2,'PsoTable2.js')}"/>
+
+	<link rel="stylesheet" href="{!URLFOR($Resource.jQuery_ui_1_11_4,'jquery-ui.min.css')}" />
+	<link rel="stylesheet" href="{!URLFOR($Resource.PsoTable2,'PsoTable2.css')}" />
+
+	<apex:form>
+		<div data-ng-app="PsoTable2" data-ng-controller="PsoTable2">
+			<apex:pageBlock title="Loading" html-data-ng-if="status.loading">
+			</apex:pageBlock>
+
+			<apex:pageBlock html-data-ng-if="!status.loading">
+				<label for="selectedOpportunities">Opportunities:</label>
+				<input type="search" name="selectedOpportunities" id="selectedOpportunities" placeholder="Please select an opportunity" ng-model="viewState.opportunitiesFilter" ng-change="removeFilteredOpportunitiesFromSelection()" />
+
+				<select multiple="multiple" ng-model="viewState.selectedOpportunities" ng-attr-size="{{ viewState.selectedOpportunitiesSize }}">
+					<optgroup ng-repeat="customer in data.Customers | filter:customerMatchesFilter" label="{{ customer.AccountName }}" ng-click="accountClicked(customer, $event)">
+						<option ng-repeat="project in customer.Projects | filter:projectMatchesFilter" value="{{ project.OpportunityId }}">
+							{{ project.OpportunityName }}
+						</option>
+					</optgroup>
+				</select>
+
+				<a href="#" ng-click="clearSelectedOpportunities()">Clear</a>
+				<a href="#" ng-click="selectAllOpportunities()">Select all</a>
+			</apex:pageBlock>
+		</div>
+	</apex:form>
+</apex:page>
