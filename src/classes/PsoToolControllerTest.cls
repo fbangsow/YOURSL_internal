@@ -43,7 +43,7 @@ private class PsoToolControllerTest {
     @isTest static void testQueryDataFindsTheRightOpportunitiesAndBuildsDataSet() {
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
-            PsoToolController new_instance = PsoToolController.getInstance();
+            PsoToolController new_instance = PsoToolController.getInstance().showAllOpportunities().showAllContacts();
             new_instance.startDate = Date.newInstance(2015, 1, 1);
             new_instance.endDate = Date.newInstance(2015, 3, 31);
             setup_data.createTestData();
@@ -72,7 +72,7 @@ private class PsoToolControllerTest {
     @isTest static void testQueryDataFindsAllOpportunitiesForAdmins() {
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
-            PsoToolController new_instance = PsoToolController.getInstance();
+            PsoToolController new_instance = PsoToolController.getInstance().showAllOpportunities().showAllContacts();
             new_instance.startDate = Date.newInstance(2015, 1, 1);
             new_instance.endDate = Date.newInstance(2015, 3, 31);
             setup_data.createTestDataForAdmins();
@@ -176,8 +176,9 @@ private class PsoToolControllerTest {
             new_instance.startDate = Date.newInstance(2015, 1, 1);
             new_instance.endDate = Date.newInstance(2015, 3, 31);
             setup_data.createTestData();
+            new_instance.ShowAllOpportunities = true;
+            new_instance.ShowAllContacts = true;
             new_instance.queryData();
-            new_instance.ContactIdsToContacts = new Map<String, Contact>();
             Test.startTest();
                 List<PsoToolController.Customer> customers = new_instance.getCustomers(true);
             Test.stopTest();
@@ -196,7 +197,6 @@ private class PsoToolControllerTest {
             new_instance.endDate = Date.newInstance(2015, 3, 31);
             setup_data.createTestData();
             new_instance.queryData();
-            new_instance.ContactIdsToContacts = new Map<String, Contact>();
             Opportunity opp = [SELECT Name, Account.Name, Account.Id FROM Opportunity WHERE id =: setup_data.FirstOpportunity.Id];
             Test.startTest();
                 PsoToolController.Customer customer = new_instance.getCustomer(opp);
@@ -214,7 +214,6 @@ private class PsoToolControllerTest {
             new_instance.endDate = Date.newInstance(2015, 3, 31);
             setup_data.createTestData();
             new_instance.queryData();
-            new_instance.ContactIdsToContacts = new Map<String, Contact>();
             Opportunity opp = [SELECT Id, Name, Account.Name, Account.Id, Projektleiter_YOUR_SL__r.Name, Projektstatus__c,
                                     (SELECT Contact__r.Name, Contact__r.Id, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
                                         FROM OpportunityLineItems)
@@ -235,12 +234,11 @@ private class PsoToolControllerTest {
     @isTest static void testGetResourcesReturnsListOfResources() {
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
-            PsoToolController new_instance = PsoToolController.getInstance();
+            PsoToolController new_instance = PsoToolController.getInstance().showAllOpportunities().showAllContacts();
             new_instance.startDate = Date.newInstance(2015, 1, 1);
             new_instance.endDate = Date.newInstance(2015, 3, 31);
             setup_data.createTestData();
             new_instance.queryData();
-            new_instance.ContactIdsToContacts = new Map<String, Contact>();
             Opportunity opp = [SELECT Id, Name, Account.Name, Account.Id, Projektleiter_YOUR_SL__r.Name,
                                     (SELECT Contact__r.Name, Contact__r.Id, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
                                         FROM OpportunityLineItems)
@@ -249,7 +247,7 @@ private class PsoToolControllerTest {
             Test.startTest();
                 List<PsoToolController.Resource> resources = new_instance.getResources(opp);
             Test.stopTest();
-            System.assertEquals(1, resources.size());
+            System.assertEquals(2, resources.size());
             System.assertEquals(setup_data.TestContact.FirstName + ' ' + setup_data.TestContact.LastName, resources.get(0).ResourceName);
             System.assertEquals(setup_data.TestContact.Id, resources.get(0).ContactId);
             System.assertEquals(setup_data.TestProduct.Name, resources.get(0).Product);
@@ -270,7 +268,6 @@ private class PsoToolControllerTest {
             new_instance.endDate = Date.newInstance(2015, 3, 31);
             setup_data.createTestData();
             new_instance.queryData();
-            new_instance.ContactIdsToContacts = new Map<String, Contact>();
             Opportunity opp = [SELECT Id, Name, Account.Name, Account.Id, Projektleiter_YOUR_SL__r.Name,
                                     (SELECT Contact__r.Name, Contact__r.Id, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
                                         FROM OpportunityLineItems)
@@ -321,6 +318,8 @@ private class PsoToolControllerTest {
             new_instance.startDate = Date.newInstance(2015, 1, 1);
             new_instance.endDate = Date.newInstance(2015, 3, 31);
             setup_data.createTestData();
+            new_instance.ShowAllOpportunities = true;
+            new_instance.ShowAllContacts = true;
             new_instance.queryData();
             OpportunityLineItem opp_line_item = [SELECT Contact__r.Name, Contact__r.Id, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
                                         FROM OpportunityLineItem
@@ -328,7 +327,7 @@ private class PsoToolControllerTest {
             Test.startTest();
                 List<PsoToolController.Staffing> staffings = new_instance.getStaffingForResourceForOpportunity(setup_data.SecondOpportunity.Id, opp_line_item);
             Test.stopTest();
-            System.assertEquals(3, staffings.size());
+            System.assertEquals(4, staffings.size());
         }
     }
 
@@ -379,14 +378,13 @@ private class PsoToolControllerTest {
     @isTest static void testGetResourcesAvailabilityDataReturnsCorrectData(){
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
-            PsoToolController new_instance = PsoToolController.getInstance();
+            PsoToolController new_instance = PsoToolController.getInstance().showAllOpportunities().showAllContacts();
             new_instance.startDate = Date.newInstance(2015, 1, 1);
             new_instance.endDate = Date.newInstance(2015, 3, 31);
             setup_data.createTestData();
             setup_data.createPlannedStatisticalData();
             setup_data.createActualStatisticalData();
             new_instance.queryData();
-            new_instance.contactIdsToContacts = new Map<String, Contact>();
             Opportunity opp = [SELECT Id, Name, Account.Name, Account.Id, Projektleiter_YOUR_SL__r.Name,
                         (SELECT Contact__r.Name, Contact__r.Id, Contact__r.Account.Name, Contact__r.Title, Contact__r.LastName, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
                             FROM OpportunityLineItems)
@@ -396,7 +394,7 @@ private class PsoToolControllerTest {
             Test.startTest();
                 List<PsoToolController.ResourceInfo> staffing = new_instance.getResourcesAvailabilityData(true);
             Test.stopTest();
-            System.assertEquals(1, staffing.size());
+            System.assertEquals(2, staffing.size());
             System.assertEquals(setup_data.TestContact.FirstName + ' ' + setup_data.TestContact.LastName, staffing.get(0).ResourceName);
             System.assertEquals(2, staffing.get(0).Staffing.size());
             System.assertEquals(setup_data.TestContact.Id, staffing.get(0).ContactId);
@@ -691,7 +689,7 @@ private class PsoToolControllerTest {
     @isTest static void testQueryDataDoesntSeeOpportunitiesAndTheirSchedulesWhenCheckboxIsNotSet(){
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
-            PsoToolController new_instance = PsoToolController.getInstance();
+            PsoToolController new_instance = PsoToolController.getInstance().showAllOpportunities().showAllContacts();
             new_instance.startDate = Date.newInstance(2015, 1, 1);
             new_instance.endDate = Date.newInstance(2015, 3, 31);
             setup_data.createTestData();
@@ -736,6 +734,21 @@ private class PsoToolControllerTest {
         }
     }
 
+    @isTest static void testSetSelectedContactsSetsTheRightValue() {
+        SetupDataClass setup_data = new SetupDataClass();
+        System.runAs(setup_data.TestUser) {
+            Date start_date = Date.newInstance(2015, 6, 2);
+            setup_data.createTestData();
+            List<Id> contacts_to_add = new List<Id>();
+            contacts_to_add.add(setup_data.TestContact.Id);
+            Test.startTest();
+                PsoToolController new_instance = PsoToolController.getInstance().setSelectedContacts(contacts_to_add);
+            Test.stopTest();
+            System.assertEquals(1, new_instance.ContactsToShow.size());
+            System.assert(new_instance.ContactsToShow.contains(setup_data.TestContact.Id));
+        }
+    }
+
     @isTest static void testGetOpportunitiesReturnesTheExpectedResultWhenWeHaveSelectedOpportunities() {
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
@@ -758,13 +771,13 @@ private class PsoToolControllerTest {
             Date start_date = Date.newInstance(2015, 6, 2);
             setup_data.createTestData();
             Test.startTest();
-                List<Id> opportunities_to_show = PsoToolController.getInstance().getOpportunitiesToShow();
+                List<Id> opportunities_to_show = PsoToolController.getInstance().showAllContacts().showAllOpportunities().getOpportunitiesToShow();
             Test.stopTest();
             System.assertEquals(2, opportunities_to_show.size());
         }
     }
 
-    @isTest static void testgetFilterValuesReturnsTheListWith2AccountsEachOfWhichHasAProject() {
+    @isTest static void testGetFilterValuesReturnsTheListWith2AccountsEachOfWhichHasAProject() {
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
             PsoToolController new_instance = PsoToolController.getInstance();
@@ -780,6 +793,7 @@ private class PsoToolControllerTest {
             System.assertEquals(1, data_set_object.Customers.get(0).Projects.size());
             System.assertEquals(1, data_set_object.Customers.get(1).Projects.size());
             System.assertEquals(true, data_set_object.IsAllowedToRunScript);
+            System.assertEquals(2, data_set_object.Resources.size());
         }
     }
 
@@ -822,6 +836,8 @@ private class PsoToolControllerTest {
         PsoToolController new_instance = PsoToolController.getInstance();
         new_instance.startDate = Date.newInstance(2015, 1, 1);
         new_instance.endDate = Date.newInstance(2015, 2, 28);
+        new_instance.ShowAllOpportunities = true;
+        new_instance.ShowAllContacts = true;
         PsoToolController.PsoToolDataSetWrapper wrapper = new_instance.getDataSet();
         wrapper.Resources = new List<PsoToolController.ResourceInfo>();
         wrapper.Resources.add(resource1);
@@ -935,16 +951,197 @@ private class PsoToolControllerTest {
         }
     }
 
+    @isTest static void testGetDataSetThatReturnsAllOpportunitiesAndAllContacts() {
+        SetupDataClass setup_data = new SetupDataClass();
+        System.runAs(setup_data.TestUser) {
+            Date date_of_execution = Date.newInstance(2015, 1, 1);
+            setup_data.createTestData();
+            Test.startTest();
+                Object data_set = PsoToolController.getInstance().showAllOpportunities().showAllContacts().setStartDate(date_of_execution).getDataSet();
+            Test.stopTest();
+            System.assert(data_set instanceof PsoToolController.PsoToolDataSetWrapper, 'Method should return an instance of PsoToolDataSetWrapper class');
+            PsoToolController.PsoToolDataSetWrapper data_set_object = (PsoToolController.PsoToolDataSetWrapper)data_set;
+            System.assertNotEquals(null, data_set_object.StartDate, 'StartDate should be set');
+            System.assertNotEquals(null, data_set_object.EndDate, 'EndDate should be set');
+            System.assertNotEquals(null, data_set_object.Customers);
+            System.assertEquals(2, data_set_object.Customers.size());
+            System.assertNotEquals(null, data_set_object.Resources);
+            System.assertEquals(2, data_set_object.Resources.size());
+        }
+    }
+
+    @isTest static void testGetDataSetThatReturnsAllOpportunities() {
+        SetupDataClass setup_data = new SetupDataClass();
+        System.runAs(setup_data.TestUser) {
+            Date date_of_execution = Date.newInstance(2015, 1, 1);
+            setup_data.createTestData();
+            Test.startTest();
+                Object data_set = PsoToolController.getInstance().showAllOpportunities().setStartDate(date_of_execution).getDataSet();
+            Test.stopTest();
+            System.assert(data_set instanceof PsoToolController.PsoToolDataSetWrapper, 'Method should return an instance of PsoToolDataSetWrapper class');
+            PsoToolController.PsoToolDataSetWrapper data_set_object = (PsoToolController.PsoToolDataSetWrapper)data_set;
+            System.assertNotEquals(null, data_set_object.StartDate, 'StartDate should be set');
+            System.assertNotEquals(null, data_set_object.EndDate, 'EndDate should be set');
+            System.assertNotEquals(null, data_set_object.Customers);
+            System.assertEquals(2, data_set_object.Customers.size());
+            System.assertEquals(null, data_set_object.Resources);
+        }
+    }
+
+    @isTest static void testGetDataSetThatReturnsAllOpportunitiesForSelectedContacts() {
+        SetupDataClass setup_data = new SetupDataClass();
+        System.runAs(setup_data.TestUser) {
+            Date date_of_execution = Date.newInstance(2015, 1, 1);
+            setup_data.createTestData();
+            List<Id> contact_ids = new List<Id>();
+            contact_ids.add(setup_data.SecondTestContact.Id);
+            Test.startTest();
+                Object data_set = PsoToolController.getInstance().showAllOpportunities().setSelectedContacts(contact_ids).setStartDate(date_of_execution).getDataSet();
+            Test.stopTest();
+            System.assert(data_set instanceof PsoToolController.PsoToolDataSetWrapper, 'Method should return an instance of PsoToolDataSetWrapper class');
+            PsoToolController.PsoToolDataSetWrapper data_set_object = (PsoToolController.PsoToolDataSetWrapper)data_set;
+            System.assertNotEquals(null, data_set_object.StartDate, 'StartDate should be set');
+            System.assertNotEquals(null, data_set_object.EndDate, 'EndDate should be set');
+            System.assertNotEquals(null, data_set_object.Customers);
+            System.assertEquals(2, data_set_object.Customers.size());
+            System.assertNotEquals(null, data_set_object.Resources);
+            System.assertEquals(1, data_set_object.Resources.size());
+        }
+    }
+
+    @isTest static void testGetDataSetThatReturnsSelectedOpportunitiesForAllContacts() {
+        SetupDataClass setup_data = new SetupDataClass();
+        System.runAs(setup_data.TestUser) {
+            Date date_of_execution = Date.newInstance(2015, 1, 1);
+            setup_data.createTestData();
+            List<Id> opportunities_ids = new List<Id>();
+            opportunities_ids.add(setup_data.SecondOpportunity.Id);
+            Test.startTest();
+                Object data_set = PsoToolController.getInstance().showAllContacts().setSelectedOpportunities(opportunities_ids).setStartDate(date_of_execution).getDataSet();
+            Test.stopTest();
+            System.assert(data_set instanceof PsoToolController.PsoToolDataSetWrapper, 'Method should return an instance of PsoToolDataSetWrapper class');
+            PsoToolController.PsoToolDataSetWrapper data_set_object = (PsoToolController.PsoToolDataSetWrapper)data_set;
+            System.assertNotEquals(null, data_set_object.StartDate, 'StartDate should be set');
+            System.assertNotEquals(null, data_set_object.EndDate, 'EndDate should be set');
+            System.assertNotEquals(null, data_set_object.Customers);
+            System.assertEquals(1, data_set_object.Customers.size());
+            System.assertNotEquals(null, data_set_object.Resources);
+            System.assertEquals(2, data_set_object.Resources.size());
+        }
+    }
+
+    @isTest static void testGetDataSetThatReturnsSelectedOpportunitiesForSelectedContacts() {
+        SetupDataClass setup_data = new SetupDataClass();
+        System.runAs(setup_data.TestUser) {
+            Date date_of_execution = Date.newInstance(2015, 1, 1);
+            setup_data.createTestData();
+            List<Id> contact_ids = new List<Id>();
+            contact_ids.add(setup_data.SecondTestContact.Id);
+            List<Id> opportunities_ids = new List<Id>();
+            opportunities_ids.add(setup_data.SecondOpportunity.Id);
+            Test.startTest();
+                Object data_set = PsoToolController.getInstance().setSelectedContacts(contact_ids).setSelectedOpportunities(opportunities_ids).setStartDate(date_of_execution).getDataSet();
+            Test.stopTest();
+            System.assert(data_set instanceof PsoToolController.PsoToolDataSetWrapper, 'Method should return an instance of PsoToolDataSetWrapper class');
+            PsoToolController.PsoToolDataSetWrapper data_set_object = (PsoToolController.PsoToolDataSetWrapper)data_set;
+            System.assertNotEquals(null, data_set_object.StartDate, 'StartDate should be set');
+            System.assertNotEquals(null, data_set_object.EndDate, 'EndDate should be set');
+            System.assertNotEquals(null, data_set_object.Customers);
+            System.assertEquals(1, data_set_object.Customers.size());
+            System.assertNotEquals(null, data_set_object.Resources);
+            System.assertEquals(1, data_set_object.Resources.size());
+        }
+    }
+
+    @isTest static void testGetDataSetThatReturnsSelectedOpportunities() {
+        SetupDataClass setup_data = new SetupDataClass();
+        System.runAs(setup_data.TestUser) {
+            Date date_of_execution = Date.newInstance(2015, 1, 1);
+            setup_data.createTestData();
+            List<Id> opportunities_ids = new List<Id>();
+            opportunities_ids.add(setup_data.SecondOpportunity.Id);
+            Test.startTest();
+                Object data_set = PsoToolController.getInstance().setSelectedOpportunities(opportunities_ids).setStartDate(date_of_execution).getDataSet();
+            Test.stopTest();
+            System.assert(data_set instanceof PsoToolController.PsoToolDataSetWrapper, 'Method should return an instance of PsoToolDataSetWrapper class');
+            PsoToolController.PsoToolDataSetWrapper data_set_object = (PsoToolController.PsoToolDataSetWrapper)data_set;
+            System.assertNotEquals(null, data_set_object.StartDate, 'StartDate should be set');
+            System.assertNotEquals(null, data_set_object.EndDate, 'EndDate should be set');
+            System.assertNotEquals(null, data_set_object.Customers);
+            System.assertEquals(1, data_set_object.Customers.size());
+            System.assertEquals(null, data_set_object.Resources);
+        }
+    }
+
+    @isTest static void testGetDataSetThatReturnsAllContacts() {
+        SetupDataClass setup_data = new SetupDataClass();
+        System.runAs(setup_data.TestUser) {
+            Date date_of_execution = Date.newInstance(2015, 1, 1);
+            setup_data.createTestData();
+            Test.startTest();
+                Object data_set = PsoToolController.getInstance().showAllContacts().setStartDate(date_of_execution).getDataSet();
+            Test.stopTest();
+            System.assert(data_set instanceof PsoToolController.PsoToolDataSetWrapper, 'Method should return an instance of PsoToolDataSetWrapper class');
+            PsoToolController.PsoToolDataSetWrapper data_set_object = (PsoToolController.PsoToolDataSetWrapper)data_set;
+            System.assertNotEquals(null, data_set_object.StartDate, 'StartDate should be set');
+            System.assertNotEquals(null, data_set_object.EndDate, 'EndDate should be set');
+            System.assertEquals(null, data_set_object.Customers);
+            System.assertNotEquals(null, data_set_object.Resources);
+            System.assertEquals(2, data_set_object.Resources.size());
+        }
+    }
+
+    @isTest static void testGetDataSetThatReturnsSelectedContacts() {
+        SetupDataClass setup_data = new SetupDataClass();
+        System.runAs(setup_data.TestUser) {
+            Date date_of_execution = Date.newInstance(2015, 1, 1);
+            setup_data.createTestData();
+            List<Id> contact_ids = new List<Id>();
+            contact_ids.add(setup_data.SecondTestContact.Id);
+            Test.startTest();
+                Object data_set = PsoToolController.getInstance().setSelectedContacts(contact_ids).setStartDate(date_of_execution).getDataSet();
+            Test.stopTest();
+            System.assert(data_set instanceof PsoToolController.PsoToolDataSetWrapper, 'Method should return an instance of PsoToolDataSetWrapper class');
+            PsoToolController.PsoToolDataSetWrapper data_set_object = (PsoToolController.PsoToolDataSetWrapper)data_set;
+            System.assertNotEquals(null, data_set_object.StartDate, 'StartDate should be set');
+            System.assertNotEquals(null, data_set_object.EndDate, 'EndDate should be set');
+            System.assertEquals(null, data_set_object.Customers);
+            System.assertNotEquals(null, data_set_object.Resources);
+            System.assertEquals(1, data_set_object.Resources.size());
+        }
+    }
+
+    @isTest static void testGetDataSetThatReturnsNothing() {
+        SetupDataClass setup_data = new SetupDataClass();
+        System.runAs(setup_data.TestUser) {
+            Date date_of_execution = Date.newInstance(2015, 1, 1);
+            setup_data.createTestData();
+            List<Id> contact_ids = new List<Id>();
+            contact_ids.add(setup_data.SecondTestContact.Id);
+            Test.startTest();
+                Object data_set = PsoToolController.getInstance().setStartDate(date_of_execution).getDataSet();
+            Test.stopTest();
+            System.assert(data_set instanceof PsoToolController.PsoToolDataSetWrapper, 'Method should return an instance of PsoToolDataSetWrapper class');
+            PsoToolController.PsoToolDataSetWrapper data_set_object = (PsoToolController.PsoToolDataSetWrapper)data_set;
+            System.assertNotEquals(null, data_set_object.StartDate, 'StartDate should be set');
+            System.assertNotEquals(null, data_set_object.EndDate, 'EndDate should be set');
+            System.assertEquals(null, data_set_object.Customers);
+            System.assertEquals(null, data_set_object.Resources);
+        }
+    }
+
     private class SetupDataClass {
         public Account FirstAccount;
         public Account SecondAccount;
         public Contact TestContact;
+        public Contact SecondTestContact;
         public Opportunity FirstOpportunity;
         public Opportunity SecondOpportunity;
         public Opportunity HolidayOpportunity;
         public OpportunityLineItem FirstLineItem;
         public OpportunityLineItem SecondLineItem;
         public OpportunityLineItem ThirdLineItem;
+        public OpportunityLineItem ForthLineItem;
         public OpportunityLineItem HolidayLineItem;
         public PricebookEntry TestPricebookEntry;
         public Product2 TestProduct;
@@ -958,24 +1155,24 @@ private class PsoToolControllerTest {
         private String DesiredProfile = 'System Administrator';
 
         public SetupDataClass() {
-            this.TestUser = UserUtility.createNewUser(DesiredProfile);
+            TestUser = UserUtility.createNewUser(DesiredProfile);
             insert TestUser;
         }
 
         public SetupDataClass(String desired_profile){
-            this.DesiredProfile = desired_profile;
-            this.TestUser = UserUtility.createNewUser(DesiredProfile);
+            DesiredProfile = desired_profile;
+            TestUser = UserUtility.createNewUser(DesiredProfile);
             insert TestUser;
         }
 
         public void createAnotherUser(){
-            this.AnotherUser = UserUtility.createNewUser(DesiredProfile);
+            AnotherUser = UserUtility.createNewUser(DesiredProfile);
             insert AnotherUser;
         }
 
         public void createTestData() {
             createAndInsertAccounts();
-            createAndInsertContactForUser();
+            createAndInsertContacts();
             createAndInsertOpportunities();
             createAndInsertProduct();
             createAndInsertPriceBookEntry();
@@ -986,7 +1183,7 @@ private class PsoToolControllerTest {
 
         public void createTestDataForAdmins() {
             createAndInsertAccounts();
-            createAndInsertContactForUser();
+            createAndInsertContacts();
             createAndInsertOpportunities();
             createAndInsertProduct();
             createAndInsertPriceBookEntry();
@@ -995,124 +1192,141 @@ private class PsoToolControllerTest {
         }
 
         private void createAndInsertAccounts(){
-            this.FirstAccount = new Account();
-            this.FirstAccount.Name = 'First company';
-            this.SecondAccount = new Account();
-            this.SecondAccount.Name = 'Second company';
-            insert new List<Sobject> {this.FirstAccount, this.SecondAccount};
+            FirstAccount = new Account();
+            FirstAccount.Name = 'First company';
+            SecondAccount = new Account();
+            SecondAccount.Name = 'Second company';
+            insert new List<Sobject> {FirstAccount, SecondAccount};
         }
 
-        private void createAndInsertContactForUser() {
-            this.TestContact = new Contact();
-            this.TestContact.FirstName = testUser.FirstName;
-            this.TestContact.LastName = testUser.LastName;
-            insert this.TestContact;
+        private void createAndInsertContacts() {
+            TestContact = new Contact();
+            TestContact.FirstName = testUser.FirstName;
+            TestContact.LastName = testUser.LastName;
+            insert TestContact;
+            SecondTestContact = new Contact();
+            SecondTestContact.FirstName = 'Michel';
+            SecondTestContact.LastName = 'Yakovtsov';
+            insert SecondTestContact;
         }
 
         private void createAndInsertProduct() {
-            this.TestProduct = new Product2();
-            this.TestProduct.Name = 'Salesforce Developer';
-            this.TestProduct.isActive = true;
-            this.TestProduct.CanUseQuantitySchedule = true;
-            insert this.TestProduct;
+            TestProduct = new Product2();
+            TestProduct.Name = 'Salesforce Developer';
+            TestProduct.isActive = true;
+            TestProduct.CanUseQuantitySchedule = true;
+            insert TestProduct;
         }
 
         private void createAndInsertPriceBookEntry(){
-            this.TestPricebookEntry = new PricebookEntry();
-            this.TestPricebookEntry.Pricebook2Id = Test.getStandardPricebookId();
-            this.TestPricebookEntry.Product2Id = this.TestProduct.Id;
-            this.TestPricebookEntry.UnitPrice = 99;
-            this.TestPricebookEntry.isActive = true;
-            insert this.TestPricebookEntry;
+            TestPricebookEntry = new PricebookEntry();
+            TestPricebookEntry.Pricebook2Id = Test.getStandardPricebookId();
+            TestPricebookEntry.Product2Id = TestProduct.Id;
+            TestPricebookEntry.UnitPrice = 99;
+            TestPricebookEntry.isActive = true;
+            insert TestPricebookEntry;
         }
 
         private void createAndInsertOpportunities(){
-            this.FirstOpportunity = new Opportunity();
-            this.FirstOpportunity.Name = '° Roshen';
-            this.FirstOpportunity.StageName = '° Roshen';
-            this.FirstOpportunity.PriceBook2Id = Test.getStandardPricebookId();
-            this.FirstOpportunity.AccountId = this.FirstAccount.Id;
-            this.FirstOpportunity.CloseDate = Date.newInstance(2015, 1, 1);
-            this.FirstOpportunity.Projektleiter_YOUR_SL__c = this.TestContact.Id;
-            this.FirstOpportunity.Managed_by_PSO_Tool__c = true;
-            this.FirstOpportunity.Projektstatus__c = 'Terrible';
-            this.SecondOpportunity = new Opportunity();
-            this.SecondOpportunity.Name = 'Apple iWatch';
-            this.SecondOpportunity.StageName = 'iWatch';
-            this.SecondOpportunity.PriceBook2Id = Test.getStandardPricebookId();
-            this.SecondOpportunity.AccountId = this.SecondAccount.Id;
-            this.SecondOpportunity.CloseDate = Date.newInstance(2015, 1, 1);
-            this.SecondOpportunity.Projektleiter_YOUR_SL__c = this.TestContact.Id;
-            this.SecondOpportunity.Managed_by_PSO_Tool__c = true;
-            this.FirstOpportunity.Projektstatus__c = 'Fishy';
-            insert new List<Sobject> {this.FirstOpportunity, this.SecondOpportunity};
+            FirstOpportunity = new Opportunity();
+            FirstOpportunity.Name = '° Roshen';
+            FirstOpportunity.StageName = '° Roshen';
+            FirstOpportunity.PriceBook2Id = Test.getStandardPricebookId();
+            FirstOpportunity.AccountId = FirstAccount.Id;
+            FirstOpportunity.CloseDate = Date.newInstance(2015, 1, 1);
+            FirstOpportunity.Projektleiter_YOUR_SL__c = TestContact.Id;
+            FirstOpportunity.Managed_by_PSO_Tool__c = true;
+            FirstOpportunity.Projektstatus__c = 'Terrible';
+            SecondOpportunity = new Opportunity();
+            SecondOpportunity.Name = 'Apple iWatch';
+            SecondOpportunity.StageName = 'iWatch';
+            SecondOpportunity.PriceBook2Id = Test.getStandardPricebookId();
+            SecondOpportunity.AccountId = SecondAccount.Id;
+            SecondOpportunity.CloseDate = Date.newInstance(2015, 1, 1);
+            SecondOpportunity.Projektleiter_YOUR_SL__c = TestContact.Id;
+            SecondOpportunity.Managed_by_PSO_Tool__c = true;
+            FirstOpportunity.Projektstatus__c = 'Fishy';
+            insert new List<Sobject> {FirstOpportunity, SecondOpportunity};
         }
 
         private void makeTheTestUserToBeOpportunityMember(){
-            OpportunityTeamMember firstMember = new OpportunityTeamMember();
-            firstMember.UserId = this.testUser.Id;
-            firstMember.OpportunityId = this.FirstOpportunity.Id;
-            OpportunityTeamMember secondMember = new OpportunityTeamMember();
-            secondMember.UserId = this.testUser.Id;
-            secondMember.OpportunityId = this.SecondOpportunity.Id;
-            insert new List<Sobject> {firstMember, secondMember};
+            OpportunityTeamMember first_member = new OpportunityTeamMember();
+            first_member.UserId = TestUser.Id;
+            first_member.OpportunityId = FirstOpportunity.Id;
+            OpportunityTeamMember second_member = new OpportunityTeamMember();
+            second_member.UserId = TestUser.Id;
+            second_member.OpportunityId = SecondOpportunity.Id;
+            insert new List<Sobject> {first_member, second_member};
         }
 
         private void createOpportunityLineItems(){
-            this.FirstLineItem = new OpportunityLineItem();
-            this.FirstLineItem.Contact__c = this.TestContact.Id;
-            this.FirstLineItem.PricebookEntryId = this.TestPricebookEntry.Id;
-            this.FirstLineItem.ServiceDate = Date.newInstance(2015, 1, 10);
-            this.FirstLineItem.UnitPrice = 1200;
-            this.FirstLineItem.Quantity = 1;
-            this.FirstLineItem.Unit__c = 'Manntag(e)';
-            this.FirstLineItem.OpportunityId = this.FirstOpportunity.Id;
-            this.SecondLineItem = new OpportunityLineItem();
-            this.SecondLineItem.Contact__c = this.TestContact.Id;
-            this.SecondLineItem.PricebookEntryId = this.TestPricebookEntry.Id;
-            this.SecondLineItem.ServiceDate = Date.newInstance(2015, 1, 10);
-            this.SecondLineItem.UnitPrice = 1200;
-            this.SecondLineItem.Quantity = 1.5;
-            this.SecondLineItem.Unit__c = 'Manntag(e)';
-            this.SecondLineItem.OpportunityId = this.SecondOpportunity.Id;
-            this.ThirdLineItem = new OpportunityLineItem();
-            this.ThirdLineItem.Contact__c = this.TestContact.Id;
-            this.ThirdLineItem.PricebookEntryId = this.TestPricebookEntry.Id;
-            this.ThirdLineItem.ServiceDate = Date.newInstance(2015, 2, 10);
-            this.ThirdLineItem.UnitPrice = 1200;
-            this.ThirdLineItem.Quantity = 10;
-            this.ThirdLineItem.Unit__c = 'Manntag(e)';
-            this.ThirdLineItem.OpportunityId = this.SecondOpportunity.Id;
-            insert new List<Sobject> {this.FirstLineItem, this.SecondLineItem, this.ThirdLineItem};
+            FirstLineItem = new OpportunityLineItem();
+            FirstLineItem.Contact__c = TestContact.Id;
+            FirstLineItem.PricebookEntryId = TestPricebookEntry.Id;
+            FirstLineItem.ServiceDate = Date.newInstance(2015, 1, 10);
+            FirstLineItem.UnitPrice = 1200;
+            FirstLineItem.Quantity = 1;
+            FirstLineItem.Unit__c = 'Manntag(e)';
+            FirstLineItem.OpportunityId = FirstOpportunity.Id;
+            SecondLineItem = new OpportunityLineItem();
+            SecondLineItem.Contact__c = TestContact.Id;
+            SecondLineItem.PricebookEntryId = TestPricebookEntry.Id;
+            SecondLineItem.ServiceDate = Date.newInstance(2015, 1, 10);
+            SecondLineItem.UnitPrice = 1200;
+            SecondLineItem.Quantity = 1.5;
+            SecondLineItem.Unit__c = 'Manntag(e)';
+            SecondLineItem.OpportunityId = SecondOpportunity.Id;
+            ThirdLineItem = new OpportunityLineItem();
+            ThirdLineItem.Contact__c = TestContact.Id;
+            ThirdLineItem.PricebookEntryId = TestPricebookEntry.Id;
+            ThirdLineItem.ServiceDate = Date.newInstance(2015, 2, 10);
+            ThirdLineItem.UnitPrice = 1200;
+            ThirdLineItem.Quantity = 10;
+            ThirdLineItem.Unit__c = 'Manntag(e)';
+            ThirdLineItem.OpportunityId = SecondOpportunity.Id;
+            ForthLineItem = new OpportunityLineItem();
+            ForthLineItem.Contact__c = SecondTestContact.Id;
+            ForthLineItem.PricebookEntryId = TestPricebookEntry.Id;
+            ForthLineItem.ServiceDate = Date.newInstance(2015, 2, 10);
+            ForthLineItem.UnitPrice = 1200;
+            ForthLineItem.Quantity = 10;
+            ForthLineItem.Unit__c = 'Manntag(e)';
+            ForthLineItem.OpportunityId = SecondOpportunity.Id;
+            insert new List<Sobject> {FirstLineItem, SecondLineItem, ThirdLineItem, ForthLineItem};
         }
 
         private void createOpportunityLineItemsSchedule(){
             Schedule = new OpportunityLineItemSchedule();
-            Schedule.OpportunityLineItemId = this.FirstLineItem.Id;
+            Schedule.OpportunityLineItemId = FirstLineItem.Id;
             Schedule.ScheduleDate = Date.newInstance(2015, 1, 10);
             Schedule.Quantity = 1;
             Schedule.Type = 'Quantity';
-            OpportunityLineItemSchedule secondSchedule = new OpportunityLineItemSchedule();
-            secondSchedule.OpportunityLineItemId = this.SecondLineItem.Id;
-            secondSchedule.ScheduleDate = Date.newInstance(2015, 1, 10);
-            secondSchedule.Quantity = 1;
-            secondSchedule.Type = 'Quantity';
-            OpportunityLineItemSchedule thirdSchedule = new OpportunityLineItemSchedule();
-            thirdSchedule.OpportunityLineItemId = this.SecondLineItem.Id;
-            thirdSchedule.ScheduleDate = Date.newInstance(2015, 1, 11);
-            thirdSchedule.Quantity = 0.5;
-            thirdSchedule.Type = 'Quantity';
-            OpportunityLineItemSchedule forthSchedule = new OpportunityLineItemSchedule();
-            forthSchedule.OpportunityLineItemId = this.SecondLineItem.Id;
-            forthSchedule.ScheduleDate = Date.newInstance(2015, 4, 11);
-            forthSchedule.Quantity = 0.4;
-            forthSchedule.Type = 'Quantity';
-            insert new List<Sobject> {Schedule, secondSchedule, thirdSchedule, forthSchedule};
+            OpportunityLineItemSchedule second_schedule = new OpportunityLineItemSchedule();
+            second_schedule.OpportunityLineItemId = SecondLineItem.Id;
+            second_schedule.ScheduleDate = Date.newInstance(2015, 1, 10);
+            second_schedule.Quantity = 1;
+            second_schedule.Type = 'Quantity';
+            OpportunityLineItemSchedule third_schedule = new OpportunityLineItemSchedule();
+            third_schedule.OpportunityLineItemId = SecondLineItem.Id;
+            third_schedule.ScheduleDate = Date.newInstance(2015, 1, 11);
+            third_schedule.Quantity = 0.5;
+            third_schedule.Type = 'Quantity';
+            OpportunityLineItemSchedule forth_schedule = new OpportunityLineItemSchedule();
+            forth_schedule.OpportunityLineItemId = SecondLineItem.Id;
+            forth_schedule.ScheduleDate = Date.newInstance(2015, 4, 11);
+            forth_schedule.Quantity = 0.4;
+            forth_schedule.Type = 'Quantity';
+            OpportunityLineItemSchedule fifth_schedule = new OpportunityLineItemSchedule();
+            fifth_schedule.OpportunityLineItemId = SecondLineItem.Id;
+            fifth_schedule.ScheduleDate = Date.newInstance(2015, 4, 11);
+            fifth_schedule.Quantity = 0.4;
+            fifth_schedule.Type = 'Quantity';
+            insert new List<Sobject> {Schedule, second_schedule, third_schedule, forth_schedule, fifth_schedule};
         }
 
         public void createHolidayOpportunityAndTestDataForIt(){
             createAndInsertAccounts();
-            createAndInsertContactForUser();
+            createAndInsertContacts();
             createHolidayOpportunity();
             createAndInsertProduct();
             createAndInsertPriceBookEntry();
@@ -1121,34 +1335,34 @@ private class PsoToolControllerTest {
         }
 
         private void createHolidayOpportunity(){
-            this.HolidayOpportunity = new Opportunity();
-            this.HolidayOpportunity.Name = PsoToolController.SPECIAL_OPPORTUNITY;
-            this.HolidayOpportunity.StageName = PsoToolController.SPECIAL_OPPORTUNITY;
-            this.HolidayOpportunity.PriceBook2Id = Test.getStandardPricebookId();
-            this.HolidayOpportunity.AccountId = this.FirstAccount.Id;
-            this.HolidayOpportunity.CloseDate = Date.newInstance(2015, 1, 1);
-            this.HolidayOpportunity.Projektleiter_YOUR_SL__c = this.TestContact.Id;
-            this.HolidayOpportunity.Managed_by_PSO_Tool__c = true;
-            insert this.HolidayOpportunity;
+            HolidayOpportunity = new Opportunity();
+            HolidayOpportunity.Name = PsoToolController.SPECIAL_OPPORTUNITY;
+            HolidayOpportunity.StageName = PsoToolController.SPECIAL_OPPORTUNITY;
+            HolidayOpportunity.PriceBook2Id = Test.getStandardPricebookId();
+            HolidayOpportunity.AccountId = FirstAccount.Id;
+            HolidayOpportunity.CloseDate = Date.newInstance(2015, 1, 1);
+            HolidayOpportunity.Projektleiter_YOUR_SL__c = TestContact.Id;
+            HolidayOpportunity.Managed_by_PSO_Tool__c = true;
+            insert HolidayOpportunity;
         }
 
         private void makeTheTestUserToBeTheHolidayOpportunityMember(){
-            OpportunityTeamMember firstMember = new OpportunityTeamMember();
-            firstMember.UserId = this.testUser.Id;
-            firstMember.OpportunityId = this.HolidayOpportunity.Id;
-            insert firstMember;
+            OpportunityTeamMember first_member = new OpportunityTeamMember();
+            first_member.UserId = TestUser.Id;
+            first_member.OpportunityId = HolidayOpportunity.Id;
+            insert first_member;
         }
 
         private void createHolidayOpportunityLineItem(){
-            this.HolidayLineItem = new OpportunityLineItem();
-            this.HolidayLineItem.Contact__c = this.TestContact.Id;
-            this.HolidayLineItem.PricebookEntryId = this.TestPricebookEntry.Id;
-            this.HolidayLineItem.ServiceDate = Date.newInstance(2015, 1, 10);
-            this.HolidayLineItem.UnitPrice = 1200;
-            this.HolidayLineItem.Quantity = 1;
-            this.HolidayLineItem.Unit__c = 'Manntag(e)';
-            this.HolidayLineItem.OpportunityId = this.HolidayOpportunity.Id;
-            insert this.HolidayLineItem;
+            HolidayLineItem = new OpportunityLineItem();
+            HolidayLineItem.Contact__c = TestContact.Id;
+            HolidayLineItem.PricebookEntryId = TestPricebookEntry.Id;
+            HolidayLineItem.ServiceDate = Date.newInstance(2015, 1, 10);
+            HolidayLineItem.UnitPrice = 1200;
+            HolidayLineItem.Quantity = 1;
+            HolidayLineItem.Unit__c = 'Manntag(e)';
+            HolidayLineItem.OpportunityId = HolidayOpportunity.Id;
+            insert HolidayLineItem;
         }
 
         public void createPlannedStatisticalData(){
@@ -1156,11 +1370,11 @@ private class PsoToolControllerTest {
             PlannedNumbers.Data_Type__c = PsoToolController.PLANNED_STATISTIC_TYPE;
             PlannedNumbers.Days__c = 5;
             PlannedNumbers.Revenue__c = 1000;
-            PlannedNumbers.OpportunityLineItemId__c = this.FirstLineItem.Id;
+            PlannedNumbers.OpportunityLineItemId__c = FirstLineItem.Id;
             PlannedNumbers.Start_Date__c = Date.newInstance(2015, 1, 1);
             PlannedNumbers.End_Date__c = Date.newInstance(2015, 1, 31);
             PlannedNumbers.Time_Type__c = 'Monthly';
-            PlannedNumbers.Contact__c = this.TestContact.Id;
+            PlannedNumbers.Contact__c = TestContact.Id;
             insert PlannedNumbers;
         }
 
@@ -1169,11 +1383,11 @@ private class PsoToolControllerTest {
             ActualNumbers.Data_Type__c = PsoToolController.ACTUAL_STATISTIC_TYPE;
             ActualNumbers.Days__c = 10;
             ActualNumbers.Revenue__c = 2000;
-            ActualNumbers.OpportunityLineItemId__c = this.FirstLineItem.Id;
+            ActualNumbers.OpportunityLineItemId__c = FirstLineItem.Id;
             ActualNumbers.Start_Date__c = Date.newInstance(2015, 1, 1);
             ActualNumbers.End_Date__c = Date.newInstance(2015, 1, 31);
             ActualNumbers.Time_Type__c = 'Monthly';
-            ActualNumbers.Contact__c = this.TestContact.Id;
+            ActualNumbers.Contact__c = TestContact.Id;
             insert ActualNumbers;
         }
 
@@ -1186,12 +1400,12 @@ private class PsoToolControllerTest {
             AdditionalPlannedNumbers.Start_Date__c = Date.newInstance(2015, 1, 1);
             AdditionalPlannedNumbers.End_Date__c = Date.newInstance(2015, 1, 31);
             AdditionalPlannedNumbers.Time_Type__c = 'Monthly';
-            AdditionalPlannedNumbers.Contact__c = this.TestContact.Id;
+            AdditionalPlannedNumbers.Contact__c = TestContact.Id;
             AdditionalActualNumbers = new Planning_statistics__c();
             AdditionalActualNumbers.Data_Type__c = PsoToolController.ACTUAL_STATISTIC_TYPE;
             AdditionalActualNumbers.Days__c = 14;
             AdditionalActualNumbers.Revenue__c = 300;
-            AdditionalActualNumbers.OpportunityLineItemId__c = this.SecondLineItem.Id;
+            AdditionalActualNumbers.OpportunityLineItemId__c = SecondLineItem.Id;
             AdditionalActualNumbers.Start_Date__c = Date.newInstance(2015, 1, 1);
             AdditionalActualNumbers.End_Date__c = Date.newInstance(2015, 1, 31);
             AdditionalActualNumbers.Time_Type__c = 'Monthly';
