@@ -1,4 +1,5 @@
-#pso-table {
+#pso-table,
+#pso-table * {
 	box-sizing: border-box;
 }
 
@@ -27,4 +28,17 @@
 
 #opportunities-filter button {
 	clear: both;
+}
+
+#staffing table {
+	border: 1px solid #ccc;
+	border-collapse: collapse;
+	margin: 0;
+	min-width: 100%;
+	padding: 0;
+}
+
+#staffing table th,
+#staffing table td {
+	border: 1px solid #ccc;
 }

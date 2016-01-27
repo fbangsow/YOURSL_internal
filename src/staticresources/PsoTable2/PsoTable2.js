@@ -2,7 +2,13 @@ window.PsoTable2 = window.PsoTable2 || {};
 
 PsoTable2.ng = angular.module('PsoTable2', []);
 
+PsoTable2.ng.factory('jQuery.ui.datepicker', function () {
+	return $.datepicker;
+});
+
 PsoTable2.ng.factory('PsoTable2Endpoint', ['$q', function ($q) {
+	console.log('init endpoint');
+
 	var instance = {};
 
 	/* check the remote endpoint */
@@ -49,10 +55,30 @@ PsoTable2.ng.factory('PsoTable2Endpoint', ['$q', function ($q) {
 		return deferred.promise;
 	}
 
+	instance.getProjectStaffing = function (projectIds, startMonth) {
+		var deferred = $q.defer();
+
+		Visualforce.remoting.Manager.invokeAction('PsoTable2Controller.getProjectStaffing', projectIds, startMonth.toUTCString(), function (result, event) {
+			if (!event || !event.status) {
+				deferred.reject(event);
+				return
+			}
+
+			result = JSON.parse(htmlDecode(result));
+			deferred.resolve(result);
+		}, {
+			buffer: true,
+			escape: true,
+			timeout: 30000
+		});
+
+		return deferred.promise;
+	};
+
 	return instance;
 }]);
 
-PsoTable2.ng.controller('PsoTable2', ['$scope', 'PsoTable2Endpoint', function ($scope, sfEndpoint) {
+PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint', function ($scope, $rootScope, sfEndpoint) {
 	$scope.status = {
 		loading: true,
 		isAllowedToRunScheduler: false,
@@ -179,6 +205,17 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', 'PsoTable2Endpoint', function ($
 		}
 	};
 
+	/* functions for the staffing table */
+	$scope.opportunitiesFilter.events.updateStaffingClicked = function (event) {
+		event.preventDefault();
+
+		if (!$scope.viewState.selectedOpportunities.length) {
+			$scope.opportunitiesFilter.selectAllOpportunities();
+		}
+
+		$scope.$broadcast('updateStaffing', $scope.viewState.selectedOpportunities);
+	};
+
 	/* initialize data */
 	sfEndpoint.getFilterOptions().then(function (data) {
 		$scope.status.loading = false;
@@ -204,7 +241,104 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', 'PsoTable2Endpoint', function ($
 		console.log(data);
 	}, function (response) {
 		$scope.status.error = response;
-
 		console.log(response);
+	});
+}]);
+
+PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQuery.ui.datepicker', function ($scope, sfEndpoint, datepicker) {
+	console.log('init staffing controller');
+
+	$scope.status = {
+		loaded: false,
+		loading: false
+	};
+
+	$scope.viewState = {
+		staffingColumns: 0,
+		staticStaffingColumns: 0,
+		staffingDayColumns: 0,
+		staffingMonths: [],
+		staffingWeeks: [],
+		staffingDays: []
+	};
+
+	$scope.staffing = {};
+
+	/* functions for the staffing table */
+	$scope.$on('updateStaffing', function (event, selectedOpportunities) {
+		$scope.status.loading = true;
+		$scope.status.loaded = false;
+
+		sfEndpoint.getProjectStaffing(selectedOpportunities, new Date()).then(function (data) {
+			console.log(data);
+
+			var startDate = new Date(data.StartDate);
+			var endDate = new Date(data.EndDate);
+
+			$scope.viewState.staffingMonths.splice(0, $scope.viewState.staffingMonths.length);
+			$scope.viewState.staffingWeeks.splice(0, $scope.viewState.staffingWeeks.length);
+			$scope.viewState.staffingDays.splice(0, $scope.viewState.staffingDays.length);
+
+			var lastMonth = null;
+			var lastWeek = null;
+			var dayCount = 0;
+
+			for (var currentDate = startDate; currentDate < endDate; currentDate.setDate(currentDate.getDate() + 1)) {
+				dayCount++;
+
+				var dateInfo = {
+					date: new Date(currentDate.valueOf()),
+					day: currentDate.getDate(),
+					weekDay: datepicker.formatDate('D', currentDate),
+					week: datepicker.iso8601Week(currentDate),
+					month: datepicker.formatDate('M', currentDate)
+				};
+
+				if (!lastMonth || lastMonth.caption !== dateInfo.month) {
+					lastMonth = {
+						caption: dateInfo.month,
+						weeks: [],
+						weekCount: 0,
+						dayCount: 0
+					};
+
+					lastWeek = null;
+
+					$scope.viewState.staffingMonths.push(lastMonth);
+				}
+
+				if (!lastWeek || lastWeek.number !== dateInfo.week) {
+					lastWeek = {
+						number: dateInfo.week,
+						days: [],
+						dayCount: 0
+					};
+
+					lastMonth.weeks.push(lastWeek);
+					lastMonth.weekCount++;
+
+					$scope.viewState.staffingWeeks.push(lastWeek);
+				}
+
+				lastWeek.days.push(dateInfo);
+				lastMonth.dayCount++;
+				lastWeek.dayCount++;
+
+				$scope.viewState.staffingDays.push(dateInfo);
+			}
+
+			console.log($scope.viewState.staffingMonths);
+
+			$scope.staffing.Customers = data.Customers;
+
+			$scope.viewState.staffingDayColumns = dayCount;
+			$scope.viewState.staffingColumns = $scope.viewState.staticStaffingColumns + dayCount;
+
+			$scope.status.loading = false;
+			$scope.status.loaded = true;
+		}, function (response) {
+			$scope.status.error = response;
+			console.log(response);
+		});
 	});
 }]);

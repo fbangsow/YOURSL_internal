@@ -11,7 +11,7 @@
 	<link rel="stylesheet" href="{!URLFOR($Resource.jQuery_ui_1_11_4,'jquery-ui.min.css')}" />
 	<link rel="stylesheet" href="{!URLFOR($Resource.PsoTable2,'PsoTable2.css')}" />
 
-	<apex:form>
+	<apex:form >
 		<div data-ng-app="PsoTable2" data-ng-controller="PsoTable2" id="pso-table">
 			<apex:pageBlock title="Loading" html-data-ng-if="status.loading">
 			</apex:pageBlock>
@@ -33,8 +33,69 @@
 
 						<a href="#" ng-click="opportunitiesFilter.selectAllOpportunities()">Select all</a>
 						<a href="#" ng-click="opportunitiesFilter.clearSelectedOpportunities()">Clear</a>
+
+						<button ng-click="opportunitiesFilter.events.updateStaffingClicked($event)">Update staffing view</button>
 					</section>
 				</div>
+			</apex:pageBlock>
+
+			<apex:pageBlock html-data-ng-show="status.loaded" title="Manage staffing" html-ng-controller="PsoTable2Staffing" html-ng-init="viewState.staticStaffingColumns = 3">
+				<section id="staffing">
+					<table>
+						<tbody data-ng-if="staffing.Customers.length" ng-repeat="customer in staffing.Customers">
+							<tr>
+								<td colspan="{{ viewState.staffingColumns }}" class="customer-info">
+									<article>
+										<h4><a href="/{{ customer.AccountId }}" target="_blank">{{ customer.AccountName }}</a></h4>
+									</article>
+								</td>
+							</tr>
+							<tr ng-repeat-start="project in customer.Projects">
+								<td colspan="{{ viewState.staffingColumns }}" class="project-info">
+									<article>
+										<h5><a href="/{{ project.OpportunityId }}" target="_blank">{{ project.OpportunityName }}</a></h5>
+									</article>
+								</td>
+							</tr>
+							<tr>
+								<th rowspan="4">Resource</th>
+								<th rowspan="4">Role</th>
+								<th rowspan="4">Sold days</th>
+								<th colspan="{{ month.dayCount }}" ng-repeat="month in viewState.staffingMonths">
+									{{ month.caption }}
+								</th>
+							</tr>
+							<tr>
+								<th colspan="{{ week.dayCount }}" ng-repeat="week in viewState.staffingWeeks">
+									CW-{{ week.number }}
+								</th>
+							</tr>
+							<tr>
+								<th ng-repeat="day in viewState.staffingDays">
+									{{ day.weekDay }}
+								</th>
+							</tr>
+							<tr>
+								<th ng-repeat="day in viewState.staffingDays">
+									{{ day.day }}
+								</th>
+							</tr>
+							<tr ng-repeat-end="true" ng-repeat="resource in project.Resources">
+								<td>
+									<a href="/{{ resource.ContactId }}" target="_blank">{{ resource.ResourceName }}</a>
+								</td>
+								<td>
+									{{ resource.Product }}
+								</td>
+								<td>
+									{{ resource.SoldDays / 8 }}
+								</td>
+								<td ng-repeat="day in viewState.staffingDays">
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</section>
 			</apex:pageBlock>
 		</div>
 	</apex:form>
