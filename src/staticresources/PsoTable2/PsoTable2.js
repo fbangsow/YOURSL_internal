@@ -290,7 +290,7 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 				var dateInfo = {
 					date: new Date(currentDate.valueOf()),
 					day: currentDate.getDate(),
-					isWeekEnd: !(currentDate.getDay() % 6)
+					isWeekEnd: !(currentDate.getDay() % 6),
 					weekDay: datepicker.formatDate('D', currentDate),
 					week: datepicker.iso8601Week(currentDate),
 					month: datepicker.formatDate('M', currentDate),
