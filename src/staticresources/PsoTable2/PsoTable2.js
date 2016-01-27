@@ -283,15 +283,18 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 			var lastWeek = null;
 			var dayCount = 0;
 
+			/* iterate all days and build an array with all months, weeks and days to be able to build the html table */
 			for (var currentDate = startDate; currentDate < endDate; currentDate.setDate(currentDate.getDate() + 1)) {
 				dayCount++;
 
 				var dateInfo = {
 					date: new Date(currentDate.valueOf()),
 					day: currentDate.getDate(),
+					isWeekEnd: !(currentDate.getDay() % 6)
 					weekDay: datepicker.formatDate('D', currentDate),
 					week: datepicker.iso8601Week(currentDate),
-					month: datepicker.formatDate('M', currentDate)
+					month: datepicker.formatDate('M', currentDate),
+					dateString: datepicker.formatDate('yy-mm-dd', currentDate)
 				};
 
 				if (!lastMonth || lastMonth.caption !== dateInfo.month) {
@@ -327,7 +330,22 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 				$scope.viewState.staffingDays.push(dateInfo);
 			}
 
-			console.log($scope.viewState.staffingMonths);
+			for (var c = 0; c < data.Customers.length; c++) {
+				var customer = data.Customers[c];
+				for (var p = 0; p < customer.Projects.length; p++) {
+					var project = customer.Projects[p];
+					for (var r = 0; r < project.Resources.length; r++) {
+						var resource = project.Resources[r];
+
+						resource.StaffingByDay = {};
+
+						for (var s = 0; s < resource.Staffing.length; s++) {
+							var staffing = resource.Staffing[s];
+							resource.StaffingByDay[staffing.Day] = staffing;
+						}
+					}
+				}
+			}
 
 			$scope.staffing.Customers = data.Customers;
 

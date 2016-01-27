@@ -91,6 +91,9 @@
 									{{ resource.SoldDays / 8 }}
 								</td>
 								<td ng-repeat="day in viewState.staffingDays">
+									<span ng-if="resource.StaffingByDay[day.dateString] !== undefined">
+										{{ resource.StaffingByDay[day.dateString].Staff }}
+									</span>
 								</td>
 							</tr>
 						</tbody>
