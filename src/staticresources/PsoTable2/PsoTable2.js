@@ -62,20 +62,28 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', 'PsoTable2Endpoint', function ($
 	$scope.viewState = {
 		selectedOpportunities: [],
 		selectedOpportunitiesSize: 2,
-		opportunitiesFilter: ''
+		opportunitiesFilterText: ''
 	};
 
-	$scope.accountClicked = function (customer, event) {
+	$scope.opportunitiesFilter = {
+		events: {},
+		filters: {}
+	};
+
+	/* functions for the opportunity filter */
+	$scope.opportunitiesFilter.events.accountClicked = function (customer, event) {
 		if (event.target !== event.currentTarget) {
 			/* this event came bubbling through by clicking an option */
 			return;
 		}
 
-		var toggle = event.metaKey || event.ctrlKey || event.shiftKey;
+		$scope.opportunitiesFilter.selectAccountOpportunities(customer, event.metaKey || event.ctrlKey || event.shiftKey);
+	};
 
+	$scope.opportunitiesFilter.selectAccountOpportunities = function (customer, toggle) {
 		if (!toggle) {
 			/* when not toggling we behave like a default option click and unselect all other options */
-			$scope.clearSelectedOpportunities();
+			$scope.opportunitiesFilter.clearSelectedOpportunities();
 		}
 
 		var allActive = true;
@@ -107,12 +115,12 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', 'PsoTable2Endpoint', function ($
 		}
 	};
 
-	$scope.customerMatchesFilter = function (customer) {
-		if (!$scope.viewState.opportunitiesFilter) {
+	$scope.opportunitiesFilter.customerMatchesFilter = function (customer) {
+		if (!$scope.viewState.opportunitiesFilterText) {
 			return true;
 		}
 
-		var regex = new RegExp('^.*' + $scope.viewState.opportunitiesFilter.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&") + '.*$', 'i');
+		var regex = new RegExp('^.*' + $scope.viewState.opportunitiesFilterText.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&") + '.*$', 'i');
 
 		if (regex.test(customer.AccountName)) {
 			return true;
@@ -127,12 +135,12 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', 'PsoTable2Endpoint', function ($
 		return false;
 	};
 
-	$scope.projectMatchesFilter = function (project) {
-		if (!$scope.viewState.opportunitiesFilter) {
+	$scope.opportunitiesFilter.projectMatchesFilter = function (project) {
+		if (!$scope.viewState.opportunitiesFilterText) {
 			return true;
 		}
 
-		var regex = new RegExp('^.*' + $scope.viewState.opportunitiesFilter.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&") + '.*$', 'i');
+		var regex = new RegExp('^.*' + $scope.viewState.opportunitiesFilterText.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&") + '.*$', 'i');
 
 		if (regex.test(project.AccountName) || regex.test(project.OpportunityName)) {
 			return true;
@@ -141,53 +149,41 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', 'PsoTable2Endpoint', function ($
 		return false;
 	};
 
-	$scope.clearSelectedOpportunities = function () {
+	$scope.opportunitiesFilter.clearSelectedOpportunities = function () {
 		$scope.viewState.selectedOpportunities.splice(0, $scope.viewState.selectedOpportunities.length);
 	};
 
-	$scope.selectAllOpportunities = function () {
+	$scope.opportunitiesFilter.selectAllOpportunities = function () {
 		/* add all currently visible projects to the selection */
-		for (var c = 0; c < $scope.data.Customers.length; c++) {
-			for (var p = 0; p < $scope.data.Customers[c].Projects.length; p++) {
-				var currentIndex = $scope.viewState.selectedOpportunities.indexOf($scope.data.Customers[c].Projects[p].OpportunityId);
+		for (var c = 0; c < $scope.opportunitiesFilter.Customers.length; c++) {
+			for (var p = 0; p < $scope.opportunitiesFilter.Customers[c].Projects.length; p++) {
+				var currentIndex = $scope.viewState.selectedOpportunities.indexOf($scope.opportunitiesFilter.Customers[c].Projects[p].OpportunityId);
 
-				if (currentIndex === -1 && $scope.projectMatchesFilter($scope.data.Customers[c].Projects[p])) {
-					$scope.viewState.selectedOpportunities.push($scope.data.Customers[c].Projects[p].OpportunityId);
+				if (currentIndex === -1 && $scope.opportunitiesFilter.projectMatchesFilter($scope.opportunitiesFilter.Customers[c].Projects[p])) {
+					$scope.viewState.selectedOpportunities.push($scope.opportunitiesFilter.Customers[c].Projects[p].OpportunityId);
 				}
 			}
 		}
 	};
 
-	$scope.removeFilteredOpportunitiesFromSelection = function () {
+	$scope.opportunitiesFilter.removeFilteredOpportunitiesFromSelection = function () {
 		/* check all projects of all customers if they match the filter and remove from selection, if not */
-		for (var c = 0; c < $scope.data.Customers.length; c++) {
-			for (var p = 0; p < $scope.data.Customers[c].Projects.length; p++) {
-				var currentIndex = $scope.viewState.selectedOpportunities.indexOf($scope.data.Customers[c].Projects[p].OpportunityId);
+		for (var c = 0; c < $scope.opportunitiesFilter.Customers.length; c++) {
+			for (var p = 0; p < $scope.opportunitiesFilter.Customers[c].Projects.length; p++) {
+				var currentIndex = $scope.viewState.selectedOpportunities.indexOf($scope.opportunitiesFilter.Customers[c].Projects[p].OpportunityId);
 
-				if (currentIndex > -1 && !$scope.projectMatchesFilter($scope.data.Customers[c].Projects[p])) {
+				if (currentIndex > -1 && !$scope.opportunitiesFilter.projectMatchesFilter($scope.opportunitiesFilter.Customers[c].Projects[p])) {
 					$scope.viewState.selectedOpportunities.splice(currentIndex, 1);
 				}
 			}
 		}
 	};
 
-	$scope.$watch('viewState.selectedOpportunities', function (newValue, oldValue) {
-		var oppNames = '';
-		for (var i = 0; i < newValue.length; i++) {
-			if (typeof newValue[i] === 'string') {
-				oppNames += ', ' + newValue[i];
-			} else {
-				oppNames += ', ' + newValue[i].OpportunityName;
-			}
-		}
-
-		console.log('selected opps changed:', oppNames.substr(2), newValue);
-	});
-
+	/* initialize data */
 	sfEndpoint.getFilterOptions().then(function (data) {
 		$scope.status.loading = false;
 		$scope.status.isAllowedToRunScheduler = !!data.IsAllowedToRunScript;
-		$scope.data = data;
+		$scope.opportunitiesFilter.Customers = data.Customers;
 
 		var projectAndCustomerCount = data.Customers.length;
 
@@ -208,5 +204,7 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', 'PsoTable2Endpoint', function ($
 		console.log(data);
 	}, function (response) {
 		$scope.status.error = response;
+
+		console.log(response);
 	});
 }]);

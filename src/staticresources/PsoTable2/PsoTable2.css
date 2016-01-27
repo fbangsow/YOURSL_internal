@@ -1,2 +1,30 @@
-body {
+#pso-table {
+	box-sizing: border-box;
+}
+
+#opportunities-filter {
+	float: left;
+	width: 33%;
+}
+
+#opportunities-filter > * {
+	display: block;
+	float: left;
+	margin: 0 1% 1% 0;
+	width: 49%;
+}
+
+#opportunities-filter select {
+	clear: both;
+	padding: 1%;
+}
+
+#opportunities-filter a {
+	display: inline-block;
+	margin: 0 0 0 1%;
+	width: auto;
+}
+
+#opportunities-filter button {
+	clear: both;
 }
