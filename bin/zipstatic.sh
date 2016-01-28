@@ -36,6 +36,11 @@ do
 
 		~/Library/Application\ Support/Sublime\ Text\ 3/Packages/User/MavensMate/mm/mm -o compile -c SUBLIME_TEXT_3 <<< '{"project_name": "'${PROJECTNAME}'", "workspace": "'${MM_WORKSPACE}'", "files": ["'${RESOURCESDIR}/${TARGET}'.resource"]}'
 
+		if [ -f "${MM_LOGFILE}" ]
+		then
+			rm "${MM_LOGFILE}"
+		fi
+
 		echo
 	fi
 done
