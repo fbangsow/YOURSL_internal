@@ -34,18 +34,46 @@ public class CtrPSOTable {
   }
 
   @RemoteAction
-  public static string getAccountsonload(String list_of_ids,String dateparam) {
+  public static string getAccountsonload(String list_of_ids,String dateparam, String resource_list_of_ids) {
 
     String[] datefrmt = dateFormatter(dateparam);
     Date myDate = date.newinstance(Integer.valueOf(datefrmt[2]), Integer.valueOf(datefrmt[1]), Integer.valueOf(datefrmt[0]));
 
- list<String> listofdata=new list<String>();
-listofdata=list_of_ids.split(',');
+ 	list<String> listofdata=new list<String>();
+	list<String> listOfResourceData = new list<String>();
+	listOfResourceData = resource_list_of_ids.split(',');
+	listofdata=list_of_ids.split(',');
 
-system.debug('@@@'+listofdata);
-system.debug(PsoToolController.getInstance().setSelectedOpportunities(listofdata).setStartDate(myDate).getDataSet().JSON());
-
-    return PsoToolController.getInstance().setSelectedOpportunities(listofdata).setStartDate(myDate).getDataSet().JSON();
+	if(list_of_ids=='none' && resource_list_of_ids=='none'){
+		return '{"Customers": []}';
+	}
+	else if(list_of_ids=='none' && resource_list_of_ids==''){
+		return PsoToolController.getInstance().showAllContacts().setStartDate(myDate).getDataSet().JSON();
+	}
+	else if(list_of_ids=='none' && resource_list_of_ids!=''){
+		return PsoToolController.getInstance().setSelectedContacts(listOfResourceData).setStartDate(myDate).getDataSet().JSON();
+	}
+	else if(list_of_ids=='' && resource_list_of_ids=='none'){
+		return PsoToolController.getInstance().showAllOpportunities().setStartDate(myDate).getDataSet().JSON();
+	}
+	else if(list_of_ids=='' && resource_list_of_ids==''){
+		return PsoToolController.getInstance().showAllOpportunities().showAllContacts().setStartDate(myDate).getDataSet().JSON();
+	}
+	else if(list_of_ids=='' && resource_list_of_ids!=''){
+		return PsoToolController.getInstance().showAllOpportunities().setSelectedContacts(listOfResourceData).setStartDate(myDate).getDataSet().JSON();
+	}
+	else if(list_of_ids!='' && resource_list_of_ids=='none'){
+		return PsoToolController.getInstance().setSelectedOpportunities(listofdata).setStartDate(myDate).getDataSet().JSON();
+	}
+	else if(list_of_ids!='' && resource_list_of_ids==''){
+		return PsoToolController.getInstance().setSelectedOpportunities(listofdata).showAllContacts().setStartDate(myDate).getDataSet().JSON();
+	}
+	else if(list_of_ids!='' && resource_list_of_ids!=''){
+		return PsoToolController.getInstance().setSelectedOpportunities(listofdata).setSelectedContacts(listOfResourceData).setStartDate(myDate).getDataSet().JSON();
+	}
+	else {
+		return '{"Customers": []}';
+	}
   }
     @RemoteAction
   public static string getDataofMonthfilter(String dateparam) {
