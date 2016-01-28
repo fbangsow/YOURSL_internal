@@ -25,8 +25,24 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 		sfEndpoint.getProjectStaffing(selectedOpportunities, new Date()).then(function (data) {
 			console.log(data);
 
+			/* we need to equalize the time to be able to detect today */
 			var startDate = new Date(data.StartDate);
+			startDate.setHours(0);
+			startDate.setMinutes(0);
+			startDate.setSeconds(0);
+			startDate.setMilliseconds(0);
+
 			var endDate = new Date(data.EndDate);
+			endDate.setHours(0);
+			endDate.setMinutes(0);
+			endDate.setSeconds(0);
+			endDate.setMilliseconds(0);
+
+			var today = new Date();
+			today.setHours(0);
+			today.setMinutes(0);
+			today.setSeconds(0);
+			today.setMilliseconds(0);
 
 			$scope.viewState.staffingMonths.splice(0, $scope.viewState.staffingMonths.length);
 			$scope.viewState.staffingWeeks.splice(0, $scope.viewState.staffingWeeks.length);
@@ -44,6 +60,9 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 					date: new Date(currentDate.valueOf()),
 					day: currentDate.getDate(),
 					isWeekEnd: !(currentDate.getDay() % 6),
+					isPast: currentDate < today,
+					isToday: currentDate.getTime() === today.getTime(),
+					isFuture: currentDate > today,
 					weekDay: datepicker.formatDate('D', currentDate),
 					week: datepicker.iso8601Week(currentDate),
 					month: datepicker.formatDate('M', currentDate),
@@ -95,6 +114,32 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 
 						for (var s = 0; s < resource.Staffing.length; s++) {
 							var staffing = resource.Staffing[s];
+							/**
+							 * {
+								Day: '2016-01-28',
+								Staff: 4.25,
+								HoursOff: 0.75
+							 }
+							 */
+
+							/* fully booked means 80% of 8 hours */
+							var hoursPerDay = 8;
+							var fullyBlockedTreshold = hoursPerDay * 0.8;
+
+							/* booking means an allocation to a project, not holidays */
+							staffing.hasBooking = staffing.Staff > 0;
+							staffing.isPartlyBooked = staffing.hasBooking && staffing.Staff < fullyBlockedTreshold;
+							staffing.isFullyBooked = staffing.Staff >= fullyBlockedTreshold;
+
+							staffing.hasHoliday = staffing.HoursOff > 0;
+							staffing.isPartlyHoliday = staffing.hasHoliday && staffing.HoursOff < fullyBlockedTreshold;
+							staffing.isFullHoliday = staffing.HoursOff >= fullyBlockedTreshold;
+
+							/* the blocked hours will be displayed in the table */
+							staffing.blockedHours = staffing.Staff + staffing.HoursOff;
+							staffing.isFullyBlocked = staffing.blockedHours >= fullyBlockedTreshold;
+							staffing.isOverBlocked = staffing.blockedHours > hoursPerDay;
+
 							resource.StaffingByDay[staffing.Day] = staffing;
 						}
 					}
