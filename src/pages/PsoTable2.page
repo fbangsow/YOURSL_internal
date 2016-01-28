@@ -41,7 +41,7 @@
 				</div>
 			</apex:pageBlock>
 
-			<apex:pageBlock html-data-ng-show="status.loaded" title="Manage staffing" html-ng-controller="PsoTable2Staffing" html-ng-init="viewState.staticStaffingColumns = 3">
+			<apex:pageBlock html-data-ng-show="status.loaded" title="Manage staffing" html-ng-controller="PsoTable2Staffing" html-ng-init="viewState.staticStaffingColumns = 5">
 				<section id="staffing">
 					<table>
 						<tbody data-ng-if="staffing.Customers.length" ng-repeat="customer in staffing.Customers">
@@ -63,6 +63,8 @@
 								<th rowspan="4">Resource</th>
 								<th rowspan="4">Role</th>
 								<th rowspan="4">Sold days</th>
+								<th rowspan="4">Planned days</th>
+								<th rowspan="4">Unplanned days</th>
 								<th colspan="{{ month.dayCount }}" ng-repeat="month in viewState.staffingMonths">
 									{{ month.caption }}
 								</th>
@@ -90,7 +92,13 @@
 									{{ resource.Product }}
 								</td>
 								<td>
-									{{ resource.SoldDays / 8 }}
+									{{ (resource.SoldDays / 8) | number : 2 }}
+								</td>
+								<td>
+									{{ (resource.PlannedDays / 8) | number : 2 }}
+								</td>
+								<td>
+									{{ ((resource.SoldDays - resource.PlannedDays) / 8) | number : 2 }}
 								</td>
 								<td ng-repeat="day in viewState.staffingDays" ng-init="staffing = resource.StaffingByDay[day.dateString]" ng-class="{weekend:day.isWeekEnd,past:day.isPast,today:day.isToday,future:day.isFuture,'has-booking':staffing.hasBooking,'partly-booked':staffing.isPartlyBooked,'fully-booked':staffing.isFullyBooked,'has-holiday':staffing.hasHoliday,holiday:staffing.isFullHoliday,'part-holiday':isPartlyHoliday,'fully-blocked':staffing.isFullyBlocked,overblocked:staffing.isOverBlocked}">
 									<span ng-if="staffing !== undefined">
