@@ -107,13 +107,25 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 				var customer = data.Customers[c];
 				for (var p = 0; p < customer.Projects.length; p++) {
 					var project = customer.Projects[p];
+					project.SoldDays = 0;
+					project.PlannedDays = 0;
+					project.BlockedHoursByDay = {};
+
 					for (var r = 0; r < project.Resources.length; r++) {
 						var resource = project.Resources[r];
 
 						resource.StaffingByDay = {};
 
+						/* float values including decimals are not converted to float, but string */
+						resource.SoldDays = parseFloat((resource.SoldDays + "").replace(',', '.'));
+						resource.PlannedDays = parseFloat((resource.PlannedDays + "").replace(',', '.'));
+
+						project.SoldDays += resource.SoldDays;
+						project.PlannedDays += resource.PlannedDays;
+
 						for (var s = 0; s < resource.Staffing.length; s++) {
 							var staffing = resource.Staffing[s];
+
 							/**
 							 * {
 								Day: '2016-01-28',
@@ -141,6 +153,12 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 							staffing.isOverBlocked = staffing.blockedHours > hoursPerDay;
 
 							resource.StaffingByDay[staffing.Day] = staffing;
+
+							if (project.BlockedHoursByDay[staffing.Day]) {
+								project.BlockedHoursByDay[staffing.Day] += staffing.blockedHours;
+							} else {
+								project.BlockedHoursByDay[staffing.Day] = staffing.blockedHours;
+							}
 						}
 					}
 				}

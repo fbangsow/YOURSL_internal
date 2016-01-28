@@ -84,7 +84,7 @@
 									{{ day.day }}
 								</th>
 							</tr>
-							<tr ng-repeat-end="true" ng-repeat="resource in project.Resources">
+							<tr ng-repeat="resource in project.Resources">
 								<td>
 									<a href="/{{ resource.ContactId }}" target="_blank">{{ resource.ResourceName }}</a>
 								</td>
@@ -103,6 +103,25 @@
 								<td ng-repeat="day in viewState.staffingDays" ng-init="staffing = resource.StaffingByDay[day.dateString]" ng-class="{weekend:day.isWeekEnd,past:day.isPast,today:day.isToday,future:day.isFuture,'has-booking':staffing.hasBooking,'partly-booked':staffing.isPartlyBooked,'fully-booked':staffing.isFullyBooked,'has-holiday':staffing.hasHoliday,holiday:staffing.isFullHoliday,'part-holiday':isPartlyHoliday,'fully-blocked':staffing.isFullyBlocked,overblocked:staffing.isOverBlocked}">
 									<span ng-if="staffing !== undefined">
 										{{ staffing.blockedHours }}
+									</span>
+								</td>
+							</tr>
+							<tr ng-repeat-end="true">
+								<td colspan="2">
+									Total
+								</td>
+								<td>
+									{{ (project.SoldDays / 8) | number : 2 }}
+								</td>
+								<td>
+									{{ (project.PlannedDays / 8) | number : 2 }}
+								</td>
+								<td>
+									{{ ((project.SoldDays - project.PlannedDays) / 8) | number : 2 }}
+								</td>
+								<td ng-repeat="day in viewState.staffingDays" ng-init="blockedHours = project.BlockedHoursByDay[day.dateString] || 0" ng-class="{weekend:day.isWeekEnd,past:day.isPast,today:day.isToday,future:day.isFuture}">
+									<span>
+										{{ blockedHours }}
 									</span>
 								</td>
 							</tr>
