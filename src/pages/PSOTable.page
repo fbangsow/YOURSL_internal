@@ -3087,7 +3087,7 @@ yearChange=false;
                   <div class="bordervalue">
               <table class="custdetails" >
                             <tr>
-                            <td>Start Month :</td>
+                            <td>Start Month:</td>
                     <td><input type="text" class="strtdateinput" /><input type="text" class="setstrtdateinput" style="display:none;"/></td>
                                 <td class="hideInput">Account:</td>
                                 <td class="hideInput">
@@ -3161,7 +3161,7 @@ yearChange=false;
                 <dt>
 
                  <a href="#">
-                    <input type="text" class="multiSel fltResourceSelect" value="None" />
+                    <input type="text" class="multiSel fltResourceSelect" value="None" style="width: 300px !important;" />
                 </a>
 
                 </dt>
