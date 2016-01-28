@@ -128,10 +128,9 @@
                  }
              }]);
              app.factory('serviceforgetaccountchange', ['$q', '$rootScope', function($q, $rootScope) {
-                 return function(a, dateparam) {
+                 return function(a, dateparam, resources) {
                      var deferred = $q.defer();
-
-                     Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.CtrPSOTable.getAccountsonload}', a, dateparam, function(result, event) {
+                     Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.CtrPSOTable.getAccountsonload}', a, dateparam, resources, function(result, event) {
                          $rootScope.$apply(function() {
                              if (event.status) {
                                  deferred.resolve(result);
@@ -391,7 +390,7 @@ yearChange=false;
                  return container;
              }, {}));
              //Controller Starts Here
-             app.controller('MyCtrl', function($scope, $compile, serviceforgetaccount, serviceforgetaccountchange, tempService, $q) {
+             app.controller('MyCtrl', function($scope, $compile, $filter, serviceforgetaccount, serviceforgetaccountchange, tempService, $q) {
 
 
                  $scope.streamingerror = function() {
@@ -482,6 +481,8 @@ yearChange=false;
                          $(".setstrtdateinput").val(parseInt(month) + 1 + " " + year);
 
 
+
+
                      });
 
                      var new_selection = $(".ui-datepicker-month").find('option:selected').val();
@@ -565,17 +566,31 @@ yearChange=false;
                          }
                      }
                  }
-                 $scope.fileringonload = function(myDataSet) {
+                 $scope.fileringonload = function(myDataSet, resourceDataSet) {
                      var myDataSet = myDataSet;
                      var newthing = [],
                          customer = [],
-                         projectload = [];
+                         projectload = [],
+                         resources = [];
                      customer.push({
                          "value": "All Account Names",
                          "Id": "0"
                      });
                      projectload.push({
+                         "value": "None",
+                         "Id": "none"
+                     });
+                     projectload.push({
                          "value": "All Opportunity Names",
+                         "Id": "0"
+                     });
+
+                     resources.push({
+                         "value": "None",
+                         "Id": "none"
+                     });
+                     resources.push({
+                         "value": "All Resource Names",
                          "Id": "0"
                      });
                      angular.forEach(myDataSet, function(a, b) {
@@ -599,7 +614,14 @@ yearChange=false;
                              "Id": a.AccountId
                          });
                      })
+                     angular.forEach(resourceDataSet, function(a, b) {
+                         resources.push({
+                             "value": a.ResourceName,
+                             "Id": a.ContactId
+                         });
+                     })
                      $scope.persons = customer;
+                     $scope.fltresourcelist = resources;
                      $scope.projectdetails = newthing;
                      var foo2 = _.unique(projectload, false, function(item, k, v) {
                          return item;
@@ -607,8 +629,7 @@ yearChange=false;
                      $scope.projectsselect = foo2;
                      $scope.blisterPackTemplateSelected = $scope.persons[0];
                      $scope.projectsSelecteddata = $scope.projectsselect[0];
-
-
+                     $scope.resourceSelecteddata = $scope.fltresourcelist[0];
                  }
                  $scope.projecthealth = function(opptrtuntyid, changedvalue) {
 
@@ -629,7 +650,7 @@ yearChange=false;
                  $scope.Customersfilter = function(ab) {
 
                          var lengthforarray = 0;
-                         if (ab == "All Account Names") {
+                         if (ab == "None") {
                              lengthforarray = $(".accountname option").length;
 
                          } else {
@@ -641,20 +662,25 @@ yearChange=false;
                              })
 
                          }
-                         $(".multiSel").val("All Opportunity Names");
+                         $(".oppSel").val("None");
+                         $(".fltResourceSelect").val("None");
                          var myDataSet = $scope.filterdata.Customers;
                          startdateobj = $scope.dataval;
                          var countforfilterdata = 0;
 
                          if ($(".accountname option").length == lengthforarray) {
                              angular.forEach(ab, function(selectedvalueforcount, b) {
-                                 if (selectedvalueforcount == "All Account Names") {
+                                 if (selectedvalueforcount == "None") {
                                      countforfilterdata = 1;
                                  }
                              })
                          }
                          var projects1 = new Array();
                          if (countforfilterdata == 1) {
+                            projects1.push({
+                                 "value": "None",
+                                 "Id": "none"
+                             })
                              projects1.push({
                                  "value": "All Opportunity Names",
                                  "Id": "0"
@@ -672,6 +698,10 @@ yearChange=false;
                              })
 
                          } else {
+                            projects1.push({
+                                 "value": "None",
+                                 "Id": "none"
+                             })
                              projects1.push({
                                  "value": "All Opportunity Names",
                                  "Id": "0"
@@ -711,6 +741,7 @@ yearChange=false;
                      var myDataSet1 = $scope.dataval1;
                      $scope.filterdata = resultobject;
                      myDataSet = resultobject.Customers;
+                     resourceDataSet = resultobject.Resources;
                      if (!resultobject.IsAllowedToRunScript) {
 
 
@@ -718,21 +749,31 @@ yearChange=false;
                      }
                      startdateobj = resultobject;
                      //Display customer and projects information on initial page load
-                     $scope.fileringonload(myDataSet);
-
+                     $scope.fileringonload(myDataSet, resourceDataSet);
 
                      $scope.oppvalue = sessionStorage.getItem("oppname");
+                     $scope.oppnamevalue = sessionStorage.getItem("oppnamevalue");
+                     $scope.resvalue = sessionStorage.getItem("resname");
+                     $scope.resnamevalue = sessionStorage.getItem("resnamevalue");
                      if ($scope.oppvalue != null) {
 
-
                          $(".oprid").val($scope.oppvalue);
+                         $(".oppSel").val($scope.oppnamevalue);
+
+                         $(".flt_res_id").val($scope.resvalue);
+                         $(".fltResourceSelect").val($scope.resnamevalue);
 
                          $scope.oppselectedvalue();
                          $scope.accountname = sessionStorage.getItem("accname");
 
 
                          var projects1 = new Array();
-                         if ($scope.accountname == "All Account Names") {
+                         if ($scope.accountname == "None") {
+
+                             projects1.push({
+                                 "value": "None",
+                                 "Id": "none"
+                             })
                              projects1.push({
                                  "value": "All Opportunity Names",
                                  "Id": "0"
@@ -749,6 +790,10 @@ yearChange=false;
                              })
 
                          } else {
+                            projects1.push({
+                                 "value": "None",
+                                 "Id": "none"
+                             })
                              projects1.push({
                                  "value": "All Opportunity Names",
                                  "Id": "0"
@@ -782,6 +827,9 @@ yearChange=false;
 
                          $scope.projectsselect = projects1;
 
+                     } else {
+                        $(".oprid").val("none");
+                        $(".flt_res_id").val("none");
                      }
                  });
 
@@ -804,13 +852,17 @@ yearChange=false;
                      $(".dropdown dd select").hide();
                  });
 
+                 $(".filterButton").on('click', function() {
+                    $scope.oppselectedvalue();
+
+                 });
+
                  function getSelectedValue(id) {
 
                      return $("#" + id).find("dt a span.value").html();
                  }
 
                  $(document).bind('click', function(e) {
-
                      var $clicked = $(e.target);
                      if (!$clicked.parents().hasClass("dropdown")) $(".dropdown dd .mutliSelect").hide();
                  });
@@ -967,20 +1019,22 @@ yearChange=false;
                      }
                  });
 
-
-
                  $scope.oprnameselect = function(a) {
 
 
                      if (a == "0") {
                          $('.clickforselect option').each(function(i, selected) {
+
+
                              if ($(this).is(":selected")) {
 
                                  if ($(this).val() == 0) {
                                      $('.clickforselect option').each(function(i, selected) {
 
 
-                                         $(this).attr("selected", true);
+                                        if ($(this).val() != 'none') {
+                                            $(this).attr("selected", true);
+                                        }
 
                                      });
 
@@ -1040,8 +1094,93 @@ yearChange=false;
 
                          }
                      })
-                     $(".multiSel").val(foo);
-                     $(".oprid").val(idselected);
+                     $(".oppSel").val(foo);
+                     /*if (idselected.length == 0) {
+                        $(".oprid").val("none");
+                     } else {
+
+                     }*/
+
+                    $(".oprid").val(idselected);
+
+
+
+                 }
+
+                 $scope.resourcenameselect = function(a) {
+
+                     if (a == "0") {
+                         $('.clickforselectresource option').each(function(i, selected) {
+
+                             if ($(this).is(":selected")) {
+                                 if ($(this).val() == 0) {
+                                     $('.clickforselectresource option').each(function(i, selected) {
+
+
+                                        if ($(this).val() != 'none') {
+                                            $(this).attr("selected", true);
+                                        }
+
+                                     });
+
+                                 }
+
+
+                             }
+                         });
+                     }
+                     var count = 0;
+                     $('.clickforselectresource option').each(function(i, selected) {
+                         if ($(this).is(":selected")) {
+                             count = count + 1;
+                         }
+
+                     });
+
+                     if (count != $('.clickforselectresource option').length) {
+                         $('.clickforselectresource option').each(function(i, selected) {
+                             if ($(this).val() == 0) {
+                                 $(this).attr("selected", false);
+                             }
+                         });
+
+                     } else {
+                         $('.clickforselectresource option').each(function(i, selected) {
+                             if ($(this).val() == 0) {
+                                 $(this).attr("selected", true);
+                             }
+                         });
+
+                     }
+
+                     var foo = new Array();
+                     var idselected = new Array();
+
+
+                     $('.clickforselectresource :selected').each(function(i, selected) {
+
+                         foo.push($(selected).text());
+                         idselected.push($(selected).val())
+
+                     });
+
+
+                     $.each(idselected, function(a, b) {
+                         if (b == 0) {
+                             foo = [];
+                             idselected = [];
+                             $('.clickforselectresource option').each(function(i, selected) {
+                                 if ($(this).val() != 0) {
+
+                                     foo.push($(selected).text());
+                                     idselected.push($(selected).val())
+                                 }
+                             });
+
+                         }
+                     })
+                     $(".fltResourceSelect").val(foo);
+                     $(".flt_res_id").val(idselected);
 
 
 
@@ -1099,6 +1238,13 @@ yearChange=false;
                      $scope.focusforchange = $(".oprid").val();
 
                  })
+
+                 $(document).on("focus", ".clickforselectresource ", function() {
+                     $scope.focusforchange = $(".flt_res_id").val();
+
+
+
+                 })
                  $scope.closefunctn = function() {
 
                      $(".blurbackgrund,.imgldr").attr("style", "display:none");
@@ -1107,16 +1253,24 @@ yearChange=false;
                  $scope.oppselectedvalue = function() {
 
 
-                         var a = $(".oprid").val();
-                         sessionStorage.setItem("oppname", $(".oprid").val());
-                         var count = "";
 
-                         if (typeof $scope.focusforchange !== "undefined") {
+                         var a = $(".oprid").val();
+                         var resources = $(".flt_res_id").val();
+                         sessionStorage.setItem("oppname", $(".oprid").val());
+                         sessionStorage.setItem("oppnamevalue", $(".oppSel").val());
+                         sessionStorage.setItem("resname", $(".flt_res_id").val());
+                         sessionStorage.setItem("resnamevalue", $(".fltResourceSelect").val());
+                         var count = 1;
+
+
+                         /*if (typeof $scope.focusforchange !== "undefined") {
                              count = a.localeCompare($scope.focusforchange);
+                             count==0?resources.localeCompare($scope.focusforchange):count;
                              $(".clickforselect").slideToggle('fast');
+                             $(".clickforselectresource").slideToggle('fast');
                          } else {
                              count = 1;
-                         }
+                         }*/
 
                          $scope.date = $(".strtdateinput").val();
 
@@ -1145,20 +1299,58 @@ yearChange=false;
                              datestring = "01." + mnth + "." + spltdatepicker[1];
                          }
 
-
-
-
                          if (count != 0) {
                              $(".blurbackgrund,.imgldr").attr("style", "display:block");
 
 
-                             serviceforgetaccountchange(a, datestring).then(function(result) {
+                             serviceforgetaccountchange(a, datestring, resources).then(function(result) {
                                 var daatjson = htmlDecode(result);
                                  var resultobject = JSON.parse(daatjson);
                                  //$scope.dataOfResponse=resultobject;
+
+
+                                 if (!("Resources" in resultobject)) {
+                                    $("#resourceTableTitle").hide();
+                                    $("#lasttable").hide();
+                                    $("#resourcetable").hide();
+                                 } else {
+                                    $("#resourceTableTitle").show();
+                                    $("#lasttable").show();
+                                    $("#resourcetable").show();
+                                 }
+
+
+
+                                 if (!("Customers" in resultobject)) {
+                                    resultobject.Customers = [
+   {
+     "Projects": [
+       {
+         "Resources": [],
+         "ProjectStatus": "",
+         "ProjectManagerId": null,
+         "OurProjectManager": null,
+         "OpportunityName": "",
+         "OpportunityId": ""
+       }
+     ],
+     "AccountName": "",
+     "AccountId": "",
+     "Empty" : true
+   }
+ ];
+                                 }
+
+                                 if (!("Resources" in resultobject)) {
+                                    resultobject.Resources = [];
+                                 }
+
                                  if (resultobject.Customers.length > 0) {
-                                     $(".hdng").attr("style", "display:block");
-                                     $(".msg").attr("style", "display:none");
+
+
+                                    /*$(".hdng").attr("style", "display:block");
+                                    $(".msg").attr("style", "display:none");    */
+
                                      $scope.mainPage = tempService.inputbindingtable(resultobject);
                                      $scope.dataval = resultobject;
                                      $scope.focusdata = "";
@@ -1175,7 +1367,6 @@ yearChange=false;
                                          	workinDaysInPeriod[2] = businessDays($scope.dataval.EndDate);
 
                                          	var localplanedformont1 = $scope.localobject($scope.dataval.StartDate, $scope.dataval.Resources[i].Staffing);
-
                                          	resources.plndperq = [];
                                          	angular.forEach(workinDaysInPeriod, function(mnthtolmt, key) {
 	                                             angular.forEach(localplanedformont1, function(lclplnd, plndkey) {
@@ -1258,6 +1449,7 @@ yearChange=false;
                                              });
                                          });
                                          var startdate = $scope.dataval.StartDate;
+
                                          angular.forEach($scope.dataval.Customers, function(Customers, i) {
                                              angular.forEach(Customers.Projects, function(projectss, i) {
                                                  angular.forEach(projectss.Resources, function(resurce, i) {
@@ -1354,6 +1546,8 @@ yearChange=false;
                                          })
                                      }
                                      $scope.localobject = function(strtdate, objt, onlyWorkDays) {
+                                     	 // angular.copy(objt);
+                                     	 var plannedhours= 0;
                                          var startmonth = (strtdate).split(".");
                                          var localplanedformont = [];
                                          for (i = parseInt(startmonth[1]); i <= parseInt(startmonth[1]) + 2; i++) {
@@ -1363,13 +1557,15 @@ yearChange=false;
 
                                                  var dateformonthtolimit = (stff.Day).split(".");
                                                  if (parseInt(dateformonthtolimit[1]) == i) {
+                                                 	plannedhours = stff.Staff;
                                                      if (stff.Staff == "") {
                                                          stff.Staff = 0;
+                                                         plannedhours = 0;
                                                      }
                                                      if(onlyWorkDays && stff.HoursOff>0 && stff.Staff>0){
-                                                     	stff.Staff = stff.Staff - stff.HoursOff;
+                                                     	plannedhours = stff.Staff - stff.HoursOff;
                                                      }
-                                                     plnddayspermnth = plnddayspermnth + parseFloat(stff.Staff) / 8;
+                                                     plnddayspermnth = plnddayspermnth + parseFloat(plannedhours) / 8;
                                                  }
 
                                              })
@@ -2057,6 +2253,19 @@ yearChange=false;
                                          })
                                      }
 
+                                    if ("Empty" in resultobject.Customers[0]) {
+
+                                        $(".opp_weekdata").addClass("hideMe");
+
+                                    } else {
+
+
+                                        $(".opp_weekdata").addClass("showMe");
+
+                                    }
+                                    $(".hdng").attr("style", "display:block");
+                                    $(".msg").attr("style", "display:none");
+
                                  } else {
                                      $(".imgldr").attr("style", "display:none;");
                                      $(".appendtxt").text(" ");
@@ -2064,6 +2273,9 @@ yearChange=false;
                                      $(".popup,.blurbackgrund").attr("style", "display:block");
                                      $(".appndbtns").html("<input type='button' value='OK' class='cancelbtn' >");
 
+
+                                     $(".hdng").attr("style", "display:none");
+                                    $(".msg").attr("style", "display:block");
                                  }
 
                              });
@@ -2074,8 +2286,11 @@ yearChange=false;
                      //)
                  $scope.$on('ngRepeatFinishedforselectbox', function(ngRepeatFinishedEvent) {
                      $scope.oppvalue = sessionStorage.getItem("oppname");
+                     $scope.resvalue = sessionStorage.getItem("resname");
+
                      var datatodsply = new Array();
                      var datadsplyopp = new Array();
+                     var resdatatodsply = new Array();
 
                      if ($scope.oppvalue != "") {
                          var oppvalusplite = $scope.oppvalue.split(",");
@@ -2089,6 +2304,27 @@ yearChange=false;
 
                                      $(this).attr("selected", true);
                                      datatodsply.push($(this).text());
+
+
+                                 }
+
+                             })
+
+                         }
+                     }
+
+                     if ($scope.resvalue != "") {
+                         var resvalusplite = $scope.resvalue.split(",");
+                         for (i = 0; i <= resvalusplite.length - 1; i++) {
+
+
+
+                             $(".clickforselectresource option").each(function() {
+
+                                 if ($(this).val() == resvalusplite[i]) {
+
+                                     $(this).attr("selected", true);
+                                     resdatatodsply.push($(this).text());
 
 
                                  }
@@ -2118,7 +2354,8 @@ yearChange=false;
                      }
 
                      $(".Accountnamedsp").val(datadsplyopp);
-                     $(".multiSel").val(datatodsply);
+                     $(".oppSel").val(datatodsply);
+                     $(".FltResources").val(resdatatodsply);
                  });
                  $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
 
@@ -2337,6 +2574,15 @@ yearChange=false;
 
                              }
                          });
+                        if ("Empty" in $scope.dataval.Customers[0]) {
+                            $(".opp_weekdata").hide();
+
+                        } else {
+
+                            $(".opp_weekdata").show();
+
+                        }
+
                      })
                      //function for close button
                  $(document).on("click", ".closebtn", function() {
@@ -2376,9 +2622,11 @@ yearChange=false;
                      $(".cancelfun").removeClass("cancelfun");
                      $(".Projects ").click();
                      $(".Accountnamedsp").val("All Account Names ");
-                     $(".multiSel").val("All Opportunity Names");
+                     $(".oppSel").val("None");
+                     $(".fltResourceSelect").val("None");
                  });
                  $(document).on("click", ".ui-datepicker-close", function() {
+                    $(".hideInput").show();
 
                      sessionStorage.setItem("datepickervalmonth", null);
                      sessionStorage.setItem("datepickervalmonthfordata", null);
@@ -2392,6 +2640,7 @@ yearChange=false;
                      sessionStorage.setItem("datepickerval", $(".setstrtdateinput").val());
                      var splitdatedatepicker = ($(".setstrtdateinput").val()).split(" ");
                      var listofdata = $(".oprid").val();
+                     var listofresources = $(".flt_res_id").val();
                      var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
                      for (i = 0; i <= monthNames.length - 1; i++) {
                          monthno = (monthNames[i] == splitdatedatepicker[0]) ? i : monthno;
@@ -2405,14 +2654,14 @@ yearChange=false;
                              var daatjsonresultforfilter = htmlDecode(resultforfilter);
                              var parsedDaatjsonfilter = JSON.parse(daatjsonresultforfilter);
                              myDataSet = parsedDaatjsonfilter.Customers;
-
-                             $scope.fileringonload(myDataSet);
+                             resourceDataSet = parsedDaatjsonfilter.Resources;
+                             $scope.fileringonload(myDataSet, resourceDataSet);
 
                          });
 
                      Visualforce.remoting.Manager.invokeAction(
-                         '{!$RemoteAction.CtrPSOTable.getDataofMonth}',
-                         dateparam, listofdata,
+                         '{!$RemoteAction.CtrPSOTable.getAccountsonload}',
+                        listofdata, dateparam, listofresources,
                          function(result, event) {
                              if (event.status) {
 
@@ -2423,6 +2672,9 @@ yearChange=false;
                                  $scope.dataforfilter = parsedDaatjson;
                                  $scope.noresults = 0;
 
+                                 if(!("Customers" in resultobject)) {
+                                    resultobject.Customers = [];
+                                 }
 
                                  if (resultobject.Customers.length > 0) {
                                      $scope.mainPage = tempService.inputbindingtable(resultobject);
@@ -2478,6 +2730,10 @@ yearChange=false;
                  var j = jQuery.noConflict();
                  (function(j) {
                      j(document).ready(function() {
+                        if (sessionStorage.getItem("datepickerval") === null) {
+                            $(".hideInput").hide();
+                        }
+
 
                          // Connect to the CometD endpoint
                          $.cometd.init({
@@ -2831,8 +3087,10 @@ yearChange=false;
                   <div class="bordervalue">
               <table class="custdetails" >
                             <tr>
-                                <td>Account:</td>
-                                <td>
+                            <td>Start Month:</td>
+                    <td><input type="text" class="strtdateinput" /><input type="text" class="setstrtdateinput" style="display:none;"/></td>
+                                <td class="hideInput">Account:</td>
+                                <td class="hideInput">
 
              <dl class="dropdown">
 
@@ -2862,9 +3120,9 @@ yearChange=false;
 
                                  </td>
 
-                            <td>Opportunity:</td>
+                            <td class="hideInput">Opportunity:</td>
 
-                        <td>
+                        <td class="hideInput">
 
              <input type="text" class="oprid" />
                         <dl class="dropdown">
@@ -2872,7 +3130,7 @@ yearChange=false;
                 <dt>
 
                  <a href="#">
-                    <input type="text" class="multiSel" value="All Opportunity Names" />
+                    <input type="text" class="multiSel oppSel" value="None" />
                 </a>
 
                 </dt>
@@ -2880,7 +3138,7 @@ yearChange=false;
                 <dd>
                     <div class="mutliSelect clickforselect">
 
-                       <select class="Projects" data-ng-model="projectsSelecteddata"  ng-blur="oppselectedvalue()" multiple="true" ng-click="oprnameselect(projectsSelecteddata)" on-finish-render="ngRepeatFinishedforselectbox">
+                       <select class="Projects" data-ng-model="projectsSelecteddata" multiple="true" ng-click="oprnameselect(projectsSelecteddata)" on-finish-render="ngRepeatFinishedforselectbox">
                <option ng-repeat="c in projectsselect" value="{{c.Id}}" >{{c.value}}</option>
                         </select>
 
@@ -2891,8 +3149,37 @@ yearChange=false;
             </dl>
                     </td>
 
-                    <td>Start Month :</td>
-                    <td><input type="text" class="strtdateinput" /><input type="text" class="setstrtdateinput" style="display:none;"/></td>
+
+
+                    <td class="hideInput">Resources:</td>
+
+                        <td class="hideInput">
+
+             <input type="text" class="flt_res_id" style="display: none"  />
+                        <dl class="dropdown">
+
+                <dt>
+
+                 <a href="#">
+                    <input type="text" class="multiSel fltResourceSelect" value="None" style="width: 300px !important;" />
+                </a>
+
+                </dt>
+
+                <dd>
+                    <div class="mutliSelect clickforselectresource">
+
+                       <select class="FltResources" data-ng-model="resourceSelecteddata" multiple="true" ng-click="resourcenameselect(resourceSelecteddata)">
+               			<option ng-repeat="r in fltresourcelist" value="{{r.Id}}" >{{r.value}}</option>
+                        </select>
+
+
+                    </div>
+                </dd>
+
+            </dl>
+                    </td>
+                    <td class="hideInput"><input type="button" value="Filter" class="filterButton btn"/></td>
                 </tr>
             </table>
             </div>
@@ -2903,18 +3190,19 @@ yearChange=false;
 
             <div class="hdng wrapperwidth" id="mainContent">
                 <div class="custdisplay">
-                    <div data-ng-repeat="dataval in dataval.Customers" class="custvalues" on-finish-render="ngRepeatFinished">
+                    <div data-ng-repeat="dataval in dataval.Customers" class="custvalues" on-finish-render="ngRepeatFinished" >
                         <div data-ng-repeat="dataval1 in dataval.Projects" >
                             <table  class="custdetailview" >
+                                <tbody class="opp_weekdata">
                                 <tr ><td  style="text-align:left;width:5px;padding-top:10px;">Acc:</td><td style="text-align:left;padding-top:10px" class="customername"><a ng-href="/{{dataval.AccountId}}" target="_blank">{{dataval.AccountName}}</a></td></tr>
                                 <tr><td  style="text-align:left;vertical-align:top;">Opp:</td><td  style="text-align:left;vertical-align: top;" class="prjname"><a ng-href="/{{dataval1.OpportunityId}}" target="_blank">{{dataval1.OpportunityName}}</a></td></tr>
                                 <tr><td  style="text-align:left;">PM:</td><td  style="text-align:left;"><a ng-href="/{{dataval1.ProjectManagerId}}" target="_blank">{{dataval1.OurProjectManager}}</a></td></tr>
                                 <tr><td> </td><td> <p style='position:relative;left:-32px;margin:0px;padding:0px;'>
-                                <a ng-href="/apex/OpportunityLineItemsEdit?id={{dataval1.OpportunityId}}" target="_blank" style="text-decoration:none;"><input type="button" style="height:20px;width:87px;"  value="Change Quantity" class="btn"/></a> <input type="button" style="height:20px;width:87px;margin-right:5px;" value="Project Health"  class="btn"/><select class="projecthealthoption" data-ng-model="projecthealth1"  style="min-height:20px !important" ng-change="projecthealth(dataval1.OpportunityId,projecthealth1);"> </select></p></td><td> </td></tr>
+                                <a ng-href="/apex/OpportunityLineItemsEdit?id={{dataval1.OpportunityId}}" target="_blank" style="text-decoration:none;"><input type="button" style="height:20px;width:87px;"  value="Change Quantity" class="btn"/></a> <input type="button" style="height:20px;width:87px;margin-right:5px;" value="Project Health"  class="btn"/><select class="projecthealthoption" data-ng-model="projecthealth1"  style="min-height:20px !important" ng-change="projecthealth(dataval1.OpportunityId,projecthealth1);"> </select></p></td><td> </td></tr> </tbody>
                             </table>
                             <div  class="Resourcesection" >
                                 <div >
-                                    <table class="table1">
+                                    <table class="table1 opp_weekdata">
                                         <tr>
                                             <thead>
                                                 <th >Resource<br/> Name</th><th >Product</th><th >Sold<br></br> Days</th><th>Planned <br></br>Days</th><th>Un-<br></br>Planned<br></br> Days</th>
@@ -2930,14 +3218,15 @@ yearChange=false;
                             </div>
                         </div>
                     </div>
+
                     <div class="clearfix"></div>
-                    <h1 style="position:relative;top:20px;">Resource Availability</h1>
+                    <h1 id="resourceTableTitle" style="position:relative;top:20px;">Resource Availability</h1>
                     <div class="clearfix"></div>
                     <div class="custvalues ">
                     <table class="table1" id="resourcetable">
                         <tr>
                             <thead>
-                               <th >Title</th> <th >Resource Name</th>
+                               <th >Title</th> <th >Resource <br/> Name</th>
                                 <!--
                                 <th >Role</th> <th > Sold days</th><th >Planned Days<br/> days</th><th >Unplanned <br/>days</th><th >Latest<br/> Modification</th>-->
                             </thead>
@@ -2953,8 +3242,8 @@ yearChange=false;
                 </div>
                 <div class="weekspresence" >
                     <div class="weekpresencedata">
-                        <div data-ng-repeat="dataval in dataval.Customers">
-                            <div data-ng-repeat="dataval1 in dataval.Projects" class="aligntable">
+                        <div data-ng-repeat="dataval in dataval.Customers" >
+                            <div data-ng-repeat="dataval1 in dataval.Projects" class="aligntable opp_weekdata">
                                        <table  class="custdetailview hiddentable" >
                                 <tr ><td  style="text-align:left;width:5px;padding-top:10px;">Acc:</td><td style="text-align:left;padding-top:10px" class="customername"><a ng-href="/{{dataval.AccountId}}" target="_blank">{{dataval.AccountName}}</a></td></tr>
                                 <tr><td  style="text-align:left;vertical-align:top;">Opp:</td><td  style="text-align:left;vertical-align: top;" class="prjname"><a ng-href="/{{dataval1.OpportunityId}}" target="_blank">{{dataval1.OpportunityName}}</a></td></tr>
@@ -2962,7 +3251,7 @@ yearChange=false;
                                 <tr><td> </td><td> <p style='position:relative;left:-32px;margin:0px;padding:0px;'>
                                 <a ng-href="/apex/OpportunityLineItemsEdit?id={{dataval1.OpportunityId}}" target="_blank" style="text-decoration:none;"><input type="button" style="height:20px;width:87px;"  value="Change Quantity" class="btn"/></a> <input type="button" style="height:20px;width:87px;" value="Project Health"  class="btn"/><select class="projecthealthoption" data-ng-model="projecthealth1"  style="min-height:20px !important" ng-change="projecthealth(dataval1.OpportunityId,projecthealth1);"> </select></p></td><td> </td></tr>
                             </table>
-                                <div class="table2" >
+                                <div class="table2 opp_weekdata" >
                                     <table >
                                         <tr>
                                             <thead>
@@ -3001,6 +3290,7 @@ yearChange=false;
                     <div class="clearfix"></div>
                 </div>
             </div>
+
              <p class="msg">Please select Opportunities you want to see using the filters above.</p>
 
             </body>
