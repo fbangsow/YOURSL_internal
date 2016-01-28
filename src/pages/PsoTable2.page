@@ -6,10 +6,12 @@
 	<apex:includeScript value="{!URLFOR($Resource.jQuery_ui_1_11_4,'jquery-ui.min.js')}"/>
 	<apex:includeScript value="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js" />
 	<apex:includeScript value="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular-cookies.min.js" />
-	<apex:includeScript value="{!URLFOR($Resource.PsoTable2,'PsoTable2.js')}"/>
+	<apex:includeScript value="{!URLFOR($Resource.PsoTable2,'js/core.js')}"/>
+	<apex:includeScript value="{!URLFOR($Resource.PsoTable2,'js/controllers/root.js')}"/>
+	<apex:includeScript value="{!URLFOR($Resource.PsoTable2,'js/controllers/staffing.js')}"/>
 
 	<link rel="stylesheet" href="{!URLFOR($Resource.jQuery_ui_1_11_4,'jquery-ui.min.css')}" />
-	<link rel="stylesheet" href="{!URLFOR($Resource.PsoTable2,'PsoTable2.css')}" />
+	<link rel="stylesheet" href="{!URLFOR($Resource.PsoTable2,'css/main.css')}" />
 
 	<apex:form >
 		<div data-ng-app="PsoTable2" data-ng-controller="PsoTable2" id="pso-table">
