@@ -15,7 +15,191 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 		staffingDays: []
 	};
 
+	/* restructure the staffings for each resource to be accessible by date */
+	var normalizeProjectHours = function (project) {
+		console.log('normalize project hours', project);
+		project.SoldDays = 0;
+		project.PlannedDays = 0;
+		project.BookedHoursByDay = {};
+
+		for (var r = 0; r < project.Resources.length; r++) {
+			var resource = project.Resources[r];
+
+			resource.StaffingByDay = {};
+
+			/* float values including decimals are not converted to float, but string */
+			resource.SoldDays = parseFloat((resource.SoldDays + "").replace(',', '.'));
+			resource.PlannedDays = parseFloat((resource.PlannedDays + "").replace(',', '.'));
+
+			project.SoldDays += resource.SoldDays;
+			project.PlannedDays += resource.PlannedDays;
+
+			/*
+				Resort, we need the Staffing to be ordered by ascending date.
+				Additionally we add a date field containing a JS Date object constructed from the Day string.
+			*/
+			resource.Staffing.sort(function (left, right) {
+				if (!left.date) {
+					left.date = new Date(left.Day);
+				}
+
+				if (!right.date) {
+					right.date = new Date(right.Day);
+				}
+
+				return left.date.getTime() - right.date.getTime();
+			});
+
+			for (var s = 0; s < resource.Staffing.length; s++) {
+				var staffing = resource.Staffing[s];
+
+				/**
+				 * {
+					Day: '2016-01-28',
+					Staff: 4.25,
+					HoursOff: 0.75
+				 }
+				 */
+				staffing.month = datepicker.formatDate('m', staffing.date);
+				staffing.currentBooking = staffing.Staff || 0;
+
+				/* fully booked means 80% of 8 hours */
+				var hoursPerDay = 8;
+				var fullyBookedTreshold = hoursPerDay * 0.8;
+
+				/* booking means an allocation to a project, not holidays */
+				staffing.hasBooking = staffing.Staff > 0;
+				staffing.isPartlyBooked = staffing.hasBooking && staffing.Staff < fullyBookedTreshold;
+				staffing.isFullyBooked = staffing.Staff >= fullyBookedTreshold && staffing.Staff <= hoursPerDay;
+				staffing.isOverBooked = staffing.Staff > hoursPerDay;
+
+				staffing.hasHoliday = staffing.HoursOff > 0;
+				staffing.isPartlyHoliday = staffing.hasHoliday && staffing.HoursOff < fullyBookedTreshold;
+				staffing.isFullHoliday = staffing.HoursOff >= fullyBookedTreshold;
+
+				resource.StaffingByDay[staffing.Day] = staffing;
+
+				if (project.BookedHoursByDay[staffing.Day]) {
+					project.BookedHoursByDay[staffing.Day] += staffing.Staff;
+				} else {
+					project.BookedHoursByDay[staffing.Day] = staffing.Staff;
+				}
+			}
+		}
+	};
+
 	$scope.staffing = {};
+
+	$scope.staffing.updateAllocation = function (project, resource, allocationDate, allocation) {
+		allocation = allocation || {};
+
+		var isNewAllocation = !allocation.Day;
+		var dateString = datepicker.formatDate('yy-mm-dd', allocationDate);
+		var requestedHours = parseFloat(allocation.currentBooking) || 0.0;
+		var oldHours = !isNewAllocation ? allocation.Staff : 0.0;
+		var hoursOff = !isNewAllocation ? allocation.HoursOff : 0.0;
+
+		if (oldHours === requestedHours) {
+			return;
+		}
+
+		console.log(project);
+		console.log(resource);
+		console.log(allocationDate);
+		console.log(allocation);
+
+		var rh4 = requestedHours * 4;
+		if (rh4 - parseInt(rh4, 10)) {
+			allocation.currentBooking = oldHours;
+
+			alert('Hour entries must be divisible by a quarter hour. The minimum are 15 minutes (0.25 hours).');
+			return;
+		}
+
+		if (requestedHours < 0) {
+			allocation.currentBooking = oldHours;
+
+			alert('Please enter a positive number or 0 to remove the allocation.');
+			return;
+		}
+
+		if (hoursOff + requestedHours > 8) {
+			if (hoursOff + requestedHours > 12) {
+				allocation.currentBooking = oldHours;
+				if (hoursOff) {
+					alert('This allocation will exceed the maximum allowed 12 hours per day for a resource. Please be aware of the existing PTO hours.');
+				} else {
+					alert('This allocation will exceed the maximum allowed 12 hours per day for a resource.')
+				}
+
+				return;
+			}
+
+			alert('This allocation will exceed 8 hours per day for this resource.');
+			/* do not return here, exceeding 8 hours is allowed. */
+		}
+
+		var monthKey = datepicker.formatDate('m', allocationDate);
+
+		if (!resource.MonthToLimitMap || !resource.MonthToLimitMap[monthKey]) {
+			allocation.currentBooking = oldHours;
+
+			alert('No contingent available for ' + resource.ResourceName + ' in this month. Please check with Sales Operations Team for adjustments.');
+			return;
+		}
+
+		/* the currentMonthHours will containing a project bookings without the currently affected day */
+		var currentMonthHours = 0;
+		for (var s = 0; s < resource.Staffing.length; s++) {
+			var staffing = resource.Staffing[s];
+			if (staffing !== allocation && staffing.month === monthKey) {
+				currentMonthHours += staffing.Staff;
+			}
+		}
+
+		var limit = parseFloat(resource.MonthToLimitMap[monthKey]) * 8;
+		var availableHours = Math.round(Math.max(0, limit - currentMonthHours) * 100) / 100;
+
+		if (currentMonthHours + requestedHours > limit) {
+			allocation.currentBooking = oldHours;
+
+			alert('The allocation of additional ' + requestedHours + ' hours for ' + resource.ResourceName + ' exceeds the month limit of ' + resource.MonthToLimitMap[monthKey] + ' hours. The resource has ' + availableHours + ' hours left for this month.');
+			return;
+		}
+
+		console.log('allocation is fine, persist.');
+
+		delta = requestedHours - oldHours;
+
+		/* after validating we associate the hours and recalculate the sums */
+		if (isNewAllocation) {
+			/* populate the new allocation to contain the required data */
+			allocation.Day = dateString;
+			allocation.HoursOff = 0.0;
+
+			resource.Staffing.push(allocation);
+		} else {
+			project.BookedHoursByDay[dateString] += delta;
+		}
+
+		allocation.Staff = requestedHours;
+
+		resource.PlannedDays += delta;
+
+		if (project.BookedHoursByDay[dateString]) {
+			project.BookedHoursByDay[dateString] += delta;
+		} else {
+			project.BookedHoursByDay[dateString] = requestedHours;
+		}
+
+		normalizeProjectHours(project);
+
+		sfEndpoint.updateAllocation(resource.MonthToOppLineItemIdMap[monthKey], allocationDate, requestedHours).then(function (result) {
+			/* nothing to do, the interface is already updated */
+		}, function (response) {
+			console.log(response);
+		});
+	};
 
 	/* functions for the staffing table */
 	$scope.$on('updateStaffing', function (event, selectedOpportunities) {
@@ -65,19 +249,24 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 					isFuture: currentDate > today,
 					weekDay: datepicker.formatDate('D', currentDate),
 					week: datepicker.iso8601Week(currentDate),
-					month: datepicker.formatDate('M', currentDate),
+					monthName: datepicker.formatDate('M', currentDate),
+					month: datepicker.formatDate('m', currentDate),
 					dateString: datepicker.formatDate('yy-mm-dd', currentDate)
 				};
 
-				if (!lastMonth || lastMonth.caption !== dateInfo.month) {
+				if (!lastMonth || lastMonth.number !== dateInfo.month) {
 					lastMonth = {
-						caption: dateInfo.month,
+						caption: dateInfo.monthName,
+						number: dateInfo.month,
 						weeks: [],
 						weekCount: 0,
 						dayCount: 0
 					};
 
-					lastWeek = null;
+					/* month change with forthgoing week */
+					if (lastWeek && lastWeek.number === dateInfo.week) {
+						lastMonth.weeks.push(lastWeek);
+					}
 
 					$scope.viewState.staffingMonths.push(lastMonth);
 				}
@@ -102,65 +291,10 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 				$scope.viewState.staffingDays.push(dateInfo);
 			}
 
-			/* restructure the staffings for each resource to be accessible by date */
 			for (var c = 0; c < data.Customers.length; c++) {
 				var customer = data.Customers[c];
 				for (var p = 0; p < customer.Projects.length; p++) {
-					var project = customer.Projects[p];
-					project.SoldDays = 0;
-					project.PlannedDays = 0;
-					project.BlockedHoursByDay = {};
-
-					for (var r = 0; r < project.Resources.length; r++) {
-						var resource = project.Resources[r];
-
-						resource.StaffingByDay = {};
-
-						/* float values including decimals are not converted to float, but string */
-						resource.SoldDays = parseFloat((resource.SoldDays + "").replace(',', '.'));
-						resource.PlannedDays = parseFloat((resource.PlannedDays + "").replace(',', '.'));
-
-						project.SoldDays += resource.SoldDays;
-						project.PlannedDays += resource.PlannedDays;
-
-						for (var s = 0; s < resource.Staffing.length; s++) {
-							var staffing = resource.Staffing[s];
-
-							/**
-							 * {
-								Day: '2016-01-28',
-								Staff: 4.25,
-								HoursOff: 0.75
-							 }
-							 */
-
-							/* fully booked means 80% of 8 hours */
-							var hoursPerDay = 8;
-							var fullyBlockedTreshold = hoursPerDay * 0.8;
-
-							/* booking means an allocation to a project, not holidays */
-							staffing.hasBooking = staffing.Staff > 0;
-							staffing.isPartlyBooked = staffing.hasBooking && staffing.Staff < fullyBlockedTreshold;
-							staffing.isFullyBooked = staffing.Staff >= fullyBlockedTreshold;
-
-							staffing.hasHoliday = staffing.HoursOff > 0;
-							staffing.isPartlyHoliday = staffing.hasHoliday && staffing.HoursOff < fullyBlockedTreshold;
-							staffing.isFullHoliday = staffing.HoursOff >= fullyBlockedTreshold;
-
-							/* the blocked hours will be displayed in the table */
-							staffing.blockedHours = staffing.Staff + staffing.HoursOff;
-							staffing.isFullyBlocked = staffing.blockedHours >= fullyBlockedTreshold;
-							staffing.isOverBlocked = staffing.blockedHours > hoursPerDay;
-
-							resource.StaffingByDay[staffing.Day] = staffing;
-
-							if (project.BlockedHoursByDay[staffing.Day]) {
-								project.BlockedHoursByDay[staffing.Day] += staffing.blockedHours;
-							} else {
-								project.BlockedHoursByDay[staffing.Day] = staffing.blockedHours;
-							}
-						}
-					}
+					normalizeProjectHours(customer.Projects[p]);
 				}
 			}
 

@@ -32,6 +32,11 @@ public with sharing class PsoTable2Controller {
 		return data.JSON();
 	}
 
+	@RemoteAction
+	public static PsoToolController.Result updateAllocation(String allocationIdId, Datetime day, Decimal hours) {
+		return PsoToolController.getInstance().allocateResource(allocationIdId, day.date(), hours / 8);
+	}
+
 	private static String formatDate(String localDateString) {
 		if (String.isBlank(localDateString)) {
 			return '';

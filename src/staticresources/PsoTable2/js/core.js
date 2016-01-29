@@ -75,5 +75,24 @@ PsoTable2.ng.factory('PsoTable2Endpoint', ['$q', function ($q) {
 		return deferred.promise;
 	};
 
+	instance.updateAllocation = function (allocationId, day, hours) {
+		var deferred = $q.defer();
+
+		Visualforce.remoting.Manager.invokeAction('PsoTable2Controller.updateAllocation', allocationId, day.toUTCString(), hours, function (result, event) {
+			if (!event || !event.status) {
+				deferred.reject(event);
+				return
+			}
+
+			deferred.resolve(result.ReturnedResult);
+		}, {
+			buffer: true,
+			escape: true,
+			timeout: 30000
+		});
+
+		return deferred.promise;
+	};
+
 	return instance;
 }]);
