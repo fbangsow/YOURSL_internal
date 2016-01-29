@@ -21,11 +21,30 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 		project.SoldDays = 0;
 		project.PlannedDays = 0;
 		project.BookedHoursByDay = {};
+		project.MonthSaldos = {};
 
 		for (var r = 0; r < project.Resources.length; r++) {
 			var resource = project.Resources[r];
 
 			resource.StaffingByDay = {};
+			resource.MonthSaldos = {};
+
+			if (resource.MonthToLimitMap) {
+				/* initialize the month saldo to the complete budget, we'll reduce by the planned hours later */
+				for (monthKey in resource.MonthToLimitMap) {
+					if (resource.MonthToLimitMap.hasOwnProperty(monthKey)) {
+						var budgetForMonth = parseFloat(resource.MonthToLimitMap[monthKey]) * 8;
+
+						resource.MonthSaldos['monthSaldo-' + monthKey] = budgetForMonth;
+
+						if (!project.MonthSaldos['monthSaldo-' + monthKey]) {
+							project.MonthSaldos['monthSaldo-' + monthKey] = 0;
+						}
+
+						project.MonthSaldos['monthSaldo-' + monthKey] += budgetForMonth;
+					}
+				}
+			}
 
 			/* float values including decimals are not converted to float, but string */
 			resource.SoldDays = parseFloat((resource.SoldDays + "").replace(',', '.'));
@@ -60,6 +79,10 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 					HoursOff: 0.75
 				 }
 				 */
+				if (!staffing.date) {
+					staffing.date = new Date(staffing.Day);
+				}
+
 				staffing.month = datepicker.formatDate('m', staffing.date);
 				staffing.currentBooking = staffing.Staff || 0;
 
@@ -79,11 +102,19 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 
 				resource.StaffingByDay[staffing.Day] = staffing;
 
-				if (project.BookedHoursByDay[staffing.Day]) {
-					project.BookedHoursByDay[staffing.Day] += staffing.Staff;
-				} else {
-					project.BookedHoursByDay[staffing.Day] = staffing.Staff;
+				if (!project.BookedHoursByDay[staffing.Day]) {
+					project.BookedHoursByDay[staffing.Day] = 0;
 				}
+
+				project.BookedHoursByDay[staffing.Day] = staffing.Staff;
+
+				[resource, project].forEach(function (context) {
+					if (!context.MonthSaldos['monthSaldo-' + staffing.month]) {
+						context.MonthSaldos['monthSaldo-' + staffing.month] = 0;
+					}
+
+					context.MonthSaldos['monthSaldo-' + staffing.month] -= staffing.currentBooking;
+				});
 			}
 		}
 	};
@@ -178,19 +209,10 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 			allocation.HoursOff = 0.0;
 
 			resource.Staffing.push(allocation);
-		} else {
-			project.BookedHoursByDay[dateString] += delta;
 		}
 
 		allocation.Staff = requestedHours;
-
 		resource.PlannedDays += delta;
-
-		if (project.BookedHoursByDay[dateString]) {
-			project.BookedHoursByDay[dateString] += delta;
-		} else {
-			project.BookedHoursByDay[dateString] = requestedHours;
-		}
 
 		normalizeProjectHours(project);
 
@@ -199,6 +221,56 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 		}, function (response) {
 			console.log(response);
 		});
+	};
+
+	$scope.buildResourceAllocationCellClasses = function (resource, day, allocation) {
+		var classes = {};
+
+		if (day) {
+			classes.weekend = !!day.isWeekEnd;
+			classes.past = !!day.isPast;
+			classes.today = !!day.isToday;
+			classes.future = !!day.isFuture;
+
+			if (day.isMonthSaldo) {
+				classes['month-saldo'] = true;
+				classes['negative-saldo'] = resource.MonthSaldos[day.dateString] && resource.MonthSaldos[day.dateString] < 0;
+				classes['positive-saldo'] = resource.MonthSaldos[day.dateString] && resource.MonthSaldos[day.dateString] > 0;
+				classes['neutral-saldo'] = !resource.MonthSaldos[day.dateString];
+			}
+		}
+
+		if (allocation) {
+			classes['has-booking'] = !!allocation.hasBooking;
+			classes['partly-booked'] = !!allocation.isPartlyBooked;
+			classes['fully-booked'] = !!allocation.isFullyBooked;
+			classes['overbooked'] = !!allocation.isOverbooked;
+			classes['has-holiday'] = !!allocation.hasHoliday;
+			classes['full-holiday'] = !!allocation.isFullHoliday;
+			classes['part-holiday'] = !!allocation.isPartlyHoliday;
+		}
+
+		return classes;
+	};
+
+	$scope.buildProjectDayCellClasses = function (project, day) {
+		var classes = {};
+
+		if (day) {
+			classes.weekend = !!day.isWeekEnd;
+			classes.past = !!day.isPast;
+			classes.today = !!day.isToday;
+			classes.future = !!day.isFuture;
+
+			if (day.isMonthSaldo) {
+				classes['month-saldo'] = true;
+				classes['negative-saldo'] = project.MonthSaldos[day.dateString] && project.MonthSaldos[day.dateString] < 0;
+				classes['positive-saldo'] = project.MonthSaldos[day.dateString] && project.MonthSaldos[day.dateString] > 0;
+				classes['neutral-saldo'] = !project.MonthSaldos[day.dateString];
+			}
+		}
+
+		return classes;
 	};
 
 	/* functions for the staffing table */
@@ -236,6 +308,16 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 			var lastWeek = null;
 			var dayCount = 0;
 
+			var createSaldoColumn = function (month) {
+				month.dayCount++;
+				month.weeks[month.weeks.length - 1].dayCount++;
+
+				$scope.viewState.staffingDays.push({
+					dateString: 'monthSaldo-' + month.number,
+					isMonthSaldo: true
+				});
+			};
+
 			/* iterate all days and build an array with all months, weeks and days to be able to build the html table */
 			for (var currentDate = startDate; currentDate < endDate; currentDate.setDate(currentDate.getDate() + 1)) {
 				dayCount++;
@@ -255,6 +337,11 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 				};
 
 				if (!lastMonth || lastMonth.number !== dateInfo.month) {
+					if (lastMonth) {
+						/* make place for the saldo column */
+						createSaldoColumn(lastMonth);
+					}
+
 					lastMonth = {
 						caption: dateInfo.monthName,
 						number: dateInfo.month,
@@ -290,6 +377,8 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 
 				$scope.viewState.staffingDays.push(dateInfo);
 			}
+
+			createSaldoColumn(lastMonth);
 
 			for (var c = 0; c < data.Customers.length; c++) {
 				var customer = data.Customers[c];

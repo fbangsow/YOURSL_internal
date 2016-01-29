@@ -75,12 +75,12 @@
 								</th>
 							</tr>
 							<tr>
-								<th ng-repeat="day in viewState.staffingDays" ng-class="{weekend:day.isWeekEnd,past:day.isPast,today:day.isToday,future:day.isFuture}">
-									{{ day.weekDay }}
+								<th ng-repeat="day in viewState.staffingDays" ng-class="buildProjectDayCellClasses(project, day)" rowspan="{{ day.isMonthSaldo ? 2 : 1 }}">
+									{{ day.isMonthSaldo ? 'Month Saldo' : day.weekDay }}
 								</th>
 							</tr>
 							<tr>
-								<th ng-repeat="day in viewState.staffingDays" ng-class="{weekend:day.isWeekEnd,past:day.isPast,today:day.isToday,future:day.isFuture}">
+								<th ng-repeat="day in viewState.staffingDays" ng-class="buildProjectDayCellClasses(project, day)" ng-if="!day.isMonthSaldo">
 									{{ day.day }}
 								</th>
 							</tr>
@@ -100,12 +100,16 @@
 								<td>
 									{{ ((resource.SoldDays - resource.PlannedDays) / 8) | number : 2 }}
 								</td>
-								<td ng-repeat="day in viewState.staffingDays" ng-init="allocation = resource.StaffingByDay[day.dateString]" ng-class="{weekend:day.isWeekEnd,past:day.isPast,today:day.isToday,future:day.isFuture,'has-booking':allocation.hasBooking,'partly-booked':allocation.isPartlyBooked,'fully-booked':allocation.isFullyBooked,'overbooked':allocation.isOverbooked,'has-holiday':allocation.hasHoliday,holiday:allocation.isFullHoliday,'part-holiday':allocation.isPartlyHoliday}">
+								<td ng-repeat="day in viewState.staffingDays" ng-init="allocation = resource.StaffingByDay[day.dateString]" ng-class="buildResourceAllocationCellClasses(resource, day, allocation)">
+									<span ng-if="day.isMonthSaldo">
+										{{ ((resource.MonthSaldos[day.dateString] || 0) / 8) | number : 2 }}
+									</span>
+
 									<span ng-if="allocation !== undefined && day.isPast">
 										{{ allocation.Staff }}
 									</span>
 
-									<input ng-if="!day.isPast && !allocation.isFullHoliday" ng-model="allocation.currentBooking" ng-blur="staffing.updateAllocation(project, resource, day.date, allocation)" />
+									<input ng-if="!day.isMonthSaldo && !day.isPast && !allocation.isFullHoliday" ng-model="allocation.currentBooking" ng-blur="staffing.updateAllocation(project, resource, day.date, allocation)" />
 
 									<span ng-if="allocation.hasHoliday" class="holiday-info">
 										({{ allocation.HoursOff }})
@@ -125,9 +129,13 @@
 								<td>
 									{{ ((project.SoldDays - project.PlannedDays) / 8) | number : 2 }}
 								</td>
-								<td ng-repeat="day in viewState.staffingDays" ng-class="{weekend:day.isWeekEnd,past:day.isPast,today:day.isToday,future:day.isFuture}">
-									<span>
-										{{ (project.BookedHoursByDay[day.dateString] || 0) }}
+								<td ng-repeat="day in viewState.staffingDays" ng-class="buildProjectDayCellClasses(project, day)">
+									<span ng-if="day.isMonthSaldo">
+										{{ ((project.MonthSaldos[day.dateString] || 0) / 8) | number : 2 }}
+									</span>
+
+									<span ng-if="!day.isMonthSaldo">
+										{{ project.BookedHoursByDay[day.dateString] || 0 }}
 									</span>
 								</td>
 							</tr>
