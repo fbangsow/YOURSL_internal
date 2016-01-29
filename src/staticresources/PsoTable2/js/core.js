@@ -96,3 +96,33 @@ PsoTable2.ng.factory('PsoTable2Endpoint', ['$q', function ($q) {
 
 	return instance;
 }]);
+
+PsoTable2.ng.factory('alert', ['$rootScope', function ($rootScope) {
+	return function (message) {
+		//alert(message);
+		$rootScope.$emit('alertMessage', message);
+	};
+}]);
+
+PsoTable2.ng.directive('alertDialog', ['$rootScope', function ($rootScope) {
+	return {
+		restrict: 'C',
+		link: function (scope, el, attributes) {
+			el.dialog({
+				autoOpen: false,
+				resizable: false,
+				modal: true,
+				buttons: {
+					OK: function() {
+						$( this ).dialog( "close" );
+					}
+				}
+			});
+
+			$rootScope.$on('alertMessage', function (event, message) {
+				scope.alertMessage = message;
+				el.dialog('open');
+			});
+		}
+	};
+}]);

@@ -1,4 +1,4 @@
-PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQuery.ui.datepicker', function ($scope, sfEndpoint, datepicker) {
+PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQuery.ui.datepicker', 'alert', function ($scope, sfEndpoint, datepicker, alert) {
 	console.log('init staffing controller');
 
 	$scope.status = {

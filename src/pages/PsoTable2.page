@@ -143,6 +143,13 @@
 					</table>
 				</section>
 			</apex:pageBlock>
+
+			<div class="alert-dialog">
+				<p>
+					<span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
+					{{ alertMessage }}
+				</p>
+			</div>
 		</div>
 	</apex:form>
 </apex:page>
