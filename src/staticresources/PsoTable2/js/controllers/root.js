@@ -8,12 +8,44 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 	$scope.viewState = {
 		selectedOpportunities: [],
 		selectedOpportunitiesSize: 2,
-		opportunitiesFilterText: ''
+		opportunitiesFilterText: '',
+		startMonth: new Date()
 	};
 
 	$scope.opportunitiesFilter = {
 		events: {},
 		filters: {}
+	};
+
+	$scope.opportunitiesFilter.events.showStartMonthPickerClicked = function (event) {
+		console.log('datepicker event:', event);
+
+		var target = $(event.target);
+		var targetPosition = target.offset();
+
+		target.datepicker('dialog', $scope.viewState.startMonth, function (dateString, datepicker) {
+			/* nothing to do here, we'll not select a day, but only change the month */
+		}, {
+			firstDay: 1,
+			showWeek: true,
+			changeMonth: true,
+			changeYear: true,
+			showButtonPanel: false,
+			minDate: -720,
+			maxDate: 900,
+			onChangeMonthYear: function (year, month, datepicker) {
+				$scope.$apply(function () {
+					$scope.opportunitiesFilter.setStartDate(new Date(year, month - 1, 1));
+				});
+			}
+		}, [
+			targetPosition.left,
+			targetPosition.top + target.height() + 5
+		]);
+	};
+
+	$scope.opportunitiesFilter.setStartDate = function (newStartDate) {
+		$scope.viewState.startMonth = newStartDate;
 	};
 
 	/* functions for the opportunity filter */
@@ -133,7 +165,7 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 			$scope.opportunitiesFilter.selectAllOpportunities();
 		}
 
-		$scope.$broadcast('updateStaffing', $scope.viewState.selectedOpportunities);
+		$scope.$broadcast('updateStaffing', $scope.viewState.selectedOpportunities, $scope.viewState.startMonth);
 	};
 
 	/* initialize data */

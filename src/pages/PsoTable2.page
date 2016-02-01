@@ -20,6 +20,10 @@
 
 			<apex:pageBlock html-data-ng-if="!status.loading" title="Apply filters">
 				<div class="ui-helper-clearfix">
+					<span ng-click="opportunitiesFilter.events.showStartMonthPickerClicked($event)">{{ viewState.startMonth | date : 'MMM yyyy' }}</span>
+				</div>
+
+				<div class="ui-helper-clearfix">
 					<section id="opportunities-filter">
 						<h3><label for="selectedOpportunities">Select opportunities:</label></h3>
 
@@ -42,6 +46,8 @@
 			</apex:pageBlock>
 
 			<apex:pageBlock html-data-ng-show="status.loaded" title="Manage staffing" html-ng-controller="PsoTable2Staffing" html-ng-init="viewState.staticStaffingColumns = 5">
+				<h4>{{ viewState.startDate | date : 'MMM yyyy' }} - {{ viewState.endDate | date : 'MMM yyyy' }}</h4>
+
 				<section id="staffing">
 					<table>
 						<tbody data-ng-if="staffing.Customers.length" ng-repeat="customer in staffing.Customers">

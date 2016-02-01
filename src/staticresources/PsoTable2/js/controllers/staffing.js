@@ -7,6 +7,8 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 	};
 
 	$scope.viewState = {
+		startDate: null,
+		endDate: null,
 		staffingColumns: 0,
 		staticStaffingColumns: 0,
 		staffingDayColumns: 0,
@@ -274,25 +276,25 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 	};
 
 	/* functions for the staffing table */
-	$scope.$on('updateStaffing', function (event, selectedOpportunities) {
+	$scope.$on('updateStaffing', function (event, selectedOpportunities, startMonth) {
 		$scope.status.loading = true;
 		$scope.status.loaded = false;
 
-		sfEndpoint.getProjectStaffing(selectedOpportunities, new Date()).then(function (data) {
+		sfEndpoint.getProjectStaffing(selectedOpportunities, startMonth).then(function (data) {
 			console.log(data);
 
 			/* we need to equalize the time to be able to detect today */
-			var startDate = new Date(data.StartDate);
-			startDate.setHours(0);
-			startDate.setMinutes(0);
-			startDate.setSeconds(0);
-			startDate.setMilliseconds(0);
+			$scope.viewState.startDate = new Date(data.StartDate);
+			$scope.viewState.startDate.setHours(0);
+			$scope.viewState.startDate.setMinutes(0);
+			$scope.viewState.startDate.setSeconds(0);
+			$scope.viewState.startDate.setMilliseconds(0);
 
-			var endDate = new Date(data.EndDate);
-			endDate.setHours(0);
-			endDate.setMinutes(0);
-			endDate.setSeconds(0);
-			endDate.setMilliseconds(0);
+			$scope.viewState.endDate = new Date(data.EndDate);
+			$scope.viewState.endDate.setHours(0);
+			$scope.viewState.endDate.setMinutes(0);
+			$scope.viewState.endDate.setSeconds(0);
+			$scope.viewState.endDate.setMilliseconds(0);
 
 			var today = new Date();
 			today.setHours(0);
@@ -319,7 +321,7 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 			};
 
 			/* iterate all days and build an array with all months, weeks and days to be able to build the html table */
-			for (var currentDate = startDate; currentDate < endDate; currentDate.setDate(currentDate.getDate() + 1)) {
+			for (var currentDate = new Date($scope.viewState.startDate.getTime()); currentDate <= $scope.viewState.endDate; currentDate.setDate(currentDate.getDate() + 1)) {
 				dayCount++;
 
 				var dateInfo = {

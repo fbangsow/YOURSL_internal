@@ -42,3 +42,7 @@
 #staffing table td {
 	border: 1px solid #ccc;
 }
+
+.ui-datepicker-calendar {
+	display: none;
+}
