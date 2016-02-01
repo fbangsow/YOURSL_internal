@@ -30,7 +30,7 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 			showWeek: true,
 			changeMonth: true,
 			changeYear: true,
-			showButtonPanel: false,
+			showButtonPanel: true,
 			minDate: -720,
 			maxDate: 900,
 			onChangeMonthYear: function (year, month, datepicker) {
