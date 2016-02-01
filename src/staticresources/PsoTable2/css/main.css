@@ -26,7 +26,34 @@
 	width: auto;
 }
 
-#opportunities-filter button {
+#opportunities-filter,
+#resources-filter {
+	float: left;
+	width: 33%;
+}
+
+#opportunities-filter > *,
+#resources-filter > * {
+	display: block;
+	float: left;
+	margin: 0 1% 1% 0;
+	width: 49%;
+}
+
+#opportunities-filter select,
+#resources-filter select {
+	clear: both;
+	padding: 1%;
+}
+
+#opportunities-filter a,
+#resources-filter a {
+	display: inline-block;
+	margin: 0 0 0 1%;
+	width: auto;
+}
+
+#filter button {
 	clear: both;
 }
 

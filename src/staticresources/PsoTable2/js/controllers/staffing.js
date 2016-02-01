@@ -17,6 +17,8 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 		staffingDays: []
 	};
 
+	$scope.data = {};
+
 	/* restructure the staffings for each resource to be accessible by date */
 	var normalizeProjectHours = function (project) {
 		console.log('normalize project hours', project);
@@ -276,11 +278,11 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 	};
 
 	/* functions for the staffing table */
-	$scope.$on('updateStaffing', function (event, selectedOpportunities, startMonth) {
+	$scope.$on('updateStaffing', function (event, selectedOpportunities, selectedResources, startMonth) {
 		$scope.status.loading = true;
 		$scope.status.loaded = false;
 
-		sfEndpoint.getProjectStaffing(selectedOpportunities, startMonth).then(function (data) {
+		sfEndpoint.getProjectStaffing(selectedOpportunities, selectedResources, startMonth).then(function (data) {
 			console.log(data);
 
 			/* we need to equalize the time to be able to detect today */
@@ -382,14 +384,18 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 
 			createSaldoColumn(lastMonth);
 
-			for (var c = 0; c < data.Customers.length; c++) {
-				var customer = data.Customers[c];
-				for (var p = 0; p < customer.Projects.length; p++) {
-					normalizeProjectHours(customer.Projects[p]);
+			if (data.Customers) {
+				for (var c = 0; c < data.Customers.length; c++) {
+					var customer = data.Customers[c];
+					for (var p = 0; p < customer.Projects.length; p++) {
+						normalizeProjectHours(customer.Projects[p]);
+					}
 				}
-			}
 
-			$scope.staffing.Customers = data.Customers;
+				$scope.data.Customers = data.Customers;
+			} else {
+				$scope.data.Customers = [];
+			}
 
 			$scope.viewState.staffingDayColumns = dayCount;
 			$scope.viewState.staffingColumns = $scope.viewState.staticStaffingColumns + dayCount;

@@ -55,10 +55,18 @@ PsoTable2.ng.factory('PsoTable2Endpoint', ['$q', function ($q) {
 		return deferred.promise;
 	}
 
-	instance.getProjectStaffing = function (projectIds, startMonth) {
+	instance.getProjectStaffing = function (projectIds, resourceIds, startMonth) {
 		var deferred = $q.defer();
 
-		Visualforce.remoting.Manager.invokeAction('PsoTable2Controller.getProjectStaffing', projectIds, startMonth.toUTCString(), function (result, event) {
+		if (!projectIds.length) {
+			projectIds = ['__none'];
+		}
+
+		if (!resourceIds.length) {
+			resourceIds = ['__none'];
+		}
+
+		Visualforce.remoting.Manager.invokeAction('PsoTable2Controller.getProjectStaffing', projectIds, resourceIds, startMonth.toUTCString(), function (result, event) {
 			if (!event || !event.status) {
 				deferred.reject(event);
 				return

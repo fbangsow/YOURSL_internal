@@ -5,24 +5,41 @@ public with sharing class PsoTable2Controller {
 	}
 
 	@RemoteAction
-	public static String getProjectStaffing(List<String> opportunityIds, Datetime startMonth) {
-		PsoToolController.PsoToolDataSetWrapper data = PsoToolController.getInstance().setSelectedOpportunities(opportunityIds).setStartDate(startMonth.date()).getDataSet();
+	public static String getProjectStaffing(List<String> opportunityIds, List<String> resourceIds, Datetime startMonth) {
+		PsoToolController instance = PsoToolController.getInstance();
+
+		Boolean hideOpportunities = !opportunityIds.isEmpty() && opportunityIds[0] == '__none';
+		Boolean hideResources = !resourceIds.isEmpty() && resourceIds[0] == '__none';
+
+		if (!hideOpportunities) {
+			if (opportunityIds.isEmpty()) {
+				instance.showAllOpportunities();
+			} else {
+				instance.setSelectedOpportunities(opportunityIds);
+			}
+		}
+
+		if (!hideResources) {
+			if (resourceIds.isEmpty()) {
+				instance.setSelectedContacts(resourceIds);
+			} else {
+				instance.showAllContacts();
+			}
+		}
+
+		instance.setStartDate(startMonth.date());
+
+		PsoToolController.PsoToolDataSetWrapper data = instance.getDataSet();
 
 		data.StartDate = formatDate(data.StartDate);
 		data.EndDate = formatDate(data.EndDate);
 
-		if (!data.Customers.isEmpty()) {
+		if (data.Customers != null) {
 			for (PsoToolController.Customer customer : data.Customers) {
-				if (!customer.Projects.isEmpty()) {
-					for (PsoToolController.Project project : customer.Projects) {
-						if (!project.Resources.isEmpty()) {
-							for (PsoToolController.Resource resource : project.Resources) {
-								if (!resource.Staffing.isEmpty()) {
-									for (PsoToolController.Staffing staffing : resource.Staffing) {
-										staffing.Day = formatDate(staffing.Day);
-									}
-								}
-							}
+				for (PsoToolController.Project project : customer.Projects) {
+					for (PsoToolController.Resource resource : project.Resources) {
+						for (PsoToolController.Staffing staffing : resource.Staffing) {
+							staffing.Day = formatDate(staffing.Day);
 						}
 					}
 				}

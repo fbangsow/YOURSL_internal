@@ -19,29 +19,44 @@
 			</apex:pageBlock>
 
 			<apex:pageBlock html-data-ng-if="!status.loading" title="Apply filters">
-				<div class="ui-helper-clearfix">
-					<span ng-click="opportunitiesFilter.events.showStartMonthPickerClicked($event)">{{ viewState.startMonth | date : 'MMM yyyy' }}</span>
-				</div>
+				<div id="filter">
+					<div class="ui-helper-clearfix">
+						<span ng-click="filter.events.showStartMonthPickerClicked($event)">{{ viewState.startMonth | date : 'MMM yyyy' }}</span>
+					</div>
 
-				<div class="ui-helper-clearfix">
-					<section id="opportunities-filter">
-						<h3><label for="selectedOpportunities">Select opportunities:</label></h3>
+					<div class="ui-helper-clearfix">
+						<section id="opportunities-filter">
+							<h3><label for="selectedOpportunities">Select opportunities:</label></h3>
 
-						<select multiple="multiple" name="selectedOpportunities" id="selectedOpportunities" ng-model="viewState.selectedOpportunities" ng-attr-size="{{ viewState.selectedOpportunitiesSize }}">
-							<optgroup ng-repeat="customer in opportunitiesFilter.Customers | filter : opportunitiesFilter.customerMatchesFilter" label="{{ customer.AccountName }}" ng-click="opportunitiesFilter.events.accountClicked(customer, $event)">
-								<option ng-repeat="project in customer.Projects | filter : opportunitiesFilter.projectMatchesFilter" value="{{ project.OpportunityId }}">
-									{{ project.OpportunityName }}
-								</option>
-							</optgroup>
-						</select>
+							<select multiple="multiple" name="selectedOpportunities" id="selectedOpportunities" ng-model="viewState.selectedOpportunities" ng-attr-size="{{ viewState.selectedOpportunitiesSize }}">
+								<optgroup ng-repeat="customer in data.Customers | filter : filter.opportunities.customerMatchesFilter" label="{{ customer.AccountName }}" ng-click="filter.opportunities.events.accountClicked(customer, $event)">
+									<option ng-repeat="project in customer.Projects | filter : filter.opportunities.projectMatchesFilter" value="{{ project.OpportunityId }}">
+										{{ project.OpportunityName }}
+									</option>
+								</optgroup>
+							</select>
 
-						<input type="search" placeholder="Filter opportunities" ng-model="viewState.opportunitiesFilterText" ng-change="opportunitiesFilter.removeFilteredOpportunitiesFromSelection()" />
+							<input type="search" placeholder="Filter opportunities" ng-model="viewState.opportunitiesFilterText" ng-change="filter.opportunities.removeFilteredOpportunitiesFromSelection()" />
 
-						<a href="#" ng-click="opportunitiesFilter.selectAllOpportunities()">Select all</a>
-						<a href="#" ng-click="opportunitiesFilter.clearSelectedOpportunities()">Clear</a>
+							<a href="#" ng-click="filter.opportunities.selectAllOpportunities()">Select all</a>
+							<a href="#" ng-click="filter.opportunities.clearSelectedOpportunities()">Clear</a>
+						</section>
 
-						<button ng-click="opportunitiesFilter.events.updateStaffingClicked($event)">Update staffing view</button>
-					</section>
+						<section id="resources-filter">
+							<h3><label for="selectedResources">Select resources:</label></h3>
+
+							<select multiple="multiple" name="selectedResources" id="selectedResources" ng-model="viewState.selectedResources" ng-attr-size="{{ viewState.selectedResourcesSize }}">
+								<option ng-repeat="resource in data.Resources | filter : filter.resources.resourceMatchesFilter" value="{{ resource.ContactId }}">{{ resource.ResourceName }}</option>
+							</select>
+
+							<input type="search" placeholder="Filter resources" ng-model="viewState.resourcesFilterText" ng-change="resources.removeFilteredResourcesFromSelection()" />
+
+							<a href="#" ng-click="filter.resources.selectAllResources()">Select all</a>
+							<a href="#" ng-click="filter.resources.clearSelectedResources()">Clear</a>
+						</section>
+					</div>
+
+					<button ng-click="filter.events.updateStaffingClicked($event)">Update staffing view</button>
 				</div>
 			</apex:pageBlock>
 
@@ -50,7 +65,7 @@
 
 				<section id="staffing">
 					<table>
-						<tbody data-ng-if="staffing.Customers.length" ng-repeat="customer in staffing.Customers">
+						<tbody data-ng-if="data.Customers.length" ng-repeat="customer in data.Customers">
 							<tr>
 								<td colspan="{{ viewState.staffingColumns }}" class="customer-info">
 									<article>

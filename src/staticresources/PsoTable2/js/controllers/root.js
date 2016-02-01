@@ -6,18 +6,30 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 	};
 
 	$scope.viewState = {
+		startMonth: new Date(),
+
 		selectedOpportunities: [],
 		selectedOpportunitiesSize: 2,
 		opportunitiesFilterText: '',
-		startMonth: new Date()
+
+		selectedResources: [],
+		selectedResourcesSize: 2,
+		resourcesFilterText: ''
 	};
 
-	$scope.opportunitiesFilter = {
+	$scope.filter = {
 		events: {},
-		filters: {}
+		opportunities: {
+			events: {}
+		},
+		resources: {
+			events: {}
+		}
 	};
 
-	$scope.opportunitiesFilter.events.showStartMonthPickerClicked = function (event) {
+	$scope.data = {};
+
+	$scope.filter.events.showStartMonthPickerClicked = function (event) {
 		var target = $(event.target);
 		var targetPosition = target.offset();
 
@@ -33,7 +45,7 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 			maxDate: 900,
 			onChangeMonthYear: function (year, month, datepicker) {
 				$scope.$apply(function () {
-					$scope.opportunitiesFilter.setStartDate(new Date(year, month - 1, 1));
+					$scope.filter.setStartDate(new Date(year, month - 1, 1));
 				});
 			}
 		}, [
@@ -42,24 +54,24 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 		]);
 	};
 
-	$scope.opportunitiesFilter.setStartDate = function (newStartDate) {
+	$scope.filter.setStartDate = function (newStartDate) {
 		$scope.viewState.startMonth = newStartDate;
 	};
 
 	/* functions for the opportunity filter */
-	$scope.opportunitiesFilter.events.accountClicked = function (customer, event) {
+	$scope.filter.opportunities.events.accountClicked = function (customer, event) {
 		if (event.target !== event.currentTarget) {
 			/* this event came bubbling through by clicking an option */
 			return;
 		}
 
-		$scope.opportunitiesFilter.selectAccountOpportunities(customer, event.metaKey || event.ctrlKey || event.shiftKey);
+		$scope.filter.opportunities.selectAccountOpportunities(customer, event.metaKey || event.ctrlKey || event.shiftKey);
 	};
 
-	$scope.opportunitiesFilter.selectAccountOpportunities = function (customer, toggle) {
+	$scope.filter.opportunities.selectAccountOpportunities = function (customer, toggle) {
 		if (!toggle) {
 			/* when not toggling we behave like a default option click and unselect all other options */
-			$scope.opportunitiesFilter.clearSelectedOpportunities();
+			$scope.filter.opportunities.clearSelectedOpportunities();
 		}
 
 		var allActive = true;
@@ -91,7 +103,7 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 		}
 	};
 
-	$scope.opportunitiesFilter.customerMatchesFilter = function (customer) {
+	$scope.filter.opportunities.customerMatchesFilter = function (customer) {
 		if (!$scope.viewState.opportunitiesFilterText) {
 			return true;
 		}
@@ -111,7 +123,7 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 		return false;
 	};
 
-	$scope.opportunitiesFilter.projectMatchesFilter = function (project) {
+	$scope.filter.opportunities.projectMatchesFilter = function (project) {
 		if (!$scope.viewState.opportunitiesFilterText) {
 			return true;
 		}
@@ -125,52 +137,90 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 		return false;
 	};
 
-	$scope.opportunitiesFilter.clearSelectedOpportunities = function () {
+	$scope.filter.opportunities.clearSelectedOpportunities = function () {
 		$scope.viewState.selectedOpportunities.splice(0, $scope.viewState.selectedOpportunities.length);
 	};
 
-	$scope.opportunitiesFilter.selectAllOpportunities = function () {
+	$scope.filter.opportunities.selectAllOpportunities = function () {
 		/* add all currently visible projects to the selection */
-		for (var c = 0; c < $scope.opportunitiesFilter.Customers.length; c++) {
-			for (var p = 0; p < $scope.opportunitiesFilter.Customers[c].Projects.length; p++) {
-				var currentIndex = $scope.viewState.selectedOpportunities.indexOf($scope.opportunitiesFilter.Customers[c].Projects[p].OpportunityId);
+		for (var c = 0; c < $scope.data.Customers.length; c++) {
+			for (var p = 0; p < $scope.data.Customers[c].Projects.length; p++) {
+				var currentIndex = $scope.viewState.selectedOpportunities.indexOf($scope.data.Customers[c].Projects[p].OpportunityId);
 
-				if (currentIndex === -1 && $scope.opportunitiesFilter.projectMatchesFilter($scope.opportunitiesFilter.Customers[c].Projects[p])) {
-					$scope.viewState.selectedOpportunities.push($scope.opportunitiesFilter.Customers[c].Projects[p].OpportunityId);
+				if (currentIndex === -1 && $scope.filter.opportunities.projectMatchesFilter($scope.data.Customers[c].Projects[p])) {
+					$scope.viewState.selectedOpportunities.push($scope.data.Customers[c].Projects[p].OpportunityId);
 				}
 			}
 		}
 	};
 
-	$scope.opportunitiesFilter.removeFilteredOpportunitiesFromSelection = function () {
+	$scope.filter.opportunities.removeFilteredOpportunitiesFromSelection = function () {
 		/* check all projects of all customers if they match the filter and remove from selection, if not */
-		for (var c = 0; c < $scope.opportunitiesFilter.Customers.length; c++) {
-			for (var p = 0; p < $scope.opportunitiesFilter.Customers[c].Projects.length; p++) {
-				var currentIndex = $scope.viewState.selectedOpportunities.indexOf($scope.opportunitiesFilter.Customers[c].Projects[p].OpportunityId);
+		for (var c = 0; c < $scope.data.Customers.length; c++) {
+			for (var p = 0; p < $scope.data.Customers[c].Projects.length; p++) {
+				var currentIndex = $scope.viewState.selectedOpportunities.indexOf($scope.data.Customers[c].Projects[p].OpportunityId);
 
-				if (currentIndex > -1 && !$scope.opportunitiesFilter.projectMatchesFilter($scope.opportunitiesFilter.Customers[c].Projects[p])) {
+				if (currentIndex > -1 && !$scope.filter.opportunities.projectMatchesFilter($scope.data.Customers[c].Projects[p])) {
 					$scope.viewState.selectedOpportunities.splice(currentIndex, 1);
 				}
 			}
 		}
 	};
 
-	/* functions for the staffing table */
-	$scope.opportunitiesFilter.events.updateStaffingClicked = function (event) {
-		event.preventDefault();
-
-		if (!$scope.viewState.selectedOpportunities.length) {
-			$scope.opportunitiesFilter.selectAllOpportunities();
+	$scope.filter.resources.resourceMatchesFilter = function (resource) {
+		if (!$scope.viewState.resourcesFilterText) {
+			return true;
 		}
 
-		$scope.$broadcast('updateStaffing', $scope.viewState.selectedOpportunities, $scope.viewState.startMonth);
+		var regex = new RegExp('^.*' + $scope.viewState.resourcesFilterText.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&") + '.*$', 'i');
+
+		if (regex.test(resource.ResourceName)) {
+			return true;
+		}
+
+		return false;
+	};
+
+	$scope.filter.resources.clearSelectedResources = function () {
+		$scope.viewState.selectedResources.splice(0, $scope.viewState.selectedResources.length);
+	};
+
+	$scope.filter.resources.selectAllResources = function () {
+		/* add all currently visible resources to the selection */
+		for (var r = 0; r < $scope.data.Resources.length; r++) {
+			var currentIndex = $scope.viewState.selectedResources.indexOf($scope.data.Resources[r].ContactId);
+
+			if (currentIndex === -1 && $scope.filter.resources.resourceMatchesFilter($scope.data.Resources[r])) {
+				$scope.viewState.selectedResources.push($scope.data.Resources[r].ContactId);
+			}
+		}
+	};
+
+	$scope.filter.resources.removeFilteredResourcesFromSelection = function () {
+		/* check all resources if they match the filter and remove from selection, if not */
+		for (var c = 0; c < $scope.data.Resources.length; c++) {
+			var currentIndex = $scope.viewState.selectedResources.indexOf($scope.data.Resources[r].ContactId);
+
+			if (currentIndex > -1 && !$scope.filter.resources.resourceMatchesFilter($scope.data.Resources[r])) {
+				$scope.viewState.selectedResources.splice(currentIndex, 1);
+			}
+		}
+	};
+
+	/* functions for the staffing table */
+	$scope.filter.events.updateStaffingClicked = function (event) {
+		event.preventDefault();
+
+		$scope.$broadcast('updateStaffing', $scope.viewState.selectedOpportunities, $scope.viewState.selectedResources, $scope.viewState.startMonth);
 	};
 
 	/* initialize data */
 	sfEndpoint.getFilterOptions().then(function (data) {
 		$scope.status.loading = false;
 		$scope.status.isAllowedToRunScheduler = !!data.IsAllowedToRunScript;
-		$scope.opportunitiesFilter.Customers = data.Customers;
+
+		$scope.data.Customers = data.Customers;
+		$scope.data.Resources = data.Resources;
 
 		var projectAndCustomerCount = data.Customers.length;
 
@@ -187,6 +237,7 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 		}
 
 		$scope.viewState.selectedOpportunitiesSize = Math.min(10, projectAndCustomerCount);
+		$scope.viewState.selectedResourcesSize = Math.min(10, data.Resources.length);
 
 		console.log(data);
 	}, function (response) {
