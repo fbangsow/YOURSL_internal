@@ -18,8 +18,6 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 	};
 
 	$scope.opportunitiesFilter.events.showStartMonthPickerClicked = function (event) {
-		console.log('datepicker event:', event);
-
 		var target = $(event.target);
 		var targetPosition = target.offset();
 
