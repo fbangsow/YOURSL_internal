@@ -65,22 +65,8 @@
 
 				<section id="staffing">
 					<table>
-						<tbody data-ng-if="data.Customers.length" ng-repeat="customer in data.Customers">
-							<tr>
-								<td colspan="{{ viewState.staffingColumns }}" class="customer-info">
-									<article>
-										<h4><a href="/{{ customer.AccountId }}" target="_blank">{{ customer.AccountName }}</a></h4>
-									</article>
-								</td>
-							</tr>
-							<tr ng-repeat-start="project in customer.Projects">
-								<td colspan="{{ viewState.staffingColumns }}" class="project-info">
-									<article>
-										<h5><a href="/{{ project.OpportunityId }}" target="_blank">{{ project.OpportunityName }}</a></h5>
-									</article>
-								</td>
-							</tr>
-							<tr>
+						<tbody data-ng-if="data.Customers.length" ng-repeat="customer in data.Customers" ng-init="firstCustomer = $first">
+							<tr ng-if="firstCustomer">
 								<th rowspan="4">Resource</th>
 								<th rowspan="4">Role</th>
 								<th rowspan="4">Sold days</th>
@@ -90,20 +76,31 @@
 									{{ month.caption }}
 								</th>
 							</tr>
-							<tr>
+							<tr ng-if="firstCustomer">
 								<th colspan="{{ week.dayCount }}" ng-repeat="week in viewState.staffingWeeks">
 									CW-{{ week.number }}
 								</th>
 							</tr>
-							<tr>
-								<th ng-repeat="day in viewState.staffingDays" ng-class="buildProjectDayCellClasses(project, day)" rowspan="{{ day.isMonthSaldo ? 2 : 1 }}">
+							<tr ng-if="firstCustomer">
+								<th ng-repeat="day in viewState.staffingDays" ng-class="buildDayHeaderClasses(day)" rowspan="{{ day.isMonthSaldo ? 2 : 1 }}">
 									{{ day.isMonthSaldo ? 'Month Saldo' : day.weekDay }}
 								</th>
 							</tr>
-							<tr>
-								<th ng-repeat="day in viewState.staffingDays" ng-class="buildProjectDayCellClasses(project, day)" ng-if="!day.isMonthSaldo">
+							<tr ng-if="firstCustomer">
+								<th ng-repeat="day in viewState.staffingDays" ng-class="buildDayHeaderClasses(day)" ng-if="!day.isMonthSaldo">
 									{{ day.day }}
 								</th>
+							</tr>
+							<!-- <tr>
+								<td colspan="{{ viewState.staffingColumns }}" class="customer-info">
+									<h4><a href="/{{ customer.AccountId }}" target="_blank">{{ customer.AccountName }}</a></h4>
+								</td>
+							</tr> -->
+							<tr ng-repeat-start="project in customer.Projects">
+								<td colspan="{{ viewState.staffingColumns }}" class="project-info">
+									<h4><a href="/{{ customer.AccountId }}" target="_blank">{{ customer.AccountName }}</a></h4> &gt;
+									<h5><a href="/{{ project.OpportunityId }}" target="_blank">{{ project.OpportunityName }}</a></h5>
+								</td>
 							</tr>
 							<tr ng-repeat="resource in project.Resources" ng-class="buildResourceRowClasses(resource)">
 								<td>

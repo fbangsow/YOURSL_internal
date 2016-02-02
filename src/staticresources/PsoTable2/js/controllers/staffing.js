@@ -324,6 +324,18 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 	};
 
 	$scope.buildProjectDayCellClasses = function (project, day) {
+		var classes = $scope.buildDayHeaderClasses(day);
+
+		if (project && day && day.isMonthSaldo) {
+			classes['negative-saldo'] = project.MonthSaldos[day.dateString] && project.MonthSaldos[day.dateString] < 0;
+			classes['positive-saldo'] = project.MonthSaldos[day.dateString] && project.MonthSaldos[day.dateString] > 0;
+			classes['neutral-saldo'] = !project.MonthSaldos[day.dateString];
+		}
+
+		return classes;
+	};
+
+	$scope.buildDayHeaderClasses = function (day) {
 		var classes = {};
 
 		if (day) {
@@ -334,9 +346,6 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 
 			if (day.isMonthSaldo) {
 				classes['month-saldo'] = true;
-				classes['negative-saldo'] = project.MonthSaldos[day.dateString] && project.MonthSaldos[day.dateString] < 0;
-				classes['positive-saldo'] = project.MonthSaldos[day.dateString] && project.MonthSaldos[day.dateString] > 0;
-				classes['neutral-saldo'] = !project.MonthSaldos[day.dateString];
 			}
 		}
 
