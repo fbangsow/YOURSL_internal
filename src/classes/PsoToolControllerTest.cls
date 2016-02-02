@@ -984,7 +984,7 @@ private class PsoToolControllerTest {
             System.assertNotEquals(null, data_set_object.EndDate, 'EndDate should be set');
             System.assertNotEquals(null, data_set_object.Customers);
             System.assertEquals(2, data_set_object.Customers.size());
-            System.assertEquals(null, data_set_object.Resources);
+            System.assertNotEquals(null, data_set_object.Resources);
         }
     }
 
@@ -1069,7 +1069,7 @@ private class PsoToolControllerTest {
             System.assertNotEquals(null, data_set_object.EndDate, 'EndDate should be set');
             System.assertNotEquals(null, data_set_object.Customers);
             System.assertEquals(1, data_set_object.Customers.size());
-            System.assertEquals(null, data_set_object.Resources);
+            System.assertNotEquals(null, data_set_object.Resources);
         }
     }
 
@@ -1111,7 +1111,7 @@ private class PsoToolControllerTest {
         }
     }
 
-    @isTest static void testGetDataSetThatReturnsNothing() {
+    @isTest static void testGetDataSetThatReturnsNoCustomersWhenNothingIsSelected() {
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
             Date date_of_execution = Date.newInstance(2015, 1, 1);
@@ -1126,7 +1126,6 @@ private class PsoToolControllerTest {
             System.assertNotEquals(null, data_set_object.StartDate, 'StartDate should be set');
             System.assertNotEquals(null, data_set_object.EndDate, 'EndDate should be set');
             System.assertEquals(null, data_set_object.Customers);
-            System.assertEquals(null, data_set_object.Resources);
         }
     }
 

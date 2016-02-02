@@ -55,17 +55,12 @@ public without sharing class PsoToolController{
         DataSet.EndDate = this.EndDate.format();
         if(opportunitiesFilterIsUsed())
             DataSet.Customers = getCustomers(true);
-        if(contactsFilterIsUsed())
-            DataSet.Resources = getResourcesAvailabilityData(true);
+        DataSet.Resources = getResourcesAvailabilityData(true);
         return DataSet;
     }
 
     private Boolean opportunitiesFilterIsUsed(){
         return (!OpportunitiesToShow.isEmpty() || ShowAllOpportunities);
-    }
-
-    private Boolean contactsFilterIsUsed(){
-        return (!ContactsToShow.isEmpty() || ShowAllContacts);
     }
 
     public PsoToolController setStartDate(Date passed_date){
@@ -118,7 +113,8 @@ public without sharing class PsoToolController{
                                     (SELECT Contact__r.Name, Contact__r.Id, Contact__r.Account.Name, Contact__r.Title, Contact__r.LastName, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
                                         FROM OpportunityLineItems
                                         WHERE Contact__r.LastName != 'All' AND
-                                        Unit__c = 'Manntag(e)')
+                                        Unit__c = 'Manntag(e)'
+                                        AND Contact__r.Inactive__c = false)
                                         FROM Opportunity
                                         WHERE Id IN :getOpportunitiesToShow()
                                         AND
@@ -197,10 +193,16 @@ public without sharing class PsoToolController{
     }
 
     private void buildContactIdsToContactsMap(){
-        for(Opportunity opp: Opportunities)
-            for(OpportunityLineItem line_item: opp.OpportunityLineItems)
-                if(line_item.Contact__r != null)
-                    ContactIdsToContacts.put(line_item.Contact__r.Id, line_item.Contact__r);
+        if((ShowAllContacts && !ShowAllOpportunities && OpportunitiesToShow.isEmpty()) || !ContactsToShow.isEmpty()){
+            for(Contact single_contact: [SELECT Id, Name, LastName, Title, Account.Name FROM Contact WHERE Inactive__c = false AND LastName != 'All'])
+                ContactIdsToContacts.put(single_contact.Id, single_contact);
+        }
+        else{
+            for(Opportunity opp: Opportunities)
+                for(OpportunityLineItem line_item: opp.OpportunityLineItems)
+                    if(line_item.Contact__r != null)
+                        ContactIdsToContacts.put(line_item.Contact__r.Id, line_item.Contact__r);
+        }
     }
 
     private Map<String, Map<String, OpportunityLineItem>> getOpportunityIdToOpportunityLineItemMap(OpportunityLineItem item){
@@ -498,7 +500,6 @@ public without sharing class PsoToolController{
 
     public FilterValues getFilterValues(){
         FilterValues filter_values = new FilterValues();
-        ShowAllOpportunities = true;
         ShowAllContacts = true;
         getOpportunities();
         filter_values.Customers = getCustomers(false);
