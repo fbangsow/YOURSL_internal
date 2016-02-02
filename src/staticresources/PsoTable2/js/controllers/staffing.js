@@ -19,9 +19,79 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 
 	$scope.data = {};
 
+	var normalizeStaffing = function (staffing) {
+		/**
+		 * {
+			Day: '2016-01-28',
+			Staff: 4.25,
+			HoursOff: 0.75
+		 }
+		 */
+		if (!staffing.date) {
+			staffing.date = new Date(staffing.Day);
+		}
+
+		staffing.month = datepicker.formatDate('m', staffing.date);
+		staffing.currentBooking = staffing.Staff || 0;
+
+		/* fully booked means 80% of 8 hours */
+		var hoursPerDay = 8;
+		var fullyBookedTreshold = hoursPerDay * 0.8;
+
+		/* booking means an allocation to a project, not holidays */
+		staffing.hasBooking = staffing.Staff > 0;
+		staffing.isPartlyBooked = staffing.hasBooking && staffing.Staff < fullyBookedTreshold;
+		staffing.isFullyBooked = staffing.Staff >= fullyBookedTreshold && staffing.Staff <= hoursPerDay;
+		staffing.isOverBooked = staffing.Staff > hoursPerDay;
+
+		staffing.hasHoliday = staffing.HoursOff > 0;
+		staffing.isPartlyHoliday = staffing.hasHoliday && staffing.HoursOff < fullyBookedTreshold;
+		staffing.isFullHoliday = staffing.HoursOff >= fullyBookedTreshold;
+	};
+
+	var normalizeResourceStaffing = function (resource) {
+		resource.StaffingByDay = {};
+		resource.MonthSaldos = {};
+
+		if (resource.MonthToLimitMap) {
+			/* initialize the month saldo to the complete budget, we'll reduce by the planned hours later */
+			for (monthKey in resource.MonthToLimitMap) {
+				if (resource.MonthToLimitMap.hasOwnProperty(monthKey)) {
+					var budgetForMonth = parseFloat(resource.MonthToLimitMap[monthKey]) * 8;
+
+					resource.MonthSaldos['monthSaldo-' + monthKey] = budgetForMonth;
+				}
+			}
+		}
+
+		/* float values including decimals are not converted to float, but string */
+		if (resource.SoldDays) {
+			resource.SoldDays = parseFloat((resource.SoldDays + "").replace(',', '.'));
+		}
+
+		if (resource.PlannedDays) {
+			resource.PlannedDays = parseFloat((resource.PlannedDays + "").replace(',', '.'));
+		}
+
+		for (var s = 0; s < resource.Staffing.length; s++) {
+			var staffing = resource.Staffing[s];
+
+			normalizeStaffing(staffing);
+
+			resource.StaffingByDay[staffing.Day] = staffing;
+
+			if (!resource.MonthSaldos['monthSaldo-' + staffing.month]) {
+				resource.MonthSaldos['monthSaldo-' + staffing.month] = 0;
+			}
+
+			resource.MonthSaldos['monthSaldo-' + resource.month] -= staffing.currentBooking;
+		}
+	};
+
 	/* restructure the staffings for each resource to be accessible by date */
 	var normalizeProjectHours = function (project) {
 		console.log('normalize project hours', project);
+
 		project.SoldDays = 0;
 		project.PlannedDays = 0;
 		project.BookedHoursByDay = {};
@@ -30,16 +100,13 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 		for (var r = 0; r < project.Resources.length; r++) {
 			var resource = project.Resources[r];
 
-			resource.StaffingByDay = {};
-			resource.MonthSaldos = {};
+			normalizeResourceStaffing(resource);
 
 			if (resource.MonthToLimitMap) {
 				/* initialize the month saldo to the complete budget, we'll reduce by the planned hours later */
 				for (monthKey in resource.MonthToLimitMap) {
 					if (resource.MonthToLimitMap.hasOwnProperty(monthKey)) {
 						var budgetForMonth = parseFloat(resource.MonthToLimitMap[monthKey]) * 8;
-
-						resource.MonthSaldos['monthSaldo-' + monthKey] = budgetForMonth;
 
 						if (!project.MonthSaldos['monthSaldo-' + monthKey]) {
 							project.MonthSaldos['monthSaldo-' + monthKey] = 0;
@@ -50,61 +117,11 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 				}
 			}
 
-			/* float values including decimals are not converted to float, but string */
-			resource.SoldDays = parseFloat((resource.SoldDays + "").replace(',', '.'));
-			resource.PlannedDays = parseFloat((resource.PlannedDays + "").replace(',', '.'));
-
 			project.SoldDays += resource.SoldDays;
 			project.PlannedDays += resource.PlannedDays;
 
-			/*
-				Resort, we need the Staffing to be ordered by ascending date.
-				Additionally we add a date field containing a JS Date object constructed from the Day string.
-			*/
-			resource.Staffing.sort(function (left, right) {
-				if (!left.date) {
-					left.date = new Date(left.Day);
-				}
-
-				if (!right.date) {
-					right.date = new Date(right.Day);
-				}
-
-				return left.date.getTime() - right.date.getTime();
-			});
-
 			for (var s = 0; s < resource.Staffing.length; s++) {
 				var staffing = resource.Staffing[s];
-
-				/**
-				 * {
-					Day: '2016-01-28',
-					Staff: 4.25,
-					HoursOff: 0.75
-				 }
-				 */
-				if (!staffing.date) {
-					staffing.date = new Date(staffing.Day);
-				}
-
-				staffing.month = datepicker.formatDate('m', staffing.date);
-				staffing.currentBooking = staffing.Staff || 0;
-
-				/* fully booked means 80% of 8 hours */
-				var hoursPerDay = 8;
-				var fullyBookedTreshold = hoursPerDay * 0.8;
-
-				/* booking means an allocation to a project, not holidays */
-				staffing.hasBooking = staffing.Staff > 0;
-				staffing.isPartlyBooked = staffing.hasBooking && staffing.Staff < fullyBookedTreshold;
-				staffing.isFullyBooked = staffing.Staff >= fullyBookedTreshold && staffing.Staff <= hoursPerDay;
-				staffing.isOverBooked = staffing.Staff > hoursPerDay;
-
-				staffing.hasHoliday = staffing.HoursOff > 0;
-				staffing.isPartlyHoliday = staffing.hasHoliday && staffing.HoursOff < fullyBookedTreshold;
-				staffing.isFullHoliday = staffing.HoursOff >= fullyBookedTreshold;
-
-				resource.StaffingByDay[staffing.Day] = staffing;
 
 				if (!project.BookedHoursByDay[staffing.Day]) {
 					project.BookedHoursByDay[staffing.Day] = 0;
@@ -112,13 +129,11 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 
 				project.BookedHoursByDay[staffing.Day] = staffing.Staff;
 
-				[resource, project].forEach(function (context) {
-					if (!context.MonthSaldos['monthSaldo-' + staffing.month]) {
-						context.MonthSaldos['monthSaldo-' + staffing.month] = 0;
-					}
+				if (!project.MonthSaldos['monthSaldo-' + staffing.month]) {
+					project.MonthSaldos['monthSaldo-' + staffing.month] = 0;
+				}
 
-					context.MonthSaldos['monthSaldo-' + staffing.month] -= staffing.currentBooking;
-				});
+				project.MonthSaldos['monthSaldo-' + staffing.month] -= staffing.currentBooking;
 			}
 		}
 	};
@@ -138,6 +153,7 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 			return;
 		}
 
+		console.log('checking allocation data for update');
 		console.log(project);
 		console.log(resource);
 		console.log(allocationDate);
@@ -183,7 +199,7 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 			return;
 		}
 
-		/* the currentMonthHours will containing a project bookings without the currently affected day */
+		/* the currentMonthHours will contain the project bookings without the currently affected day */
 		var currentMonthHours = 0;
 		for (var s = 0; s < resource.Staffing.length; s++) {
 			var staffing = resource.Staffing[s];
@@ -223,7 +239,7 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 		sfEndpoint.updateAllocation(resource.MonthToOppLineItemIdMap[monthKey], allocationDate, requestedHours).then(function (result) {
 			/* nothing to do, the interface is already updated */
 		}, function (response) {
-			console.log(response);
+			console.log('error during allocation update:', response);
 		});
 	};
 
@@ -248,7 +264,7 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 			classes['has-booking'] = !!allocation.hasBooking;
 			classes['partly-booked'] = !!allocation.isPartlyBooked;
 			classes['fully-booked'] = !!allocation.isFullyBooked;
-			classes['overbooked'] = !!allocation.isOverbooked;
+			classes['overbooked'] = !!allocation.isOverBooked;
 			classes['has-holiday'] = !!allocation.hasHoliday;
 			classes['full-holiday'] = !!allocation.isFullHoliday;
 			classes['part-holiday'] = !!allocation.isPartlyHoliday;
@@ -277,13 +293,21 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 		return classes;
 	};
 
+	$scope.buildResourceRowClasses = function (resource) {
+		var classes = {};
+
+		classes.yourslEmployee = resource.AccountName === 'YOUR SL GmbH';
+
+		return classes;
+	};
+
 	/* functions for the staffing table */
 	$scope.$on('updateStaffing', function (event, selectedOpportunities, selectedResources, startMonth) {
 		$scope.status.loading = true;
 		$scope.status.loaded = false;
 
 		sfEndpoint.getProjectStaffing(selectedOpportunities, selectedResources, startMonth).then(function (data) {
-			console.log(data);
+			console.log('received data for project staffing:', data);
 
 			/* we need to equalize the time to be able to detect today */
 			$scope.viewState.startDate = new Date(data.StartDate);
@@ -384,6 +408,10 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 
 			createSaldoColumn(lastMonth);
 
+			$scope.data.Customers = [];
+			$scope.data.Resources = [];
+			$scope.data.StaffingByDay = {};
+
 			if (data.Customers) {
 				for (var c = 0; c < data.Customers.length; c++) {
 					var customer = data.Customers[c];
@@ -393,8 +421,14 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 				}
 
 				$scope.data.Customers = data.Customers;
-			} else {
-				$scope.data.Customers = [];
+			}
+
+			if (data.Resources) {
+				for (var r = 0; r < data.Resources.length; r++) {
+					normalizeResourceStaffing(data.Resources[r]);
+				}
+
+				$scope.data.Resources = data.Resources;
 			}
 
 			$scope.viewState.staffingDayColumns = dayCount;
@@ -404,7 +438,7 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 			$scope.status.loaded = true;
 		}, function (response) {
 			$scope.status.error = response;
-			console.log(response);
+			console.log('error while retrieving project staffing data:', response);
 		});
 	});
 }]);

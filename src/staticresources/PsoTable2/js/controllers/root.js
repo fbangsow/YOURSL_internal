@@ -239,9 +239,9 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 		$scope.viewState.selectedOpportunitiesSize = Math.min(10, projectAndCustomerCount);
 		$scope.viewState.selectedResourcesSize = Math.min(10, data.Resources.length);
 
-		console.log(data);
+		console.log('received filter data', data);
 	}, function (response) {
 		$scope.status.error = response;
-		console.log(response);
+		console.log('error while receiving filter data', response);
 	});
 }]);

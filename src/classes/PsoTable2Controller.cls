@@ -46,6 +46,14 @@ public with sharing class PsoTable2Controller {
 			}
 		}
 
+		if (data.Resources != null) {
+			for (PsoToolController.ResourceInfo resource : data.Resources) {
+				for (PsoToolController.Staffing staffing : resource.Staffing) {
+					staffing.Day = formatDate(staffing.Day);
+				}
+			}
+		}
+
 		return data.JSON();
 	}
 

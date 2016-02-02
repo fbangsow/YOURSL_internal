@@ -105,7 +105,7 @@
 									{{ day.day }}
 								</th>
 							</tr>
-							<tr ng-repeat="resource in project.Resources">
+							<tr ng-repeat="resource in project.Resources" ng-class="buildResourceRowClasses(resource)">
 								<td>
 									<a href="/{{ resource.ContactId }}" target="_blank">{{ resource.ResourceName }}</a>
 								</td>
@@ -157,6 +157,41 @@
 
 									<span ng-if="!day.isMonthSaldo">
 										{{ project.BookedHoursByDay[day.dateString] || 0 }}
+									</span>
+								</td>
+							</tr>
+						</tbody>
+						<tbody ng-if="data.Resources.length">
+							<tr>
+								<th colspan="{{ viewState.staffingColumns }}">
+									<h4>Resource availability</h4>
+								</th>
+							</tr>
+							<tr>
+								<th>
+									Resource name
+								</th>
+								<th>
+									Title
+								</th>
+								<th colspan="3">
+									Account name
+								</th>
+								<th colspan="{{ viewState.staffingColumns - 5 }}">
+									&nbsp;
+								</th>
+							</tr>
+							<tr ng-repeat="resource in data.Resources" ng-class="buildResourceRowClasses(resource)">
+								<td>{{ resource.ResourceName }}</td>
+								<td>{{ resource.Title }}</td>
+								<td colspan="3">{{ resource.AccountName}}</td>
+								<td ng-repeat="day in viewState.staffingDays" ng-class="buildResourceAllocationCellClasses(resource, day, resource.StaffingByDay[day.dateString])">
+									<span ng-if="day.isMonthSaldo">
+										{{ ((resource.MonthSaldos[day.dateString] || 0) / 8) | number : 2 }}
+									</span>
+
+									<span ng-if="!day.isMonthSaldo">
+										{{ resource.StaffingByDay[day.dateString].Staff || 0 }}
 									</span>
 								</td>
 							</tr>
