@@ -222,21 +222,21 @@
                 weekno1 = moment(cmbne, "MM-DD-YYYY").startOf('isoweek').week();
                              weekno1 = weekno1;
 
-
+                             
             if(yearChange)
             {
   if (weekdays[k] == "MO") {
     year=year-1;
 
                 var month=13;
-         data = data + '<td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields planned_utilization" disabled="true"></td><td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')" ></input></td>';
+         data = data + '<td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields planned_utilization" disabled="true"></td><td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')" ></input></td>';
 
   }
   else if (weekdays[k] == "SU") {
                 year=year-1;
 
                 var month=13;
-    data = data + '<td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields"  disabled="true"></td><td><input type="text" name="' + weekno1 + '"  class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields planned_utilization" disabled="true"></td><td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')" ></input></td><td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields"  disabled="true"></td><td><input type="text" name="' + weekno1 + '"  class="mwdadot inputfields" disabled="true"></td>';
+    data = data + '<td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields"  disabled="true"></td><td><input type="text" name="' + weekno1 + '"  class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields planned_utilization" disabled="true"></td><td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')" ></input></td><td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields"  disabled="true"></td><td><input type="text" name="' + weekno1 + '"  class="mwdadot inputfields" disabled="true"></td>';
 
 
                                  }
@@ -246,7 +246,7 @@
 
                 var month=13;
 
-                data = data + '<td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields"  disabled="true"></td><td><input type="text" name="' + weekno1 + '"  class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields planned_utilization" disabled="true"></td><td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')" ></input></td>';
+                data = data + '<td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields"  disabled="true"></td><td><input type="text" name="' + weekno1 + '"  class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields planned_utilization" disabled="true"></td><td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')" ></input></td>';
 
             }
 
@@ -260,9 +260,9 @@ yearChange=false;
                               if (j == 0) {
 
                                  if (weekdays[k] == "SU") {
-                                     data = data + '<td><input name="' + a + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="drdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="dadot inputfields" disabled="true"></td>';
+                                     data = data + '<td><input name="' + a + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="drdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="dadot inputfields" disabled="true"></td>';
                                  } else {
-                                     data = data + '<td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td>';
+                                     data = data + '<td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td>';
                                  }
                              } else if (j == parseInt(diffDays)) {
 
@@ -275,7 +275,7 @@ yearChange=false;
                 //var weekno1 = weeksInYear(year);
                 var month=13;
 
-             data = data + '<td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="inputfields plnperhur" disabled="true"></td><td><input type="text" name="' + month1 + '" class="inputfields planned_utilization" disabled="true"></td>';                     }
+             data = data + '<td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="inputfields plnperhur" disabled="true"></td><td><input type="text" name="' + month1 + '" class="inputfields planned_utilization" disabled="true"></td>';                     }
                                  else
                                  {
 
@@ -283,32 +283,32 @@ yearChange=false;
 
 
 
-                                     data = data + '<td><input name="' + a + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="inputfields plnperhur" disabled="true"></td><td><input type="text" name="' + month1 + '" class="inputfields planned_utilization" disabled="true"></td>';
+                                     data = data + '<td><input name="' + a + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="inputfields plnperhur" disabled="true"></td><td><input type="text" name="' + month1 + '" class="inputfields planned_utilization" disabled="true"></td>';
                                  } else {
 
 
-                                     data = data + '<td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="inputfields plnperhur" disabled="true"></td><td><input type="text" name="' + month1 + '" class="inputfields planned_utilization" disabled="true"></td>';
+                                     data = data + '<td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month1 + '" class="inputfields plnperhur" disabled="true"></td><td><input type="text" name="' + month1 + '" class="inputfields planned_utilization" disabled="true"></td>';
                                  }
                              }
                              } else if (weekdays[k] == "SA" || weekdays[k] == "SU") {
 
                                  if (weekdays[k] == "SU") {
                                     if (parseInt(dt) == 1) {
-                                         data = data + '<td><input type="text" name="' + weekno1 + '"  class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields planned_utilization" disabled="true"></td><td><input name="' + a + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="drdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="dadot inputfields" disabled="true"></td>';
+                                         data = data + '<td><input type="text" name="' + weekno1 + '"  class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields planned_utilization" disabled="true"></td><td><input name="' + a + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="drdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="dadot inputfields" disabled="true"></td>';
                                      } else {
                                           weekno1 = moment(cmbne, "MM-DD-YYYY").startOf('isoweek').week();
                                          weekno1 = weekno1;
-                                         data = data + '<td><input name="' + a + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '"  ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="drdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="dadot inputfields" disabled="true"></td>';
+                                         data = data + '<td><input name="' + a + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '"  ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td><td><input type="text" name="' + weekno1 + '" class="drdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '" class="dadot inputfields" disabled="true"></td>';
                                      }
                                  } else {
 
                                      if (parseInt(dt) == 1) {
 
 
-                                         data = data + '<td><input type="text" name="' + weekno1 + '"  class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '"  class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields planned_utilization" disabled="true"></td><td><input name="' + a + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '"  ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td>';
+                                         data = data + '<td><input type="text" name="' + weekno1 + '"  class="mwdrdot inputfields" disabled="true"></td><td><input type="text" name="' + weekno1 + '"  class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields planned_utilization" disabled="true"></td><td><input name="' + a + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '"  ng-model-ngblur="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td>';
                                      } else {
 
-                                         data = data + '<td><input name="' + a + '"  ng-model-ngblur="' + weekdays[k] + dt + month + year + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-model="' + weekdays[k] + dt + month + year + '" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td>';
+                                         data = data + '<td><input name="' + a + '"  ng-model-ngblur="' + weekdays[k] + dt + month + year + '" class="inputfields greycolorsat ' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-model="' + weekdays[k] + dt + month + year + '" ng-change="plannedCalculation($event,$parent.$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')"></input></td>';
                                      }
                                  }
                              } else {
@@ -316,15 +316,15 @@ yearChange=false;
                                  if (parseInt(dt) == 1) {
                                      if (weekdays[k] == "MO") {
 
-                                         data = data + '<td><input type="text" name="' + month + '"  class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input name="' + month + '" type="text" class="inputfields plnperhur" disabled="true"></td><td><input name="' + month + '" type="text" class="inputfields planned_utilization" disabled="true"></td><td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '"  ng-model-ngblur ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')" ></input></td>';
+                                         data = data + '<td><input type="text" name="' + month + '"  class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input name="' + month + '" type="text" class="inputfields plnperhur" disabled="true"></td><td><input name="' + month + '" type="text" class="inputfields planned_utilization" disabled="true"></td><td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '"  ng-model-ngblur ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')" ></input></td>';
                                      } else {
 
 
-                                         data = data + '<td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields"  disabled="true"></td><td><input type="text" name="' + weekno1 + '"  class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields planned_utilization" disabled="true"></td><td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')" ></input></td>';
+                                         data = data + '<td><input type="text" name="' + weekno1 + '" class="mwdrdot inputfields"  disabled="true"></td><td><input type="text" name="' + weekno1 + '"  class="mwdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdrdot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="mdadot inputfields" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields plnperhur" disabled="true"></td><td><input type="text" name="' + month + '" class="inputfields planned_utilization" disabled="true"></td><td><input name="' + a + '" class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model="' + weekdays[k] + dt + month + year + '" ng-model-ngblur ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')" ></input></td>';
                                      }
                                  } else {
 
-                                     data = data + '<td><input name="' + a + '"  class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '"  ng-model="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')" ></input></td>';
+                                     data = data + '<td><input name="' + a + '"  class="inputfields ' + weekdays[k] + dt + month + year + '" ng-model-ngblur="' + weekdays[k] + dt + month + year + '"  ng-model="' + weekdays[k] + dt + month + year + '" ng-focus="storevalue($event)" ng-change="plannedCalculation($event,$parent.$parent.$parent.$parent.$index,$parent.$parent.$index,$index,\'' + a + '\')" ></input></td>';
                                  }
                              }
                          }
@@ -651,7 +651,7 @@ yearChange=false;
                     
                         //FALCO ADDED
 
-                        $(".oppSel").val("None");
+                         $(".oppSel").val("None");
                          $(".oprid").val("none");
                          $(".fltResourceSelect").val("None");
                          $(".flt_res_id").val("none");
@@ -712,82 +712,8 @@ yearChange=false;
                              }
                             $(".Accountnamedsp").val(ab);
 
-                             
-                          /*var lengthforarray = 0;
-                         if (ab == "None") {
-                             lengthforarray = $(".accountname option").length;
-
-                         } else {
-                             $(".accountname option").each(function() {
-                                 if ($(this).val() == "All Account Names") {
-                                     $(this).attr("selected", false);
-                                 }
-
-                             })
-
-                         }*/
-                         
-
-                         //var myDataSet = $scope.filterdata.Customers;
                          startdateobj = $scope.dataval;
-                         //var countforfilterdata = 0;
-
-                         /*if ($(".accountname option").length == lengthforarray) {
-                             angular.forEach(ab, function(selectedvalueforcount, b) {
-                                 if (selectedvalueforcount == "None") {
-                                     countforfilterdata = 1;
-                                 }
-                             })
-                         }*/
-                         /*var projects1 = new Array();
-                         if (countforfilterdata == 1) {
-                            projects1.push({
-                                 "value": "None",
-                                 "Id": "none"
-                             })
-                             projects1.push({
-                                 "value": "All Opportunity Names",
-                                 "Id": "0"
-                             })
-
-                             angular.forEach($scope.projectdetails, function(a, b) {
-
-                                 angular.forEach(a.project, function(an, b) {
-                                     projects1.push({
-                                         "value": an.name,
-                                         "Id": an.Id
-                                     });
-                                 })
-
-                             })
-
-                         } else {
-                            projects1.push({
-                                 "value": "None",
-                                 "Id": "none"
-                             })
-                             projects1.push({
-                                 "value": "All Opportunity Names",
-                                 "Id": "0"
-                             })
-                             angular.forEach(ab, function(selectedvalue, b) {
-
-                                 angular.forEach($scope.projectdetails, function(a, b) {
-                                     if (a.customer == selectedvalue) {
-                                         angular.forEach(a.project, function(an, b) {
-                                             projects1.push({
-                                                 "value": an.name,
-                                                 "Id": an.Id
-                                             });
-                                         })
-                                     }
-                                 })
-                             })
-
-
-                         }
-
-*/
+                      
 
                          $scope.projectsselect = projects1;
 
@@ -935,7 +861,7 @@ yearChange=false;
                     //dsplaydata = Array
                     //FALCO ADDED
 
-                        $(".oppSel").val("None");
+                         $(".oppSel").val("None");
                          $(".oprid").val("none");
                          $(".fltResourceSelect").val("None");
                          $(".flt_res_id").val("none");
@@ -1147,169 +1073,99 @@ yearChange=false;
 
                  $scope.oprnameselect = function(a) {
 
+                    var selectedText = new Array();
+                    var selectedIds = new Array();
 
-                     if (a == "0") {
-                         $('.clickforselect option').each(function(i, selected) {
+                    for (var i = 0; i < a.length; i++) {
+                        if (a[i] == "none") {
+                            $('.clickforselect option').each(function(index, element) {
+                                $(element).attr("selected", false);
+                                if ($(element).val() == "none") {
+                                    $(element).attr("selected", true);
+                                    selectedText.push($(element).text());
+                                    selectedIds.push($(element).val());
+                                }
+                            });
+                            break;
+                        }
 
+                        if (a[i] == "0") {
+                            $('.clickforselect option').each(function(index, element) {
+                                $(element).attr("selected", false);
+                                if ($(element).val() != "none") {
+                                    $(element).attr("selected", true);
+                                    if ($(element).val() != "0") {
+                                        selectedText.push($(element).text());
+                                        selectedIds.push($(element).val());    
+                                    }
+                                }
+                            });
+                            break;
+                        }
 
-                             if ($(this).is(":selected")) {
+                        $('.clickforselect option').each(function(index, element) {
+                            if ($(element).val() == a[i]) {
+                                $(element).attr("selected", true);
+                                selectedText.push($(element).text());
+                                selectedIds.push($(element).val());
+                            }
+                        });
+                    }
 
-                                 if ($(this).val() == 0) {
-                                     $('.clickforselect option').each(function(i, selected) {
+                    $(".oppSel").val(selectedText);
+                    $(".oprid").val(selectedIds);
 
-
-                                        if ($(this).val() != 'none') {
-                                            $(this).attr("selected", true);
-                                        }
-
-                                     });
-
-                                 }
-
-
-                             }
-                         });
-                     }
-                     var count = 0;
-                     $('.clickforselect option').each(function(i, selected) {
-                         if ($(this).is(":selected")) {
-                             count = count + 1;
-                         }
-
-                     });
-
-                     if (count != $('.clickforselect option').length) {
-                         $('.clickforselect option').each(function(i, selected) {
-                             if ($(this).val() == 0) {
-                                 $(this).attr("selected", false);
-                             }
-                         });
-
-                     } else {
-                         $('.clickforselect option').each(function(i, selected) {
-                             if ($(this).val() == 0) {
-                                 $(this).attr("selected", true);
-                             }
-                         });
-
-                     }
-
-                     var foo = new Array();
-                     var idselected = new Array();
-
-
-                     $('.clickforselect :selected').each(function(i, selected) {
-
-                         foo.push($(selected).text());
-                         idselected.push($(selected).val())
-
-                     });
-
-
-                     $.each(idselected, function(a, b) {
-                         if (b == 0) {
-                             foo = [];
-                             idselected = [];
-                             $('.clickforselect option').each(function(i, selected) {
-                                 if ($(this).val() != 0) {
-
-                                     foo.push($(selected).text());
-                                     idselected.push($(selected).val())
-                                 }
-                             });
-
-                         }
-                     })
-                     $(".oppSel").val(foo);
-                     /*if (idselected.length == 0) {
-                        $(".oprid").val("none");
-                     } else {
-
-                     }*/
-
-                    $(".oprid").val(idselected);
-
-
-
+                    sessionStorage.setItem("oppnamevalue", $(".oppSel").val());
+                    sessionStorage.setItem("oppname", $(".oprid").val());
                  }
 
                  $scope.resourcenameselect = function(a) {
 
-                     if (a == "0") {
-                         $('.clickforselectresource option').each(function(i, selected) {
+                    var selectedText = new Array();
+                    var selectedIds = new Array();
 
-                             if ($(this).is(":selected")) {
-                                 if ($(this).val() == 0) {
-                                     $('.clickforselectresource option').each(function(i, selected) {
+                    for (var i = 0; i < a.length; i++) {
+                        if (a[i] == "none") {
+                            $('.clickforselectresource option').each(function(index, element) {
+                                $(element).attr("selected", false);
+                                if ($(element).val() == "none") {
+                                    $(element).attr("selected", true);
+                                    selectedText.push($(element).text());
+                                    selectedIds.push($(element).val());
+                                }
+                            });
+                            break;
+                        }
 
+                        if (a[i] == "0") {
+                            $('.clickforselectresource option').each(function(index, element) {
+                                $(element).attr("selected", false);
+                                if ($(element).val() != "none") {
+                                    $(element).attr("selected", true);
+                                    if ($(element).val() != "0") {
+                                        selectedText.push($(element).text());
+                                        selectedIds.push($(element).val());    
+                                    }
+                                }
+                            });
+                            break;
+                        }
 
-                                        if ($(this).val() != 'none') {
-                                            $(this).attr("selected", true);
-                                        }
+                        $('.clickforselectresource option').each(function(index, element) {
+                            if ($(element).val() == a[i]) {
+                                $(element).attr("selected", true);
+                                selectedText.push($(element).text());
+                                selectedIds.push($(element).val());
+                            }
+                        });
+                    }
 
-                                     });
+                    $(".fltResourceSelect").val(selectedText);
+                    $(".flt_res_id").val(selectedIds);
 
-                                 }
-
-
-                             }
-                         });
-                     }
-                     var count = 0;
-                     $('.clickforselectresource option').each(function(i, selected) {
-                         if ($(this).is(":selected")) {
-                             count = count + 1;
-                         }
-
-                     });
-
-                     if (count != $('.clickforselectresource option').length) {
-                         $('.clickforselectresource option').each(function(i, selected) {
-                             if ($(this).val() == 0) {
-                                 $(this).attr("selected", false);
-                             }
-                         });
-
-                     } else {
-                         $('.clickforselectresource option').each(function(i, selected) {
-                             if ($(this).val() == 0) {
-                                 $(this).attr("selected", true);
-                             }
-                         });
-
-                     }
-
-                     var foo = new Array();
-                     var idselected = new Array();
-
-
-                     $('.clickforselectresource :selected').each(function(i, selected) {
-
-                         foo.push($(selected).text());
-                         idselected.push($(selected).val())
-
-                     });
-
-
-                     $.each(idselected, function(a, b) {
-                         if (b == 0) {
-                             foo = [];
-                             idselected = [];
-                             $('.clickforselectresource option').each(function(i, selected) {
-                                 if ($(this).val() != 0) {
-
-                                     foo.push($(selected).text());
-                                     idselected.push($(selected).val())
-                                 }
-                             });
-
-                         }
-                     })
-                     $(".fltResourceSelect").val(foo);
-                     $(".flt_res_id").val(idselected);
-
-
-
+                    sessionStorage.setItem("resnamevalue", $(".fltResourceSelect").val());
+                    sessionStorage.setItem("resname", $(".flt_res_id").val());
+                    
 
                  }
 
@@ -2014,6 +1870,7 @@ yearChange=false;
                                      //color coding uneversial function ends here
                                      //function to use for plannngcaculation starts here
                                      $scope.resourceplanningcalc = function(a, cmbineprnt, g, h, j) {
+                                        // FALCO
                                          var cmbineparentsplit = cmbineprnt.split("/");
                                          var b = cmbineparentsplit[0];
                                          var c = cmbineparentsplit[1];
@@ -2097,7 +1954,8 @@ yearChange=false;
 
                                              $scope.dataval.Customers[b].Projects[c].Resources[d].plnndreven = euroconverter($scope.plnndreven);
                                              if (clickedfoedata == 1) {
-                                                 $scope.$apply();
+                                                //FALCO COMMENT ADDED
+                                                 //$scope.$apply();
                                                  clickedfoedata = 0;
 
                                              }
@@ -2141,6 +1999,7 @@ yearChange=false;
                                                      }
                                                  });
                                              });
+                                             
 
                                          }
                                          if (cancelclick != 0) {
@@ -2835,7 +2694,7 @@ yearChange=false;
                                    $scope.dataforhtml=$scope.dataval;
 
 
-                                     $scope.$apply();
+                                     
                                      $scope.stylng = 0;
                                      $scope.Staffingpopltion();
                                      totalcaluculation();
@@ -2851,6 +2710,8 @@ yearChange=false;
                                      $(".wrapperwidth").attr("style", "display:block;");
                                      $(".msg").attr("style", "display:none");
                                      $(".blurbackgrund,.imgldr").attr("style", "display:none");
+                                     
+
 
                                  } else {
                                  
@@ -2886,6 +2747,7 @@ yearChange=false;
                                         $(".blurbackgrund,.imgldr").attr("style", "display:none");
                                         $(".msg").attr("style", "display:block;");
                                  }
+                                 $scope.$apply();
                              }
                          }, {
                              buffer: true,
@@ -3307,7 +3169,8 @@ yearChange=false;
                 <dd>
                     <div class="mutliSelect clickforselect">
 
-                       <select class="Projects" data-ng-model="projectsSelecteddata" multiple="true" ng-click="oprnameselect(projectsSelecteddata)" on-finish-render="ngRepeatFinishedforselectbox">
+                       <select class="Projects" data-ng-model="projectsSelecteddata" multiple="true" ng-change="oprnameselect(projectsSelecteddata)" >
+                       <!--on-finish-render="ngRepeatFinishedforselectbox"-->
                <option ng-repeat="c in projectsselect" value="{{c.Id}}" >{{c.value}}</option>
                         </select>
 
@@ -3338,7 +3201,7 @@ yearChange=false;
                 <dd>
                     <div class="mutliSelect clickforselectresource">
 
-                       <select class="FltResources" data-ng-model="resourceSelecteddata" multiple="true" ng-click="resourcenameselect(resourceSelecteddata)">
+                       <select class="FltResources" data-ng-model="resourceSelecteddata" multiple="true" ng-change="resourcenameselect(resourceSelecteddata)">
                			<option ng-repeat="r in fltresourcelist" value="{{r.Id}}" >{{r.value}}</option>
                         </select>
 
