@@ -83,7 +83,7 @@
 							</tr>
 							<tr ng-if="firstCustomer">
 								<th ng-repeat="day in viewState.staffingDays" ng-class="buildDayHeaderClasses(day)" rowspan="{{ day.isMonthSaldo ? 2 : 1 }}">
-									{{ day.isMonthSaldo ? 'Month Saldo' : day.weekDay }}
+									{{ day.weekDay }}
 								</th>
 							</tr>
 							<tr ng-if="firstCustomer">
@@ -119,8 +119,12 @@
 									{{ ((resource.SoldDays - resource.PlannedDays) / 8) | number : 2 }}
 								</td>
 								<td ng-repeat="day in viewState.staffingDays" ng-init="allocation = resource.StaffingByDay[day.dateString]; holiday = data.ResourcesByContactId[resource.ContactId].StaffingByDay[day.dateString]" ng-class="buildResourceAllocationCellClasses(resource, day, allocation)">
-									<span ng-if="day.isMonthSaldo">
+									<span ng-if="day.isMonthSaldo && !day.isUtilization">
 										{{ ((resource.MonthSaldos[day.dateString] || 0) / 8) | number : 2 }}
+									</span>
+
+									<span ng-if="day.isUtilization">
+										{{ ((resource.MonthSaldos[day.dateString] || 0) * 100) | number : 1 }}%
 									</span>
 
 									<span ng-if="allocation !== undefined && day.isPast">
@@ -148,8 +152,12 @@
 									{{ ((project.SoldDays - project.PlannedDays) / 8) | number : 2 }}
 								</td>
 								<td ng-repeat="day in viewState.staffingDays" ng-class="buildProjectDayCellClasses(project, day)">
-									<span ng-if="day.isMonthSaldo">
+									<span ng-if="day.isMonthSaldo && !day.isUtilization">
 										{{ ((project.MonthSaldos[day.dateString] || 0) / 8) | number : 2 }}
+									</span>
+
+									<span ng-if="day.isUtilization">
+										{{ ((project.MonthSaldos[day.dateString] || 0) * 100) | number : 1 }}%
 									</span>
 
 									<span ng-if="!day.isMonthSaldo">
@@ -183,8 +191,12 @@
 								<td>{{ resource.Title }}</td>
 								<td colspan="3">{{ resource.AccountName}}</td>
 								<td ng-repeat="day in viewState.staffingDays" ng-class="buildResourceAllocationCellClasses(resource, day, allocationSummary)" ng-init="allocationSummary = resource.StaffingByDay[day.dateString]">
-									<span ng-if="day.isMonthSaldo">
+									<span ng-if="day.isMonthSaldo && !day.isUtilization">
 										{{ ((resource.MonthSaldos[day.dateString] || 0) / 8) | number : 2 }}
+									</span>
+
+									<span ng-if="day.isUtilization">
+										{{ ((resource.MonthSaldos[day.dateString] || 0) * 100) | number : 1 }}%
 									</span>
 
 									<span ng-if="!day.isMonthSaldo">

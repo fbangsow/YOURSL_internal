@@ -73,14 +73,23 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 				if (resource.MonthToLimitMap.hasOwnProperty(monthKey)) {
 					var budgetForMonth = parseFloat(resource.MonthToLimitMap[monthKey]) * 8;
 
-					resource.MonthSaldos['monthSaldo-' + monthKey] = budgetForMonth;
+					resource.MonthSaldos['budget-' + monthKey] = budgetForMonth;
+					resource.MonthSaldos['saldo-' + monthKey] = budgetForMonth;
+					resource.MonthSaldos['utilization-' + monthKey] = 0;
+					resource.MonthSaldos['booked-' + monthKey] = 0;
+					resource.MonthSaldos['holiday-' + monthKey] = 0;
 
 					if (project) {
-						if (!project.MonthSaldos['monthSaldo-' + monthKey]) {
-							project.MonthSaldos['monthSaldo-' + monthKey] = 0;
+						if (!project.MonthSaldos['budget-' + monthKey]) {
+							project.MonthSaldos['budget-' + monthKey] = 0;
 						}
 
-						project.MonthSaldos['monthSaldo-' + monthKey] += budgetForMonth;
+						if (!project.MonthSaldos['saldo-' + monthKey]) {
+							project.MonthSaldos['saldo-' + monthKey] = 0;
+						}
+
+						project.MonthSaldos['budget-' + monthKey] += budgetForMonth;
+						project.MonthSaldos['saldo-' + monthKey] += budgetForMonth;
 					}
 				}
 			}
@@ -110,11 +119,26 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 
 			resource.StaffingByDay[staffing.Day] = staffing;
 
-			if (!resource.MonthSaldos['monthSaldo-' + staffing.month]) {
-				resource.MonthSaldos['monthSaldo-' + staffing.month] = 0;
-			}
+			var saldos = resource.MonthSaldos;
 
-			resource.MonthSaldos['monthSaldo-' + staffing.month] -= staffing.total;
+			['budget', 'saldo', 'utilization', 'booked', 'holiday'].forEach(function (saldoType) {
+				var key = saldoType + '-' + staffing.month;
+				if (!saldos[key]) {
+					saldos[key] = 0;
+				}
+			});
+
+			saldos['saldo-' + staffing.month] -= staffing.total;
+			saldos['booked-' + staffing.month] += staffing.Staff;
+			saldos['holiday-' + staffing.month] += staffing.HoursOff;
+
+			var utilizationBudget = saldos['budget-' + staffing.month] - saldos['holiday-' + staffing.month];
+
+			if (utilizationBudget) {
+				saldos['utilization-' + staffing.month] = saldos['booked-' + staffing.month] / utilizationBudget;
+			} else {
+				saldos['utilization-' + staffing.month] = 0;
+			}
 
 			if (project) {
 				if (!project.BookedHoursByDay[staffing.Day]) {
@@ -123,11 +147,26 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 
 				project.BookedHoursByDay[staffing.Day] = staffing.Staff;
 
-				if (!project.MonthSaldos['monthSaldo-' + staffing.month]) {
-					project.MonthSaldos['monthSaldo-' + staffing.month] = 0;
-				}
+				var projectSaldos = project.MonthSaldos;
 
-				project.MonthSaldos['monthSaldo-' + staffing.month] -= staffing.total;
+				['budget', 'saldo', 'utilization', 'booked', 'holiday'].forEach(function (saldoType) {
+					var key = saldoType + '-' + staffing.month;
+					if (!projectSaldos[key]) {
+						projectSaldos[key] = 0;
+					}
+				});
+
+				projectSaldos['saldo-' + staffing.month] -= staffing.total;
+				projectSaldos['booked-' + staffing.month] += staffing.Staff;
+				projectSaldos['holiday-' + staffing.month] += staffing.HoursOff;
+
+				var utilizationBudget = projectSaldos['budget-' + staffing.month] - projectSaldos['holiday-' + staffing.month];
+
+				if (utilizationBudget) {
+					projectSaldos['utilization-' + staffing.month] = projectSaldos['booked-' + staffing.month] / utilizationBudget;
+				} else {
+					projectSaldos['utilization-' + staffing.month] = 0;
+				}
 			}
 		}
 	};
@@ -270,7 +309,7 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 			totalDayInfo.Staff += delta;
 			totalDayInfo.total += delta;
 
-			totalResourceInfo.MonthSaldos['monthSaldo-' + monthKey] -= delta;
+			totalResourceInfo.MonthSaldos['saldo-' + monthKey] -= delta;
 		}
 
 		allocation.Staff = requestedHours;
@@ -395,18 +434,25 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 			var lastWeek = null;
 			var dayCount = 0;
 
-			var createSaldoColumn = function (month) {
-				dayCount++;
+			var createSaldoColumns = function (month) {
+				dayCount += 2;
 
-				month.dayCount++;
-				month.weeks[month.weeks.length - 1].dayCount++;
+				month.dayCount += 2;
+				month.weeks[month.weeks.length - 1].dayCount += 2;
 
-				var day = {
-					dateString: 'monthSaldo-' + month.number,
-					isMonthSaldo: true
-				};
+				$scope.viewState.staffingDays.push({
+					dateString: 'saldo-' + month.number,
+					weekDay: 'Month saldo',
+					isMonthSaldo: true,
+					isUtilization: false
+				});
 
-				$scope.viewState.staffingDays.push(day);
+				$scope.viewState.staffingDays.push({
+					dateString: 'utilization-' + month.number,
+					weekDay: 'Utilization',
+					isMonthSaldo: true,
+					isUtilization: true
+				});
 			};
 
 			/* iterate all days and build an array with all months, weeks and days to be able to build the html table */
@@ -430,7 +476,7 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 				if (!lastMonth || lastMonth.number !== dateInfo.month) {
 					if (lastMonth) {
 						/* make place for the saldo column */
-						createSaldoColumn(lastMonth);
+						createSaldoColumns(lastMonth);
 					}
 
 					lastMonth = {
@@ -474,7 +520,7 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 				$scope.viewState.staffingDays.push(dateInfo);
 			}
 
-			createSaldoColumn(lastMonth);
+			createSaldoColumns(lastMonth);
 
 			$scope.data.Customers = [];
 			$scope.data.Resources = [];
@@ -515,6 +561,8 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 
 			$scope.status.loading = false;
 			$scope.status.loaded = true;
+
+			console.log('finished data update');
 		}, function (response) {
 			$scope.status.error = response;
 			console.log('error while retrieving project staffing data:', response);
