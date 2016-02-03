@@ -1,5 +1,4 @@
 public without sharing class PsoToolController{
-    private static Map<Id, PsoToolController> UserIdToPsoToolInstance= new Map<Id, PsoToolController>();
     @TestVisible private PsoToolDataSetWrapper DataSet;
     @TestVisible private List<Opportunity> Opportunities;
     @TestVisible private Map<Id, Contact> ContactIdsToContacts;
@@ -37,15 +36,7 @@ public without sharing class PsoToolController{
     }
 
     public static PsoToolController getInstance(){
-        createInstanceIfDoesntExist();
-        return UserIdToPsoToolInstance.get(UserInfo.getUserId());
-    }
-
-    private static void createInstanceIfDoesntExist(){
-        if(!UserIdToPsoToolInstance.containsKey(UserInfo.getUserId())){
-            PsoToolController pso_tool_instance = new PsoToolController();
-            UserIdToPsoToolInstance.put(UserInfo.getUserId(), pso_tool_instance);
-        }
+        return new PsoToolController();
     }
 
     public PsoToolDataSetWrapper getDataSet(){
@@ -117,10 +108,10 @@ public without sharing class PsoToolController{
                                         AND Contact__r.Inactive__c = false)
                                         FROM Opportunity
                                         WHERE Id IN :getOpportunitiesToShow()
-                                        AND
-                                        Project_Start_Date__c <= :this.EndDate AND
-                                        Project_End_Date__c >= :this.StartDate
-                                        AND Managed_by_PSO_Tool__c = true];
+                                        AND Project_Start_Date__c <= :EndDate
+                                        AND Project_End_Date__c >= :StartDate
+                                        AND Managed_by_PSO_Tool__c = true
+                                        ];
         buildContactIdsToContactsMap();
     }
 
@@ -495,6 +486,10 @@ public without sharing class PsoToolController{
         new_stat.EndDate = raw_stat_entry.EndDate.format();
         new_stat.Days = raw_stat_entry.ActualDays.stripTrailingZeros().toPlainString() + '/' + raw_stat_entry.PlannedDays.stripTrailingZeros().toPlainString();
         new_stat.Revenue = raw_stat_entry.ActualRevenue.stripTrailingZeros().toPlainString() + '/' + raw_stat_entry.PlannedRevenue.stripTrailingZeros().toPlainString();
+        new_stat.PlannedDays = raw_stat_entry.PlannedDays;
+        new_stat.ActualDays = raw_stat_entry.ActualDays;
+        new_stat.PlannedRevenue = raw_stat_entry.PlannedRevenue;
+        new_stat.ActualRevenue = raw_stat_entry.ActualRevenue;
         return new_stat;
     }
 
@@ -646,6 +641,10 @@ public without sharing class PsoToolController{
         public String EndDate;
         public String Days;
         public String Revenue;
+        public Decimal PlannedDays;
+        public Decimal ActualDays;
+        public Decimal PlannedRevenue;
+        public Decimal ActualRevenue;
     }
 
     public class RawStats{
