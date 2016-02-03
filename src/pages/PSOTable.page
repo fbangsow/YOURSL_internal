@@ -392,7 +392,7 @@ yearChange=false;
              //Controller Starts Here
              app.controller('MyCtrl', function($scope, $compile, $filter, serviceforgetaccount, serviceforgetaccountchange, tempService, $q) {
 
-
+                
                  $scope.streamingerror = function() {
 
                      $(".popup,.blurbackgrund1,.blurbackgrund").attr("style", "display:none;");
@@ -648,8 +648,72 @@ yearChange=false;
 
 
                  $scope.Customersfilter = function(ab) {
+                    
+                        //FALCO ADDED
 
-                         var lengthforarray = 0;
+                        $(".oppSel").val("None");
+                         $(".oprid").val("none");
+                         $(".fltResourceSelect").val("None");
+                         $(".flt_res_id").val("none");
+
+                         var selectedText = new Array();
+
+                        if (ab == "All Account Names") {
+                            $(".accountname option").each(function(id, element) {
+
+                                 if ($(element).val() == "All Account Names") {
+                                     $(element).attr("selected", false);
+                                 } else {
+                                    $(element).attr("selected", true);
+                                    selectedText.push($(element).val());
+                                 }
+
+                            })
+                        } else {
+                            $(".accountname option").each(function() {
+                                 if ($(this).val() == ab) {
+                                     $(this).attr("selected", true);
+                                 } else {
+                                    $(this).attr("selected", false);
+                                 }
+
+                            })
+                        }
+                        var projects1 = new Array();
+                        projects1.push({
+                                 "value": "None",
+                                 "Id": "none"
+                             })
+                             projects1.push({
+                                 "value": "All Opportunity Names",
+                                 "Id": "0"
+                             })
+
+                             
+                             angular.forEach(selectedText, function(selectedvalue, b) {
+
+                                 angular.forEach($scope.projectdetails, function(a, b) {
+                                     if (a.customer == selectedvalue) {
+                                         angular.forEach(a.project, function(an, b) {
+                                             projects1.push({
+                                                 "value": an.name,
+                                                 "Id": an.Id
+                                             });
+                                         })
+                                     }
+                                 })
+
+                                  
+                             })
+
+                             ab = selectedText[0];
+                             for (var i = 1; i < selectedText.length; i++) {
+                                ab = ab + "," + selectedText[i];
+                             }
+                            $(".Accountnamedsp").val(ab);
+
+                             
+                          /*var lengthforarray = 0;
                          if (ab == "None") {
                              lengthforarray = $(".accountname option").length;
 
@@ -661,21 +725,21 @@ yearChange=false;
 
                              })
 
-                         }
-                         $(".oppSel").val("None");
-                         $(".fltResourceSelect").val("None");
-                         var myDataSet = $scope.filterdata.Customers;
-                         startdateobj = $scope.dataval;
-                         var countforfilterdata = 0;
+                         }*/
+                         
 
-                         if ($(".accountname option").length == lengthforarray) {
+                         //var myDataSet = $scope.filterdata.Customers;
+                         startdateobj = $scope.dataval;
+                         //var countforfilterdata = 0;
+
+                         /*if ($(".accountname option").length == lengthforarray) {
                              angular.forEach(ab, function(selectedvalueforcount, b) {
                                  if (selectedvalueforcount == "None") {
                                      countforfilterdata = 1;
                                  }
                              })
-                         }
-                         var projects1 = new Array();
+                         }*/
+                         /*var projects1 = new Array();
                          if (countforfilterdata == 1) {
                             projects1.push({
                                  "value": "None",
@@ -723,7 +787,7 @@ yearChange=false;
 
                          }
 
-
+*/
 
                          $scope.projectsselect = projects1;
 
@@ -868,6 +932,68 @@ yearChange=false;
                  });
 
                  $scope.accountnamedsply = function(dsplydata) {
+                    //dsplaydata = Array
+                    //FALCO ADDED
+
+                        $(".oppSel").val("None");
+                         $(".oprid").val("none");
+                         $(".fltResourceSelect").val("None");
+                         $(".flt_res_id").val("none");
+
+                         var selectedText = new Array();
+
+                        if (dsplydata[0] == "All Account Names") {
+                            $(".accountname option").each(function(id, element) {
+                                $(element).attr("selected", true);
+                                 if ($(element).val() != "All Account Names") {
+                                    selectedText.push($(element).val());
+                                 }
+                            })
+                        } else {
+                            $(".accountname option").each(function(id, element) {
+                                $(element).attr("selected", false);
+                                for (var i = 0; i < dsplydata.length; i++) {
+                                    if ($(element).val() == dsplydata[i]) {
+                                        $(element).attr("selected", true);
+                                        selectedText.push($(element).val());
+                                    }
+                                }
+                            })
+                        }
+                        var projects1 = new Array();
+                        projects1.push({
+                                 "value": "None",
+                                 "Id": "none"
+                             })
+                             projects1.push({
+                                 "value": "All Opportunity Names",
+                                 "Id": "0"
+                             })
+
+                             
+                             angular.forEach(selectedText, function(selectedvalue, b) {
+                                 angular.forEach($scope.projectdetails, function(a, b) {
+                                     if (a.customer == selectedvalue) {
+                                         angular.forEach(a.project, function(an, b) {
+                                             projects1.push({
+                                                 "value": an.name,
+                                                 "Id": an.Id
+                                             });
+                                         })
+                                     }
+                                 })
+
+                                  
+                             })
+
+                             dsplydata = selectedText[0];
+                             for (var i = 1; i < selectedText.length; i++) {
+                                dsplydata = dsplydata + "," + selectedText[i];
+                             }
+                     
+
+                         startdateobj = $scope.dataval;
+                         $scope.projectsselect = projects1;
 
                      $(".Accountnamedsp").val(dsplydata);
                      sessionStorage.setItem("accname", dsplydata);
@@ -1251,7 +1377,7 @@ yearChange=false;
                  }
 
                  $scope.oppselectedvalue = function() {
-
+                        
 
 
                          var a = $(".oprid").val();
@@ -1390,9 +1516,12 @@ yearChange=false;
 												     for (var key1 in lclplnd) {
 												         var obj = {};
 												         if (parseFloat(key) == parseFloat(key1)) {
-												             holidays = parseFloat(mnthtolmt - resources.plndperq[key-1][key]) - parseFloat(lclplnd[key1]);
-												             obj[key] = roundNumber((parseFloat(lclplnd[key1]) * 100) / parseFloat(mnthtolmt - holidays),1) + '%';
-												             resources.planned_utilization.push(obj);
+                                                            // FALCO ADDED
+                                                            if (resources.plndperq[key-1] != undefined) {
+    												             holidays = parseFloat(mnthtolmt - resources.plndperq[key-1][key]) - parseFloat(lclplnd[key1]);
+    												             obj[key] = roundNumber((parseFloat(lclplnd[key1]) * 100) / parseFloat(mnthtolmt - holidays),1) + '%';
+    												             resources.planned_utilization.push(obj);
+                                                             }
 												         }
 
 												     }
@@ -2267,6 +2396,23 @@ yearChange=false;
                                     $(".msg").attr("style", "display:none");
 
                                  } else {
+
+                                     var item = sessionStorage.getItem("oppname");
+            sessionStorage.setItem("oppname", $(".oprid").val($scope.oppvalue = item===null?'none':item).val());
+
+            item = sessionStorage.getItem("oppnamevalue");
+            sessionStorage.setItem("oppnamevalue", $(".oppSel").val($scope.oppnamevalue = item===null?'None':item).val());
+        
+            item = sessionStorage.getItem("resname");
+            sessionStorage.setItem("resname", $(".flt_res_id").val($scope.resvalue = item===null?'none':item).val());
+            
+            item = sessionStorage.getItem("resnamevalue");
+            sessionStorage.setItem("resnamevalue", $(".fltResourceSelect").val($scope.resnamevalue = item===null?'None':item).val());
+                                        
+
+                                     $scope.$emit('ngRepeatFinishedforselectbox');
+
+
                                      $(".imgldr").attr("style", "display:none;");
                                      $(".appendtxt").text(" ");
                                      $(".appendtxt").append("No results are available for the filtering.")
@@ -2622,8 +2768,11 @@ yearChange=false;
                      $(".cancelfun").removeClass("cancelfun");
                      $(".Projects ").click();
                      $(".Accountnamedsp").val("All Account Names ");
-                     $(".oppSel").val("None");
+/*                     $(".oppSel").val("None");
+                     $(".oprid").val("none");
                      $(".fltResourceSelect").val("None");
+                     $(".flt_res_id").val("none");
+*/
                  });
                  $(document).on("click", ".ui-datepicker-close", function() {
                     $(".hideInput").show();
@@ -2704,20 +2853,38 @@ yearChange=false;
                                      $(".blurbackgrund,.imgldr").attr("style", "display:none");
 
                                  } else {
+                                 
                                      $scope.noresults = 1;
                                      var datevalue = sessionStorage.getItem("datepickerval");
                                      var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
                                      var spltdatevalue = datevalue.split(" ");
 
-                                     $(".strtdateinput").val(monthNames[parseInt(spltdatevalue[0]) - 1] + " " + spltdatevalue[1]);
-                                     $(".appendtxt").text(" ");
-                                     $(".appendtxt").append("No results are available for the filtering.")
-                                     $(".popup,.blurbackgrund").attr("style", "display:block");
-                                     $(".appndbtns").html("<input type='button' value='OK' class='cancelbtn'>");
-                                     $(".wrapperwidth").attr("style", "display:none;");
 
-                                     $(".blurbackgrund,.imgldr").attr("style", "display:none");
-                                     $(".blurbackgrund,.msg").attr("style", "display:block;");
+            var item = sessionStorage.getItem("oppname");
+            sessionStorage.setItem("oppname", $(".oprid").val($scope.oppvalue = item===null?'none':item).val());
+
+            item = sessionStorage.getItem("oppnamevalue");
+            sessionStorage.setItem("oppnamevalue", $(".oppSel").val($scope.oppnamevalue = item===null?'None':item).val());
+        
+            item = sessionStorage.getItem("resname");
+            sessionStorage.setItem("resname", $(".flt_res_id").val($scope.resvalue = item===null?'none':item).val());
+            
+            item = sessionStorage.getItem("resnamevalue");
+            sessionStorage.setItem("resnamevalue", $(".fltResourceSelect").val($scope.resnamevalue = item===null?'None':item).val());
+                                        
+                                       $scope.$emit('ngRepeatFinishedforselectbox');
+
+                                         /*$(".appendtxt").text(" ");
+                                         $(".appendtxt").append("No results are available for the filtering.")
+                                         $(".popup,.blurbackgrund").attr("style", "display:block");
+                                         $(".appndbtns").html("<input type='button' value='OK' class='cancelbtn'>");
+                                           */                                      
+                                     
+
+                                        $(".strtdateinput").val(monthNames[parseInt(spltdatevalue[0]) - 1] + " " + spltdatevalue[1]);
+                                        $(".wrapperwidth").attr("style", "display:none;");
+                                        $(".blurbackgrund,.imgldr").attr("style", "display:none");
+                                        $(".msg").attr("style", "display:block;");
                                  }
                              }
                          }, {
@@ -2888,6 +3055,7 @@ yearChange=false;
 													});
 													$scope.$apply();
 													$scope.plannedorqa();
+
                                                  }
 
                                              });
@@ -3107,7 +3275,8 @@ yearChange=false;
                 <dd>
                     <div class="mutliSelect accountname">
                    <!-- data-ng-change="projects(projectsSelecteddata)"-->
-                           <select class="Customers " ng-click="accountnamedsply(blisterPackTemplateSelected);" data-ng-model="blisterPackTemplateSelected" data-ng-change="Customersfilter(blisterPackTemplateSelected)"  multiple="true">
+                           <select class="Customers " ng-change="accountnamedsply(blisterPackTemplateSelected);" data-ng-model="blisterPackTemplateSelected"   multiple="true">
+                           <!-- data-ng-change="Customersfilter(blisterPackTemplateSelected)"-->
              <option ng-repeat="c in persons" value="{{c.value}}" ng-selected="model.value == c.Id">{{c.value}}</option>
                                  </select>
 
@@ -3192,28 +3361,30 @@ yearChange=false;
                 <div class="custdisplay">
                     <div data-ng-repeat="dataval in dataval.Customers" class="custvalues" on-finish-render="ngRepeatFinished" >
                         <div data-ng-repeat="dataval1 in dataval.Projects" >
-                            <table  class="custdetailview" >
-                                <tbody class="opp_weekdata">
-                                <tr ><td  style="text-align:left;width:5px;padding-top:10px;">Acc:</td><td style="text-align:left;padding-top:10px" class="customername"><a ng-href="/{{dataval.AccountId}}" target="_blank">{{dataval.AccountName}}</a></td></tr>
-                                <tr><td  style="text-align:left;vertical-align:top;">Opp:</td><td  style="text-align:left;vertical-align: top;" class="prjname"><a ng-href="/{{dataval1.OpportunityId}}" target="_blank">{{dataval1.OpportunityName}}</a></td></tr>
-                                <tr><td  style="text-align:left;">PM:</td><td  style="text-align:left;"><a ng-href="/{{dataval1.ProjectManagerId}}" target="_blank">{{dataval1.OurProjectManager}}</a></td></tr>
-                                <tr><td> </td><td> <p style='position:relative;left:-32px;margin:0px;padding:0px;'>
-                                <a ng-href="/apex/OpportunityLineItemsEdit?id={{dataval1.OpportunityId}}" target="_blank" style="text-decoration:none;"><input type="button" style="height:20px;width:87px;"  value="Change Quantity" class="btn"/></a> <input type="button" style="height:20px;width:87px;margin-right:5px;" value="Project Health"  class="btn"/><select class="projecthealthoption" data-ng-model="projecthealth1"  style="min-height:20px !important" ng-change="projecthealth(dataval1.OpportunityId,projecthealth1);"> </select></p></td><td> </td></tr> </tbody>
-                            </table>
-                            <div  class="Resourcesection" >
-                                <div >
-                                    <table class="table1 opp_weekdata">
-                                        <tr>
-                                            <thead>
-                                                <th >Resource<br/> Name</th><th >Product</th><th >Sold<br></br> Days</th><th>Planned <br></br>Days</th><th>Un-<br></br>Planned<br></br> Days</th>
-                                            </thead>
-                                        </tr>
-                                        <tbody class="totalscalc">
-                                            <tr data-ng-repeat="dataval2 in dataval1.Resources">
-                                                <td class="resource" style='padding:0 5px !important' >{{dataval2.ResourceName}}</td><td    style='padding:0 5px !important'>{{dataval2.Product}}</td>    <td class="noplan"  style='padding:0 5px !important'>{{dataval2.PlannedDays}}</td><td style='padding:0 5px !important'>{{dataval2.SoldDays}}</td> <td class="unplannedhrs" style='padding:0 5px !important'>{{dataval2.LastModifiedDate}}</td><td  style='padding:0 5px !important'>{{dataval2.PlannedDays}}</td> <td  class="unplannedcal" style='padding:0 5px !important'>{{dataval2.unplanne }}</td>
+                            <div data-ng-if="dataval1.Resources.length > 0">
+                                <table  class="custdetailview" >
+                                    <tbody class="opp_weekdata">
+                                    <tr ><td  style="text-align:left;width:5px;padding-top:10px;">Acc:</td><td style="text-align:left;padding-top:10px" class="customername"><a ng-href="/{{dataval.AccountId}}" target="_blank">{{dataval.AccountName}}</a></td></tr>
+                                    <tr><td  style="text-align:left;vertical-align:top;">Opp:</td><td  style="text-align:left;vertical-align: top;" class="prjname"><a ng-href="/{{dataval1.OpportunityId}}" target="_blank">{{dataval1.OpportunityName}}</a></td></tr>
+                                    <tr><td  style="text-align:left;">PM:</td><td  style="text-align:left;"><a ng-href="/{{dataval1.ProjectManagerId}}" target="_blank">{{dataval1.OurProjectManager}}</a></td></tr>
+                                    <tr><td> </td><td> <p style='position:relative;left:-32px;margin:0px;padding:0px;'>
+                                    <a ng-href="/apex/OpportunityLineItemsEdit?id={{dataval1.OpportunityId}}" target="_blank" style="text-decoration:none;"><input type="button" style="height:20px;width:87px;"  value="Change Quantity" class="btn"/></a> <input type="button" style="height:20px;width:87px;margin-right:5px;" value="Project Health"  class="btn"/><select class="projecthealthoption" data-ng-model="projecthealth1"  style="min-height:20px !important" ng-change="projecthealth(dataval1.OpportunityId,projecthealth1);"> </select></p></td><td> </td></tr> </tbody>
+                                </table>
+                                <div  class="Resourcesection" >
+                                    <div >
+                                        <table class="table1 opp_weekdata">
+                                            <tr>
+                                                <thead>
+                                                    <th >Resource<br/> Name</th><th >Product</th><th >Sold<br></br> Days</th><th>Planned <br></br>Days</th><th>Un-<br></br>Planned<br></br> Days</th>
+                                                </thead>
                                             </tr>
-                                        </tbody>
-                                    </table>
+                                            <tbody class="totalscalc">
+                                                <tr data-ng-repeat="dataval2 in dataval1.Resources">
+                                                    <td class="resource" style='padding:0 5px !important' >{{dataval2.ResourceName}}</td><td    style='padding:0 5px !important'>{{dataval2.Product}}</td>    <td class="noplan"  style='padding:0 5px !important'>{{dataval2.PlannedDays}}</td><td style='padding:0 5px !important'>{{dataval2.SoldDays}}</td> <td class="unplannedhrs" style='padding:0 5px !important'>{{dataval2.LastModifiedDate}}</td><td  style='padding:0 5px !important'>{{dataval2.PlannedDays}}</td> <td  class="unplannedcal" style='padding:0 5px !important'>{{dataval2.unplanne }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -3244,31 +3415,33 @@ yearChange=false;
                     <div class="weekpresencedata">
                         <div data-ng-repeat="dataval in dataval.Customers" >
                             <div data-ng-repeat="dataval1 in dataval.Projects" class="aligntable opp_weekdata">
-                                       <table  class="custdetailview hiddentable" >
-                                <tr ><td  style="text-align:left;width:5px;padding-top:10px;">Acc:</td><td style="text-align:left;padding-top:10px" class="customername"><a ng-href="/{{dataval.AccountId}}" target="_blank">{{dataval.AccountName}}</a></td></tr>
-                                <tr><td  style="text-align:left;vertical-align:top;">Opp:</td><td  style="text-align:left;vertical-align: top;" class="prjname"><a ng-href="/{{dataval1.OpportunityId}}" target="_blank">{{dataval1.OpportunityName}}</a></td></tr>
-                                <tr><td  style="text-align:left;">PM:</td><td  style="text-align:left;"><a ng-href="/{{dataval1.ProjectManagerId}}" target="_blank">{{dataval1.OurProjectManager}}</a></td></tr>
-                                <tr><td> </td><td> <p style='position:relative;left:-32px;margin:0px;padding:0px;'>
-                                <a ng-href="/apex/OpportunityLineItemsEdit?id={{dataval1.OpportunityId}}" target="_blank" style="text-decoration:none;"><input type="button" style="height:20px;width:87px;"  value="Change Quantity" class="btn"/></a> <input type="button" style="height:20px;width:87px;" value="Project Health"  class="btn"/><select class="projecthealthoption" data-ng-model="projecthealth1"  style="min-height:20px !important" ng-change="projecthealth(dataval1.OpportunityId,projecthealth1);"> </select></p></td><td> </td></tr>
-                            </table>
-                                <div class="table2 opp_weekdata" >
-                                    <table >
-                                        <tr>
-                                            <thead>
-                                                <tr> <th style="padding:1px 5px !important;" class="fxdwidth">Sales<br></br> Price( &euro;)</th><th style="padding:1px 10px !important;" class="fxdwidth">Sold<br></br> Rev.( &euro;)</th><th style="padding:1px 7px !important;" class="fxdwidth">Planned<br></br> Rev.( &euro;)</th><th style="padding:1px 20px !important;" >Latest<br></br> Mod.</th></tr>
-                                            </thead>
-                                        </tr>
-                                        <tbody class="inputbdy">
-                                            <tr class="tbody1 dsplyhde" data-ng-repeat="dataval2 in dataval1.Resources" template="{{mainPage}}" compile-data="x" >
-                                                <!--<td template="{{mainPage}}" compile-data="x"> </td> -->
+                                <div data-ng-if="dataval1.Resources.length > 0">
+                                           <table  class="custdetailview hiddentable" >
+                                    <tr ><td  style="text-align:left;width:5px;padding-top:10px;">Acc:</td><td style="text-align:left;padding-top:10px" class="customername"><a ng-href="/{{dataval.AccountId}}" target="_blank">{{dataval.AccountName}}</a></td></tr>
+                                    <tr><td  style="text-align:left;vertical-align:top;">Opp:</td><td  style="text-align:left;vertical-align: top;" class="prjname"><a ng-href="/{{dataval1.OpportunityId}}" target="_blank">{{dataval1.OpportunityName}}</a></td></tr>
+                                    <tr><td  style="text-align:left;">PM:</td><td  style="text-align:left;"><a ng-href="/{{dataval1.ProjectManagerId}}" target="_blank">{{dataval1.OurProjectManager}}</a></td></tr>
+                                    <tr><td> </td><td> <p style='position:relative;left:-32px;margin:0px;padding:0px;'>
+                                    <a ng-href="/apex/OpportunityLineItemsEdit?id={{dataval1.OpportunityId}}" target="_blank" style="text-decoration:none;"><input type="button" style="height:20px;width:87px;"  value="Change Quantity" class="btn"/></a> <input type="button" style="height:20px;width:87px;" value="Project Health"  class="btn"/><select class="projecthealthoption" data-ng-model="projecthealth1"  style="min-height:20px !important" ng-change="projecthealth(dataval1.OpportunityId,projecthealth1);"> </select></p></td><td> </td></tr>
+                                </table>
+                                    <div class="table2 opp_weekdata" >
+                                        <table >
+                                            <tr>
+                                                <thead>
+                                                    <tr> <th style="padding:1px 5px !important;" class="fxdwidth">Sales<br></br> Price( &euro;)</th><th style="padding:1px 10px !important;" class="fxdwidth">Sold<br></br> Rev.( &euro;)</th><th style="padding:1px 7px !important;" class="fxdwidth">Planned<br></br> Rev.( &euro;)</th><th style="padding:1px 20px !important;" >Latest<br></br> Mod.</th></tr>
+                                                </thead>
                                             </tr>
-                                            <tr class="tbody1 dsplyhde" data-ng-repeat="dataval2 in dataval1.Resources" template="{{mainPagechange}}" compile-data="x" >
-                                                <!--<td template="{{mainPage}}" compile-data="x"> </td> -->
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                            <tbody class="inputbdy">
+                                                <tr class="tbody1 dsplyhde" data-ng-repeat="dataval2 in dataval1.Resources" template="{{mainPage}}" compile-data="x" >
+                                                    <!--<td template="{{mainPage}}" compile-data="x"> </td> -->
+                                                </tr>
+                                                <tr class="tbody1 dsplyhde" data-ng-repeat="dataval2 in dataval1.Resources" template="{{mainPagechange}}" compile-data="x" >
+                                                    <!--<td template="{{mainPage}}" compile-data="x"> </td> -->
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="clearfix" />
                                 </div>
-                                <div class="clearfix" />
                             </div>
                         </div>
                         <div class="clearfix" />
