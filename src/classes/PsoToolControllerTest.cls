@@ -1,13 +1,13 @@
 @isTest
 private class PsoToolControllerTest {
 
-    @isTest static void testGetInstanceReturnsTheSameObject() {
+    @isTest static void testGetInstanceReturnsDifferentObjects() {
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
             Test.startTest();
                 PsoToolController new_instance = PsoToolController.getInstance();
             Test.stopTest();
-            System.assertEquals(PsoToolController.getInstance(), new_instance, 'Singleton should return the same instance');
+            System.assertNotEquals(PsoToolController.getInstance(), new_instance, 'Method should not return the same instance');
             System.assertNotEquals(null, new_instance.StartDate, 'StartDate should be set');
             System.assertNotEquals(null, new_instance.EndDate, 'EndDate should be set');
         }
@@ -610,6 +610,10 @@ private class PsoToolControllerTest {
             System.assertEquals(setup_data.ActualNumbers.Revenue__c + '/' + setup_data.PlannedNumbers.Revenue__c, stats.get(0).Revenue);
             System.assertEquals(setup_data.PlannedNumbers.Start_Date__c, Date.parse(stats.get(0).StartDate));
             System.assertEquals(setup_data.PlannedNumbers.End_Date__c, Date.parse(stats.get(0).EndDate));
+            System.assertEquals(setup_data.PlannedNumbers.Days__c, stats.get(0).PlannedDays);
+            System.assertEquals(setup_data.ActualNumbers.Days__c, stats.get(0).ActualDays);
+            System.assertEquals(setup_data.PlannedNumbers.Revenue__c, stats.get(0).PlannedRevenue);
+            System.assertEquals(setup_data.ActualNumbers.Revenue__c, stats.get(0).ActualRevenue);
         }
     }
 
@@ -756,9 +760,8 @@ private class PsoToolControllerTest {
             setup_data.createTestData();
             List<Id> opportunities_to_add = new List<Id>();
             opportunities_to_add.add(setup_data.FirstOpportunity.Id);
-            PsoToolController.getInstance().setSelectedOpportunities(opportunities_to_add);
             Test.startTest();
-                List<Id> opportunities_to_show = PsoToolController.getInstance().getOpportunitiesToShow();
+                List<Id> opportunities_to_show = PsoToolController.getInstance().setSelectedOpportunities(opportunities_to_add).getOpportunitiesToShow();
             Test.stopTest();
             System.assertEquals(1, opportunities_to_show.size());
             System.assertEquals(setup_data.FirstOpportunity.Id, opportunities_to_show.get(0));
@@ -780,12 +783,10 @@ private class PsoToolControllerTest {
     @isTest static void testGetFilterValuesReturnsTheListWith2AccountsEachOfWhichHasAProject() {
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
-            PsoToolController new_instance = PsoToolController.getInstance();
-            new_instance.startDate = Date.newInstance(2015, 1, 1);
-            new_instance.endDate = Date.newInstance(2015, 3, 31);
+            Date new_years_eve = Date.newInstance(2015, 1, 1);
             setup_data.createTestData();
             Test.startTest();
-                Object data_set = PsoToolController.getInstance().getFilterValues();
+                Object data_set = PsoToolController.getInstance().setStartDate(new_years_eve).getFilterValues();
             Test.stopTest();
             System.assert(data_set instanceof PsoToolController.FilterValues, 'Method should return an instance of FilterValues class');
             PsoToolController.FilterValues data_set_object = (PsoToolController.FilterValues)data_set;
@@ -800,12 +801,10 @@ private class PsoToolControllerTest {
     @isTest static void testgetFilterValuesReturnsJson() {
         SetupDataClass setup_data = new SetupDataClass();
         System.runAs(setup_data.TestUser) {
-            PsoToolController new_instance = PsoToolController.getInstance();
-            new_instance.startDate = Date.newInstance(2015, 1, 1);
-            new_instance.endDate = Date.newInstance(2015, 3, 31);
+            Date new_years_eve = Date.newInstance(2015, 1, 1);
             setup_data.createTestData();
             Test.startTest();
-                String json = PsoToolController.getInstance().getFilterValues().JSON();
+                String json = PsoToolController.getInstance().setStartDate(new_years_eve).getFilterValues().JSON();
             Test.stopTest();
             System.assertNotEquals(null, json);
         }
@@ -834,8 +833,8 @@ private class PsoToolControllerTest {
         resource5.Title = 'Developer';
         resource5.LastName = 'Batman';
         PsoToolController new_instance = PsoToolController.getInstance();
-        new_instance.startDate = Date.newInstance(2015, 1, 1);
-        new_instance.endDate = Date.newInstance(2015, 2, 28);
+        new_instance.StartDate = Date.newInstance(2015, 1, 1);
+        new_instance.EndDate = Date.newInstance(2015, 2, 28);
         new_instance.ShowAllOpportunities = true;
         new_instance.ShowAllContacts = true;
         PsoToolController.PsoToolDataSetWrapper wrapper = new_instance.getDataSet();
@@ -1202,10 +1201,12 @@ private class PsoToolControllerTest {
             TestContact = new Contact();
             TestContact.FirstName = testUser.FirstName;
             TestContact.LastName = testUser.LastName;
+            TestContact.Inactive__c = false;
             insert TestContact;
             SecondTestContact = new Contact();
             SecondTestContact.FirstName = 'Michel';
             SecondTestContact.LastName = 'Yakovtsov';
+            SecondTestContact.Inactive__c = false;
             insert SecondTestContact;
         }
 
