@@ -400,11 +400,11 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 	};
 
 	/* functions for the staffing table */
-	$scope.$on('updateStaffing', function (event, selectedOpportunities, selectedResources, startMonth) {
+	$scope.$on('updateStaffing', function (event, selectedOpportunities, selectedResources, startMonth, selectedRelatedResources) {
 		$scope.status.loading = true;
 		$scope.status.loaded = false;
 
-		sfEndpoint.getProjectStaffing(selectedOpportunities, selectedResources, startMonth).then(function (data) {
+		sfEndpoint.getProjectStaffing(selectedOpportunities, selectedResources, startMonth, selectedRelatedResources).then(function (data) {
 			console.log('received data for project staffing:', data);
 
 			/* we need to equalize the time to be able to detect today */

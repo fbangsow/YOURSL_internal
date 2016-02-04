@@ -8,28 +8,21 @@ public with sharing class PsoTable2Controller {
 	public static String getProjectStaffing(List<String> opportunityIds, List<String> resourceIds, Datetime startMonth) {
 		PsoToolController instance = PsoToolController.getInstance();
 
-		Boolean hideOpportunities = !opportunityIds.isEmpty() && opportunityIds[0] == '__none';
-		Boolean hideResources = !resourceIds.isEmpty() && resourceIds[0] == '__none';
-
-		if (!hideOpportunities) {
-			if (opportunityIds.isEmpty()) {
-				instance.showAllOpportunities();
-			} else {
-				instance.setSelectedOpportunities(opportunityIds);
-			}
+		if (opportunityIds[0] != '__none') {
+			instance.setSelectedOpportunities(opportunityIds);
 		}
 
-		if (!hideResources) {
-			if (resourceIds.isEmpty()) {
-				instance.showAllContacts();
-			} else {
-				instance.setSelectedContacts(resourceIds);
-			}
+		if (resourceIds[0] != '__none' && resourceIds[0] != '__related') {
+			instance.setSelectedContacts(resourceIds);
 		}
 
 		instance.setStartDate(startMonth.date());
 
 		PsoToolController.PsoToolDataSetWrapper data = instance.getDataSet();
+
+		if (resourceIds[0] == '__none') {
+			data.Resources = null;
+		}
 
 		data.StartDate = formatDate(data.StartDate);
 		data.EndDate = formatDate(data.EndDate);
