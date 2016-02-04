@@ -21,9 +21,9 @@ public with sharing class PsoTable2Controller {
 
 		if (!hideResources) {
 			if (resourceIds.isEmpty()) {
-				instance.setSelectedContacts(resourceIds);
-			} else {
 				instance.showAllContacts();
+			} else {
+				instance.setSelectedContacts(resourceIds);
 			}
 		}
 
