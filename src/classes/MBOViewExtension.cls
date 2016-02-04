@@ -15,7 +15,7 @@ public without sharing class MBOViewExtension {
         FROM Ziel__c WHERE Contact__c =: SubjectUser.Contact_ID__c AND MBO_Quartal__c LIKE :current_year_like_condition];
         CurrentGoals = getGoals(current_mbos);
         if(CurrentGoals.MBOs.isEmpty())
-            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.INFO, 'No MBO\'s listed yet.'));
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.INFO, 'No MBO\'s assigned yet.'));
     }
 
     private SetOfMBO getGoals(List<Ziel__c> current_mbos){
@@ -55,7 +55,10 @@ public without sharing class MBOViewExtension {
             ShortDescription = short_description;
             LongDescription = long_description;
             WeightOfMBO = weight_of_mbo;
-            PercentsAchieved = percents_achieved;
+            if(percents_achieved != null)
+                PercentsAchieved = percents_achieved;
+            else
+                PercentsAchieved = 0;
         }
     }
 

@@ -24,7 +24,7 @@ private class MBOViewExtensionTest {
             System.assertEquals(setup_data.MBOs.MBO_4_Kurzbeschreibung__c, setup_data.ClassUnderTest.CurrentGoals.MBOs.get(3).ShortDescription);
             System.assertEquals(setup_data.MBOs.MBO_4_Beschreibung__c, setup_data.ClassUnderTest.CurrentGoals.MBOs.get(3).LongDescription);
             System.assertEquals(setup_data.MBOs.MBO_4_Gewichtung_in_Prozent__c, setup_data.ClassUnderTest.CurrentGoals.MBOs.get(3).WeightOfMBO);
-            System.assertEquals(setup_data.MBOs.MBO_4_Ergebnis__c, setup_data.ClassUnderTest.CurrentGoals.MBOs.get(3).PercentsAchieved);
+            System.assertEquals(0, setup_data.ClassUnderTest.CurrentGoals.MBOs.get(3).PercentsAchieved);
         }
     }
 
@@ -90,7 +90,6 @@ private class MBOViewExtensionTest {
             MBOs.MBO_4_Kurzbeschreibung__c = 'Certification';
             MBOs.MBO_4_Beschreibung__c = 'Get the App Platform certification';
             MBOs.MBO_4_Gewichtung_in_Prozent__c = 25;
-            MBOs.MBO_4_Ergebnis__c = 33;
             MBOs.Contact__c = UserContact.Id;
             insert MBOs;
         }
