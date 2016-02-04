@@ -1,10 +1,162 @@
-<apex:page sidebar="false" showHeader="false">
-  <br/>
-  <h1>OKR - Objectives and Key Results</h1>
-  <br/><br/>
-  In the future you will find here the company, team and your personal objectives and key results.
-  <br/>This feature is under construction.
-  <br/><br/>
-  <img id="theImage" src="https://c.eu4.content.force.com/servlet/servlet.ImageServer?id=01557000003vfkL&oid=00D3E000000CnAR&lastMod=1448284180000"/>
+<apex:page showHeader="false" standardController="User" extensions="MBOViewExtension">
+    <style>
+        body,html{
+            margin:10px;
+        }
 
+        :focus {
+            outline: 0;
+        }
+
+        table.list, table.list  tr td h1{
+            margin-bottom:20px;
+        }
+
+        .list td, .list th{
+            border-bottom: 0px !important;
+        }
+
+        .list tr td h1{
+            font-size:20px;
+            display: block;
+        }
+
+        tr.headerRow th, body .pbBody table.list tr.dataRow td{
+            padding: 7px;
+        }
+         td.desc {padding-bottom:10px;}
+
+        #slider {
+            width: 90%;
+            height: 14px;
+            position: relative;
+            margin: px auto;
+            background: rgba(221, 221, 221, 0.26);
+            -webkit-border-radius: 10px;
+            -moz-border-radius: 10px;
+            border-radius: 10px;
+        }
+
+        #slider .bar {
+            width: 98%;
+            height: 5px;
+            background: rgba(51, 51, 51, 0.24);
+            position: relative;
+            top: 3px;
+            left: 4px;
+            -webkit-border-radius: 40px;
+            -moz-border-radius: 40px;
+            border-radius: 40px;
+        }
+
+        #slider .highlight {
+            height: 2px;
+            position: absolute;
+            width: 100%;
+            top: 6px;
+            left: 6px;
+            -webkit-border-radius: 40px;
+            -moz-border-radius: 40px;
+            border-radius: 40px;
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            background-color: red;
+            height: 2px;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            outline: 0;
+            position: relative;
+            top: -1px;
+            z-index: 1;
+            width: 15px;
+            height: 15px;
+            cursor: pointer;
+            -webkit-box-shadow: -2px 4px 5px 1px rgba(0,0,0,0.13);
+            -moz-box-shadow: -2px 4px 5px 1px rgba(0,0,0,0.13);
+            box-shadow: -2px 4px 5px 1px rgba(0,0,0,0.13);
+            -webkit-border-radius: 10px;
+            -moz-border-radius: 10px;
+            border-radius: 10px;
+            background:#fff;
+            border:1px solid rgba(221, 221, 221, 0.26);
+        }
+
+        input[type="range"]:hover  #rangevalue,input[type="range"]:active  #rangevalue,
+        input[type="range"]:hover  #rangevalue1,input[type="range"]:active  #rangevalue1,
+        input[type="range"]:hover  #rangevalue2,input[type="range"]:active  #rangevalue2,
+        input[type="range"]:hover  #rangevalue3,input[type="range"]:active  #rangevalue3{
+            -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+            filter: alpha(opacity=100);
+            opacity: 1;
+        }
+
+        #rangevalue , #rangevalue1 , #rangevalue2 , #rangevalue3 {
+            color: white;
+            font-size: 10px;
+            text-align: center;
+            font-family:  Arial, sans-serif;
+            display: block;
+            color: #fff;
+            margin: 20px 0;
+            position: relative;
+            left: 102%;
+            padding: 4px 8px;
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#236fbd ), color-stop(100%,#236fbd));
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+            width: 30px;
+            -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+            filter: alpha(opacity=0);
+            opacity: 1;
+            -webkit-transition: all 0.5s ease;
+            -moz-transition: all 0.5s ease;
+            -o-transition: all 0.5s ease;
+            -ms-transition: all 0.5s ease;
+            transition: all 0.5s ease;
+            top: -32px;
+        }
+    </style>
+    <apex:pageMessages />
+    <apex:outputPanel rendered="{!CurrentGoals.MBOs.size>0}">
+        <table class="list " width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+                <td>
+                    <h1>Objectives for {!CurrentGoals.CurrentQuarter}</h1>
+                </td>
+            </tr>
+            <apex:variable value="{!1}" var="ObjectiveNumber"/>
+            <apex:repeat value="{!CurrentGoals.MBOs}" var="MBO">
+                <tr class="headerRow" >
+                    <th colspan="2">Objective {!ObjectiveNumber}</th>
+                </tr>
+                <tr>
+                    <td>{!MBO.ShortDescription}</td>
+                </tr>
+                <tr>
+                    <td class="desc">{!MBO.LongDescription}</td>
+                </tr>
+                <tr>
+                    <td>
+                        <div id="slider">
+                            <input class="bar" type="range" id="mbo1" value="{!MBO.PercentsAchieved}" onchange="rangevalue1.value=value"  readonly="true" />
+                            <span class="highlight"></span>
+                            <output id="rangevalue1">{!MBO.PercentsAchieved} %</output>
+                        </div>
+                    </td>
+                </tr>
+                <apex:variable var="ObjectiveNumber" value="{!ObjectiveNumber + 1}"/>
+            </apex:repeat>
+        </table>
+    </apex:outputPanel>
+    <apex:form >
+        <apex:outputPanel id="InputHiddenFields">
+            <apex:inputhidden value="{!User.Contact_ID__c}" />
+        </apex:outputPanel>
+    </apex:form>
 </apex:page>
