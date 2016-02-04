@@ -1,58 +1,58 @@
 <!--Company Name: YOUR SL
-                Author: Phani,Anudeep
-                Page Name: PSOTable
-                Description: Resource allocation utility for internal project managment
-            Versions:
-                1.2 Added planned and unplanned functionality on date 01/03/2015
-                1.1 Added filtering functionality on date 02/26/2015
-                1.0 Intial version created on date 02/22/2015
-            -->
-            <!-- start of the page -->
+< Author: Phani,Anudeep
+< Page Name: PSOTable
+< Description: Resource allocation utility for internal project managment
+< Versions:
+< 1.2 Added planned and unplanned functionality on date 01/03/2015
+< 1.1 Added filtering functionality on date 02/26/2015
+< 1.0 Intial version created on date 02/22/2015
+-->
+<!-- start of the page -->
 
-            <apex:page sidebar="false" name="PSOTable" controller="CtrPSOTable"  >
-            <apex:includeScript value="{!URLFOR($Resource.StreamingApiScripts,'jquery-1.5.1.js')}"/>
-            <apex:includeScript value="{!URLFOR($Resource.StreamingApiScripts,'json2.js')}"/>
-            <apex:includeScript value="{!URLFOR($Resource.StreamingApiScripts,'Cometd.js')}"/>
-            <apex:includeScript value="{!URLFOR($Resource.StreamingApiScripts,'jquery.cometd.js')}"/>
+<apex:page sidebar="false" name="PSOTable" controller="CtrPSOTable"  >
+<apex:includeScript value="{!URLFOR($Resource.StreamingApiScripts,'jquery-1.5.1.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.StreamingApiScripts,'json2.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.StreamingApiScripts,'Cometd.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.StreamingApiScripts,'jquery.cometd.js')}"/>
 
-            <html>
-                <head><title>PSOTable</title>
-                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+<html>
+    <head>
+        <title>PSOTable</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link rel="stylesheet"  href="{!$Resource.datepicker}"></link>
+        <link rel="stylesheet"  href="{!$Resource.PsotoolCss}"></link>
+        <script type="text/javascript" src="{!$Resource.PsoToolLibs}"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.17/jquery-ui.min.js"></script>
+        <script src="/resource/1430742754000/PsoToolMomentjs"></script>
+        <script src="/resource/1430888909000/PsoToolUnderscorejs"></script>
 
-                  <link rel="stylesheet"  href="{!$Resource.datepicker}"></link>
-                 <link rel="stylesheet"  href="{!$Resource.PsotoolCss}"></link>
-                   <script type="text/javascript" src="{!$Resource.PsoToolLibs}"></script>
-                  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.17/jquery-ui.min.js"></script>
-                  <script src="/resource/1430742754000/PsoToolMomentjs"></script>
-                  <script src="/resource/1430888909000/PsoToolUnderscorejs"></script>
 
+        <script type="text/javascript">
+            var flagnxt = 1;
+            var flag = 1;
+            var weekdays = {};
+            weekdays['1'] = "MO";
+            weekdays['2'] = "TU";
+            weekdays['3'] = "WE";
+            weekdays['4'] = "TH";
+            weekdays['5'] = "FR";
+            weekdays['6'] = "SA";
+            weekdays['7'] = "SU";
 
-                  <script type="text/javascript">
-              var flagnxt = 1;
-             var flag = 1;
-             var weekdays = {};
-             weekdays['1'] = "MO";
-             weekdays['2'] = "TU";
-             weekdays['3'] = "WE";
-             weekdays['4'] = "TH";
-             weekdays['5'] = "FR";
-             weekdays['6'] = "SA";
-             weekdays['7'] = "SU";
+            function htmlDecode(value) {
+                if (value) {
+                    return $('<div />').html(value).text();
+                } else {
+                    return '';
+                }
+            }
 
-             function htmlDecode(value) {
-                 if (value) {
-                     return $('<div />').html(value).text();
-                 } else {
-                     return '';
-                 }
-             }
+            function roundNumber(number, decimals) { // Arguments: number to round, number of decimal places
+                var newnumber = new Number(number+'').toFixed(parseInt(decimals));
+                return parseFloat(newnumber);
+            }
 
-             function roundNumber(number, decimals) { // Arguments: number to round, number of decimal places
-				var newnumber = new Number(number+'').toFixed(parseInt(decimals));
-				return parseFloat(newnumber);
-			}
-
-			function businessDays(st) {
+			function businessDays(st, workinDaysInPeriod) {
 				// Copy date
 
 				var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
@@ -67,7 +67,7 @@
 				var day;
 
 				// Count past days
-				while  (t.getMonth() == m) {
+				while (t.getMonth() == m) {
 					day = t.getDay();
 					daysPast += (day == 0 || day == 6)? 0 : 1;
 					t.setDate(--d);
@@ -78,55 +78,56 @@
 				t.setDate(t.getDate() + 1);
 				d = t.getDate();
 
-				while  (t.getMonth() == m) {
+				while (t.getMonth() == m) {
 					day = t.getDay();
 					daysToGo += (day == 0 || day == 6)? 0 : 1;
 					t.setDate(++d);
-				}
-				return daysPast+daysToGo;
+				}  
+                
+                workinDaysInPeriod[m+1] = daysPast+daysToGo;
 			}
 
-             function enableMondayAndFirst(date) {
+            function enableMondayAndFirst(date) {
+                var day = date.getDay();
+                var firstDate = date.getDate();
+                // If day == 1 then it is MOnday
+                if (day == 1 || firstDate == 1) {
+                    return [true];
+                } else {
+                    return [false];
+                }
+            }
 
-                 var day = date.getDay();
-                 var firstDate = date.getDate();
-                 // If day == 1 then it is MOnday
-                 if (day == 1 || firstDate == 1) {
+            var startdateobj;
+            var cancelclick = 1;
+            var dataforna = 0;
+            var universalobject = "";
+            var clickedfoedata = 0;
 
-                     return [true];
+            //Creating a module in angularjs
+            var app = angular.module('myApp', []);
 
-                 } else {
+            app.factory('serviceforgetaccount', ['$q', '$rootScope', function($q, $rootScope) {
+                return function() {
+                    var deferred = $q.defer();
 
-                     return [false];
-                 }
+                    Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.CtrPSOTable.getAccount}', function(result, event) {
+                        $rootScope.$apply(function() {
+                            if (event.status) {
+                                deferred.resolve(result);
+                            } else {
+                                deferred.reject(event);
+                            }
+                        });
+                    }, {
+                        buffer: true,
+                        escape: true,
+                        timeout: 30000
+                    });
+                    return deferred.promise;
+                }
+            }]);
 
-             }
-             var startdateobj;
-             var cancelclick = 1;
-             var dataforna = 0;
-             var universalobject = "";
-             var clickedfoedata = 0;
-             //Creating a module in angularjs
-             var app = angular.module('myApp', []);
-             app.factory('serviceforgetaccount', ['$q', '$rootScope', function($q, $rootScope) {
-                 return function() {
-                     var deferred = $q.defer();
-                     Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.CtrPSOTable.getAccount}', function(result, event) {
-                         $rootScope.$apply(function() {
-                             if (event.status) {
-                                 deferred.resolve(result);
-                             } else {
-                                 deferred.reject(event);
-                             }
-                         })
-                     }, {
-                         buffer: true,
-                         escape: true,
-                         timeout: 30000
-                     });
-                     return deferred.promise;
-                 }
-             }]);
              app.factory('serviceforgetaccountchange', ['$q', '$rootScope', function($q, $rootScope) {
                  return function(a, dateparam, resources) {
                      var deferred = $q.defer();
@@ -722,6 +723,7 @@ yearChange=false;
                  var myDataSet1;
                  serviceforgetaccount().then(function(result) {
 
+
                      var daatjson = htmlDecode(result);
                      var resultobject = JSON.parse(daatjson);
 
@@ -1238,22 +1240,8 @@ yearChange=false;
 
                          var a = $(".oprid").val();
                          var resources = $(".flt_res_id").val();
-                         sessionStorage.setItem("oppname", $(".oprid").val());
-                         sessionStorage.setItem("oppnamevalue", $(".oppSel").val());
-                         sessionStorage.setItem("resname", $(".flt_res_id").val());
-                         sessionStorage.setItem("resnamevalue", $(".fltResourceSelect").val());
+                        
                          var count = 1;
-
-
-                         /*if (typeof $scope.focusforchange !== "undefined") {
-                             count = a.localeCompare($scope.focusforchange);
-                             count==0?resources.localeCompare($scope.focusforchange):count;
-                             $(".clickforselect").slideToggle('fast');
-                             $(".clickforselectresource").slideToggle('fast');
-                         } else {
-                             count = 1;
-                         }*/
-
                          $scope.date = $(".strtdateinput").val();
 
                          var mnth = "";
@@ -1290,16 +1278,21 @@ yearChange=false;
                                  var resultobject = JSON.parse(daatjson);
                                  //$scope.dataOfResponse=resultobject;
 
+                                 
 
-                                 if (!("Resources" in resultobject)) {
+                                 if ($(".flt_res_id").val() == 'none') {
+                                
                                     $("#resourceTableTitle").hide();
                                     $("#lasttable").hide();
                                     $("#resourcetable").hide();
+                                    
                                  } else {
                                     $("#resourceTableTitle").show();
                                     $("#lasttable").show();
                                     $("#resourcetable").show();
                                  }
+
+
 
 
 
@@ -1345,19 +1338,17 @@ yearChange=false;
                                      $scope.calculationonload = function() {
                                          angular.forEach($scope.dataval.Resources, function(resources, i) {
                                          	var workinDaysInPeriod = {};
-                                         	workinDaysInPeriod[1] = businessDays($scope.dataval.StartDate);
-                                         	workinDaysInPeriod[2] = businessDays($scope.dataval.EndDate);
+                                            // 1 and 2 are month
+                                         	businessDays($scope.dataval.StartDate, workinDaysInPeriod);
+                                         	businessDays($scope.dataval.EndDate, workinDaysInPeriod);
 
                                          	var localplanedformont1 = $scope.localobject($scope.dataval.StartDate, $scope.dataval.Resources[i].Staffing);
-                                         	resources.plndperq = [];
+                                         	resources.plndperq = {};
                                          	angular.forEach(workinDaysInPeriod, function(mnthtolmt, key) {
 	                                             angular.forEach(localplanedformont1, function(lclplnd, plndkey) {
 	                                                 for (var key1 in lclplnd) {
-	                                                     var obj = {};
 	                                                     if (parseFloat(key) == parseFloat(key1)) {
-
-	                                                         obj[key] = (parseFloat(mnthtolmt) - parseFloat(lclplnd[key1])).toFixed(2);
-	                                                         resources.plndperq.push(obj);
+	                                       resources.plndperq[key] = (parseFloat(mnthtolmt) - parseFloat(lclplnd[key1])).toFixed(2);
 	                                                     }
 
 	                                                 }
@@ -1372,12 +1363,9 @@ yearChange=false;
 												     for (var key1 in lclplnd) {
 												         var obj = {};
 												         if (parseFloat(key) == parseFloat(key1)) {
-                                                            // FALCO ADDED
-                                                            if (resources.plndperq[key-1] != undefined) {
-    												             holidays = parseFloat(mnthtolmt - resources.plndperq[key-1][key]) - parseFloat(lclplnd[key1]);
-    												             obj[key] = roundNumber((parseFloat(lclplnd[key1]) * 100) / parseFloat(mnthtolmt - holidays),1) + '%';
-    												             resources.planned_utilization.push(obj);
-                                                             }
+												             holidays = parseFloat(mnthtolmt - resources.plndperq[key]) - parseFloat(lclplnd[key1]);
+												             obj[key] = roundNumber((parseFloat(lclplnd[key1]) * 100) / parseFloat(mnthtolmt - holidays),1) + '%';
+												             resources.planned_utilization.push(obj);
 												         }
 
 												     }
@@ -1452,15 +1440,14 @@ yearChange=false;
                                                      $scope.soldreven = euroconverter($scope.soldreven);
                                                      $scope.plnndreven = euroconverter($scope.plnndreven);
                                                      var localplanedformont1 = $scope.localobject(startdate, resurce.Staffing);
-                                                     resurce.plndperq = [];
+                                                     resurce.plndperq = {};
                                                      angular.forEach(resurce.MonthToLimitMap, function(mnthtolmt, key) {
                                                          angular.forEach(localplanedformont1, function(lclplnd, plndkey) {
                                                              for (var key1 in lclplnd) {
                                                                  var obj = {};
                                                                  if (parseFloat(key) == parseFloat(key1)) {
 
-                                                                     obj[key] = (parseFloat(mnthtolmt) - parseFloat(lclplnd[key1])).toFixed(2);
-                                                                     resurce.plndperq.push(obj);
+                                                                     resurce.plndperq[key] = (parseFloat(mnthtolmt) - parseFloat(lclplnd[key1])).toFixed(2);
                                                                  }
                                                              }
                                                          });
@@ -1910,7 +1897,7 @@ yearChange=false;
                                              var spltpannd = parseFloat($scope.plannedscope) + calclateperhour;
                                              $scope.unplannedscope = $scope.dataval.Customers[b].Projects[c].Resources[d].unplanne.replace(",", ".");
                                              $scope.monthtolimit = $scope.dataval.Customers[b].Projects[c].Resources[d].MonthToLimitMap;
-                                             $scope.dataval.Customers[b].Projects[c].Resources[d].plndperq = [];
+                                             $scope.dataval.Customers[b].Projects[c].Resources[d].plndperq = {};
 
 
 
@@ -1993,8 +1980,8 @@ yearChange=false;
                                                          var obj = {};
                                                          if (parseFloat(key) == parseFloat(key1)) {
 
-                                                             obj[key] = (parseFloat(mnthtolmt) - parseFloat(lclplnd[key1])).toFixed(2);
-                                                             $scope.dataval.Customers[b].Projects[c].Resources[d].plndperq.push(obj);
+                                                             $scope.dataval.Customers[b].Projects[c].Resources[d].plndperq[key] = (parseFloat(mnthtolmt) - parseFloat(lclplnd[key1])).toFixed(2);
+                                                             
                                                          }
                                                      }
                                                  });
@@ -2058,30 +2045,27 @@ yearChange=false;
                                      $scope.plannedorqa = function() {
 
                                          $(".plnnedperq").each(function() {
-                                             var jsondata1 = $(this).text();
+                                             var jsondata1 = $(this).text().replace(/[|]/g,"");
                                              if (jsondata1 != "[]" && jsondata1 != "") {
                                                  var th = $(this);
                                                  var jsonstrngfy = JSON.parse(jsondata1);
-                                                 angular.forEach(jsonstrngfy, function(monthtofind, i) {
-                                                     angular.forEach(monthtofind, function(valueofmonth, i) {
+                                                 angular.forEach(jsonstrngfy, function(valueofmonth, i) {
+                                                     $(th).parent().find(".plnperhur").each(function() {
+                                                         var newdateinput = $(this).attr("name");
 
-                                                         $(th).parent().find(".plnperhur").each(function() {
-                                                             var newdateinput = $(this).attr("name");
+                                                         if (parseInt(i) == parseInt(newdateinput) - 1) {
 
-                                                             if (parseInt(i) == parseInt(newdateinput) - 1) {
-
-                                                                 $(this).val(valueofmonth);
-                                                                 if (parseFloat(valueofmonth) < 0) {
-                                                                     $(this).removeClass('greencolor greycolor redcolor nacolor white');
-                                                                     $(this).addClass("redcolor");
+                                                             $(this).val(valueofmonth);
+                                                             if (parseFloat(valueofmonth) < 0) {
+                                                                 $(this).removeClass('greencolor greycolor redcolor nacolor white');
+                                                                 $(this).addClass("redcolor");
 
 
-                                                                 } else {
+                                                             } else {
 
-                                                                     $(this).removeClass('greencolor greycolor redcolor nacolor white');
-                                                                 }
+                                                                 $(this).removeClass('greencolor greycolor redcolor nacolor white');
                                                              }
-                                                         });
+                                                         }
                                                      });
                                                  });
 
@@ -2881,18 +2865,15 @@ yearChange=false;
                                                          });
                                                      }
                                                     var workinDaysInPeriod = {};
-													workinDaysInPeriod[1] = businessDays($scope.dataval.StartDate);
-													workinDaysInPeriod[2] = businessDays($scope.dataval.EndDate);
+													businessDays($scope.dataval.StartDate, workinDaysInPeriod);
+													businessDays($scope.dataval.EndDate, workinDaysInPeriod);
 													var localplanedformont1 = $scope.localobject($scope.dataval.StartDate, $scope.dataval.Resources[i].Staffing);
-													resource.plndperq = [];
+													resource.plndperq = {};
 													angular.forEach(workinDaysInPeriod, function(mnthtolmt, key) {
 														 angular.forEach(localplanedformont1, function(lclplnd, plndkey) {
 														     for (var key1 in lclplnd) {
-														         var obj = {};
 														         if (parseFloat(key) == parseFloat(key1)) {
-
-														             obj[key] = (parseFloat(mnthtolmt) - parseFloat(lclplnd[key1])).toFixed(2);
-														             resource.plndperq.push(obj);
+								             resource.plndperq[key] = (parseFloat(mnthtolmt) - parseFloat(lclplnd[key1])).toFixed(2);
 														         }
 
 														     }
@@ -2907,7 +2888,7 @@ yearChange=false;
 														     for (var key1 in lclplnd) {
 														         var obj = {};
 														         if (parseFloat(key) == parseFloat(key1)) {
-														             holidays = parseFloat(mnthtolmt - resource.plndperq[key-1][key]) - parseFloat(lclplnd[key1]);
+														             holidays = parseFloat(mnthtolmt - resource.plndperq[key]) - parseFloat(lclplnd[key1]);
 														             obj[key] = roundNumber((parseFloat(lclplnd[key1]) * 100) / parseFloat(mnthtolmt - holidays),1) + '%';
 														             resource.planned_utilization.push(obj);
 														         }
