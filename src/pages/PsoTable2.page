@@ -46,9 +46,9 @@
 							<div>
 								<h3><label for="selectedResources">Select resources:</label></h3>
 								<br/>
-								<label>Search for related Resources: <input type="checkbox" ng-model="viewState.selectRelatedResources"/></label>
+								<label>Search for related Resources: <input type="checkbox" ng-model="viewState.selectRelatedResources" ng-click="filter.resources.selectRelatedResources()"/></label>
 							</div>	
-								<select multiple="multiple" name="selectedResources" id="selectedResources" ng-model="viewState.selectedResources" ng-attr-size="{{ viewState.selectedResourcesSize }}" ng-disabled="filter.resources.selectRelatedResources()">
+								<select multiple="multiple" name="selectedResources" id="selectedResources" ng-model="viewState.selectedResources" ng-attr-size="{{ viewState.selectedResourcesSize }}" ng-disabled="viewState.selectRelatedResources">
 									<option ng-repeat="resource in data.Resources | filter : filter.resources.resourceMatchesFilter" value="{{ resource.ContactId }}">{{ resource.ResourceName }}</option>
 								</select>
 
