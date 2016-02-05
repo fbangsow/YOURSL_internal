@@ -101,7 +101,7 @@ public without sharing class PsoToolController{
 
     private void getOpportunities(){
         Opportunities = [SELECT Id, Name, Account.Name, Account.Id, Projektleiter_YOUR_SL__r.Name, Projektstatus__c,
-                                    (SELECT Contact__r.Name, Contact__r.Id, Contact__r.Account.Name, Contact__r.Title, Contact__r.LastName, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
+                                    (SELECT Contact__r.Name, Contact__r.Id, Contact__r.Account.Name, Contact__r.Title, Contact__r.FirstName, Contact__r.LastName, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
                                         FROM OpportunityLineItems
                                         WHERE Contact__r.LastName != 'All'
                                         AND Unit__c = 'Manntag(e)'
@@ -186,7 +186,7 @@ public without sharing class PsoToolController{
 
     private void buildContactIdsToContactsMap(){
         if((ShowAllContacts && !ShowAllOpportunities && OpportunitiesToShow.isEmpty()) || !ContactsToShow.isEmpty()){
-            for(Contact single_contact: [SELECT Id, Name, LastName, Title, Account.Name FROM Contact WHERE Inactive__c = false AND LastName != 'All' AND RecordTypeId = '012D0000000QokP'])
+            for(Contact single_contact: [SELECT Id, Name, FirstName, LastName, Title, Account.Name FROM Contact WHERE Inactive__c = false AND LastName != 'All' AND RecordTypeId = '012D0000000QokP'])
                 ContactIdsToContacts.put(single_contact.Id, single_contact);
         }
         else{
@@ -298,7 +298,7 @@ public without sharing class PsoToolController{
 
     @TestVisible private Resource getResource(String opp_id, OpportunityLineItem line_item){
         Resource new_resource = new Resource();
-        new_resource.ResourceName = line_item.Contact__r.Name;
+        new_resource.ResourceName = line_item.Contact__r.LastName + ' ' + line_item.Contact__r.FirstName;
         new_resource.ContactId = line_item.Contact__r.Id;
         new_resource.Product = line_item.Product2.Name;
         new_resource.SalesPrice = line_item.UnitPrice;
@@ -363,12 +363,13 @@ public without sharing class PsoToolController{
         for(String contact_id: contacts_to_show){
             if(!contactIdToResourceAvailabilityData.containsKey(contact_id)){
                 ResourceInfo newInfo = new ResourceInfo();
-                newInfo.ResourceName = ContactIdsToContacts.get(contact_id).Name;
+                newInfo.ResourceName = ContactIdsToContacts.get(contact_id).LastName + ' ' + ContactIdsToContacts.get(contact_id).FirstName;
                 newInfo.LastName = ContactIdsToContacts.get(contact_id).LastName;
                 newInfo.Title = ContactIdsToContacts.get(contact_id).Title;
                 newInfo.AccountName = ContactIdsToContacts.get(contact_id).Account.Name;
                 newInfo.Staffing = new List<Staffing>();
                 newInfo.ContactId = contact_id;
+                newInfo.SortForResourceAvailability = with_staffing;
                 if(with_staffing)
                     newInfo.Statistics = getStatsForContact(contact_id);
                 contactIdToResourceAvailabilityData.put(contact_id, newInfo);
@@ -557,7 +558,23 @@ public without sharing class PsoToolController{
         public Boolean IsAllowedToRunScript;
 
         public String JSON(){
-            return JSON.serialize(this);
+            JSONGenerator jeyson = JSON.createGenerator(false);
+            jeyson.writeStartObject();
+            jeyson.writeObjectField('Customers', Customers);
+            jeyson.writeBooleanField('IsAllowedToRunScript', IsAllowedToRunScript);
+            if(Resources != null)
+                sortAndWriteResources(jeyson);
+            jeyson.writeEndObject();
+            return jeyson.getAsString();
+        }
+
+        private void sortAndWriteResources(JSONGenerator jeyson){
+            Resources.sort();
+            jeyson.writeFieldName('Resources');
+            jeyson.writeStartArray();
+            for(ResourceInfo resource: Resources)
+                jeyson.writeObject(resource);
+            jeyson.writeEndArray();
         }
     }
 
@@ -612,9 +629,17 @@ public without sharing class PsoToolController{
         public String ContactId;
         public List<Staffing> Staffing;
         public List<Stats> Statistics;
+        @TestVisible private Boolean SortForResourceAvailability;
 
         public Integer compareTo(Object compare_to){
             ResourceInfo resource_info_to_compare = (ResourceInfo)compare_to;
+            if(SortForResourceAvailability)
+                return useResourceAvailabilitySorting(resource_info_to_compare);
+            else
+                return compareBasedOnLastName(resource_info_to_compare);
+        }
+
+        private Integer useResourceAvailabilitySorting(ResourceInfo resource_info_to_compare){
             if(AccountName == COMPANY_NAME && resource_info_to_compare.AccountName != COMPANY_NAME)
                 return -1;
             else if(AccountName != COMPANY_NAME && resource_info_to_compare.AccountName == COMPANY_NAME)

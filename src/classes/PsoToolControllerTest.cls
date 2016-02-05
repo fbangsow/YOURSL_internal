@@ -215,7 +215,7 @@ private class PsoToolControllerTest {
             setup_data.createTestData();
             new_instance.queryData();
             Opportunity opp = [SELECT Id, Name, Account.Name, Account.Id, Projektleiter_YOUR_SL__r.Name, Projektstatus__c,
-                                    (SELECT Contact__r.Name, Contact__r.Id, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
+                                    (SELECT Contact__r.Name, Contact__r.FirstName, Contact__r.LastName, Contact__r.Id, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
                                         FROM OpportunityLineItems)
                                         FROM Opportunity
                                         WHERE Id =: setup_data.FirstOpportunity.Id];
@@ -240,7 +240,7 @@ private class PsoToolControllerTest {
             setup_data.createTestData();
             new_instance.queryData();
             Opportunity opp = [SELECT Id, Name, Account.Name, Account.Id, Projektleiter_YOUR_SL__r.Name,
-                                    (SELECT Contact__r.Name, Contact__r.Id, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
+                                    (SELECT Contact__r.Name, Contact__r.LastName, Contact__r.FirstName, Contact__r.Id, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
                                         FROM OpportunityLineItems)
                                         FROM Opportunity
                                         WHERE Id =: setup_data.SecondOpportunity.Id];
@@ -248,7 +248,7 @@ private class PsoToolControllerTest {
                 List<PsoToolController.Resource> resources = new_instance.getResources(opp);
             Test.stopTest();
             System.assertEquals(2, resources.size());
-            System.assertEquals(setup_data.TestContact.FirstName + ' ' + setup_data.TestContact.LastName, resources.get(0).ResourceName);
+            System.assertEquals(setup_data.TestContact.LastName + ' ' + setup_data.TestContact.FirstName, resources.get(0).ResourceName);
             System.assertEquals(setup_data.TestContact.Id, resources.get(0).ContactId);
             System.assertEquals(setup_data.TestProduct.Name, resources.get(0).Product);
             System.assertEquals(1200, resources.get(0).SalesPrice);
@@ -269,14 +269,14 @@ private class PsoToolControllerTest {
             setup_data.createTestData();
             new_instance.queryData();
             Opportunity opp = [SELECT Id, Name, Account.Name, Account.Id, Projektleiter_YOUR_SL__r.Name,
-                                    (SELECT Contact__r.Name, Contact__r.Id, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
+                                    (SELECT Contact__r.Name, Contact__r.FirstName, Contact__r.LastName, Contact__r.Id, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
                                         FROM OpportunityLineItems)
                                         FROM Opportunity
                                         WHERE Id =: setup_data.FirstOpportunity.Id];
             Test.startTest();
                 PsoToolController.Resource resource = new_instance.getResource(opp.Id, opp.OpportunityLineItems.get(0));
             Test.stopTest();
-            System.assertEquals(setup_data.TestContact.FirstName + ' ' + setup_data.TestContact.LastName, resource.ResourceName);
+            System.assertEquals(setup_data.TestContact.LastName + ' ' + setup_data.TestContact.FirstName, resource.ResourceName);
             System.assertEquals(setup_data.TestContact.Id, resource.ContactId);
             System.assertEquals(setup_data.TestProduct.Name, resource.Product);
             System.assertEquals(setup_data.FirstLineItem.UnitPrice, resource.SalesPrice);
@@ -386,7 +386,7 @@ private class PsoToolControllerTest {
             setup_data.createActualStatisticalData();
             new_instance.queryData();
             Opportunity opp = [SELECT Id, Name, Account.Name, Account.Id, Projektleiter_YOUR_SL__r.Name,
-                        (SELECT Contact__r.Name, Contact__r.Id, Contact__r.Account.Name, Contact__r.Title, Contact__r.LastName, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
+                        (SELECT Contact__r.Name, Contact__r.FirstName, Contact__r.LastName, Contact__r.Id, Contact__r.Account.Name, Contact__r.Title, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
                             FROM OpportunityLineItems)
                             FROM Opportunity
                             WHERE Id =: setup_data.SecondOpportunity.Id];
@@ -395,7 +395,7 @@ private class PsoToolControllerTest {
                 List<PsoToolController.ResourceInfo> staffing = new_instance.getResourcesAvailabilityData(true);
             Test.stopTest();
             System.assertEquals(2, staffing.size());
-            System.assertEquals(setup_data.TestContact.FirstName + ' ' + setup_data.TestContact.LastName, staffing.get(0).ResourceName);
+            System.assertEquals(setup_data.TestContact.LastName + ' ' + setup_data.TestContact.FirstName, staffing.get(0).ResourceName);
             System.assertEquals(2, staffing.get(0).Staffing.size());
             System.assertEquals(setup_data.TestContact.Id, staffing.get(0).ContactId);
             System.assertEquals(1, staffing.get(0).Statistics.size());
@@ -816,22 +816,27 @@ private class PsoToolControllerTest {
         resource1.AccountName = PsoToolController.COMPANY_NAME;
         resource1.Title = 'Developer';
         resource1.LastName = 'Batman';
+        resource1.SortForResourceAvailability = true;
         PsoToolController.ResourceInfo resource2 = new PsoToolController.ResourceInfo();
         resource2.AccountName = PsoToolController.COMPANY_NAME;
         resource2.Title = 'Consultant';
         resource2.LastName = 'Batman';
+        resource2.SortForResourceAvailability = true;
         PsoToolController.ResourceInfo resource3 = new PsoToolController.ResourceInfo();
         resource3.AccountName = 'Some zalando company';
         resource3.Title = 'Developer';
         resource3.LastName = 'Batman';
+        resource3.SortForResourceAvailability = true;
         PsoToolController.ResourceInfo resource4 = new PsoToolController.ResourceInfo();
         resource4.AccountName = PsoToolController.COMPANY_NAME;
         resource4.Title = 'Consultant';
         resource4.LastName = 'Superman';
+        resource4.SortForResourceAvailability = true;
         PsoToolController.ResourceInfo resource5 = new PsoToolController.ResourceInfo();
         resource5.AccountName = 'Some company';
         resource5.Title = 'Developer';
         resource5.LastName = 'Batman';
+        resource5.SortForResourceAvailability = true;
         PsoToolController new_instance = PsoToolController.getInstance();
         new_instance.StartDate = Date.newInstance(2015, 1, 1);
         new_instance.EndDate = Date.newInstance(2015, 2, 28);
@@ -853,11 +858,11 @@ private class PsoToolControllerTest {
                 '"EndDate":"28.02.2015",' +
                 '"Customers":[],' +
                 '"Resources":[' +
-                '{"Title":"Consultant","Statistics":null,"Staffing":null,"ResourceName":null,"LastName":"Batman","ContactId":null,"AccountName":"YOUR SL GmbH"},' +
-                '{"Title":"Consultant","Statistics":null,"Staffing":null,"ResourceName":null,"LastName":"Superman","ContactId":null,"AccountName":"YOUR SL GmbH"},' +
-                '{"Title":"Developer","Statistics":null,"Staffing":null,"ResourceName":null,"LastName":"Batman","ContactId":null,"AccountName":"YOUR SL GmbH"},' +
-                '{"Title":"Developer","Statistics":null,"Staffing":null,"ResourceName":null,"LastName":"Batman","ContactId":null,"AccountName":"Some company"},' +
-                '{"Title":"Developer","Statistics":null,"Staffing":null,"ResourceName":null,"LastName":"Batman","ContactId":null,"AccountName":"Some zalando company"}]}';
+                '{"Title":"Consultant","Statistics":null,"Staffing":null,"SortForResourceAvailability":true,"ResourceName":null,"LastName":"Batman","ContactId":null,"AccountName":"YOUR SL GmbH"},' +
+                '{"Title":"Consultant","Statistics":null,"Staffing":null,"SortForResourceAvailability":true,"ResourceName":null,"LastName":"Superman","ContactId":null,"AccountName":"YOUR SL GmbH"},' +
+                '{"Title":"Developer","Statistics":null,"Staffing":null,"SortForResourceAvailability":true,"ResourceName":null,"LastName":"Batman","ContactId":null,"AccountName":"YOUR SL GmbH"},' +
+                '{"Title":"Developer","Statistics":null,"Staffing":null,"SortForResourceAvailability":true,"ResourceName":null,"LastName":"Batman","ContactId":null,"AccountName":"Some company"},' +
+                '{"Title":"Developer","Statistics":null,"Staffing":null,"SortForResourceAvailability":true,"ResourceName":null,"LastName":"Batman","ContactId":null,"AccountName":"Some zalando company"}]}';
             System.assertEquals(expected_json, json);
         }
     }
@@ -1205,7 +1210,7 @@ private class PsoToolControllerTest {
             TestContact.RecordTypeId = '012D0000000QokP';
             insert TestContact;
             SecondTestContact = new Contact();
-            SecondTestContact.FirstName = 'Michel';
+            SecondTestContact.FirstName = 'Michael';
             SecondTestContact.LastName = 'Yakovtsov';
             SecondTestContact.Inactive__c = false;
             SecondTestContact.RecordTypeId = '012D0000000QokP';
