@@ -26,7 +26,6 @@
         <script src="/resource/1430742754000/PsoToolMomentjs"></script>
         <script src="/resource/1430888909000/PsoToolUnderscorejs"></script>
 
-
         <script type="text/javascript">
             var flagnxt = 1;
             var flag = 1;
@@ -1280,7 +1279,7 @@ yearChange=false;
 
                                  
 
-                                 if ($(".flt_res_id").val() == 'none') {
+                                 /*if ($(".flt_res_id").val() == 'none') {
                                 
                                     $("#resourceTableTitle").hide();
                                     $("#lasttable").hide();
@@ -1290,7 +1289,7 @@ yearChange=false;
                                     $("#resourceTableTitle").show();
                                     $("#lasttable").show();
                                     $("#resourcetable").show();
-                                 }
+                                 }*/
 
 
 
@@ -1350,7 +1349,6 @@ yearChange=false;
 	                                                     if (parseFloat(key) == parseFloat(key1)) {
 	                                       resources.plndperq[key] = (parseFloat(mnthtolmt) - parseFloat(lclplnd[key1])).toFixed(2);
 	                                                     }
-
 	                                                 }
 	                                             });
 	                                         });
@@ -2673,6 +2671,8 @@ yearChange=false;
                                      $scope.dataval = resultobject;
 
                                      startdateobj = resultobject;
+
+                                     if ("calculationonload")
                                      $scope.calculationonload();
                                      myDataSet = $scope.dataval.Customers;
                                    $scope.dataforhtml=$scope.dataval;
