@@ -169,7 +169,7 @@
 								</td>
 							</tr>
 						</tbody>
-						<tbody ng-if="data.Resources.length">
+						<tbody ng-if="data.Resources.length && ($parent.viewState.selectRelatedResources || $parent.viewState.selectedResources.length)">
 							<tr>
 								<th colspan="{{ viewState.staffingColumns }}">
 									<h4>Resource availability</h4>
