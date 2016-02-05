@@ -434,11 +434,25 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 			var lastWeek = null;
 			var dayCount = 0;
 
+			var createDColumn = function(month, week) {
+				dayCount += 1;
+
+				month.dayCount += 1;
+				week.dayCount += 1;
+
+				$scope.viewState.staffingDays.push({
+					dateString: 'd-' + week.number,
+					weekDay: 'D',
+				});
+			}
+
 			var createSaldoColumns = function (month) {
 				dayCount += 2;
 
 				month.dayCount += 2;
 				month.weeks[month.weeks.length - 1].dayCount += 2;
+
+				createDColumn(month, month.weeks[month.weeks.length - 1]);
 
 				$scope.viewState.staffingDays.push({
 					dateString: 'saldo-' + month.number,
@@ -503,6 +517,10 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 						dayCount: 0,
 						workDayCount: 0
 					};
+
+					if (lastMonth.weeks.length > 0) {
+						createDColumn(lastMonth, lastMonth.weeks[lastMonth.weeks.length-1]);
+					}
 
 					lastMonth.weeks.push(lastWeek);
 					lastMonth.weekCount++;
