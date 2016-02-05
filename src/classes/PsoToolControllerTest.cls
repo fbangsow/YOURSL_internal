@@ -1202,11 +1202,13 @@ private class PsoToolControllerTest {
             TestContact.FirstName = testUser.FirstName;
             TestContact.LastName = testUser.LastName;
             TestContact.Inactive__c = false;
+            TestContact.RecordTypeId = '012D0000000QokP';
             insert TestContact;
             SecondTestContact = new Contact();
             SecondTestContact.FirstName = 'Michel';
             SecondTestContact.LastName = 'Yakovtsov';
             SecondTestContact.Inactive__c = false;
+            SecondTestContact.RecordTypeId = '012D0000000QokP';
             insert SecondTestContact;
         }
 

@@ -103,9 +103,10 @@ public without sharing class PsoToolController{
         Opportunities = [SELECT Id, Name, Account.Name, Account.Id, Projektleiter_YOUR_SL__r.Name, Projektstatus__c,
                                     (SELECT Contact__r.Name, Contact__r.Id, Contact__r.Account.Name, Contact__r.Title, Contact__r.LastName, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
                                         FROM OpportunityLineItems
-                                        WHERE Contact__r.LastName != 'All' AND
-                                        Unit__c = 'Manntag(e)'
-                                        AND Contact__r.Inactive__c = false)
+                                        WHERE Contact__r.LastName != 'All'
+                                        AND Unit__c = 'Manntag(e)'
+                                        AND Contact__r.Inactive__c = false
+                                        AND Contact__r.RecordTypeId = '012D0000000QokP')
                                         FROM Opportunity
                                         WHERE Id IN :getOpportunitiesToShow()
                                         AND Project_Start_Date__c <= :EndDate
@@ -185,7 +186,7 @@ public without sharing class PsoToolController{
 
     private void buildContactIdsToContactsMap(){
         if((ShowAllContacts && !ShowAllOpportunities && OpportunitiesToShow.isEmpty()) || !ContactsToShow.isEmpty()){
-            for(Contact single_contact: [SELECT Id, Name, LastName, Title, Account.Name FROM Contact WHERE Inactive__c = false AND LastName != 'All'])
+            for(Contact single_contact: [SELECT Id, Name, LastName, Title, Account.Name FROM Contact WHERE Inactive__c = false AND LastName != 'All' AND RecordTypeId = '012D0000000QokP'])
                 ContactIdsToContacts.put(single_contact.Id, single_contact);
         }
         else{
