@@ -30,7 +30,12 @@ do
 
 		echo "Compressing files in $TARGET"
 
-		zip -r ../${TARGET}.resource *
+		if [ -f "../${TARGET}.resource" ]
+		then
+			rm ../${TARGET}.resource
+		fi
+
+		zip -v -r ../${TARGET}.resource *
 
 		echo "Uploading archive to SalesForce"
 
