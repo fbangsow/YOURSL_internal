@@ -14,7 +14,9 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 
 		selectedResources: [],
 		selectedResourcesSize: 2,
-		resourcesFilterText: ''
+		resourcesFilterText: '',
+
+		selectRelatedResources: false
 	};
 
 	$scope.filter = {
@@ -196,6 +198,14 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 		}
 	};
 
+	$scope.filter.resources.selectRelatedResources = function() {
+		if ($scope.viewState.selectRelatedResources) {
+			$scope.filter.resources.clearSelectedResources();
+		} 
+
+		return $scope.viewState.selectRelatedResources;
+	};
+
 	$scope.filter.resources.removeFilteredResourcesFromSelection = function () {
 		/* check all resources if they match the filter and remove from selection, if not */
 		for (var c = 0; c < $scope.data.Resources.length; c++) {
@@ -211,7 +221,7 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 	$scope.filter.events.updateStaffingClicked = function (event) {
 		event.preventDefault();
 
-		$scope.$broadcast('updateStaffing', $scope.viewState.selectedOpportunities, $scope.viewState.selectedResources, $scope.viewState.startMonth);
+		$scope.$broadcast('updateStaffing', $scope.viewState.selectedOpportunities, $scope.viewState.selectedResources, $scope.viewState.startMonth, $scope.viewState.selectRelatedResources);
 	};
 
 	/* initialize data */

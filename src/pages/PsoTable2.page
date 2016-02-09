@@ -43,16 +43,19 @@
 						</section>
 
 						<section id="resources-filter">
-							<h3><label for="selectedResources">Select resources:</label></h3>
+							<div>
+								<h3><label for="selectedResources">Select resources:</label></h3>
+								<br/>
+								<label>Search for related Resources: <input type="checkbox" ng-model="viewState.selectRelatedResources" ng-click="filter.resources.selectRelatedResources()"/></label>
+							</div>	
+								<select multiple="multiple" name="selectedResources" id="selectedResources" ng-model="viewState.selectedResources" ng-attr-size="{{ viewState.selectedResourcesSize }}" ng-disabled="viewState.selectRelatedResources">
+									<option ng-repeat="resource in data.Resources | filter : filter.resources.resourceMatchesFilter" value="{{ resource.ContactId }}">{{ resource.ResourceName }}</option>
+								</select>
 
-							<select multiple="multiple" name="selectedResources" id="selectedResources" ng-model="viewState.selectedResources" ng-attr-size="{{ viewState.selectedResourcesSize }}">
-								<option ng-repeat="resource in data.Resources | filter : filter.resources.resourceMatchesFilter" value="{{ resource.ContactId }}">{{ resource.ResourceName }}</option>
-							</select>
+								<input type="search" placeholder="Filter resources" ng-model="viewState.resourcesFilterText" ng-change="resources.removeFilteredResourcesFromSelection()" />
 
-							<input type="search" placeholder="Filter resources" ng-model="viewState.resourcesFilterText" ng-change="resources.removeFilteredResourcesFromSelection()" />
-
-							<a href="#" ng-click="filter.resources.selectAllResources()">Select all</a>
-							<a href="#" ng-click="filter.resources.clearSelectedResources()">Clear</a>
+								<a href="#" ng-click="filter.resources.selectAllResources()">Select all</a>
+								<a href="#" ng-click="filter.resources.clearSelectedResources()">Clear</a>							
 						</section>
 					</div>
 
@@ -166,7 +169,7 @@
 								</td>
 							</tr>
 						</tbody>
-						<tbody ng-if="data.Resources.length">
+						<tbody ng-if="data.Resources.length && ($parent.viewState.selectRelatedResources || $parent.viewState.selectedResources.length)">
 							<tr>
 								<th colspan="{{ viewState.staffingColumns }}">
 									<h4>Resource availability</h4>
