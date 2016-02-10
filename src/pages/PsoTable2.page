@@ -47,7 +47,7 @@
 								<h3><label for="selectedResources">Select resources:</label></h3>
 								<br/>
 								<label>Search for related Resources: <input type="checkbox" ng-model="viewState.selectRelatedResources" ng-click="filter.resources.selectRelatedResources()"/></label>
-							</div>	
+							</div>
 								<select multiple="multiple" name="selectedResources" id="selectedResources" ng-model="viewState.selectedResources" ng-attr-size="{{ viewState.selectedResourcesSize }}" ng-disabled="viewState.selectRelatedResources">
 									<option ng-repeat="resource in data.Resources | filter : filter.resources.resourceMatchesFilter" value="{{ resource.ContactId }}">{{ resource.ResourceName }}</option>
 								</select>
@@ -55,7 +55,7 @@
 								<input type="search" placeholder="Filter resources" ng-model="viewState.resourcesFilterText" ng-change="resources.removeFilteredResourcesFromSelection()" />
 
 								<a href="#" ng-click="filter.resources.selectAllResources()">Select all</a>
-								<a href="#" ng-click="filter.resources.clearSelectedResources()">Clear</a>							
+								<a href="#" ng-click="filter.resources.clearSelectedResources()">Clear</a>
 						</section>
 					</div>
 
@@ -85,12 +85,12 @@
 								</th>
 							</tr>
 							<tr ng-if="firstCustomer">
-								<th ng-repeat="day in viewState.staffingDays" ng-class="buildDayHeaderClasses(day)" rowspan="{{ day.isMonthSaldo ? 2 : 1 }}">
+								<th ng-repeat="day in viewState.staffingDays" ng-class="buildDayHeaderClasses(day)" rowspan="{{ day.isSaldo ? 2 : 1 }}">
 									{{ day.weekDay }}
 								</th>
 							</tr>
 							<tr ng-if="firstCustomer">
-								<th ng-repeat="day in viewState.staffingDays" ng-class="buildDayHeaderClasses(day)" ng-if="!day.isMonthSaldo">
+								<th ng-repeat="day in viewState.staffingDays" ng-class="buildDayHeaderClasses(day)" ng-if="!day.isSaldo">
 									{{ day.day }}
 								</th>
 							</tr>
@@ -122,7 +122,7 @@
 									{{ ((resource.SoldDays - resource.PlannedDays) / 8) | number : 2 }}
 								</td>
 								<td ng-repeat="day in viewState.staffingDays" ng-init="allocation = resource.StaffingByDay[day.dateString]; holiday = data.ResourcesByContactId[resource.ContactId].StaffingByDay[day.dateString]" ng-class="buildResourceAllocationCellClasses(resource, day, allocation)">
-									<span ng-if="day.isMonthSaldo && !day.isUtilization">
+									<span ng-if="day.isMonthSaldo">
 										{{ ((resource.MonthSaldos[day.dateString] || 0) / 8) | number : 2 }}
 									</span>
 
@@ -130,11 +130,15 @@
 										{{ ((resource.MonthSaldos[day.dateString] || 0) * 100) | number : 1 }}%
 									</span>
 
+									<span ng-if="day.isStatisticSaldo">
+										{{ (resource.MonthSaldos[day.dateString].actual || 0) | number : 2 }} / {{ (resource.MonthSaldos[day.dateString].planned || 0) | number : 2 }}
+									</span>
+
 									<span ng-if="allocation !== undefined && day.isPast">
 										{{ allocation.Staff }}
 									</span>
 
-									<input ng-if="!day.isMonthSaldo && !day.isPast && !holiday.isFullHoliday" ng-model="allocation.currentBooking" ng-blur="staffing.updateAllocation(project, resource, day.date, allocation)" />
+									<input ng-if="!day.isSaldo && !day.isPast && !holiday.isFullHoliday" ng-model="allocation.currentBooking" ng-blur="staffing.updateAllocation(project, resource, day.date, allocation)" />
 
 									<span ng-if="holiday.hasHoliday" class="holiday-info">
 										({{ holiday.HoursOff }})
@@ -155,7 +159,7 @@
 									{{ ((project.SoldDays - project.PlannedDays) / 8) | number : 2 }}
 								</td>
 								<td ng-repeat="day in viewState.staffingDays" ng-class="buildProjectDayCellClasses(project, day)">
-									<span ng-if="day.isMonthSaldo && !day.isUtilization">
+									<span ng-if="day.isMonthSaldo">
 										{{ ((project.MonthSaldos[day.dateString] || 0) / 8) | number : 2 }}
 									</span>
 
@@ -163,7 +167,11 @@
 										{{ ((project.MonthSaldos[day.dateString] || 0) * 100) | number : 1 }}%
 									</span>
 
-									<span ng-if="!day.isMonthSaldo">
+									<span ng-if="day.isStatisticSaldo">
+										{{ (project.MonthSaldos[day.dateString].actual || 0) | number : 2 }} / {{ (project.MonthSaldos[day.dateString].planned || 0) | number : 2 }}
+									</span>
+
+									<span ng-if="!day.isSaldo">
 										{{ project.BookedHoursByDay[day.dateString] || 0 }}
 									</span>
 								</td>
@@ -194,7 +202,7 @@
 								<td>{{ resource.Title }}</td>
 								<td colspan="3">{{ resource.AccountName}}</td>
 								<td ng-repeat="day in viewState.staffingDays" ng-class="buildResourceAllocationCellClasses(resource, day, allocationSummary)" ng-init="allocationSummary = resource.StaffingByDay[day.dateString]">
-									<span ng-if="day.isMonthSaldo && !day.isUtilization">
+									<span ng-if="day.isMonthSaldo">
 										{{ ((resource.MonthSaldos[day.dateString] || 0) / 8) | number : 2 }}
 									</span>
 
@@ -202,11 +210,15 @@
 										{{ ((resource.MonthSaldos[day.dateString] || 0) * 100) | number : 1 }}%
 									</span>
 
-									<span ng-if="!day.isMonthSaldo">
+									<span ng-if="day.isStatisticSaldo">
+										{{ (resource.MonthSaldos[day.dateString].actual || 0) | number : 2 }} / {{ (resource.MonthSaldos[day.dateString].planned || 0) | number : 2 }}
+									</span>
+
+									<span ng-if="!day.isSaldo">
 										{{ allocationSummary.Staff || 0 }}
 									</span>
 
-									<span ng-if="!day.isMonthSaldo && allocationSummary.hasHoliday">
+									<span ng-if="!day.isSaldo && allocationSummary.hasHoliday">
 										({{ allocationSummary.HoursOff || 0 }})
 									</span>
 								</td>

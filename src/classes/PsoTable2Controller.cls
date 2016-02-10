@@ -30,6 +30,10 @@ public with sharing class PsoTable2Controller {
 						for (PsoToolController.Staffing staffing : resource.Staffing) {
 							staffing.Day = formatDate(staffing.Day);
 						}
+						for (PsoToolController.Stats stat : resource.Statistics) {
+							stat.StartDate = formatDate(stat.StartDate);
+							stat.EndDate = formatDate(stat.EndDate);
+						}
 					}
 				}
 			}
@@ -39,6 +43,10 @@ public with sharing class PsoTable2Controller {
 			for (PsoToolController.ResourceInfo resource : data.Resources) {
 				for (PsoToolController.Staffing staffing : resource.Staffing) {
 					staffing.Day = formatDate(staffing.Day);
+				}
+				for (PsoToolController.Stats stat : resource.Statistics) {
+					stat.StartDate = formatDate(stat.StartDate);
+					stat.EndDate = formatDate(stat.EndDate);
 				}
 			}
 		}

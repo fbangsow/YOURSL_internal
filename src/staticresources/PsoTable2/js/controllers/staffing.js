@@ -112,14 +112,15 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 			}
 		}
 
+		var saldos = resource.MonthSaldos;
+		var projectSaldos = project ? project.MonthSaldos : null;
+
 		for (var s = 0; s < resource.Staffing.length; s++) {
 			var staffing = resource.Staffing[s];
 
 			normalizeStaffing(staffing);
 
 			resource.StaffingByDay[staffing.Day] = staffing;
-
-			var saldos = resource.MonthSaldos;
 
 			['budget', 'saldo', 'utilization', 'booked', 'holiday'].forEach(function (saldoType) {
 				var key = saldoType + '-' + staffing.month;
@@ -147,8 +148,6 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 
 				project.BookedHoursByDay[staffing.Day] = staffing.Staff;
 
-				var projectSaldos = project.MonthSaldos;
-
 				['budget', 'saldo', 'utilization', 'booked', 'holiday'].forEach(function (saldoType) {
 					var key = saldoType + '-' + staffing.month;
 					if (!projectSaldos[key]) {
@@ -167,6 +166,45 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 				} else {
 					projectSaldos['utilization-' + staffing.month] = 0;
 				}
+			}
+		}
+
+		for (var s = 0; s < resource.Statistics.length; s++) {
+			var stat = resource.Statistics[s];
+
+			var startDate = new Date(stat.StartDate);
+			var endDate = new Date(stat.EndDate);
+
+			var startWeek = datepicker.iso8601Week(startDate);
+			var endWeek = datepicker.iso8601Week(endDate);
+
+			var saldoKey = 'week-stats-' + endWeek;
+
+			if (startWeek !== endWeek) {
+				/* monthly stats */
+				saldoKey = 'month-stats-' + datepicker.formatDate('m', endDate);
+			}
+
+			if (!saldos[saldoKey]) {
+				saldos[saldoKey] = {
+					'planned': 0,
+					'actual': 0
+				};
+			}
+
+			saldos[saldoKey].planned += stat.PlannedDays;
+			saldos[saldoKey].actual += stat.ActualDays;
+
+			if (projectSaldos) {
+				if (!projectSaldos[saldoKey]) {
+					projectSaldos[saldoKey] = {
+						'planned': 0,
+						'actual': 0
+					};
+				}
+
+				projectSaldos[saldoKey].planned += stat.PlannedDays;
+				projectSaldos[saldoKey].actual += stat.ActualDays;
 			}
 		}
 	};
@@ -334,11 +372,25 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 			classes.today = !!day.isToday;
 			classes.future = !!day.isFuture;
 
-			if (day.isMonthSaldo) {
-				classes['month-saldo'] = true;
-				classes['negative-saldo'] = resource.MonthSaldos[day.dateString] && resource.MonthSaldos[day.dateString] < 0;
-				classes['positive-saldo'] = resource.MonthSaldos[day.dateString] && resource.MonthSaldos[day.dateString] > 0;
-				classes['neutral-saldo'] = !resource.MonthSaldos[day.dateString];
+			if (day.isSaldo) {
+				classes['saldo'] = true;
+
+				if (day.isStatisticSaldo) {
+					/* the stats may not be generated, we need to check */
+					if (resource.MonthSaldos[day.dateString]) {
+						var stats = resource.MonthSaldos[day.dateString];
+
+						classes['negative-saldo'] = stats.actual < stats.planned;
+						classes['positive-saldo'] = stats.actual > stats.planned;
+						classes['neutral-saldo'] = stats.actual === stats.planned;
+					} else {
+						classes['no-data'] = true;
+					}
+				} else {
+					classes['negative-saldo'] = resource.MonthSaldos[day.dateString] && resource.MonthSaldos[day.dateString] < 0;
+					classes['positive-saldo'] = resource.MonthSaldos[day.dateString] && resource.MonthSaldos[day.dateString] > 0;
+					classes['neutral-saldo'] = !resource.MonthSaldos[day.dateString];
+				}
 			}
 		}
 
@@ -365,10 +417,12 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 	$scope.buildProjectDayCellClasses = function (project, day) {
 		var classes = $scope.buildDayHeaderClasses(day);
 
-		if (project && day && day.isMonthSaldo) {
-			classes['negative-saldo'] = project.MonthSaldos[day.dateString] && project.MonthSaldos[day.dateString] < 0;
-			classes['positive-saldo'] = project.MonthSaldos[day.dateString] && project.MonthSaldos[day.dateString] > 0;
-			classes['neutral-saldo'] = !project.MonthSaldos[day.dateString];
+		if (project && day && day.isSaldo) {
+			if (!day.isStatisticSaldo) {
+				classes['negative-saldo'] = project.MonthSaldos[day.dateString] && project.MonthSaldos[day.dateString] < 0;
+				classes['positive-saldo'] = project.MonthSaldos[day.dateString] && project.MonthSaldos[day.dateString] > 0;
+				classes['neutral-saldo'] = !project.MonthSaldos[day.dateString];
+			}
 		}
 
 		return classes;
@@ -385,6 +439,14 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 
 			if (day.isMonthSaldo) {
 				classes['month-saldo'] = true;
+			}
+
+			if (day.isUtilization) {
+				classes['utilization'] = true;
+			}
+
+			if (day.isStatisticSaldo) {
+				classes['statistic'] = true;
 			}
 		}
 
@@ -434,37 +496,46 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 			var lastWeek = null;
 			var dayCount = 0;
 
-			var createDColumn = function(month, week) {
+			var createWeekStatsColumn = function(month, week) {
 				dayCount += 1;
 
 				month.dayCount += 1;
 				week.dayCount += 1;
 
 				$scope.viewState.staffingDays.push({
-					dateString: 'd-' + week.number,
-					weekDay: 'D',
+					dateString: 'week-stats-' + week.number,
+					weekDay: 'Dw',
+					isSaldo: true,
+					isStatisticSaldo: true
 				});
-			}
+			};
 
 			var createSaldoColumns = function (month) {
-				dayCount += 2;
+				dayCount += 3;
 
-				month.dayCount += 2;
-				month.weeks[month.weeks.length - 1].dayCount += 2;
+				month.dayCount += 3;
+				month.weeks[month.weeks.length - 1].dayCount += 3;
 
-				createDColumn(month, month.weeks[month.weeks.length - 1]);
+				createWeekStatsColumn(month, month.weeks[month.weeks.length - 1]);
+
+				$scope.viewState.staffingDays.push({
+					dateString: 'month-stats-' + month.number,
+					weekDay: 'Dm',
+					isSaldo: true,
+					isStatisticSaldo: true
+				});
 
 				$scope.viewState.staffingDays.push({
 					dateString: 'saldo-' + month.number,
 					weekDay: 'Month saldo',
-					isMonthSaldo: true,
-					isUtilization: false
+					isSaldo: true,
+					isMonthSaldo: true
 				});
 
 				$scope.viewState.staffingDays.push({
 					dateString: 'utilization-' + month.number,
 					weekDay: 'Utilization',
-					isMonthSaldo: true,
+					isSaldo: true,
 					isUtilization: true
 				});
 			};
@@ -519,7 +590,7 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 					};
 
 					if (lastMonth.weeks.length > 0) {
-						createDColumn(lastMonth, lastMonth.weeks[lastMonth.weeks.length-1]);
+						createWeekStatsColumn(lastMonth, lastMonth.weeks[lastMonth.weeks.length-1]);
 					}
 
 					lastMonth.weeks.push(lastWeek);
