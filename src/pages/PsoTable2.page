@@ -19,8 +19,21 @@
 
         <apex:form >
             <div data-ng-app="PsoTable2" data-ng-controller="PsoTable2" id="pso-table">
-                <apex:pageBlock title="Loading" html-data-ng-if="status.loading">
+                <!-- loading -->
+                <apex:pageBlock title="" html-data-ng-if="status.loading" >
+                    <div aria-hidden="false" role="dialog" class="slds-modal slds-fade-in-open">
+                        <div class="slds-modal__container textCenter">
+                            <div class="slds-modal__menu slds-max-small-buttons--stretch slds-x-small-buttons--stacked" style="width:100px;margin:auto">
+                                <div class="slds-spinner--large" >
+                                    <img src="{!URLFOR($Resource.psoStyle, '/assets/images/spinners/slds_spinner_brand.gif')}" alt="loading.." />
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-backdrop slds-backdrop--open"></div>
                 </apex:pageBlock>
+                <!-- loading end-->
 
                 <apex:pageBlock html-data-ng-if="!status.loading" title="Apply filters">
                     <div id="filter">
