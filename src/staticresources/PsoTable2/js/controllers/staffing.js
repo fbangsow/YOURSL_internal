@@ -457,6 +457,11 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 		var classes = {};
 
 		classes.yourslEmployee = resource.AccountName === 'YOUR SL GmbH';
+		classes.billable = resource.SalesPrice > 0;
+
+		if (!resource.SalesPrice && typeof resource.SalesPrice !== 'undefined') {
+			classes.unbillable = !resource.SalesPrice;
+		}
 
 		return classes;
 	};
