@@ -19,6 +19,7 @@
 
         <apex:form >
             <div data-ng-app="PsoTable2" data-ng-controller="PsoTable2" id="pso-table">
+
                 <!-- loading -->
                 <apex:pageBlock title="" html-data-ng-if="status.loading" >
                     <div aria-hidden="false" role="dialog" class="slds-modal slds-fade-in-open">
@@ -36,47 +37,197 @@
                 <!-- loading end-->
 
                 <apex:pageBlock html-data-ng-if="!status.loading" title="Apply filters">
-                    <div id="filter">
-                        <div class="ui-helper-clearfix">
-                            <span ng-click="filter.events.showStartMonthPickerClicked($event)">{{ viewState.startMonth | date : 'MMM yyyy' }}</span>
-                        </div>
+                    <div id="filter" class="headerfixed">
+                        <div class="slds-page-header" role="banner">
+                            <div class="slds-grid">
+                                <div class="slds-media__body">
+                                    <div class="slds-grid">
+                                        <h1 class="slds-text-heading--medium slds-m-right--small slds-truncate slds-align-middle" title="Record Title">Resource Planning Tool</h1>
 
-                        <div class="ui-helper-clearfix">
-                            <section id="opportunities-filter">
-                                <h3><label for="selectedOpportunities">Select opportunities:</label></h3>
+                                        <div class="slds-dropdown-trigger " style="position: absolute;">
+                                            <a class="slds-button slds-button--icon-border-filled slds-icon--small " aria-haspopup="true" ng-click="viewState.filterVisible=!viewState.filterVisible">
+                                                <svg class="slds-icon slds-icon--x-small slds-icon-text-default slds-icon--x-smallMagrin ">
+                                                    <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#filterList')}"></use>
+                                                </svg>
+                                            </a>
 
-                                <select multiple="multiple" name="selectedOpportunities" id="selectedOpportunities" ng-model="viewState.selectedOpportunities" ng-attr-size="{{ viewState.selectedOpportunitiesSize }}">
-                                    <optgroup ng-repeat="customer in data.Customers | filter : filter.opportunities.customerMatchesFilter" label="{{ customer.AccountName }}" ng-click="filter.opportunities.events.accountClicked(customer, $event)">
-                                        <option ng-repeat="project in customer.Projects | filter : filter.opportunities.projectMatchesFilter" value="{{ project.OpportunityId }}">
-                                            {{ project.OpportunityName }}
-                                        </option>
-                                    </optgroup>
-                                </select>
+                                            <!-- show filter popup -->
+                                            <div class=" filterpopup slds-nubbin--top-left" id="newpost" ng-show="viewState.filterVisible">
+                                                <a class="slds-button slds-button--small slds-modal__close  slds-icon--small" onclick="viewState.filterVisible=!viewState.filterVisible">
+                                                    <svg aria-hidden="true" class="slds-icon slds-icon--x-small slds-icon-text-default">
+                                                        <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                                                    </svg>
+                                                    <span class="slds-assistive-text">Close</span>
+                                                </a>
+                                                <div class=" slds-m-around--medium">
+                                                    <div class="slds-text-heading--label slds-m-bottom--medium">Filter</div>
+                                                    <dl class="slds-dl--horizontal" >
+                                                        <dt class="slds-dl--horizontal__label slds-p-around--xx-small">
+                                                            <!-- section 1 -->
+                                                            <section id="opportunities-filter">
+                                                                <div class="slds-form-element">
+                                                                    <section class="slds-clearfix slds-m-bottom--medium">
+                                                                        <div class="slds-float--left">
+                                                                            <div class="slds-tile">
+                                                                                <p class="slds-text-heading--small">Select opportunities:</p>
+                                                                                <div class="slds-tile__detail slds-text-body--small">
+                                                                                    <p class="slds-text-body--small">related Opportunities: <input type="checkbox" style="width:20px;" ng-model="viewState.selectRelatedOpportunities" ng-click="filter.opportunities.selectRelatedOpportunities()"/></p>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="slds-float--right"></div>
+                                                                    </section>
 
-                                <input type="search" placeholder="Filter opportunities" ng-model="viewState.opportunitiesFilterText" ng-change="filter.opportunities.removeFilteredOpportunitiesFromSelection()" />
+                                                                    <select multiple="multiple" name="selectedOpportunities" id="selectedOpportunities" ng-model="viewState.selectedOpportunities" ng-attr-size="{{ viewState.selectedOpportunitiesSize }}" class="slds-input  slds-p-around--xx-small height100" >
+                                                                        <optgroup ng-repeat="customer in data.Customers | filter : filter.opportunities.customerMatchesFilter" label="{{ customer.AccountName }}" ng-click="filter.opportunities.events.accountClicked(customer, $event)">
+                                                                            <option ng-repeat="project in customer.Projects | filter : filter.opportunities.projectMatchesFilter" value="{{ project.OpportunityId }}">
+                                                                                {{ project.OpportunityName }}
+                                                                            </option>
+                                                                        </optgroup>
+                                                                    </select>
 
-                                <a href="#" ng-click="filter.opportunities.selectAllOpportunities()">Select all</a>
-                                <a href="#" ng-click="filter.opportunities.clearSelectedOpportunities()">Clear</a>
-                            </section>
+                                                                    <input type="search" placeholder="Filter opportunities" ng-model="viewState.opportunitiesFilterText" ng-change="filter.opportunities.removeFilteredOpportunitiesFromSelection()" class="slds-input" />
 
-                            <section id="resources-filter">
-                                <div>
-                                    <h3><label for="selectedResources">Select resources:</label></h3>
-                                    <br/>
-                                    <label>Search for related Resources: <input type="checkbox" ng-model="viewState.selectRelatedResources" ng-click="filter.resources.selectRelatedResources()"/></label>
+                                                                    <section class="slds-clearfix slds-m-bottom--medium">
+                                                                        <div class="slds-float--left">
+                                                                            <p>
+                                                                                <svg class="slds-icon slds-icon--x-small CustomColor-blue slds-m-right--x-small">
+                                                                                    <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#clear')}"></use>
+                                                                                </svg><a href="#" ng-click="filter.opportunities.clearSelectedOpportunities()">Clear</a>
+                                                                            </p>
+                                                                        </div>
+                                                                        <div class="slds-float--right">
+                                                                            <p>
+                                                                                <svg class="slds-icon slds-icon--x-small CustomColor-blue slds-m-right--x-small">
+                                                                                    <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#filter')}"></use>
+                                                                                </svg>
+                                                                                <a href="#" ng-click="filter.opportunities.selectAllOpportunities()">Select all</a>
+                                                                            </p>
+                                                                        </div>
+                                                                    </section>
+                                                                </div>
+                                                            </section>
+                                                            <!-- section 1 ende-->
+                                                        </dt>
+                                                        <dt class="slds-dl--horizontal__label slds-p-around--xx-small">
+                                                            <!-- section 2 -->
+                                                            <section id="resources-filter">
+                                                                <div class="slds-form-element">
+                                                                    <section class="slds-clearfix slds-m-bottom--medium">
+                                                                        <div class="slds-float--left">
+                                                                            <div class="slds-tile">
+                                                                                <p class="slds-text-heading--small">Select Resources:</p>
+                                                                                <div class="slds-tile__detail slds-text-body--small">
+                                                                                    <lable class="slds-text-body--small">related Resources: <input type="checkbox" style="width:20px;" ng-model="viewState.selectRelatedResources" ng-click="filter.resources.selectRelatedResources()"/></lable>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="slds-float--right"></div>
+                                                                    </section>
+
+                                                                    <select multiple="multiple" name="selectedResources" id="selectedResources" ng-model="viewState.selectedResources" ng-attr-size="{{ viewState.selectedResourcesSize }}" ng-disabled="viewState.selectRelatedResources" class="slds-input  slds-p-around--xx-small height100" >
+                                                                        <option ng-repeat="resource in data.Resources | filter : filter.resources.resourceMatchesFilter" value="{{ resource.ContactId }}">{{ resource.ResourceName }}</option>
+                                                                    </select>
+
+                                                                    <input type="search" placeholder="Filter resources" ng-model="viewState.resourcesFilterText" ng-change="resources.removeFilteredResourcesFromSelection()" class="slds-input" />
+
+                                                                    <section class="slds-clearfix slds-m-bottom--medium">
+                                                                        <div class="slds-float--left">
+                                                                            <p>
+                                                                                <svg class="slds-icon slds-icon--x-small CustomColor-blue slds-m-right--x-small">
+                                                                                    <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#clear')}"></use>
+                                                                                </svg>
+                                                                                <a href="#" ng-click="filter.resources.clearSelectedResources()">Clear</a>
+                                                                            </p>
+                                                                        </div>
+                                                                        <div class="slds-float--right">
+                                                                            <p>
+                                                                                <svg class="slds-icon slds-icon--x-small CustomColor-blue slds-m-right--x-small">
+                                                                                    <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#filter')}"></use>
+                                                                                </svg>
+                                                                                <a href="#" ng-click="filter.resources.selectAllResources()">Select all</a>
+                                                                            </p>
+                                                                        </div>
+                                                                    </section>
+                                                                </div>
+                                                            </section>
+                                                            <!-- section 2 ende-->
+                                                        </dt>
+                                                        <dt class="slds-dl--horizontal__label">
+                                                            <!-- section 3 -->
+                                                            <section id="date-filter">
+                                                                <div class="slds-form-element">
+                                                                    <section class="slds-clearfix slds-m-bottom--medium">
+                                                                        <div class="slds-float--left">
+                                                                            <div class="slds-tile">
+                                                                                <p class="slds-text-heading--small">Select Months:</p>
+                                                                                <div class="slds-tile__detail slds-text-body--small">
+                                                                                    <p class="slds-text-body--small">&nbsp;</p>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="slds-float--right"></div>
+                                                                    </section>
+                                                                    <div class="slds-form-element">
+                                                                        <div class="calendar">
+                                                                            <div class="slds-input slds-p-around--xx-small" >
+                                                                                <ul >
+                                                                                    <li ng-click="filter.decreaseStartMonthYear()" ng-class="{disabled:!viewState.hasPreviousStartMonthYear()}">
+                                                                                        <svg class="slds-icon slds-icon--x-small CustomColor-text slds-m-right--x-small">
+                                                                                            <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#left')}"></use>
+                                                                                        </svg>
+                                                                                    </li>
+                                                                                    <li>{{ viewState.startMonth | date : 'yyyy' }}</li>
+                                                                                    <li ng-click="filter.increaseStartMonthYear()" ng-class="{disabled:!viewState.hasNextStartMonthYear()}">
+                                                                                        <svg class="slds-icon slds-icon--x-small CustomColor-text slds-m-right--x-small">
+                                                                                            <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#right')}"></use>
+                                                                                        </svg>
+                                                                                    </li>
+                                                                                    <li><hr /></li>
+                                                                                    <li ng-class="filter.getStartMonthClasses(1)" ng-click="filter.setStartMonthMonth(1)">Jan</li>
+                                                                                    <li ng-class="filter.getStartMonthClasses(2)" ng-click="filter.setStartMonthMonth(2)">Feb</li>
+                                                                                    <li ng-class="filter.getStartMonthClasses(3)" ng-click="filter.setStartMonthMonth(3)">Mar</li>
+                                                                                    <li ng-class="filter.getStartMonthClasses(4)" ng-click="filter.setStartMonthMonth(4)">Apr</li>
+                                                                                    <li ng-class="filter.getStartMonthClasses(5)" ng-click="filter.setStartMonthMonth(5)">May</li>
+                                                                                    <li ng-class="filter.getStartMonthClasses(6)" ng-click="filter.setStartMonthMonth(6)">Jun</li>
+                                                                                    <li ng-class="filter.getStartMonthClasses(7)" ng-click="filter.setStartMonthMonth(7)">Jul</li>
+                                                                                    <li ng-class="filter.getStartMonthClasses(8)" ng-click="filter.setStartMonthMonth(8)">Aug</li>
+                                                                                    <li ng-class="filter.getStartMonthClasses(9)" ng-click="filter.setStartMonthMonth(9)">Sep</li>
+                                                                                    <li ng-class="filter.getStartMonthClasses(10)" ng-click="filter.setStartMonthMonth(10)">Oct</li>
+                                                                                    <li ng-class="filter.getStartMonthClasses(11)" ng-click="filter.setStartMonthMonth(11)">Nov</li>
+                                                                                    <li ng-class="filter.getStartMonthClasses(12)" ng-click="filter.setStartMonthMonth(12)">Dec</li>
+                                                                                </ul>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <section class="slds-clearfix slds-m-bottom--medium">
+                                                                        <div class="slds-float--right">
+                                                                            <p>
+                                                                                <svg class="slds-icon slds-icon--x-small CustomColor-blue slds-m-right--x-small">
+                                                                                    <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#weeklyview')}"></use>
+                                                                                </svg>
+                                                                                <a href="#" ng-click="filter.resetStartMonth()">Current date</a>
+                                                                            </p>
+                                                                        </div>
+                                                                    </section>
+                                                                </div>
+                                                            </section>
+                                                            <!-- section 3 ende-->
+                                                        </dt>
+                                                    </dl>
+                                                    <div class="center">
+                                                        <button  ng-click="filter.events.updateStaffingClicked($event)" class="slds-button slds-button--brand slds-m-around--xxx-small">Update staffing view</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="slds-m-bottom--large"></div>
+                                            <!-- filter popup ende -->
+                                        </div>
+                                    </div>
                                 </div>
-                                    <select multiple="multiple" name="selectedResources" id="selectedResources" ng-model="viewState.selectedResources" ng-attr-size="{{ viewState.selectedResourcesSize }}" ng-disabled="viewState.selectRelatedResources">
-                                        <option ng-repeat="resource in data.Resources | filter : filter.resources.resourceMatchesFilter" value="{{ resource.ContactId }}">{{ resource.ResourceName }}</option>
-                                    </select>
-
-                                    <input type="search" placeholder="Filter resources" ng-model="viewState.resourcesFilterText" ng-change="resources.removeFilteredResourcesFromSelection()" />
-
-                                    <a href="#" ng-click="filter.resources.selectAllResources()">Select all</a>
-                                    <a href="#" ng-click="filter.resources.clearSelectedResources()">Clear</a>
-                            </section>
+                            </div>
+                            <p class="slds-text-heading--label">{{ viewState.startMonth | date : 'MMM yyyy' }}</p>
                         </div>
-
-                        <button ng-click="filter.events.updateStaffingClicked($event)">Update staffing view</button>
                     </div>
                 </apex:pageBlock>
 

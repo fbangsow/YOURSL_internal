@@ -6,7 +6,10 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 	};
 
 	$scope.viewState = {
+		today: new Date(),
 		startMonth: new Date(),
+		minStartMonth: new Date(),
+		maxStartMonth: new Date(),
 
 		selectedOpportunities: [],
 		selectedOpportunitiesSize: 2,
@@ -16,7 +19,35 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 		selectedResourcesSize: 2,
 		resourcesFilterText: '',
 
-		selectRelatedResources: false
+		selectRelatedResources: false,
+		selectRelatedOpportunities: false
+	};
+
+	[$scope.viewState.today, $scope.viewState.startMonth, $scope.viewState.minStartMonth, $scope.viewState.maxStartMonth].forEach(function (d, index) {
+		if (index > 0) {
+			d.setDate(1);
+		}
+
+		d.setHours(0);
+		d.setMinutes(0);
+		d.setSeconds(0);
+		d.setMilliseconds(0);
+	});
+
+	/* set the proper min and max dates by subtracting 720 days and adding 900 */
+	$scope.viewState.minStartMonth.setDate(-720);
+	$scope.viewState.minStartMonth.setDate(1);
+
+	$scope.viewState.maxStartMonth.setDate(900);
+	/* set the tenth of the month to properly check selected < max */
+	$scope.viewState.maxStartMonth.setDate(10);
+
+	$scope.viewState.hasPreviousStartMonthYear = function () {
+		return $scope.viewState.startMonth.getFullYear() > $scope.viewState.minStartMonth.getFullYear();
+	};
+
+	$scope.viewState.hasNextStartMonthYear = function () {
+		return $scope.viewState.startMonth.getFullYear() < $scope.viewState.maxStartMonth.getFullYear();
 	};
 
 	$scope.filter = {
@@ -31,33 +62,51 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 
 	$scope.data = {};
 
-	$scope.filter.events.showStartMonthPickerClicked = function (event) {
-		var target = $(event.target);
-		var targetPosition = target.offset();
-
-		target.datepicker('dialog', $scope.viewState.startMonth, function (dateString, datepicker) {
-			/* nothing to do here, we'll not select a day, but only change the month */
-		}, {
-			firstDay: 1,
-			showWeek: true,
-			changeMonth: true,
-			changeYear: true,
-			showButtonPanel: true,
-			minDate: -720,
-			maxDate: 900,
-			onChangeMonthYear: function (year, month, datepicker) {
-				$scope.$apply(function () {
-					$scope.filter.setStartDate(new Date(year, month - 1, 1));
-				});
-			}
-		}, [
-			targetPosition.left,
-			targetPosition.top + target.height() + 5
-		]);
+	$scope.filter.validateStartMonthRange = function () {
+		if ($scope.viewState.startMonth < $scope.viewState.minStartMonth) {
+			$scope.viewState.startMonth.setFullYear($scope.viewState.minStartMonth.getFullYear(), $scope.viewState.minStartMonth.getMonth());
+		} else if ($scope.viewState.startMonth > $scope.viewState.maxStartMonth) {
+			$scope.viewState.startMonth.setFullYear($scope.viewState.maxStartMonth.getFullYear(), $scope.viewState.maxStartMonth.getMonth());
+		}
 	};
 
-	$scope.filter.setStartDate = function (newStartDate) {
-		$scope.viewState.startMonth = newStartDate;
+	$scope.filter.setStartMonthMonth = function (month) {
+		$scope.viewState.startMonth.setMonth(month - 1, 1);
+		$scope.filter.validateStartMonthRange();
+	};
+
+	$scope.filter.increaseStartMonthYear = function () {
+		if ($scope.viewState.startMonth.getFullYear() >= $scope.viewState.maxStartMonth.getFullYear()) {
+			return;
+		}
+
+		$scope.viewState.startMonth.setFullYear($scope.viewState.startMonth.getFullYear() + 1);
+		$scope.filter.validateStartMonthRange();
+	};
+
+	$scope.filter.decreaseStartMonthYear = function () {
+		if ($scope.viewState.startMonth.getFullYear() <= $scope.viewState.minStartMonth.getFullYear()) {
+			return;
+		}
+
+		$scope.viewState.startMonth.setFullYear($scope.viewState.startMonth.getFullYear() - 1);
+		$scope.filter.validateStartMonthRange();
+	};
+
+	$scope.filter.resetStartMonth = function () {
+		$scope.viewState.startMonth.setFullYear($scope.viewState.today.getFullYear(), $scope.viewState.today.getMonth(), 1);
+	};
+
+	$scope.filter.getStartMonthClasses = function (month) {
+		var target = new Date();
+		target.setFullYear($scope.viewState.startMonth.getFullYear(), month - 1, 1);
+
+		var classes = {};
+
+		classes.active = $scope.viewState.startMonth.getMonth() === target.getMonth();
+		classes.disabled = $scope.viewState.maxStartMonth < target || $scope.viewState.minStartMonth > target;
+
+		return classes;
 	};
 
 	/* functions for the opportunity filter */
@@ -156,6 +205,14 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 		}
 	};
 
+	$scope.filter.opportunities.selectRelatedOpportunities = function() {
+		if ($scope.viewState.selectRelatedOpportunities) {
+			$scope.filter.opportunities.clearSelectedOpportunities();
+		}
+
+		return $scope.viewState.selectRelatedOpportunities;
+	};
+
 	$scope.filter.opportunities.removeFilteredOpportunitiesFromSelection = function () {
 		/* check all projects of all customers if they match the filter and remove from selection, if not */
 		for (var c = 0; c < $scope.data.Customers.length; c++) {
@@ -201,7 +258,7 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 	$scope.filter.resources.selectRelatedResources = function() {
 		if ($scope.viewState.selectRelatedResources) {
 			$scope.filter.resources.clearSelectedResources();
-		} 
+		}
 
 		return $scope.viewState.selectRelatedResources;
 	};
@@ -221,6 +278,7 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 	$scope.filter.events.updateStaffingClicked = function (event) {
 		event.preventDefault();
 
+		$scope.viewState.filterVisible = false;
 		$scope.$broadcast('updateStaffing', $scope.viewState.selectedOpportunities, $scope.viewState.selectedResources, $scope.viewState.startMonth, $scope.viewState.selectRelatedResources);
 	};
 
