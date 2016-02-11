@@ -53,7 +53,7 @@
 
                                             <!-- show filter popup -->
                                             <div class=" filterpopup slds-nubbin--top-left" id="newpost" ng-show="viewState.filterVisible">
-                                                <a class="slds-button slds-button--small slds-modal__close  slds-icon--small" onclick="viewState.filterVisible=!viewState.filterVisible">
+                                                <a class="slds-button slds-button--small slds-modal__close  slds-icon--small" ng-click="viewState.filterVisible=false">
                                                     <svg aria-hidden="true" class="slds-icon slds-icon--x-small slds-icon-text-default">
                                                         <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
                                                     </svg>
@@ -222,11 +222,56 @@
                                             </div>
                                             <div class="slds-m-bottom--large"></div>
                                             <!-- filter popup ende -->
+
+                                            <!-- show legend popup -->
+                                            <div class="legendpopup slds-nubbin--top-right" id="legend" ng-show="viewState.legendVisible">
+                                                <a class="slds-button slds-button--small slds-modal__close slds-icon--small" style="margin-right: 170px;margin-top: 25px;" ng-click="viewState.legendVisible=false">
+                                                    <svg aria-hidden="true" class="slds-icon slds-icon--x-small slds-icon-text-default">
+                                                        <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                                                    </svg>
+                                                </a>
+
+                                                <div class="slds-m-around--medium">
+                                                    <div class="slds-text-heading--label slds-m-bottom--medium">Legend</div>
+                                                    <ul class="slds-list--vertical slds-has-dividers--top">
+                                                        <li class="slds-list__item"><span class="holiday-info"></span> Holiday info</li>
+                                                        <li class="slds-list__item"><span class="has-booking"></span> Has booking</li>
+                                                        <li class="slds-list__item"><span class="partly-booked"></span> Partly booked</li>
+                                                        <li class="slds-list__item"><span class="fully-booked"></span> Fully booked</li>
+                                                        <li class="slds-list__item"><span class="overbooked"></span> Overbooked</li>
+                                                        <li class="slds-list__item"><span class="negative-saldo"></span> Negative saldo</li>
+                                                        <li class="slds-list__item"><span class="positive-saldo"></span> Positive saldo</li>
+                                                        <li class="slds-list__item"><span class="neutral-saldo"></span> Neutral saldo</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <!-- show legend popup ende -->
+                                        </div>
+                                    </div>
+
+                                    <p class="slds-text-heading--label">{{ viewState.startMonth | date : 'MMM yyyy' }}</p>
+                                </div>
+
+                                <!-- header navigation -->
+                                <div class="slds-col slds-no-flex slds-align-bottom">
+                                    <div class="slds-button-group" role="group">
+                                        <a class="slds-button slds-button--neutral" href="#" ng-click="viewState.legendVisible=!viewState.legendVisible">
+                                            <svg class="slds-icon slds-icon--x-small slds-icon-text-default ">
+                                                <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#question')}"></use>
+                                            </svg>
+                                        </a>
+                                        <div class="slds-button--last">
+                                            <a class="slds-button slds-button--icon-border-filled" href="/home/home.jsp">
+                                                <svg class="slds-icon slds-icon--x-small slds-icon-text-default ">
+                                                    <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#home')}"></use>
+                                                </svg>
+                                                <span class="slds-assistive-text">More</span>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
+                                <!-- header navigation end -->
                             </div>
-                            <p class="slds-text-heading--label">{{ viewState.startMonth | date : 'MMM yyyy' }}</p>
                         </div>
                     </div>
                 </apex:pageBlock>
