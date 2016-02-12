@@ -319,6 +319,9 @@
                                             <a href="/{{ customer.AccountId }}" target="_blank">{{ customer.AccountName }}</a>
                                             &nbsp;&gt;&nbsp;
                                             <a href="/{{ project.OpportunityId }}" target="_blank">{{ project.OpportunityName }}</a>
+                                            <span ng-if="project.ProjectManagerId">
+                                                (<a href="/{{ project.ProjectManagerId}}" target="_blank">{{ project.OurProjectManager }}</a>)
+                                            </span>
                                         </h4>
 
                                         <a href="/apex/OpportunityLineItemsEdit?id={{ project.OpportunityId }}" target="_blank">Change quantity</a>
