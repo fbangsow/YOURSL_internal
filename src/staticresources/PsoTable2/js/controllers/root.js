@@ -19,7 +19,7 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 		selectedResourcesSize: 2,
 		resourcesFilterText: '',
 
-		selectRelatedResources: false,
+		selectRelatedResources: true,
 		selectRelatedOpportunities: false
 	};
 
