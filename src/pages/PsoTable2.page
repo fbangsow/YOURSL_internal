@@ -320,6 +320,10 @@
                                             &nbsp;&gt;&nbsp;
                                             <a href="/{{ project.OpportunityId }}" target="_blank">{{ project.OpportunityName }}</a>
                                         </h4>
+
+                                        <a href="/apex/OpportunityLineItemsEdit?id={{ project.OpportunityId }}" target="_blank">Change quantity</a>
+
+                                        <select ng-model="project.ProjectStatus" ng-options="reason as label for (label, reason) in viewState.projectHealthReasons" ng-change="updateProjectStatus(project)"></select>
                                     </td>
                                 </tr>
                                 <tr ng-repeat="resource in project.Resources" ng-class="buildResourceRowClasses(resource)">
@@ -351,7 +355,7 @@
                                             {{ (resource.MonthSaldos[day.dateString].actual || 0) | number : 2 }} / {{ (resource.MonthSaldos[day.dateString].planned || 0) | number : 2 }}
                                         </span>
 
-                                        <span ng-if="allocation !== undefined && day.isPast">
+                                        <span ng-if="allocation !== undefined && !day.isAllocatable">
                                             {{ allocation.Staff }}
                                         </span>
 

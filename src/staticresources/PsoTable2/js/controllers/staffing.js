@@ -14,7 +14,8 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 		staffingDayColumns: 0,
 		staffingMonths: [],
 		staffingWeeks: [],
-		staffingDays: []
+		staffingDays: [],
+		projectHealthReasons: {}
 	};
 
 	$scope.data = {};
@@ -466,6 +467,10 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 		return classes;
 	};
 
+	$scope.updateProjectStatus = function (project) {
+		sfEndpoint.updateProjectStatus(project.OpportunityId, project.ProjectStatus);
+	};
+
 	var normalizeTime = function (d) {
 		d.setHours(0);
 		d.setMinutes(0);
@@ -667,4 +672,10 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 			console.log('error while retrieving project staffing data:', response);
 		});
 	});
+
+	/* initialize data */
+	sfEndpoint.getProjectHealthReasons().then(function (reasons) {
+		console.log('received project health reasons', reasons);
+		$scope.viewState.projectHealthReasons = reasons;
+	})
 }]);

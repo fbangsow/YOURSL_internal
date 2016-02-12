@@ -59,6 +59,16 @@ public with sharing class PsoTable2Controller {
 		return PsoToolController.getInstance().allocateResource(allocationIdId, day.date(), hours / 8);
 	}
 
+	@RemoteAction
+	public static String getProjectHealthReasons() {
+		return PsoToolController.getInstance().getProjectHealthReasons().JSON();
+	}
+
+	@RemoteAction
+	public static void updateProjectStatus(String opportunityId, String status) {
+		PsoToolController.getInstance().setProjectHealthReason(opportunityId, status);
+	}
+
 	private static String formatDate(String localDateString) {
 		if (String.isBlank(localDateString)) {
 			return '';

@@ -106,6 +106,50 @@ PsoTable2.ng.factory('PsoTable2Endpoint', ['$q', function ($q) {
 		return deferred.promise;
 	};
 
+	instance.getProjectHealthReasons = function () {
+		var deferred = $q.defer();
+
+		Visualforce.remoting.Manager.invokeAction('PsoTable2Controller.getProjectHealthReasons', function (result, event) {
+			if (!event || !event.status) {
+				deferred.reject(event);
+				return
+			}
+
+			result = JSON.parse(htmlDecode(result));
+
+			if (!result || !result.ReasonsLabelToValue) {
+				deferred.reject(event);
+			}
+
+			deferred.resolve(result.ReasonsLabelToValue);
+		}, {
+			buffer: true,
+			escape: true,
+			timeout: 30000
+		});
+
+		return deferred.promise;
+	};
+
+	instance.updateProjectStatus = function (projectId, status) {
+		var deferred = $q.defer();
+
+		Visualforce.remoting.Manager.invokeAction('PsoTable2Controller.updateProjectStatus', projectId, status, function (result, event) {
+			if (!event || !event.status) {
+				deferred.reject(event);
+				return
+			}
+
+			deferred.resolve();
+		}, {
+			buffer: true,
+			escape: true,
+			timeout: 30000
+		});
+
+		return deferred.promise;
+	}
+
 	return instance;
 }]);
 
