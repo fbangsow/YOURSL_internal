@@ -355,7 +355,7 @@
                                             {{ allocation.Staff }}
                                         </span>
 
-                                        <input ng-if="!day.isSaldo && !day.isPast && !holiday.isFullHoliday" ng-model="allocation.currentBooking" ng-blur="staffing.updateAllocation(project, resource, day.date, allocation)" />
+                                        <input ng-if="day.isAllocatable && !holiday.isFullHoliday" ng-model="allocation.currentBooking" ng-blur="staffing.updateAllocation(project, resource, day.date, allocation)" />
 
                                         <!--<span ng-if="holiday.hasHoliday" class="holiday-info">
                                             ({{ holiday.HoursOff }})

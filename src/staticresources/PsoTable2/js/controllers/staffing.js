@@ -466,6 +466,13 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 		return classes;
 	};
 
+	var normalizeTime = function (d) {
+		d.setHours(0);
+		d.setMinutes(0);
+		d.setSeconds(0);
+		d.setMilliseconds(0);
+	};
+
 	/* functions for the staffing table */
 	$scope.$on('updateStaffing', function (event, selectedOpportunities, selectedResources, startMonth, selectedRelatedResources) {
 		$scope.status.loading = true;
@@ -476,22 +483,16 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 
 			/* we need to equalize the time to be able to detect today */
 			$scope.viewState.startDate = new Date(data.StartDate);
-			$scope.viewState.startDate.setHours(0);
-			$scope.viewState.startDate.setMinutes(0);
-			$scope.viewState.startDate.setSeconds(0);
-			$scope.viewState.startDate.setMilliseconds(0);
+			normalizeTime($scope.viewState.startDate);
 
 			$scope.viewState.endDate = new Date(data.EndDate);
-			$scope.viewState.endDate.setHours(0);
-			$scope.viewState.endDate.setMinutes(0);
-			$scope.viewState.endDate.setSeconds(0);
-			$scope.viewState.endDate.setMilliseconds(0);
+			normalizeTime($scope.viewState.endDate);
 
 			var today = new Date();
-			today.setHours(0);
-			today.setMinutes(0);
-			today.setSeconds(0);
-			today.setMilliseconds(0);
+			normalizeTime(today);
+
+			var todayWeek = datepicker.iso8601Week(today);
+			var todayMonth = datepicker.formatDate('m', today);
 
 			$scope.viewState.staffingMonths.splice(0, $scope.viewState.staffingMonths.length);
 			$scope.viewState.staffingWeeks.splice(0, $scope.viewState.staffingWeeks.length);
@@ -562,6 +563,10 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 					month: datepicker.formatDate('m', currentDate),
 					dateString: datepicker.formatDate('yy-mm-dd', currentDate)
 				};
+
+				if (dateInfo.isToday || dateInfo.isFuture || (dateInfo.week === todayWeek && dateInfo.month === todayMonth)) {
+					dateInfo.isAllocatable = true;
+				}
 
 				if (!lastMonth || lastMonth.number !== dateInfo.month) {
 					if (lastMonth) {
