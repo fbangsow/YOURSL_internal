@@ -34,8 +34,6 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'clientCache', 'Ps
 		filterVisible: !hadStoredFilter
 	};
 
-	console.log($scope.viewState.startMonth);
-
 	[$scope.viewState.today, $scope.viewState.startMonth, $scope.viewState.minStartMonth, $scope.viewState.maxStartMonth].forEach(function (d, index) {
 		if (index > 0) {
 			d.setDate(1);
@@ -234,6 +232,8 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'clientCache', 'Ps
 	};
 
 	$scope.filter.opportunities.selectAllOpportunities = function () {
+		$scope.viewState.selectRelatedOpportunities = false;
+
 		/* add all currently visible projects to the selection */
 		for (var c = 0; c < $scope.data.Customers.length; c++) {
 			for (var p = 0; p < $scope.data.Customers[c].Projects.length; p++) {
@@ -350,6 +350,8 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'clientCache', 'Ps
 	};
 
 	$scope.filter.resources.selectAllResources = function () {
+		$scope.viewState.selectRelatedResources = false;
+
 		/* add all currently visible resources to the selection */
 		for (var c = 0; c < $scope.data.Resources.length; c++) {
 			for (var r = 0; r < $scope.data.Resources[c].length; r++) {
@@ -502,7 +504,12 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'clientCache', 'Ps
 			selectRelatedOpportunities: $scope.viewState.selectRelatedOpportunities
 		}));
 
-		$scope.$broadcast('updateStaffing', $scope.viewState.selectedOpportunities, $scope.viewState.selectedResources, $scope.viewState.startMonth, $scope.viewState.selectRelatedResources);
+		$scope.$broadcast(
+			'updateStaffing',
+			$scope.viewState.selectRelatedOpportunities ? ['__related'] : $scope.viewState.selectedOpportunities,
+			$scope.viewState.selectRelatedResources ? ['__related'] : $scope.viewState.selectedResources,
+			$scope.viewState.startMonth
+		);
 	};
 
 	/* initialize data */

@@ -7,7 +7,6 @@
         <apex:includeScript value="{!URLFOR($Resource.StreamingApiScripts,'jquery.cometd.js')}"/>
         <apex:includeScript value="{!URLFOR($Resource.jQuery_ui_1_11_4,'jquery-ui.min.js')}"/>
         <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js" />
-        <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular-cookies.min.js" />
         <apex:includeScript value="{!URLFOR($Resource.PsoTable2,'js/core.js')}"/>
         <apex:includeScript value="{!URLFOR($Resource.PsoTable2,'js/controllers/root.js')}"/>
         <apex:includeScript value="{!URLFOR($Resource.PsoTable2,'js/controllers/staffing.js')}"/>
@@ -21,7 +20,7 @@
             <div data-ng-app="PsoTable2" data-ng-controller="PsoTable2" id="pso-table">
 
                 <!-- loading -->
-                <apex:pageBlock title="" html-data-ng-if="status.loading" >
+                <apex:pageBlock html-data-ng-if="status.loading">
                     <div aria-hidden="false" role="dialog" class="slds-modal slds-fade-in-open">
                         <div class="slds-modal__container textCenter">
                             <div class="slds-modal__menu slds-max-small-buttons--stretch slds-x-small-buttons--stacked" style="width:100px;margin:auto">
@@ -36,7 +35,7 @@
                 </apex:pageBlock>
                 <!-- loading end-->
 
-                <apex:pageBlock html-data-ng-if="!status.loading" title="Apply filters">
+                <apex:pageBlock title="Apply filters">
                     <div id="filter" class="headerfixed">
                         <div class="slds-page-header" role="banner">
                             <div class="slds-grid">

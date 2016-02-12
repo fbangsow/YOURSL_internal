@@ -9,11 +9,19 @@ public with sharing class PsoTable2Controller {
 		PsoToolController instance = PsoToolController.getInstance();
 
 		if (!opportunityIds.isEmpty() && opportunityIds[0] != '__none') {
-			instance.setSelectedOpportunities(opportunityIds);
+			if (opportunityIds[0] == '__related') {
+				instance.showAllOpportunities();
+			} else {
+				instance.setSelectedOpportunities(opportunityIds);
+			}
 		}
 
-		if (!resourceIds.isEmpty() && resourceIds[0] != '__none' && resourceIds[0] != '__related') {
-			instance.setSelectedContacts(resourceIds);
+		if (!resourceIds.isEmpty() && resourceIds[0] != '__none') {
+			if (resourceIds[0] == '__related') {
+				instance.showAllContacts();
+			} else {
+				instance.setSelectedContacts(resourceIds);
+			}
 		}
 
 		instance.setStartDate(startMonth.date());

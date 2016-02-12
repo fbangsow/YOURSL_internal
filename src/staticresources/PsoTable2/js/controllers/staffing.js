@@ -1,11 +1,6 @@
 PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQuery.ui.datepicker', 'alert', function ($scope, sfEndpoint, datepicker, alert) {
 	console.log('init staffing controller');
 
-	$scope.status = {
-		loaded: false,
-		loading: false
-	};
-
 	$scope.viewState = {
 		startDate: null,
 		endDate: null,
@@ -479,11 +474,13 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 	};
 
 	/* functions for the staffing table */
-	$scope.$on('updateStaffing', function (event, selectedOpportunities, selectedResources, startMonth, selectedRelatedResources) {
-		$scope.status.loading = true;
-		$scope.status.loaded = false;
+	$scope.$on('updateStaffing', function (event, selectedOpportunities, selectedResources, startMonth) {
+		if ($scope.$parent.status) {
+			$scope.$parent.status.loading = true;
+			$scope.$parent.status.loaded = false;
+		}
 
-		sfEndpoint.getProjectStaffing(selectedOpportunities, selectedResources, startMonth, selectedRelatedResources).then(function (data) {
+		sfEndpoint.getProjectStaffing(selectedOpportunities, selectedResources, startMonth).then(function (data) {
 			console.log('received data for project staffing:', data);
 
 			/* we need to equalize the time to be able to detect today */
@@ -663,8 +660,10 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 			$scope.viewState.staffingDayColumns = dayCount;
 			$scope.viewState.staffingColumns = $scope.viewState.staticStaffingColumns + dayCount;
 
-			$scope.status.loading = false;
-			$scope.status.loaded = true;
+			if ($scope.$parent.status) {
+				$scope.$parent.status.loading = false;
+				$scope.$parent.status.loaded = true;
+			}
 
 			console.log('finished data update');
 		}, function (response) {
