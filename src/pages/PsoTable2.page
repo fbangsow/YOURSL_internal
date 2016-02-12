@@ -284,7 +284,7 @@
                     <h4>{{ viewState.startDate | date : 'MMM yyyy' }} - {{ viewState.endDate | date : 'MMM yyyy' }}</h4>
 
                     <section id="staffing" class="contentBox slds-m-around--medium slds-box slds-scrollable--y">
-                        <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal">
+                        <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal" data-navigate-cell-inputs="true">
                             <tbody data-ng-if="data.Customers.length" ng-repeat="customer in data.Customers" ng-init="firstCustomer = $first">
                                 <tr ng-if="firstCustomer" class="slds-text-heading--label tableheader">
                                     <th rowspan="4">Resource</th>

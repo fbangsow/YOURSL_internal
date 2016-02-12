@@ -679,3 +679,124 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 		$scope.viewState.projectHealthReasons = reasons;
 	})
 }]);
+
+/* interface extensions */
+PsoTable2.ng.directive('navigateCellInputs', function () {
+	/* up, right, down, left */
+	var arrowKeys = [38,39,40,37];
+
+	return {
+		restrict: 'A',
+		link: function (scope, el, attributes) {
+			el.on('focus', 'input', function (e) {
+				var target = $(e.target);
+
+				var cell = target.closest('td');
+				var row = target.closest('tr');
+				var table = target.closest('table');
+
+				$('td', table).removeClass('focus');
+				$('tr', table).removeClass('focus');
+
+				cell.addClass('focus');
+				row.addClass('focus');
+			});
+
+			el.on('blur', 'input', function (e) {
+				var target = $(e.target);
+				var table = target.closest('table');
+
+				$('td', table).removeClass('focus');
+				$('tr', table).removeClass('focus');
+			});
+
+			el.on('keydown', 'input', function (e) {
+				var arrowKey = arrowKeys.indexOf(e.which);
+
+				if (arrowKey === -1) {
+					return;
+				}
+
+				e.preventDefault();
+
+				var target = $(e.target);
+
+				var cell = target.closest('td');
+				var row = target.closest('tr');
+				var table = target.closest('table');
+
+				var targetInput;
+
+				switch (arrowKey) {
+					case 0:
+						/* up */
+						var allCells = $('td', row);
+						var allRows = $('tr', table);
+
+						var cellIndex = allCells.index(cell);
+
+						/* iterate over all previous rows until we find an input */
+						for (var rowIndex = allRows.index(row); rowIndex > 0; rowIndex--) {
+							var targetRow = allRows.get(rowIndex - 1);
+							var targetCell = $('td', targetRow).get(cellIndex);
+
+							if (targetCell) {
+								targetInput = $('input', targetCell);
+
+								if (targetInput && targetInput.length) {
+									break;
+								}
+							}
+						}
+						break;
+					case 1:
+						/* right */
+						/* try the next cell */
+						targetInput = $('input', cell.next());
+
+						if (!targetInput || !targetInput.length) {
+							/* this did not work out, propably week end, try all following siblings */
+							targetInput = $('input', cell.nextAll()).first();
+						}
+						break;
+					case 2:
+						/* down */
+						var allCells = $('td', row);
+						var allRows = $('tr', table);
+
+						var cellIndex = allCells.index(cell);
+						var rowIndex = allRows.index(row);
+
+						/* iterate over all following rows until we find an input */
+						for (var rowIndex = allRows.index(row); rowIndex < allRows.length - 1; rowIndex++) {
+							var targetRow = allRows.get(rowIndex + 1);
+							var targetCell = $('td', targetRow).get(cellIndex);
+
+							if (targetCell) {
+								targetInput = $('input', targetCell);
+
+								if (targetInput && targetInput.length) {
+									break;
+								}
+							}
+						}
+						break;
+					case 3:
+						/* left */
+						/* try the previous cell */
+						targetInput = $('input', cell.prev());
+
+						if (!targetInput || !targetInput.length) {
+							/* this did not work out, propably week start, try all previous siblings */
+							targetInput = $('input', cell.prevAll()).last();
+						}
+						break;
+				};
+
+				if (targetInput && targetInput.length) {
+					targetInput.focus();
+				}
+			});
+		}
+	};
+});
