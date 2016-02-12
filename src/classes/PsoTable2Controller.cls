@@ -1,7 +1,7 @@
 public with sharing class PsoTable2Controller {
 	@RemoteAction
-	public static String getFilterOptions() {
-		return PsoToolController.getInstance().getFilterValues().JSON();
+	public static String getFilterOptions(Datetime startMonth) {
+		return PsoToolController.getInstance().setStartDate(startMonth.date()).getFilterValues().JSON();
 	}
 
 	@RemoteAction

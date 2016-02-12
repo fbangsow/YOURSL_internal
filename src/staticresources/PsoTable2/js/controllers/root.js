@@ -62,6 +62,10 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 
 	$scope.data = {};
 
+	var getStartMonthNumber = function () {
+		return $scope.viewState.startMonth.getFullYear() * 100 + $scope.viewState.startMonth.getMonth();
+	};
+
 	$scope.filter.validateStartMonthRange = function () {
 		if ($scope.viewState.startMonth < $scope.viewState.minStartMonth) {
 			$scope.viewState.startMonth.setFullYear($scope.viewState.minStartMonth.getFullYear(), $scope.viewState.minStartMonth.getMonth());
@@ -71,8 +75,14 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 	};
 
 	$scope.filter.setStartMonthMonth = function (month) {
+		var oldMonth = getStartMonthNumber();
+
 		$scope.viewState.startMonth.setMonth(month - 1, 1);
 		$scope.filter.validateStartMonthRange();
+
+		if (getStartMonthNumber() !== oldMonth) {
+			$scope.filter.updateFilterData();
+		}
 	};
 
 	$scope.filter.increaseStartMonthYear = function () {
@@ -80,8 +90,14 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 			return;
 		}
 
+		var oldMonth = getStartMonthNumber();
+
 		$scope.viewState.startMonth.setFullYear($scope.viewState.startMonth.getFullYear() + 1);
 		$scope.filter.validateStartMonthRange();
+
+		if (getStartMonthNumber() !== oldMonth) {
+			$scope.filter.updateFilterData();
+		}
 	};
 
 	$scope.filter.decreaseStartMonthYear = function () {
@@ -89,12 +105,24 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 			return;
 		}
 
+		var oldMonth = getStartMonthNumber();
+
 		$scope.viewState.startMonth.setFullYear($scope.viewState.startMonth.getFullYear() - 1);
 		$scope.filter.validateStartMonthRange();
+
+		if (getStartMonthNumber() !== oldMonth) {
+			$scope.filter.updateFilterData();
+		}
 	};
 
 	$scope.filter.resetStartMonth = function () {
+		var oldMonth = getStartMonthNumber();
+
 		$scope.viewState.startMonth.setFullYear($scope.viewState.today.getFullYear(), $scope.viewState.today.getMonth(), 1);
+
+		if (getStartMonthNumber() !== oldMonth) {
+			$scope.filter.updateFilterData();
+		}
 	};
 
 	$scope.filter.getStartMonthClasses = function (month) {
@@ -310,11 +338,13 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 
 	$scope.filter.resources.selectAllResources = function () {
 		/* add all currently visible resources to the selection */
-		for (var r = 0; r < $scope.data.Resources.length; r++) {
-			var currentIndex = $scope.viewState.selectedResources.indexOf($scope.data.Resources[r].ContactId);
+		for (var c = 0; c < $scope.data.Resources.length; c++) {
+			for (var r = 0; r < $scope.data.Resources[c].length; r++) {
+				var currentIndex = $scope.viewState.selectedResources.indexOf($scope.data.Resources[c][r].ContactId);
 
-			if (currentIndex === -1 && $scope.filter.resources.resourceMatchesFilter($scope.data.Resources[r])) {
-				$scope.viewState.selectedResources.push($scope.data.Resources[r].ContactId);
+				if (currentIndex === -1 && $scope.filter.resources.resourceMatchesFilter($scope.data.Resources[c][r])) {
+					$scope.viewState.selectedResources.push($scope.data.Resources[c][r].ContactId);
+				}
 			}
 		}
 	};
@@ -348,61 +378,100 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 		$scope.$broadcast('updateStaffing', $scope.viewState.selectedOpportunities, $scope.viewState.selectedResources, $scope.viewState.startMonth, $scope.viewState.selectRelatedResources);
 	};
 
+	$scope.filter.updateFilterData = function () {
+		sfEndpoint.getFilterOptions($scope.viewState.startMonth).then(function (data) {
+			$scope.status.loading = false;
+			$scope.status.isAllowedToRunScheduler = !!data.IsAllowedToRunScript;
+
+			$scope.data.Customers = data.Customers;
+			$scope.data.Resources = [];
+
+			var resourcesByRole = {
+				/* preinitialize here to prevent it from being pushed to the data to early, it will be pushed later */
+				'No role': []
+			};
+
+			var knownResourceIds = {};
+			var knownOpportunityIds = {};
+
+			resourcesByRole['No role'].Role = 'No role';
+
+			for (var r = 0; r < data.Resources.length; r++) {
+				var resource = data.Resources[r];
+
+				knownResourceIds[resource.ContactId] = true;
+
+				if (!resource.Title) {
+					resource.Title = 'No role';
+				}
+
+				if (!resourcesByRole[resource.Title]) {
+					resourcesByRole[resource.Title] = [];
+					resourcesByRole[resource.Title].Role = resource.Title;
+					$scope.data.Resources.push(resourcesByRole[resource.Title]);
+				}
+
+				resourcesByRole[resource.Title].push(resource);
+			}
+
+			if (resourcesByRole['No role'].length) {
+				$scope.data.Resources.push(resourcesByRole['No role']);
+			}
+
+			var projectAndCustomerCount = data.Customers.length;
+
+			for (var c = 0; c < data.Customers.length; c++) {
+				projectAndCustomerCount += data.Customers[c].Projects.length;
+
+				/* normalize the projects to contain the customer info */
+				for (var p = 0; p < data.Customers[c].Projects.length; p++) {
+					var project = data.Customers[c].Projects[p];
+
+					knownOpportunityIds[project.OpportunityId] = true;
+
+					project.AccountId = data.Customers[c].AccountId;
+					project.AccountName = data.Customers[c].AccountName;
+				}
+			}
+
+			$scope.viewState.selectedOpportunitiesSize = Math.min(10, projectAndCustomerCount);
+			$scope.viewState.selectedResourcesSize = Math.min(10, data.Resources.length);
+
+			var lostOpportunityIds = [];
+			for (var o = 0; o < $scope.viewState.selectedOpportunities.length; o++) {
+				var oppId = $scope.viewState.selectedOpportunities[o];
+
+				if (!knownOpportunityIds[oppId]) {
+					lostOpportunityIds.push(oppId);
+				}
+			}
+
+			for (var o = 0; o < lostOpportunityIds.length; o++) {
+				var index = $scope.viewState.selectedOpportunities.indexOf(lostOpportunityIds[o]);
+				$scope.viewState.selectedOpportunities.splice(index, 1);
+			}
+
+			var lostResourceIds = [];
+			for (var r = 0; r < $scope.viewState.selectedResources.length; r++) {
+				var resourceId = $scope.viewState.selectedResources[r];
+
+				if (!knownResourceIds[resourceId]) {
+					lostResourceIds.push(resourceId);
+				}
+			}
+
+			for (var r = 0; r < lostResourceIds.length; r++) {
+				var index = $scope.viewState.selectedResources.indexOf(lostResourceIds[r]);
+				$scope.viewState.selectedResources.splice(index, 1);
+			}
+
+			console.log('received filter data', data);
+		}, function (response) {
+			$scope.status.error = response;
+			console.log('error while receiving filter data', response);
+		});
+	};
+
 	/* initialize data */
-	sfEndpoint.getFilterOptions().then(function (data) {
-		$scope.status.loading = false;
-		$scope.status.isAllowedToRunScheduler = !!data.IsAllowedToRunScript;
-
-		$scope.data.Customers = data.Customers;
-		$scope.data.Resources = [];
-
-		var resourcesByRole = {
-			/* preinitialize here to prevent it from being pushed to the data to early, it will be pushed later */
-			'No role': []
-		};
-
-		resourcesByRole['No role'].Role = 'No role';
-
-		for (var r = 0; r < data.Resources.length; r++) {
-			var resource = data.Resources[r];
-
-			if (!resource.Title) {
-				resource.Title = 'No role';
-			}
-
-			if (!resourcesByRole[resource.Title]) {
-				resourcesByRole[resource.Title] = [];
-				resourcesByRole[resource.Title].Role = resource.Title;
-				$scope.data.Resources.push(resourcesByRole[resource.Title]);
-			}
-
-			resourcesByRole[resource.Title].push(resource);
-		}
-
-		if (resourcesByRole['No role'].length) {
-			$scope.data.Resources.push(resourcesByRole['No role']);
-		}
-
-		var projectAndCustomerCount = data.Customers.length;
-
-		for (var c = 0; c < data.Customers.length; c++) {
-			projectAndCustomerCount += data.Customers[c].Projects.length;
-
-			/* normalize the projects to contain the customer info */
-			for (var p = 0; p < data.Customers[c].Projects.length; p++) {
-				var project = data.Customers[c].Projects[p];
-
-				project.AccountId = data.Customers[c].AccountId;
-				project.AccountName = data.Customers[c].AccountName;
-			}
-		}
-
-		$scope.viewState.selectedOpportunitiesSize = Math.min(10, projectAndCustomerCount);
-		$scope.viewState.selectedResourcesSize = Math.min(10, data.Resources.length);
-
-		console.log('received filter data', data);
-	}, function (response) {
-		$scope.status.error = response;
-		console.log('error while receiving filter data', response);
-	});
+	$scope.filter.updateFilterData();
 }]);

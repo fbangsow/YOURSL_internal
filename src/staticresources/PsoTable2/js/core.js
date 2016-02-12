@@ -35,10 +35,10 @@ PsoTable2.ng.factory('PsoTable2Endpoint', ['$q', function ($q) {
 	};
 
 	/* initialize remote functions */
-	instance.getFilterOptions = function () {
+	instance.getFilterOptions = function (startMonth) {
 		var deferred = $q.defer();
 
-		Visualforce.remoting.Manager.invokeAction('PsoTable2Controller.getFilterOptions', function (result, event) {
+		Visualforce.remoting.Manager.invokeAction('PsoTable2Controller.getFilterOptions', startMonth.toUTCString(), function (result, event) {
 			if (!event || !event.status) {
 				deferred.reject(event);
 				return
@@ -64,7 +64,7 @@ PsoTable2.ng.factory('PsoTable2Endpoint', ['$q', function ($q) {
 
 		if (!resourceIds.length) {
 			if (selectedRelatedResources) {
-				resourceIds = ['__related'];	
+				resourceIds = ['__related'];
 			} else {
 				resourceIds = ['__none'];
 			}
