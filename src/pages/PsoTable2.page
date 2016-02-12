@@ -126,7 +126,11 @@
                                                                     </section>
 
                                                                     <select multiple="multiple" name="selectedResources" id="selectedResources" ng-model="viewState.selectedResources" ng-attr-size="{{ viewState.selectedResourcesSize }}" ng-disabled="viewState.selectRelatedResources" class="slds-input  slds-p-around--xx-small height100" >
-                                                                        <option ng-repeat="resource in data.Resources | filter : filter.resources.resourceMatchesFilter" value="{{ resource.ContactId }}">{{ resource.ResourceName }}</option>
+                                                                        <optgroup ng-repeat="role in data.Resources | filter : filter.resources.roleMatchesFilter" label="{{ role.Role }}" ng-click="filter.resources.events.roleClicked(role, $event)">
+                                                                            <option ng-repeat="resource in role | filter : filter.resources.resourceMatchesFilter" value="{{ resource.ContactId }}">
+                                                                                {{ resource.ResourceName }}
+                                                                            </option>
+                                                                        </optgroup>
                                                                     </select>
 
                                                                     <input type="search" placeholder="Filter resources" ng-model="viewState.resourcesFilterText" ng-change="resources.removeFilteredResourcesFromSelection()" class="slds-input" />

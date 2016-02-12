@@ -226,6 +226,70 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 		}
 	};
 
+	$scope.filter.resources.events.roleClicked = function (role, event) {
+		if (event.target !== event.currentTarget) {
+			/* this event came bubbling through by clicking an option */
+			return;
+		}
+
+		$scope.filter.resources.selectRoleResources(role, event.metaKey || event.ctrlKey || event.shiftKey);
+	};
+
+	$scope.filter.resources.selectRoleResources = function (role, toggle) {
+		if (!toggle) {
+			/* when not toggling we behave like a default option click and unselect all other options */
+			$scope.filter.resources.clearSelectedResources();
+		}
+
+		var allActive = true;
+
+		if (toggle) {
+			/* when toggling we will select all, if not all were selected or unselect all, if all were */
+			for (var i = 0; i < role.length; i++) {
+				var resourceId = role[i].ContactId;
+				var currentIndex = $scope.viewState.selectedResources.indexOf(resourceId);
+
+				allActive = allActive && (currentIndex !== -1);
+
+				if (!allActive) {
+					break;
+				}
+			}
+		}
+
+		for (var i = 0; i < role.length; i++) {
+			var resourceId = role[i].ContactId;
+			var currentIndex = $scope.viewState.selectedResources.indexOf(resourceId);
+
+			if (currentIndex === -1) {
+				/* if it's not in yet, we want to add, whether toggling or not doesn't matter */
+				$scope.viewState.selectedResources.push(resourceId);
+			} else if (toggle && allActive) {
+				$scope.viewState.selectedResources.splice(currentIndex, 1);
+			}
+		}
+	};
+
+	$scope.filter.resources.roleMatchesFilter = function (role) {
+		if (!$scope.viewState.resourcesFilterText) {
+			return true;
+		}
+
+		var regex = new RegExp('^.*' + $scope.viewState.resourcesFilterText.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&") + '.*$', 'i');
+
+		if (regex.test(role.Role)) {
+			return true;
+		}
+
+		for (var r = 0; r < role.length; r++) {
+			if (regex.test(role[r].ResourceName)) {
+				return true;
+			}
+		}
+
+		return false;
+	};
+
 	$scope.filter.resources.resourceMatchesFilter = function (resource) {
 		if (!$scope.viewState.resourcesFilterText) {
 			return true;
@@ -233,7 +297,7 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 
 		var regex = new RegExp('^.*' + $scope.viewState.resourcesFilterText.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&") + '.*$', 'i');
 
-		if (regex.test(resource.ResourceName)) {
+		if (regex.test(resource.ResourceName) || regex.test(resource.Title)) {
 			return true;
 		}
 
@@ -288,7 +352,34 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 		$scope.status.isAllowedToRunScheduler = !!data.IsAllowedToRunScript;
 
 		$scope.data.Customers = data.Customers;
-		$scope.data.Resources = data.Resources;
+		$scope.data.Resources = [];
+
+		var resourcesByRole = {
+			/* preinitialize here to prevent it from being pushed to the data to early, it will be pushed later */
+			'No role': []
+		};
+
+		resourcesByRole['No role'].Role = 'No role';
+
+		for (var r = 0; r < data.Resources.length; r++) {
+			var resource = data.Resources[r];
+
+			if (!resource.Title) {
+				resource.Title = 'No role';
+			}
+
+			if (!resourcesByRole[resource.Title]) {
+				resourcesByRole[resource.Title] = [];
+				resourcesByRole[resource.Title].Role = resource.Title;
+				$scope.data.Resources.push(resourcesByRole[resource.Title]);
+			}
+
+			resourcesByRole[resource.Title].push(resource);
+		}
+
+		if (resourcesByRole['No role'].length) {
+			$scope.data.Resources.push(resourcesByRole['No role']);
+		}
 
 		var projectAndCustomerCount = data.Customers.length;
 
