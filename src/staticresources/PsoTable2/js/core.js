@@ -6,6 +6,14 @@ PsoTable2.ng.factory('jQuery.ui.datepicker', function () {
 	return $.datepicker;
 });
 
+PsoTable2.ng.factory('clientCache', ['$window', function ($window) {
+	if (!$window.sessionStorage) {
+		alert('Your browser does not support sessionStorage. Unable to store the selected filter in the session.');
+	}
+
+	return $window.sessionStorage;
+}]);
+
 PsoTable2.ng.factory('PsoTable2Endpoint', ['$q', function ($q) {
 	console.log('init endpoint');
 

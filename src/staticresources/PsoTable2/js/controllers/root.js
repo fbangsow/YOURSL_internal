@@ -1,27 +1,40 @@
-PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint', function ($scope, $rootScope, sfEndpoint) {
+PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'clientCache', 'PsoTable2Endpoint', function ($scope, $rootScope, clientCache, sfEndpoint) {
 	$scope.status = {
 		loading: true,
 		isAllowedToRunScheduler: false,
 		error: null
 	};
 
+	var storedFilter = clientCache.getItem('filter') || '';
+	var hadStoredFilter = !!storedFilter;
+
+	if (storedFilter) {
+		storedFilter = JSON.parse(storedFilter);
+	}
+
+	storedFilter = storedFilter || {};
+
 	$scope.viewState = {
 		today: new Date(),
-		startMonth: new Date(),
+		startMonth: storedFilter.startMonth ? new Date(storedFilter.startMonth) : new Date(),
 		minStartMonth: new Date(),
 		maxStartMonth: new Date(),
 
-		selectedOpportunities: [],
+		selectedOpportunities: storedFilter.selectedOpportunities || [],
 		selectedOpportunitiesSize: 2,
-		opportunitiesFilterText: '',
+		opportunitiesFilterText: storedFilter.opportunitiesFilterText || '',
 
-		selectedResources: [],
+		selectedResources: storedFilter.selectedResources || [],
 		selectedResourcesSize: 2,
-		resourcesFilterText: '',
+		resourcesFilterText: storedFilter.resourcesFilterText || '',
 
-		selectRelatedResources: true,
-		selectRelatedOpportunities: false
+		selectRelatedResources: storedFilter.selectRelatedResources !== false,
+		selectRelatedOpportunities: !!storedFilter.selectRelatedOpportunities,
+
+		filterVisible: !hadStoredFilter
 	};
+
+	console.log($scope.viewState.startMonth);
 
 	[$scope.viewState.today, $scope.viewState.startMonth, $scope.viewState.minStartMonth, $scope.viewState.maxStartMonth].forEach(function (d, index) {
 		if (index > 0) {
@@ -375,10 +388,11 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 		event.preventDefault();
 
 		$scope.viewState.filterVisible = false;
-		$scope.$broadcast('updateStaffing', $scope.viewState.selectedOpportunities, $scope.viewState.selectedResources, $scope.viewState.startMonth, $scope.viewState.selectRelatedResources);
+
+		$scope.updateStaffing();
 	};
 
-	$scope.filter.updateFilterData = function () {
+	$scope.filter.updateFilterData = function (populateStaffing) {
 		sfEndpoint.getFilterOptions($scope.viewState.startMonth).then(function (data) {
 			$scope.status.loading = false;
 			$scope.status.isAllowedToRunScheduler = !!data.IsAllowedToRunScript;
@@ -466,12 +480,31 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 			}
 
 			console.log('received filter data', data);
+
+			if (populateStaffing) {
+				console.log('directly populate staffing');
+				$scope.updateStaffing();
+			}
 		}, function (response) {
 			$scope.status.error = response;
 			console.log('error while receiving filter data', response);
 		});
 	};
 
+	$scope.updateStaffing = function () {
+		clientCache.setItem('filter', JSON.stringify({
+			startMonth: $scope.viewState.startMonth,
+			selectedOpportunities: $scope.viewState.selectedOpportunities,
+			opportunitiesFilterText: $scope.viewState.opportunitiesFilterText,
+			selectedResources: $scope.viewState.selectedResources,
+			resourcesFilterText: $scope.viewState.resourcesFilterText,
+			selectRelatedResources: $scope.viewState.selectRelatedResources,
+			selectRelatedOpportunities: $scope.viewState.selectRelatedOpportunities
+		}));
+
+		$scope.$broadcast('updateStaffing', $scope.viewState.selectedOpportunities, $scope.viewState.selectedResources, $scope.viewState.startMonth, $scope.viewState.selectRelatedResources);
+	};
+
 	/* initialize data */
-	$scope.filter.updateFilterData();
+	$scope.filter.updateFilterData(hadStoredFilter);
 }]);
