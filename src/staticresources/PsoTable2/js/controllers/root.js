@@ -330,10 +330,12 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'PsoTable2Endpoint
 	$scope.filter.resources.removeFilteredResourcesFromSelection = function () {
 		/* check all resources if they match the filter and remove from selection, if not */
 		for (var c = 0; c < $scope.data.Resources.length; c++) {
-			var currentIndex = $scope.viewState.selectedResources.indexOf($scope.data.Resources[r].ContactId);
+			for (var r = 0; r < $scope.data.Resources[c].length; r++) {
+				var currentIndex = $scope.viewState.selectedResources.indexOf($scope.data.Resources[c][r].ContactId);
 
-			if (currentIndex > -1 && !$scope.filter.resources.resourceMatchesFilter($scope.data.Resources[r])) {
-				$scope.viewState.selectedResources.splice(currentIndex, 1);
+				if (currentIndex > -1 && !$scope.filter.resources.resourceMatchesFilter($scope.data.Resources[c][r])) {
+					$scope.viewState.selectedResources.splice(currentIndex, 1);
+				}
 			}
 		}
 	};

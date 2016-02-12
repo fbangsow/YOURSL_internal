@@ -133,7 +133,7 @@
                                                                         </optgroup>
                                                                     </select>
 
-                                                                    <input type="search" placeholder="Filter resources" ng-model="viewState.resourcesFilterText" ng-change="resources.removeFilteredResourcesFromSelection()" class="slds-input" />
+                                                                    <input type="search" placeholder="Filter resources" ng-model="viewState.resourcesFilterText" ng-change="filter.resources.removeFilteredResourcesFromSelection()" class="slds-input" />
 
                                                                     <section class="slds-clearfix slds-m-bottom--medium">
                                                                         <div class="slds-float--left">
