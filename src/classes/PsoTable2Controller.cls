@@ -77,6 +77,16 @@ public with sharing class PsoTable2Controller {
 		PsoToolController.getInstance().setProjectHealthReason(opportunityId, status);
 	}
 
+	@RemoteAction
+	public static String prepareSchedulerRun(Datetime selectedDate) {
+		return StatisticsCalculator.getInstance(selectedDate.date(), true).getDatesToBeDisplayed().JSON();
+	}
+
+	@RemoteAction
+	public static void runScheduler(Datetime selectedDate) {
+		StatisticsCalculator.getInstance(selectedDate.date(), true).createStatistics();
+	}
+
 	private static String formatDate(String localDateString) {
 		if (String.isBlank(localDateString)) {
 			return '';

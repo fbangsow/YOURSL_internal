@@ -152,7 +152,46 @@ PsoTable2.ng.factory('PsoTable2Endpoint', ['$q', function ($q) {
 		});
 
 		return deferred.promise;
-	}
+	};
+
+	instance.prepareSchedulerRun = function (date) {
+		var deferred = $q.defer();
+
+		Visualforce.remoting.Manager.invokeAction('PsoTable2Controller.prepareSchedulerRun', date.toUTCString(), function (result, event) {
+			if (!event || !event.status) {
+				deferred.reject(event);
+				return
+			}
+
+			result = JSON.parse(htmlDecode(result));
+			deferred.resolve(result);
+		}, {
+			buffer: true,
+			escape: true,
+			timeout: 30000
+		});
+
+		return deferred.promise;
+	};
+
+	instance.runScheduler = function (date) {
+		var deferred = $q.defer();
+
+		Visualforce.remoting.Manager.invokeAction('PsoTable2Controller.runScheduler', date.toUTCString(), function (result, event) {
+			if (!event || !event.status) {
+				deferred.reject(event);
+				return
+			}
+
+			deferred.resolve();
+		}, {
+			buffer: true,
+			escape: true,
+			timeout: 30000
+		});
+
+		return deferred.promise;
+	};
 
 	return instance;
 }]);

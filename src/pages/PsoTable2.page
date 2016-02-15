@@ -13,8 +13,8 @@
 
         <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.psoStyle, '/assets/styles/salesforce-lightning-design-system.css')}" />
         <c:customPSOstyle />
-        <!--<link rel="stylesheet" href="{!URLFOR($Resource.jQuery_ui_1_11_4,'jquery-ui.min.css')}" />
-        <link rel="stylesheet" href="{!URLFOR($Resource.PsoTable2,'css/main.css')}" />-->
+        <link rel="stylesheet" href="{!URLFOR($Resource.jQuery_ui_1_11_4,'jquery-ui.min.css')}" />
+        <!--<link rel="stylesheet" href="{!URLFOR($Resource.PsoTable2,'css/main.css')}" />-->
 
         <apex:form >
             <div data-ng-app="PsoTable2" data-ng-controller="PsoTable2" id="pso-table">
@@ -45,8 +45,14 @@
 
                                         <div class="slds-dropdown-trigger " style="position: absolute;">
                                             <a class="slds-button slds-button--icon-border-filled slds-icon--small " aria-haspopup="true" ng-click="viewState.filterVisible=!viewState.filterVisible">
-                                                <svg class="slds-icon slds-icon--x-small slds-icon-text-default slds-icon--x-smallMagrin ">
+                                                <svg class="slds-icon slds-icon--x-small slds-icon-text-default slds-icon--x-smallMargin ">
                                                     <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#filterList')}"></use>
+                                                </svg>
+                                            </a>
+
+                                            <a class="slds-button slds-button--icon-border-filled slds-icon--small" aria-haspopup="true" ng-click="viewState.schedulerVisible=!viewState.schedulerVisible" ng-if="viewState.isAllowedToRunScheduler">
+                                                <svg class="slds-icon slds-icon--x-small slds-icon-text-default slds-icon--x-smallMargin">
+                                                    <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#clock')}"></use>
                                                 </svg>
                                             </a>
 
@@ -249,6 +255,22 @@
                                                 </div>
                                             </div>
                                             <!-- show legend popup ende -->
+
+                                            <!-- run scheduler popup -->
+                                            <div class="schedulerpopup slds-nubbin--top-left" id="scheduler" ng-show="viewState.schedulerVisible" ng-if="viewState.isAllowedToRunScheduler">
+                                                <a class="slds-button slds-button--small slds-modal__close slds-icon--small" style="margin-right: 170px;margin-top: 25px;" ng-click="viewState.schedulerVisible=false">
+                                                    <svg aria-hidden="true" class="slds-icon slds-icon--x-small slds-icon-text-default">
+                                                        <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                                                    </svg>
+                                                </a>
+
+                                                <div class="slds-m-around--medium">
+                                                    PSO Scheduler 3.0
+                                                    <div data-show-week-or-month-picker="viewState.schedulerVisible" data-select-date="prepareSchedulerRun(selectedDate)">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- run scheduler popup end -->
                                         </div>
                                     </div>
 
@@ -278,7 +300,6 @@
                         </div>
                     </div>
                 </apex:pageBlock>
-
                 <apex:pageBlock html-data-ng-show="status.loaded" title="Manage staffing" html-ng-controller="PsoTable2Staffing" html-ng-init="viewState.staticStaffingColumns = 5">
                     <h4>{{ viewState.startDate | date : 'MMM yyyy' }} - {{ viewState.endDate | date : 'MMM yyyy' }}</h4>
 

@@ -1,7 +1,6 @@
-PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'clientCache', 'PsoTable2Endpoint', function ($scope, $rootScope, clientCache, sfEndpoint) {
+PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'alert', 'clientCache', 'PsoTable2Endpoint', function ($scope, $rootScope, alert, clientCache, sfEndpoint) {
 	$scope.status = {
 		loading: true,
-		isAllowedToRunScheduler: false,
 		error: null
 	};
 
@@ -31,7 +30,8 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'clientCache', 'Ps
 		selectRelatedResources: storedFilter.selectRelatedResources !== false,
 		selectRelatedOpportunities: !!storedFilter.selectRelatedOpportunities,
 
-		filterVisible: !hadStoredFilter
+		filterVisible: !hadStoredFilter,
+		isAllowedToRunScheduler: false
 	};
 
 	[$scope.viewState.today, $scope.viewState.startMonth, $scope.viewState.minStartMonth, $scope.viewState.maxStartMonth].forEach(function (d, index) {
@@ -397,7 +397,7 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'clientCache', 'Ps
 	$scope.filter.updateFilterData = function (populateStaffing) {
 		sfEndpoint.getFilterOptions($scope.viewState.startMonth).then(function (data) {
 			$scope.status.loading = false;
-			$scope.status.isAllowedToRunScheduler = !!data.IsAllowedToRunScript;
+			$scope.viewState.isAllowedToRunScheduler = !!data.IsAllowedToRunScript;
 
 			$scope.data.Customers = data.Customers;
 			$scope.data.Resources = [];
@@ -512,6 +512,73 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'clientCache', 'Ps
 		);
 	};
 
+	$scope.prepareSchedulerRun = function (date) {
+		$scope.viewState.schedulerVisible = false;
+
+		sfEndpoint.prepareSchedulerRun(date).then(function (result) {
+			var message = 'Please confirm the following actions:';
+			message += "\n" + '- planned statistics will be created from ' + result.PlannedWeekStart + ' to ' + result.PlannedWeekEnd;
+			message += "\n" + '- planned schedules will be replaced with time entries from ' + result.ActualWeekStart + ' to ' + result.ActualWeekEnd;
+			message += "\n" + '- actual statistics will be created from ' + result.ActualWeekStart + ' to ' + result.ActualWeekEnd;
+
+			if (result.PlannedMonthEnd) {
+				message += "\n" + 'planned statistics will be created from ' + result.PlannedMonthStart + ' to ' + result.PlannedMonthEnd;
+				message += "\n" + 'actual statistics will be created from ' + result.ActualMonthStart + ' to ' + result.ActualMonthEnd;
+			}
+
+			if (confirm(message)) {
+				console.log('run scheduler for time range', result);
+				sfEndpoint.runScheduler(date).then(function () {
+					alert('The job was successfully submitted, you\'ll see results in a few minutes.');
+				});
+			} else {
+				console.log('scheduler run aborted');
+			}
+		});
+	};
+
 	/* initialize data */
 	$scope.filter.updateFilterData(hadStoredFilter);
+}]);
+
+PsoTable2.ng.directive('showWeekOrMonthPicker', ['$timeout', function ($timeout) {
+	return {
+		restrict: 'A',
+		link: function (scope, el, attributes) {
+			scope.$watch(attributes.showWeekOrMonthPicker, function (status) {
+				if (status) {
+					$timeout(function() {
+						el.datepicker('show');
+					}, 100);
+				} else {
+					el.datepicker('hide');
+				}
+			});
+
+			var datepickerOptions = {
+				showButtonPanel: false,
+				dateFormat: 'yy-mm-dd',
+				beforeShowDay: function (date) {
+					var dayOfWeek = date.getDay();
+					var dayOfMonth = date.getDate();
+
+					if (dayOfWeek === 1 || dayOfMonth === 1) {
+						return [true, ''];
+					}
+
+					return [false, ''];
+				}
+			};
+
+			if (attributes.selectDate) {
+				datepickerOptions.onSelect = function (selectedDate) {
+					scope.$eval(attributes.selectDate, {
+						'selectedDate': new Date(selectedDate)
+					});
+				}
+			}
+
+			el.datepicker(datepickerOptions);
+		}
+	};
 }]);
