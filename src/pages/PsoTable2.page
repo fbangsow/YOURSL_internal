@@ -41,18 +41,12 @@
                             <div class="slds-grid">
                                 <div class="slds-media__body">
                                     <div class="slds-grid">
-                                        <h1 class="slds-text-heading--medium slds-m-right--small slds-truncate slds-align-middle" title="Record Title">Resource Planning Tool</h1>
+                                        <h1 class="slds-text-heading--medium slds-m-right--small slds-truncate slds-align-middle" title="Record Title">Resource Planning Tool 3.0</h1>
 
                                         <div class="slds-dropdown-trigger " style="position: absolute;">
-                                            <a class="slds-button slds-button--icon-border-filled slds-icon--small " aria-haspopup="true" ng-click="viewState.filterVisible=!viewState.filterVisible">
-                                                <svg class="slds-icon slds-icon--x-small slds-icon-text-default slds-icon--x-smallMargin ">
+                                            <a class="button--neutral slds-button  slds-button__icon--left" aria-haspopup="true" ng-click="viewState.filterVisible=!viewState.filterVisible">
+                                                <svg class="slds-icon slds-icon--x-small slds-icon-text-default slds-icon--x-smallMagrin ">
                                                     <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#filterList')}"></use>
-                                                </svg>
-                                            </a>
-
-                                            <a class="slds-button slds-button--icon-border-filled slds-icon--small" aria-haspopup="true" ng-click="viewState.schedulerVisible=!viewState.schedulerVisible" ng-if="viewState.isAllowedToRunScheduler">
-                                                <svg class="slds-icon slds-icon--x-small slds-icon-text-default slds-icon--x-smallMargin">
-                                                    <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#clock')}"></use>
                                                 </svg>
                                             </a>
 
@@ -234,7 +228,7 @@
 
                                             <!-- show legend popup -->
                                             <div class="legendpopup slds-nubbin--top-right" id="legend" ng-show="viewState.legendVisible">
-                                                <a class="slds-button slds-button--small slds-modal__close slds-icon--small" style="margin-right: 170px;margin-top: 25px;" ng-click="viewState.legendVisible=false">
+                                                <a class="slds-button slds-button--small slds-modal__close slds-icon--small" style="margin-right: 170px;margin-top: 17px;" ng-click="viewState.legendVisible=false">
                                                     <svg aria-hidden="true" class="slds-icon slds-icon--x-small slds-icon-text-default">
                                                         <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
                                                     </svg>
@@ -257,15 +251,16 @@
                                             <!-- show legend popup ende -->
 
                                             <!-- run scheduler popup -->
-                                            <div class="schedulerpopup slds-nubbin--top-left" id="scheduler" ng-show="viewState.schedulerVisible" ng-if="viewState.isAllowedToRunScheduler">
-                                                <a class="slds-button slds-button--small slds-modal__close slds-icon--small" style="margin-right: 170px;margin-top: 25px;" ng-click="viewState.schedulerVisible=false">
+                                            <div class="schedulerpopup slds-nubbin--top-right" id="scheduler" ng-show="viewState.schedulerVisible" ng-if="viewState.isAllowedToRunScheduler">
+                                                <a class="slds-button slds-button--small slds-modal__close slds-icon--small" style="margin-right: 270px;margin-top: 18px;" ng-click="viewState.schedulerVisible=false">
                                                     <svg aria-hidden="true" class="slds-icon slds-icon--x-small slds-icon-text-default">
                                                         <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
                                                     </svg>
                                                 </a>
 
                                                 <div class="slds-m-around--medium">
-                                                    PSO Scheduler 3.0
+                                                    <div class="slds-text-heading--label slds-m-bottom--medium">Rerun PSO statistics aggregation</div>
+                                                    Please select the week / month to run the aggregation for.
                                                     <div data-show-week-or-month-picker="viewState.schedulerVisible" data-select-date="prepareSchedulerRun(selectedDate)">
                                                     </div>
                                                 </div>
@@ -278,11 +273,16 @@
                                 </div>
 
                                 <!-- header navigation -->
-                                <div class="slds-col slds-no-flex slds-align-bottom">
+                                <div class="slds-col slds-no-flex ">
                                     <div class="slds-button-group" role="group">
                                         <a class="slds-button slds-button--neutral" href="#" ng-click="viewState.legendVisible=!viewState.legendVisible">
                                             <svg class="slds-icon slds-icon--x-small slds-icon-text-default ">
                                                 <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#question')}"></use>
+                                            </svg>
+                                        </a>
+                                        <a class="slds-button slds-button--neutral"  aria-haspopup="true" ng-click="viewState.schedulerVisible=!viewState.schedulerVisible" ng-if="viewState.isAllowedToRunScheduler">
+                                            <svg class="slds-icon slds-icon--x-small slds-icon-text-default ">
+                                                <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#clock')}"></use>
                                             </svg>
                                         </a>
                                         <div class="slds-button--last">
@@ -300,6 +300,7 @@
                         </div>
                     </div>
                 </apex:pageBlock>
+
                 <apex:pageBlock html-data-ng-show="status.loaded" title="Manage staffing" html-ng-controller="PsoTable2Staffing" html-ng-init="viewState.staticStaffingColumns = 5">
                     <h4>{{ viewState.startDate | date : 'MMM yyyy' }} - {{ viewState.endDate | date : 'MMM yyyy' }}</h4>
 
@@ -307,7 +308,7 @@
                         <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal" data-navigate-cell-inputs="true">
                             <tbody data-ng-if="data.Customers.length" ng-repeat="customer in data.Customers" ng-init="firstCustomer = $first">
                                 <tr ng-if="firstCustomer" class="slds-text-heading--label tableheader">
-                                    <th rowspan="4">Resource</th>
+                                    <th rowspan="4" class="padding10left">Resource</th>
                                     <th rowspan="4">Role</th>
                                     <th rowspan="4">Sold days</th>
                                     <th rowspan="4">Planned days</th>
@@ -317,7 +318,7 @@
                                     </th>
                                 </tr>
                                 <tr ng-if="firstCustomer" class="tableheader">
-                                    <th colspan="{{ week.dayCount }}" ng-repeat="week in viewState.staffingWeeks">
+                                    <th colspan="{{ week.dayCount }}" ng-repeat="week in viewState.staffingWeeks" class="padding10left">
                                         CW-{{ week.number }}
                                     </th>
                                 </tr>
@@ -335,6 +336,18 @@
                                 </tr>
                                 <tr ng-repeat-start="project in customer.Projects" class="project-info">
                                     <td colspan="{{ viewState.staffingColumns }}">
+                                        <span class="slds-icon__container slds-float--left slds-m-right--large">
+                                            <a class="slds-button__icon slds-button__icon--left" href="/apex/OpportunityLineItemsEdit?id={{ project.OpportunityId }}" target="blank">
+                                                <svg class="slds-icon slds-icon--x-small slds-icon-text-default ">
+                                                    <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#cases')}"></use>
+                                                </svg>
+                                            </a>
+                                            <a class="slds-button__icon slds-button__icon--left" href="javascript:void(0)" ng-click="ProjectStatusVisible=!ProjectStatusVisible" title="Sales Price And Quantity">
+                                                <svg class=" slds-icon--x-small slds-icon-text-default ">
+                                                    <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#settings')}"></use>
+                                                </svg>
+                                            </a>
+                                        </span>
                                         <h4>
                                             <a href="/{{ customer.AccountId }}" target="_blank">{{ customer.AccountName }}</a>
                                             &nbsp;&gt;&nbsp;
@@ -344,25 +357,38 @@
                                             </span>
                                         </h4>
 
-                                        <a href="/apex/OpportunityLineItemsEdit?id={{ project.OpportunityId }}" target="_blank">Change quantity</a>
-
-                                        <select ng-model="project.ProjectStatus" ng-options="reason as label for (label, reason) in viewState.projectHealthReasons" ng-change="updateProjectStatus(project)"></select>
+                                        <!-- show ProjectStatus popup -->
+                                        <div class="ProjectStatusVisiblepopup slds-nubbin--left-top" ng-show="ProjectStatusVisible">
+                                            <a class="slds-button slds-button--small slds-modal__close slds-icon--small" style="margin-top: 49px;" ng-click="ProjectStatusVisible=false">
+                                                <svg aria-hidden="true" class="slds-icon slds-icon--x-small slds-icon-text-default">
+                                                    <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                                                </svg>
+                                            </a>
+                                            <div class="slds-m-around--medium">
+                                                <div class="slds-text-heading--label slds-m-bottom--medium">Project Status</div>
+                                                <ul class="slds-list--vertical slds-has-dividers--top slds-has-list-interactions">
+                                                    <li class="slds-list__item slds-p-left--small" ng-repeat="(label, reason) in viewState.projectHealthReasons" ng-click="project.ProjectStatus=reason;updateProjectStatus(project)" >{{ label }} </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <!-- show ProjectStatus popup ende -->
                                     </td>
                                 </tr>
-                                <tr ng-repeat="resource in project.Resources" ng-class="buildResourceRowClasses(resource)">
-                                    <td>
+                                <tr><td colspan="{{ viewState.staffingColumns }}" class="shadow"></td></tr>
+                                <tr ng-repeat="resource in project.Resources" ng-class="buildResourceRowClasses(resource)" class="slds-text-body--small">
+                                    <td class="fixtd">
                                         <a href="/{{ resource.ContactId }}" target="_blank">{{ resource.ResourceName }}</a>
                                     </td>
-                                    <td>
+                                    <td class="fixtd">
                                         {{ resource.Product }}
                                     </td>
-                                    <td>
+                                    <td class="fixtd">
                                         {{ (resource.SoldDays / 8) | number : 2 }}
                                     </td>
-                                    <td>
+                                    <td class="fixtd">
                                         {{ (resource.PlannedDays / 8) | number : 2 }}
                                     </td>
-                                    <td>
+                                    <td class="fixtd">
                                         {{ ((resource.SoldDays - resource.PlannedDays) / 8) | number : 2 }}
                                     </td>
                                     <td ng-repeat="day in viewState.staffingDays" ng-init="allocation = resource.StaffingByDay[day.dateString]; holiday = data.ResourcesByContactId[resource.ContactId].StaffingByDay[day.dateString]" ng-class="buildResourceAllocationCellClasses(resource, day, allocation)" class="textCenter">
@@ -389,17 +415,17 @@
                                         </span>-->
                                     </td>
                                 </tr>
-                                <tr ng-repeat-end="true">
-                                    <td colspan="2">
+                                <tr ng-repeat-end="true" class="slds-text-body--small" style="border-top:2px solid #ccc">
+                                    <td colspan="2" class="fixtd">
                                         Total
                                     </td>
-                                    <td>
+                                    <td class="fixtd">
                                         {{ (project.SoldDays / 8) | number : 2 }}
                                     </td>
-                                    <td>
+                                    <td class="fixtd">
                                         {{ (project.PlannedDays / 8) | number : 2 }}
                                     </td>
-                                    <td>
+                                    <td class="fixtd">
                                         {{ ((project.SoldDays - project.PlannedDays) / 8) | number : 2 }}
                                     </td>
                                     <td ng-repeat="day in viewState.staffingDays" ng-class="buildProjectDayCellClasses(project, day)" class="textCenter">
@@ -442,7 +468,7 @@
                                     </th>
                                 </tr>
                                 <tr ng-repeat="resource in data.Resources" ng-class="buildResourceRowClasses(resource)">
-                                    <td>{{ resource.ResourceName }}</td>
+                                    <td class="padding10left">{{ resource.ResourceName }}</td>
                                     <td>{{ resource.Title }}</td>
                                     <td colspan="3">{{ resource.AccountName}}</td>
                                     <td ng-repeat="day in viewState.staffingDays" ng-class="buildResourceAllocationCellClasses(resource, day, allocationSummary)" ng-init="allocationSummary = resource.StaffingByDay[day.dateString]" class="textCenter">
