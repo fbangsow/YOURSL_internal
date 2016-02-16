@@ -2,7 +2,7 @@ window.PsoTable2 = window.PsoTable2 || {};
 
 PsoTable2.ng = angular.module('PsoTable2', []);
 
-PsoTable2.ng.factory('jQuery.ui.datepicker', function () {
+PsoTable2.ng.factory('datepicker', function () {
 	return $.datepicker;
 });
 
@@ -14,7 +14,11 @@ PsoTable2.ng.factory('clientCache', ['$window', function ($window) {
 	return $window.sessionStorage;
 }]);
 
-PsoTable2.ng.factory('PsoTable2Endpoint', ['$q', function ($q) {
+PsoTable2.ng.factory('cometd', function () {
+	return $.cometd;
+});
+
+PsoTable2.ng.factory('PsoTable2Endpoint', ['$q', 'cometd', 'alert', function ($q, cometd, alert) {
 	console.log('init endpoint');
 
 	var instance = {};
@@ -191,6 +195,77 @@ PsoTable2.ng.factory('PsoTable2Endpoint', ['$q', function ($q) {
 		});
 
 		return deferred.promise;
+	};
+
+	var broadcastSessionId = null;
+	var broadcastListeners = [];
+	var metaListener = null;
+
+	var initialize = function () {
+		if (metaListener) {
+			cometd.removeListener(metaListener);
+			metaListener = null;
+		}
+
+		if (broadcastListeners.length) {
+			broadcastListeners.forEach(function (subscription) {
+				if (subscription.subscription) {
+					cometd.unsubscribe(subscription.subscription);
+					subscription.subscription = null;
+				}
+			});
+		}
+
+		console.log('initialize cometd connection');
+
+		cometd.init({
+			'url': '/cometd/29.0/',
+			'appendMessageTypeToURL': false,
+			'requestHeaders': {
+				'Authorization': 'OAuth ' + broadcastSessionId
+			}
+		});
+
+		metaListener = cometd.addListener('/meta/unsuccessful', function (failureInfo) {
+			console.log('cometd connection failure', failureInfo);
+			alert('Resource availability is not being synced with latest changes automatically any more. Please refresh the page to get the latest data.');
+		});
+
+		if (broadcastListeners.length) {
+			broadcastListeners.forEach(function (subscription) {
+				if (!subscription.subscription) {
+					subscription.subscription = cometd.uubscribe(subscription.listener);
+				}
+			});
+		}
+	};
+
+	instance.initializeBroadcastSession = function (sessionId) {
+		broadcastSessionId = sessionId;
+		initialize();
+	};
+
+	instance.onResourceChange = function (listener) {
+		if (typeof listener !== 'function') {
+			return;
+		}
+
+		if (!broadcastSessionId) {
+			return;
+		}
+
+		var subscription = null;
+
+		if (broadcastSessionId) {
+			subscription = cometd.subscribe('/topic/ResourceChanges', listener);
+		}
+
+		broadcastListeners.push({
+			'subscription': subscription,
+			'listener': listener
+		});
+
+		return subscription;
 	};
 
 	return instance;

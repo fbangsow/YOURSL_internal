@@ -4,6 +4,8 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'alert', 'clientCa
 		error: null
 	};
 
+	$scope.sfEndpoint = sfEndpoint;
+
 	var storedFilter = clientCache.getItem('filter') || '';
 	var hadStoredFilter = !!storedFilter;
 

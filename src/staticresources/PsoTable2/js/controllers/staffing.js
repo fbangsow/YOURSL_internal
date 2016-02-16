@@ -1,4 +1,4 @@
-PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQuery.ui.datepicker', 'alert', function ($scope, sfEndpoint, datepicker, alert) {
+PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'datepicker', 'alert', function ($scope, sfEndpoint, datepicker, alert) {
 	console.log('init staffing controller');
 
 	$scope.viewState = {
@@ -62,6 +62,14 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 	var normalizeResourceStaffing = function (resource, project) {
 		resource.StaffingByDay = {};
 		resource.MonthSaldos = {};
+
+		if (resource.MonthToOppLineItemIdMap) {
+			for (month in resource.MonthToOppLineItemIdMap) {
+				if (resource.MonthToOppLineItemIdMap.hasOwnProperty(month)) {
+					$scope.data.ResourcesByScheduleId[resource.MonthToOppLineItemIdMap[month]] = resource;
+				}
+			}
+		}
 
 		if (resource.MonthToLimitMap) {
 			/* initialize the month saldo to the complete budget, we'll reduce by the planned hours later */
@@ -626,6 +634,7 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 			$scope.data.Customers = [];
 			$scope.data.Resources = [];
 			$scope.data.ResourcesByContactId = {};
+			$scope.data.ResourcesByScheduleId = {};
 
 			if (data.Resources) {
 				for (var r = 0; r < data.Resources.length; r++) {
@@ -640,7 +649,7 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 
 					normalizeResourceStaffing(resource);
 
-					$scope.data.ResourcesByContactId[data.Resources[r].ContactId] = data.Resources[r];
+					$scope.data.ResourcesByContactId[resource.ContactId] = resource;
 				}
 
 				$scope.data.Resources = data.Resources;
@@ -669,6 +678,51 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'jQ
 		}, function (response) {
 			$scope.status.error = response;
 			console.log('error while retrieving project staffing data:', response);
+		});
+	});
+
+	sfEndpoint.onResourceChange(function (message) {
+		console.log('received resource change info', message);
+
+		var data = message.data.sobject;
+		var overallResource = $scope.data.ResourcesByContactId[data.ContactId__c];
+		var projectResource = $scope.data.ResourcesByScheduleId[data.OpportunityLineItemId__c];
+
+		if (!overallResource) {
+			/* we don't currently see this resource */
+			return;
+		}
+
+		var forDate = new Date(data.Scheduled_Date__c);
+		var forDateString = datepicker.formatDate('yy-mm-dd', forDate);
+		var newBookingValue = parseFloat(data.New_value__c) * 8;
+		var oldBookingValue = parseFloat(data.Old_value__c) * 8;
+		var delta = newBookingValue - oldBookingValue;
+
+		$scope.$apply(function () {
+			[overallResource, projectResource].forEach(function (resource) {
+				if (!resource) {
+					return;
+				}
+
+				var staffing = resource.StaffingByDay[forDateString];
+
+				if (!staffing) {
+					staffing = {
+						date: forDate,
+						Day: forDateString,
+						Staff: newBookingValue
+					};
+					resource.Staffing.push(staffing);
+					resource.StaffingByDay[forDateString] = staffing;
+				} else {
+					staffing.Staff += delta;
+				}
+
+				console.log('updated resource', resource, staffing);
+
+				normalizeResourceStaffing(resource);
+			});
 		});
 	});
 

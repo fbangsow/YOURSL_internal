@@ -17,7 +17,7 @@
         <!--<link rel="stylesheet" href="{!URLFOR($Resource.PsoTable2,'css/main.css')}" />-->
 
         <apex:form >
-            <div data-ng-app="PsoTable2" data-ng-controller="PsoTable2" id="pso-table">
+            <div data-ng-app="PsoTable2" data-ng-controller="PsoTable2" id="pso-table" ng-init="sfEndpoint.initializeBroadcastSession('{!$Api.Session_ID}')">
 
                 <!-- loading -->
                 <apex:pageBlock html-data-ng-if="status.loading">
