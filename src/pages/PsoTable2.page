@@ -306,8 +306,8 @@
 
                     <section id="staffing" class="contentBox slds-m-around--medium slds-box slds-scrollable--y">
                         <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal" data-navigate-cell-inputs="true">
-                            <tbody data-ng-if="data.Customers.length" ng-repeat="customer in data.Customers" ng-init="firstCustomer = $first">
-                                <tr ng-if="firstCustomer" class="slds-text-heading--label tableheader">
+                            <tbody>
+                                <tr class="slds-text-heading--label tableheader">
                                     <th rowspan="4" class="padding10left">Resource</th>
                                     <th rowspan="4">Role</th>
                                     <th rowspan="4">Sold days</th>
@@ -317,23 +317,25 @@
                                         {{ month.caption }}
                                     </th>
                                 </tr>
-                                <tr ng-if="firstCustomer" class="tableheader">
+                                <tr class="tableheader">
                                     <th colspan="{{ week.dayCount }}" ng-repeat="week in viewState.staffingWeeks" class="padding10left">
                                         CW-{{ week.number }}
                                     </th>
                                 </tr>
-                                <tr ng-if="firstCustomer" class="tableheader">
+                                <tr class="tableheader">
                                     <th ng-repeat="day in viewState.staffingDays" ng-class="buildDayHeaderClasses(day)" rowspan="{{ day.isSaldo ? 2 : 1 }}" class="textCenter">
                                         <div class="weekDay">
                                             {{ day.weekDay }}
                                         </div>
                                     </th>
                                 </tr>
-                                <tr ng-if="firstCustomer" class="tableheader">
+                                <tr class="tableheader">
                                     <th ng-repeat="day in viewState.staffingDays" ng-class="buildDayHeaderClasses(day)" ng-if="!day.isSaldo" class="textCenter">
                                         {{ day.day }}
                                     </th>
                                 </tr>
+                            </tbody>
+                            <tbody data-ng-if="data.Customers.length" ng-repeat="customer in data.Customers">
                                 <tr ng-repeat-start="project in customer.Projects" class="project-info slds-text-body--small">
                                     <td colspan="{{ viewState.staffingColumns }}">
                                         <span class="slds-icon__container slds-float--left slds-m-right--large">
@@ -485,7 +487,7 @@
                                         </span>
 
                                         <span ng-if="!day.isSaldo">
-                                            {{ allocationSummary.Staff || 0 }}
+                                            {{ allocationSummary.total || 0 }}
                                         </span>
 
                                         <!--<span ng-if="!day.isSaldo && allocationSummary.hasHoliday">
