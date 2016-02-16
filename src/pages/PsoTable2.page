@@ -334,7 +334,7 @@
                                         {{ day.day }}
                                     </th>
                                 </tr>
-                                <tr ng-repeat-start="project in customer.Projects" class="project-info">
+                                <tr ng-repeat-start="project in customer.Projects" class="project-info slds-text-body--small">
                                     <td colspan="{{ viewState.staffingColumns }}">
                                         <span class="slds-icon__container slds-float--left slds-m-right--large">
                                             <a class="slds-button__icon slds-button__icon--left" href="/apex/OpportunityLineItemsEdit?id={{ project.OpportunityId }}" target="blank">
@@ -342,14 +342,14 @@
                                                     <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#cases')}"></use>
                                                 </svg>
                                             </a>
-                                            <a class="slds-button__icon slds-button__icon--left" href="javascript:void(0)" ng-click="ProjectStatusVisible=!ProjectStatusVisible" title="Sales Price And Quantity">
+                                            <a class="slds-button__icon slds-button__icon--left" ng-click="ProjectStatusVisible=!ProjectStatusVisible" title="Sales Price And Quantity">
                                                 <svg class=" slds-icon--x-small slds-icon-text-default ">
                                                     <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#settings')}"></use>
                                                 </svg>
                                             </a>
                                         </span>
                                         <h4>
-                                            <a href="/{{ customer.AccountId }}" target="_blank">{{ customer.AccountName }}</a>
+                                            <b><a href="/{{ customer.AccountId }}" target="_blank">{{ customer.AccountName }}</a></b>
                                             &nbsp;&gt;&nbsp;
                                             <a href="/{{ project.OpportunityId }}" target="_blank">{{ project.OpportunityName }}</a>
                                             <span ng-if="project.ProjectManagerId">
