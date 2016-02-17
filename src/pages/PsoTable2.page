@@ -275,6 +275,14 @@
                                 <!-- header navigation -->
                                 <div class="slds-col slds-no-flex ">
                                     <div class="slds-button-group" role="group">
+                                        <span id="connection-status" class="slds-button slds-button--neutral tooltip" title="Outside resource allocation changes are{{ viewState.isConnected ? ' ' : ' currently not ' }}synchronized">
+                                            <svg class="slds-icon slds-icon--x-small slds-icon-text-default tooltip" ng-show="viewState.isConnected" title="">
+                                                <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#success')}"></use>
+                                            </svg>
+                                            <svg class="slds-icon slds-icon--x-small slds-icon-text-default tooltip" ng-hide="viewState.isConnected" title="Outside resource allocation changes are currently not synchronized.">
+                                                <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#offline')}"></use>
+                                            </svg>
+                                        </span>
                                         <a class="slds-button slds-button--neutral" href="#" ng-click="viewState.legendVisible=!viewState.legendVisible">
                                             <svg class="slds-icon slds-icon--x-small slds-icon-text-default ">
                                                 <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#question')}"></use>

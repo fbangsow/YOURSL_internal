@@ -1,4 +1,4 @@
-PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'datepicker', 'alert', function ($scope, sfEndpoint, datepicker, alert) {
+PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', 'PsoTable2Endpoint', 'datepicker', 'alert', function ($scope, $interval, sfEndpoint, datepicker, alert) {
 	console.log('init staffing controller');
 
 	$scope.viewState = {
@@ -730,7 +730,18 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', 'PsoTable2Endpoint', 'da
 	sfEndpoint.getProjectHealthReasons().then(function (reasons) {
 		console.log('received project health reasons', reasons);
 		$scope.viewState.projectHealthReasons = reasons;
-	})
+	});
+
+	var connectionCheck = $interval(function () {
+		$scope.$parent.viewState.isConnected = sfEndpoint.isBroadcastConnected();
+	}, 1000);
+
+	$scope.$on('$destroy', function() {
+		if (connectionCheck) {
+			$interval.cancel(connectionCheck);
+			connectionCheck = null;
+		}
+	});
 }]);
 
 /* interface extensions */

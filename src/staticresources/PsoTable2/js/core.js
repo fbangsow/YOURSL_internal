@@ -18,7 +18,7 @@ PsoTable2.ng.factory('cometd', function () {
 	return $.cometd;
 });
 
-PsoTable2.ng.factory('PsoTable2Endpoint', ['$q', 'cometd', 'alert', function ($q, cometd, alert) {
+PsoTable2.ng.factory('PsoTable2Endpoint', ['$q', '$timeout', 'cometd', 'alert', function ($q, $timeout, cometd, alert) {
 	console.log('init endpoint');
 
 	var instance = {};
@@ -199,42 +199,131 @@ PsoTable2.ng.factory('PsoTable2Endpoint', ['$q', 'cometd', 'alert', function ($q
 
 	var broadcastSessionId = null;
 	var broadcastListeners = [];
-	var metaListener = null;
+	var metaListeners = [];
 
-	var initialize = function () {
-		if (metaListener) {
-			cometd.removeListener(metaListener);
-			metaListener = null;
+	var shutDown = function () {
+		if (cometd.isDisconnected()) {
+			return;
 		}
 
+		console.log('shut down cometd connection');
+
+		/* shutdown connection */
 		if (broadcastListeners.length) {
 			broadcastListeners.forEach(function (subscription) {
 				if (subscription.subscription) {
-					cometd.unsubscribe(subscription.subscription);
+					try {
+						cometd.unsubscribe(subscription.subscription);
+					} catch (e) {
+						console.error('failed unsubscribing topic listener', e);
+					}
+
 					subscription.subscription = null;
 				}
 			});
 		}
 
+		if (metaListeners.length) {
+			metaListeners.forEach(function (subscription) {
+				try {
+					cometd.removeListener(subscription);
+				} catch (e) {
+					console.error('failed removing topic listener', e);
+				}
+			});
+
+			metaListeners = [];
+		}
+
+		try {
+			cometd.disconnect(true);
+		} catch (e) {
+			console.error('failed disconnecting from the topic streaming server', e);
+		}
+	};
+
+	var initialize = function () {
+		shutDown();
+
+		var timers = {
+			'running': {},
+			'start': function (timer, callback, timeout) {
+				if (timers.running[timer]) {
+					return;
+				}
+
+				timers.running[timer] = $timeout(callback, timeout);
+				timers.running[timer].then(function () {
+					delete timers.running[timer];
+				}, function () {
+					delete timers.running[timer];
+				});
+			},
+			'cancel': function (timer) {
+				if (!timer) {
+					for (var timer in timers.running) {
+						if (timers.running.hasOwnProperty(timer)) {
+							timers.cancel(timer);
+						}
+					}
+					return;
+				}
+
+				if (timers.running[timer]) {
+					$timeout.cancel(timers.running[timer]);
+					delete timers.running[timer];
+				}
+			}
+		};
+
 		console.log('initialize cometd connection');
 
-		cometd.init({
-			'url': '/cometd/29.0/',
-			'appendMessageTypeToURL': false,
-			'requestHeaders': {
-				'Authorization': 'OAuth ' + broadcastSessionId
-			}
-		});
+		try {
+			cometd.init({
+				'url': '/cometd/29.0/',
+				'logLevel': 'info',
+				'appendMessageTypeToURL': false,
+				'requestHeaders': {
+					'Authorization': 'OAuth ' + broadcastSessionId
+				}
+			});
+		} catch (e) {
+			console.error('failed initialize topic listener', e);
+		}
 
-		metaListener = cometd.addListener('/meta/unsuccessful', function (failureInfo) {
-			console.log('cometd connection failure', failureInfo);
-			alert('Resource availability is not being synced with latest changes automatically any more. Please refresh the page to get the latest data.');
-		});
+		var successMessageSent = false;
+		metaListeners.push(cometd.addListener('/meta/connect', function (connectInfo) {
+			if (connectInfo.successful) {
+				if (!successMessageSent) {
+					console.log('cometd connect successful');
+					successMessageSent = true;
+				}
+
+				timers.cancel();
+				return;
+			}
+
+			var advice = connectInfo.advice;
+
+			console.log('cometd connect failure', connectInfo, advice);
+
+			timers.start('warn', function () {
+				alert('Resource availability is not being synced with latest changes automatically any more. Please refresh the page to get the latest data.');
+			}, 3000);
+
+			if (advice && advice.reconnect && advice.reconnect !== 'none') {
+				timers.start('reinit', initialize, advice.timeout || 250);
+			}
+		}));
 
 		if (broadcastListeners.length) {
 			broadcastListeners.forEach(function (subscription) {
 				if (!subscription.subscription) {
-					subscription.subscription = cometd.uubscribe(subscription.listener);
+					try {
+						subscription.subscription = cometd.subscribe(subscription.channel, subscription.listener);
+					} catch (e) {
+						console.error('failed subscribing to topic channel ' + subscription.channel, e);
+					}
 				}
 			});
 		}
@@ -250,10 +339,6 @@ PsoTable2.ng.factory('PsoTable2Endpoint', ['$q', 'cometd', 'alert', function ($q
 			return;
 		}
 
-		if (!broadcastSessionId) {
-			return;
-		}
-
 		var subscription = null;
 
 		if (broadcastSessionId) {
@@ -262,10 +347,15 @@ PsoTable2.ng.factory('PsoTable2Endpoint', ['$q', 'cometd', 'alert', function ($q
 
 		broadcastListeners.push({
 			'subscription': subscription,
-			'listener': listener
+			'listener': listener,
+			'channel': '/topic/ResourceChanges'
 		});
 
 		return subscription;
+	};
+
+	instance.isBroadcastConnected = function () {
+		return ['connected', 'connecting'].indexOf(cometd.getStatus()) > -1;
 	};
 
 	return instance;
