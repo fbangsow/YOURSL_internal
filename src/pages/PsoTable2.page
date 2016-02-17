@@ -11,7 +11,7 @@
         <apex:includeScript value="{!URLFOR($Resource.PsoTable2,'js/controllers/root.js')}"/>
         <apex:includeScript value="{!URLFOR($Resource.PsoTable2,'js/controllers/staffing.js')}"/>
 
-        <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.psoStyle, '/assets/styles/salesforce-lightning-design-system.css')}" />
+        <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.lightningStyle, '/assets/styles/salesforce-lightning-design-system.css')}" />
         <link rel="stylesheet" href="{!URLFOR($Resource.jQuery_ui_1_11_4,'jquery-ui.min.css')}" />
         <link rel="stylesheet" href="{!URLFOR($Resource.PsoTable2,'css/main.css')}" />
 
@@ -24,7 +24,7 @@
                         <div class="slds-modal__container textCenter">
                             <div class="slds-modal__menu slds-max-small-buttons--stretch slds-x-small-buttons--stacked" style="width:100px;margin:auto">
                                 <div class="slds-spinner--large" >
-                                    <img src="{!URLFOR($Resource.psoStyle, '/assets/images/spinners/slds_spinner_brand.gif')}" alt="loading.." />
+                                    <img src="{!URLFOR($Resource.lightningStyle, '/assets/images/spinners/slds_spinner_brand.gif')}" alt="loading.." />
                                 </div>
 
                             </div>
@@ -45,7 +45,7 @@
                                         <div class="slds-dropdown-trigger " style="position: absolute;">
                                             <a class="button--neutral slds-button  slds-button__icon--left" aria-haspopup="true" ng-click="viewState.filterVisible=!viewState.filterVisible">
                                                 <svg class="slds-icon slds-icon--x-small slds-icon-text-default slds-icon--x-smallMagrin ">
-                                                    <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#filterList')}"></use>
+                                                    <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#filterList')}"></use>
                                                 </svg>
                                             </a>
 
@@ -53,7 +53,7 @@
                                             <div class=" filterpopup slds-nubbin--top-left" id="newpost" ng-show="viewState.filterVisible">
                                                 <a class="slds-button slds-button--small slds-modal__close  slds-icon--small" ng-click="viewState.filterVisible=false">
                                                     <svg aria-hidden="true" class="slds-icon slds-icon--x-small slds-icon-text-default">
-                                                        <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                                                        <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
                                                     </svg>
                                                     <span class="slds-assistive-text">Close</span>
                                                 </a>
@@ -90,14 +90,14 @@
                                                                         <div class="slds-float--left">
                                                                             <p>
                                                                                 <svg class="slds-icon slds-icon--x-small CustomColor-blue slds-m-right--x-small">
-                                                                                    <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#clear')}"></use>
+                                                                                    <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#clear')}"></use>
                                                                                 </svg><a href="#" ng-click="filter.opportunities.clearSelectedOpportunities()">Clear</a>
                                                                             </p>
                                                                         </div>
                                                                         <div class="slds-float--right">
                                                                             <p>
                                                                                 <svg class="slds-icon slds-icon--x-small CustomColor-blue slds-m-right--x-small">
-                                                                                    <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#filter')}"></use>
+                                                                                    <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#filter')}"></use>
                                                                                 </svg>
                                                                                 <a href="#" ng-click="filter.opportunities.selectAllOpportunities()">Select all</a>
                                                                             </p>
@@ -137,7 +137,7 @@
                                                                         <div class="slds-float--left">
                                                                             <p>
                                                                                 <svg class="slds-icon slds-icon--x-small CustomColor-blue slds-m-right--x-small">
-                                                                                    <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#clear')}"></use>
+                                                                                    <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#clear')}"></use>
                                                                                 </svg>
                                                                                 <a href="#" ng-click="filter.resources.clearSelectedResources()">Clear</a>
                                                                             </p>
@@ -145,7 +145,7 @@
                                                                         <div class="slds-float--right">
                                                                             <p>
                                                                                 <svg class="slds-icon slds-icon--x-small CustomColor-blue slds-m-right--x-small">
-                                                                                    <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#filter')}"></use>
+                                                                                    <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#filter')}"></use>
                                                                                 </svg>
                                                                                 <a href="#" ng-click="filter.resources.selectAllResources()">Select all</a>
                                                                             </p>
@@ -176,13 +176,13 @@
                                                                                 <ul >
                                                                                     <li ng-click="filter.decreaseStartMonthYear()" ng-class="{disabled:!viewState.hasPreviousStartMonthYear()}">
                                                                                         <svg class="slds-icon slds-icon--x-small CustomColor-text slds-m-right--x-small">
-                                                                                            <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#left')}"></use>
+                                                                                            <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#left')}"></use>
                                                                                         </svg>
                                                                                     </li>
                                                                                     <li>{{ viewState.startMonth | date : 'yyyy' }}</li>
                                                                                     <li ng-click="filter.increaseStartMonthYear()" ng-class="{disabled:!viewState.hasNextStartMonthYear()}">
                                                                                         <svg class="slds-icon slds-icon--x-small CustomColor-text slds-m-right--x-small">
-                                                                                            <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#right')}"></use>
+                                                                                            <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#right')}"></use>
                                                                                         </svg>
                                                                                     </li>
                                                                                     <li><hr /></li>
@@ -206,7 +206,7 @@
                                                                         <div class="slds-float--right">
                                                                             <p>
                                                                                 <svg class="slds-icon slds-icon--x-small CustomColor-blue slds-m-right--x-small">
-                                                                                    <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#weeklyview')}"></use>
+                                                                                    <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#weeklyview')}"></use>
                                                                                 </svg>
                                                                                 <a href="#" ng-click="filter.resetStartMonth()">Current date</a>
                                                                             </p>
@@ -229,7 +229,7 @@
                                             <div class="legendpopup slds-nubbin--top-right" id="legend" ng-show="viewState.legendVisible">
                                                 <a class="slds-button slds-button--small slds-modal__close slds-icon--small" style="margin-right: 170px;margin-top: 17px;" ng-click="viewState.legendVisible=false">
                                                     <svg aria-hidden="true" class="slds-icon slds-icon--x-small slds-icon-text-default">
-                                                        <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                                                        <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
                                                     </svg>
                                                 </a>
 
@@ -253,7 +253,7 @@
                                             <div class="schedulerpopup slds-nubbin--top-right" id="scheduler" ng-show="viewState.schedulerVisible" ng-if="viewState.isAllowedToRunScheduler">
                                                 <a class="slds-button slds-button--small slds-modal__close slds-icon--small" style="margin-right: 270px;margin-top: 18px;" ng-click="viewState.schedulerVisible=false">
                                                     <svg aria-hidden="true" class="slds-icon slds-icon--x-small slds-icon-text-default">
-                                                        <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                                                        <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
                                                     </svg>
                                                 </a>
 
@@ -276,26 +276,26 @@
                                     <div class="slds-button-group" role="group">
                                         <span id="connection-status" class="slds-button slds-button--neutral tooltip" title="Outside resource allocation changes are{{ viewState.isConnected ? ' ' : ' currently not ' }}synchronized">
                                             <svg class="slds-icon slds-icon--x-small slds-icon-text-default tooltip" ng-show="viewState.isConnected" title="">
-                                                <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#success')}"></use>
+                                                <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#success')}"></use>
                                             </svg>
                                             <svg class="slds-icon slds-icon--x-small slds-icon-text-default tooltip" ng-hide="viewState.isConnected" title="Outside resource allocation changes are currently not synchronized.">
-                                                <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#offline')}"></use>
+                                                <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#offline')}"></use>
                                             </svg>
                                         </span>
                                         <a class="slds-button slds-button--neutral" href="#" ng-click="viewState.legendVisible=!viewState.legendVisible">
                                             <svg class="slds-icon slds-icon--x-small slds-icon-text-default ">
-                                                <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#question')}"></use>
+                                                <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#question')}"></use>
                                             </svg>
                                         </a>
                                         <a class="slds-button slds-button--neutral"  aria-haspopup="true" ng-click="viewState.schedulerVisible=!viewState.schedulerVisible" ng-if="viewState.isAllowedToRunScheduler">
                                             <svg class="slds-icon slds-icon--x-small slds-icon-text-default ">
-                                                <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#clock')}"></use>
+                                                <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#clock')}"></use>
                                             </svg>
                                         </a>
                                         <div class="slds-button--last">
                                             <a class="slds-button slds-button--icon-border-filled" href="/home/home.jsp">
                                                 <svg class="slds-icon slds-icon--x-small slds-icon-text-default ">
-                                                    <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#home')}"></use>
+                                                    <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#home')}"></use>
                                                 </svg>
                                                 <span class="slds-assistive-text">More</span>
                                             </a>
@@ -348,12 +348,12 @@
                                         <span class="slds-icon__container slds-float--left slds-m-right--large">
                                             <a class="slds-button__icon slds-button__icon--left" href="/apex/OpportunityLineItemsEdit?id={{ project.OpportunityId }}" target="blank">
                                                 <svg class="slds-icon slds-icon--x-small slds-icon-text-default ">
-                                                    <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#cases')}"></use>
+                                                    <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#cases')}"></use>
                                                 </svg>
                                             </a>
                                             <a class="slds-button__icon slds-button__icon--left" ng-click="ProjectStatusVisible=!ProjectStatusVisible" title="Sales Price And Quantity">
                                                 <svg class=" slds-icon--x-small slds-icon-text-default ">
-                                                    <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#settings')}"></use>
+                                                    <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#settings')}"></use>
                                                 </svg>
                                             </a>
                                         </span>
@@ -370,7 +370,7 @@
                                         <div class="ProjectStatusVisiblepopup slds-nubbin--left-top" ng-show="ProjectStatusVisible">
                                             <a class="slds-button slds-button--small slds-modal__close slds-icon--small" style="margin-top: 49px;" ng-click="ProjectStatusVisible=false">
                                                 <svg aria-hidden="true" class="slds-icon slds-icon--x-small slds-icon-text-default">
-                                                    <use xlink:href="{!URLFOR($Resource.psoStyle, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                                                    <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
                                                 </svg>
                                             </a>
                                             <div class="slds-m-around--medium">
