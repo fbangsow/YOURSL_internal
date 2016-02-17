@@ -364,6 +364,23 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', 'PsoTable2E
 			/* nothing to do, the interface is already updated */
 		}, function (response) {
 			console.log('error during allocation update:', response);
+
+			if (totalDayInfo) {
+				totalDayInfo.Staff -= delta;
+				totalDayInfo.total -= delta;
+
+				totalResourceInfo.MonthSaldos['saldo-' + monthKey] += delta;
+			}
+
+			allocation.Staff = oldHours;
+			allocation.total -= requestedHours;
+			resource.PlannedDays -= delta;
+
+			normalizeProjectHours(project);
+
+			if (response.message) {
+				alert('An error occured during the allocation update:' + "\n" + response.message + "\n" + "Your changes were rolled back. Please reload the page if the error remains.");
+			}
 		});
 	};
 
@@ -690,6 +707,7 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', 'PsoTable2E
 
 		if (!overallResource) {
 			/* we don't currently see this resource */
+			console.log('Affected resource is currently not displayed.');
 			return;
 		}
 
@@ -698,6 +716,16 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', 'PsoTable2E
 		var newBookingValue = parseFloat(data.New_value__c) * 8;
 		var oldBookingValue = parseFloat(data.Old_value__c) * 8;
 		var delta = newBookingValue - oldBookingValue;
+
+		if (projectResource) {
+			var projectStaffing = projectResource.StaffingByDay[forDateString];
+
+			if (projectStaffing && projectStaffing.Staff === newBookingValue) {
+				/* we did the change, no need to update again */
+				console.log('Affected project resource schedule is already up to date.');
+				return;
+			}
+		}
 
 		$scope.$apply(function () {
 			[overallResource, projectResource].forEach(function (resource) {
@@ -715,7 +743,9 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', 'PsoTable2E
 					};
 					resource.Staffing.push(staffing);
 					resource.StaffingByDay[forDateString] = staffing;
-				} else {
+				} else if (resource.Product) {
+					staffing.Staff = newBookingValue;
+				} else if (resource.Title) {
 					staffing.Staff += delta;
 				}
 
