@@ -1,0 +1,479 @@
+.headerfixed {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	z-index: 9999;
+}
+
+.contedntBox {
+	height: 100vh
+}
+
+.slds-scrollable--y {
+	-webkit-overflow-scrolling: touch;
+	max-height: 100%;
+	overflow: hidden;
+	overflow: auto;
+}
+
+.slds-scrollable--y::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+}
+
+.slds-scrollable--y::-webkit-scrollbar:window-inactive {
+	opacity: 0;
+}
+
+.slds-scrollable--y::-webkit-scrollbar-thumb {
+	background: #e0e5ee;
+	border-radius: 0.5rem;
+	box-shadow: #a8b7c7 0 0 0 1px inset;
+}
+
+.slds-scrollable--y::-webkit-scrollbar-track {
+	background: #a8b7c7;
+}
+
+.slds-table--bordered td {
+	border: 1px solid #d8dde6
+}
+
+.contentBox {
+	margin-top: 27px;
+}
+
+.slds-table th, .slds-table td
+:focus {
+	outline: 0;
+}
+
+#newpost .slds-modal__close {
+	width: 2rem !important;
+	height: 2rem !important;
+	position: absolute;
+	top: -2rem !important;
+	right: 0 !important;
+}
+
+.slds-backdrop--open {
+	opacity: 0.3
+}
+
+.filterpopup {
+	position: fixed;
+	z-index: 9999999999999999;
+	margin-left: -19px;
+	top: 65px;
+	width: 900px;
+	border: 1px solid #d8dde6;
+	border-radius: 0.25rem;
+	padding: 0.25rem 0;
+	background: white;
+	box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.16);
+	transform: translateX(0%) !important;
+}
+
+.legendpopup {
+	position: fixed;
+	z-index: 9999999999999999;
+	right: 100px;
+	top: 64px;
+	width: 200px;
+	border: 1px solid #d8dde6;
+	border-radius: 0.25rem;
+	padding: 0.25rem 0;
+	background: white;
+	box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.16);
+	transform: translateX(0%) !important;
+}
+
+.schedulerpopup {
+	position: fixed;
+	z-index: 9999999999999999;
+	right: 50px;
+	top: 64px;
+	width: 300px;
+	border: 1px solid #d8dde6;
+	border-radius: 0.25rem;
+	padding: 0.25rem 0;
+	background: white;
+	box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.16);
+	transform: translateX(0%) !important;
+}
+
+.schedulerpopup .ui-widget-content {
+	border: 0px solid #ddd;
+	background: none;
+	color: #333;
+}
+
+.ProjectStatusVisiblepopup {
+	z-index: 9;
+	position: absolute;
+	left: 100px;
+	margin-top: -46px;
+	width: 300px;
+	border: 1px solid #d8dde6;
+	border-radius: 0.25rem;
+	padding: 0.25rem 0;
+	background: white;
+	box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.16);
+	transform: translateX(0%) !important;
+}
+
+.billable {
+	border-left: 2px solid green;
+}
+
+.unbillable {
+	border-left: 2px solid red;
+}
+
+.legendpopup .slds-has-dividers--top span {
+	display: block;
+	width: 5px;
+	height: 17px;
+	float: left;
+	margin-right: 10px;
+	margin-top: 2px;
+}
+
+.CustomColor-blue {
+	fill: #0070d2 !important;
+}
+
+.CustomColor-text {
+	fill: #16325c !important;
+}
+
+.center {
+	text-align: center
+}
+
+.height100 {
+	height: 153px;
+}
+
+.slds-icon--x-smallMargin {
+	margin-top: 3px;
+}
+
+#pso-table .padding10left {
+	padding-left: 10px !important;
+}
+
+#pso-table .slds-page-header .ui-widget-header {
+	border: 0px;
+	background: none;
+}
+
+#pso-table .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+	border: 0px;
+	background: none;
+}
+
+.ui-datepicker .ui-datepicker-prev, .ui-datepicker .ui-datepicker-next:hover,
+.ui-datepicker .ui-datepicker-prev, .ui-datepicker .ui-datepicker-next {
+	position: absolute;
+	top: 2px;
+	width: 1.8em;
+	height: 1.8em;
+	background: rgba(0, 0, 0, 0.16);
+}
+
+.slds-page-header .ui-widget-header {
+	border: 1px solid #aaaaaa;
+	color: #222222;
+	font-weight: bold;
+}
+
+#pso-table .ui-datepicker-buttonpane button {
+	position: absolute;
+	top: 135px;
+	left: 229px;
+	color: #0070d2;
+}
+
+/*calendar*/
+.calendar div {
+	margin-top: 3px;
+	margin-bottom: -5px;
+	cursor: pointer;
+}
+
+.calendar li:nth-child(-n+3) {
+	height: 25px;
+	line-height: 23px;
+	padding-top: 2px;
+}
+
+.calendar li:nth-child(4) {
+	width: 260px;
+	height: 2px;
+	line-height: 1px;
+}
+
+.calendar li:nth-child(4) hr {
+	border-top: 1px solid #d8dde6;
+	margin: 0rem 0;
+}
+
+.calendar ul li {
+	display: block;
+	float: left;
+	border: 0px solid #ccc;
+	width: 81px;
+	margin: 3px;
+	line-height: 30px;
+	text-align: center;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
+
+.calendar ul li:hover {
+	background: #495c80;
+	color: #fff;
+}
+
+.calendar ul li.active {
+	background: #495c80;
+	color: #fff;
+	cursor: pointer;
+}
+
+.calendar li:nth-child(-n+3):hover,
+.calendar li:nth-child(4):hover {
+	background: transparent;
+	color: #16325c
+}
+
+#pso-table .ui-datepicker-next {
+	float: right
+}
+
+.project-info a {
+	color: #4f6a92;
+	line-height: 26px;
+}
+
+/*form*/
+
+#filter input {
+	width: 270px;
+}
+
+#staffing table input {
+	width: 100%;
+	background-color: transparent;
+	border: 0px solid;
+	text-align: center;
+}
+
+input:focus {
+	outline: none;
+}
+
+a {
+	color: #0070d2;
+	text-decoration: none;
+	-webkit-transition: color 0.1s linear;
+	transition: color 0.1s linear;
+}
+
+a:hover,
+a:focus {
+	text-decoration: none;
+	color: #00396b;
+}
+
+a:focus {
+	outline: thin dotted;
+	outline: 5px auto #1589ee;
+	outline-offset: -2px;
+}
+
+a:active {
+	color: #0070d2;
+}
+
+/*table*/
+
+.shadow {
+	-webkit-box-shadow: 0px 2px 1px 1px rgba(111, 116, 148, 0.2);
+	-moz-box-shadow: 0px 2px 1px 1px rgba(111, 116, 148, 0.2);
+	box-shadow: 0px 2px 1px 1px rgba(111, 116, 148, 0.2);
+	padding: 0px !important;
+	position: relative;
+}
+
+.fixtd {
+	background: rgba(216, 221, 230, 0.15) !important;
+}
+
+#pso-table .slds-table tr > th:first-child,
+.slds-table tr > td:first-child {
+	padding-left: 0px;
+}
+
+#pso-table .slds-table th,
+#pso-table .slds-table td {
+	padding: 0.5rem;
+	white-space: nowrap;
+}
+
+.button--neutral {
+	padding-left: 5px;
+	padding-right: 5px;
+	text-align: center;
+	vertical-align: middle;
+	border: 1px solid #d8dde6;
+	background-color: white;
+}
+
+/*
+#staffing table tr:nth-child(odd) {
+background:#f8f9fb
+}
+*/
+
+.weekDay {
+	width: 40px;
+	text-align: center
+}
+
+.weekend {
+	background: rgba(168, 183, 199, 0.15);
+}
+
+.weekend:last-child {
+	border-right: 4px solid green;
+}
+
+td.saldo, td.statistic {
+	background: rgba(168, 183, 199, 0.31);
+}
+
+.textCenter {
+	text-align: center
+}
+
+#pso-table tr.project-info > td:hover,
+#pso-table tr.project-info > td {
+	background: #eef1f6 !important;
+	border-bottom: 0px solid rgb(207, 215, 230);
+}
+
+#pso-table tbody tr.tableheader > th:hover,
+#pso-table tbody tr.tableheader > th {
+	background: #cfd7e6 !important;
+	vertical-align: bottom;
+	font-weight: bold;
+	border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.slds-table:not(.slds-no-row-hover) tbody tr:hover > td,
+.slds-table:not(.slds-no-row-hover) tbody tr:hover > th {
+	background-color: rgba(0, 112, 210, 0.10) !important;
+}
+
+.past {
+	cursor: not-allowed
+}
+
+#pso-table .slds-table--bordered {
+	border-top: 0px;
+	border-bottom: 0px;
+}
+
+#pso-table .slds-table--bordered thead > tr + tr > th {
+	border-top: 0px solid #d8dde6;
+}
+
+#pso-table .slds-table--bordered td,
+#pso-table .slds-table--bordered th {
+	border-top: 0px solid #d8dde6;
+}
+
+#pso-table .slds-table--bordered:not(.slds-no-row-hover) tbody tr:hover > td,
+#pso-table .slds-table--bordered:not(.slds-no-row-hover) tbody tr:hover > th {
+	box-shadow: #d8dde6 0 0px 0 inset;
+}
+
+#pso-table .slds-table--bordered:not(.slds-no-row-hover) .slds-is-selected:hover > td,
+#pso-table .slds-table--bordered:not(.slds-no-row-hover) .slds-is-selected:hover > th {
+	border-color: #0070d2;
+	box-shadow: #0070d2 0 0px 0 inset;
+}
+
+#pso-table .slds-table--bordered:not(.slds-no-row-hover) .slds-is-selected:hover > td.slds-is-selected,
+#pso-table .slds-table--bordered:not(.slds-no-row-hover) .slds-is-selected:hover > th.slds-is-selected {
+	box-shadow: #0070d2 0 0px 0 0px inset;
+}
+
+/* events date*/
+.holiday-info {
+	background: #74d3e9 !important
+}
+
+.has-booking {
+	background: #fec46d !important
+}
+
+.partly-booked {
+	background: #8dcb8f !important
+}
+
+.fully-booked {
+	background: pink !important
+}
+
+.overbooked {
+	background: #ef7f80 !important
+}
+
+.month-saldo {
+	background: #ffffff !important
+}
+
+.negative-saldo {
+	background: #ed888f !important
+}
+
+.positive-saldo {
+	background: #8cd477 !important
+}
+
+.neutral-saldo {
+	background: #a5bcd0 !important
+}
+
+.tooltip {
+	display: inline;
+	position: relative;
+	font-size: 0.75rem;
+}
+
+.tooltip:hover:after {
+	border: 1px solid #d8dde6;
+	border-radius: 0.25rem;
+	background: white;
+	box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.16);
+	bottom: 26px;
+	content: attr(title);
+	line-height: 17px;
+	padding: 5px 15px;
+	position: absolute;
+	z-index: 98;
+	text-align: left;
+	width: 220px;
+}
+
+#connection-status:hover:after {
+	bottom: auto;
+	top: 36px;
+	left: -1px;
+	width: 184px;
+}
