@@ -392,6 +392,8 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', 'PsoTable2E
 			classes.past = !!day.isPast;
 			classes.today = !!day.isToday;
 			classes.future = !!day.isFuture;
+			classes.isAllocatable = !!day.isAllocatable;
+			classes.isNotAllocatable = !day.isAllocatable;
 
 			if (day.isSaldo) {
 				classes['saldo'] = true;
@@ -505,8 +507,12 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', 'PsoTable2E
 			$scope.$parent.status.loaded = false;
 		}
 
+		$scope.$emit('loadStaffingData', selectedOpportunities, selectedResources, startMonth);
+
 		sfEndpoint.getProjectStaffing(selectedOpportunities, selectedResources, startMonth).then(function (data) {
 			console.log('received data for project staffing:', data);
+
+			$scope.$emit('receivedStaffingData', data, selectedOpportunities, selectedResources, startMonth);
 
 			/* we need to equalize the time to be able to detect today */
 			$scope.viewState.startDate = new Date(data.StartDate);
@@ -690,6 +696,8 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', 'PsoTable2E
 				$scope.$parent.status.loading = false;
 				$scope.$parent.status.loaded = true;
 			}
+
+			$scope.$emit('updatedStaffingData', data, selectedOpportunities, selectedResources, startMonth);
 
 			console.log('finished data update');
 		}, function (response) {
@@ -894,3 +902,34 @@ PsoTable2.ng.directive('navigateCellInputs', function () {
 		}
 	};
 });
+
+PsoTable2.ng.directive('staffingCaptionsSpacing', ['$timeout', function ($timeout) {
+	return {
+		'restrict': 'A',
+		'link': function (scope, el, attributes) {
+			var captionsContainer = $(attributes.staffingCaptionsSpacing);
+
+			var updateMargin = function () {
+				el.css('margin-left', captionsContainer.width());
+			};
+
+			/*
+			 * Ok, this is a little bit tricky, the solution is copied from
+			 * http://stackoverflow.com/questions/21138388/angular-js-identify-an-digest-complete-event-and-removing-from-url-in-angular
+			 *
+			 * First, we listen for the updatedStaffingData event, which tells us the PsoTable2Staffing controller updated the data
+			 * (see above in the controller). Second, we register a $watch without an expression, meaning we'll get each $digest cycle end.
+			 * As we only want to do this once, we immediately unregister the $watch after the first call. Lastly, we use $timeout to let the browser
+			 * end this thread, render the dom and have the proper width of the target element at hand when being run asynchronously.
+			 */
+			scope.$on('updatedStaffingData', function () {
+				var unregisterWatch = scope.$watch(function () {
+					unregisterWatch();
+					$timeout(updateMargin, 0, false);
+				});
+			});
+
+			updateMargin();
+		}
+	};
+}]);

@@ -390,3 +390,22 @@ PsoTable2.ng.directive('alertDialog', ['$rootScope', function ($rootScope) {
 		}
 	};
 }]);
+
+PsoTable2.ng.directive('fixedX', ['$window', function ($window) {
+	var jWindow = $($window);
+
+	return {
+		'restrict': 'CA',
+		'link': function (scope, el, attributes) {
+			var topPosition = el.position().top;
+
+			if (el.css('position') !== 'fixed') {
+				el.css('position', 'fixed');
+			}
+
+			jWindow.scroll(function () {
+				el.css('top', topPosition - jWindow.scrollTop());
+			});
+		}
+	};
+}]);
