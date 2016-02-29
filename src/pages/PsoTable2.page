@@ -447,7 +447,7 @@
                                         </th>
                                     </tr>
                                     <tr class="tableheader">
-                                        <th ng-repeat="day in viewState.staffingDays" ng-class="buildDayHeaderClasses(day)" rowspan="{{ day.isSaldo ? 2 : 1 }}" class="textCenter">
+                                        <th ng-repeat="day in viewState.staffingDays" ng-class="buildDayHeaderClasses(day)" rowspan="{{ day.isSaldo ? 2 : 1 }}" class="textCenter col">
                                             <div class="weekDay">
                                                 {{ day.weekDay }}
                                             </div>
@@ -460,8 +460,8 @@
                                     </tr>
                                 </tbody>
                                 <tbody data-ng-if="data.Customers.length" ng-repeat="customer in data.Customers">
-                                    <tr ng-repeat-start="project in customer.Projects" class="project-info slds-text-body--small">
-                                        <td colspan="{{ viewState.staffingColumns }}" style="height:43px;">
+                                    <tr ng-repeat-start="project in customer.Projects" class="project-info slds-text-body--small" style="height:43px;">
+                                        <td colspan="{{ viewState.staffingColumns }}">
                                             &nbsp;
                                         </td>
                                     </tr>
@@ -512,14 +512,14 @@
                                     </tr>
                                 </tbody>
                                 <tbody class="tabResources" ng-if="data.Resources.length && ($parent.viewState.selectRelatedResources || $parent.viewState.selectedResources.length)">
-                                    <tr class="tableheader">
-                                        <th colspan="{{ viewState.staffingColumns }}" style="height:38px;">
+                                    <tr class="tableheader" style="height:38px;">
+                                        <th colspan="{{ viewState.staffingColumns }}">
                                             <!-- Resource availability -->
                                             &nbsp;
                                         </th>
                                     </tr>
-                                    <tr class="tableheader">
-                                        <th colspan="{{ viewState.staffingColumns }}" style="height:38px;">
+                                    <tr class="tableheader" style="height:38px;">
+                                        <th colspan="{{ viewState.staffingColumns }}">
                                             <!-- Column captions -->
                                             &nbsp;
                                         </th>
