@@ -89,17 +89,22 @@
                                                                     <section class="slds-clearfix slds-m-bottom--medium">
                                                                         <div class="slds-float--left">
                                                                             <p>
-                                                                                <svg class="slds-icon slds-icon--x-small CustomColor-blue slds-m-right--x-small">
-                                                                                    <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#clear')}"></use>
-                                                                                </svg><a href="#" ng-click="filter.opportunities.clearSelectedOpportunities()">Clear</a>
+                                                                                <a href="#" ng-click="filter.opportunities.clearSelectedOpportunities()">
+                                                                                    <svg class="slds-icon slds-icon--x-small CustomColor-blue slds-m-right--x-small">
+                                                                                        <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#clear')}"></use>
+                                                                                    </svg>
+                                                                                    Clear applied filters
+                                                                                </a>
                                                                             </p>
                                                                         </div>
                                                                         <div class="slds-float--right">
                                                                             <p>
-                                                                                <svg class="slds-icon slds-icon--x-small CustomColor-blue slds-m-right--x-small">
-                                                                                    <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#filter')}"></use>
-                                                                                </svg>
-                                                                                <a href="#" ng-click="filter.opportunities.selectAllOpportunities()">Select all</a>
+                                                                                <a href="#" ng-click="filter.opportunities.selectAllOpportunities()">
+                                                                                    <svg class="slds-icon slds-icon--x-small CustomColor-blue slds-m-right--x-small">
+                                                                                        <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#filter')}"></use>
+                                                                                    </svg>
+                                                                                    Select all
+                                                                                </a>
                                                                             </p>
                                                                         </div>
                                                                     </section>
@@ -136,18 +141,22 @@
                                                                     <section class="slds-clearfix slds-m-bottom--medium">
                                                                         <div class="slds-float--left">
                                                                             <p>
-                                                                                <svg class="slds-icon slds-icon--x-small CustomColor-blue slds-m-right--x-small">
-                                                                                    <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#clear')}"></use>
-                                                                                </svg>
-                                                                                <a href="#" ng-click="filter.resources.clearSelectedResources()">Clear</a>
+                                                                                <a href="#" ng-click="filter.resources.clearSelectedResources()">
+                                                                                    <svg class="slds-icon slds-icon--x-small CustomColor-blue slds-m-right--x-small">
+                                                                                        <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#clear')}"></use>
+                                                                                    </svg>
+                                                                                    Clear applied filters
+                                                                                </a>
                                                                             </p>
                                                                         </div>
                                                                         <div class="slds-float--right">
                                                                             <p>
-                                                                                <svg class="slds-icon slds-icon--x-small CustomColor-blue slds-m-right--x-small">
-                                                                                    <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#filter')}"></use>
-                                                                                </svg>
-                                                                                <a href="#" ng-click="filter.resources.selectAllResources()">Select all</a>
+                                                                                <a href="#" ng-click="filter.resources.selectAllResources()">
+                                                                                    <svg class="slds-icon slds-icon--x-small CustomColor-blue slds-m-right--x-small">
+                                                                                        <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#filter')}"></use>
+                                                                                    </svg>
+                                                                                    Select all
+                                                                                </a>
                                                                             </p>
                                                                         </div>
                                                                     </section>
@@ -205,10 +214,12 @@
                                                                     <section class="slds-clearfix slds-m-bottom--medium">
                                                                         <div class="slds-float--right">
                                                                             <p>
-                                                                                <svg class="slds-icon slds-icon--x-small CustomColor-blue slds-m-right--x-small">
-                                                                                    <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#weeklyview')}"></use>
-                                                                                </svg>
-                                                                                <a href="#" ng-click="filter.resetStartMonth()">Current date</a>
+                                                                                <a href="#" ng-click="filter.resetStartMonth()">
+                                                                                    <svg class="slds-icon slds-icon--x-small CustomColor-blue slds-m-right--x-small">
+                                                                                        <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#weeklyview')}"></use>
+                                                                                    </svg>
+                                                                                    Current date
+                                                                                </a>
                                                                             </p>
                                                                         </div>
                                                                     </section>
