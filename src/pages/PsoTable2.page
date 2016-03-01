@@ -76,7 +76,7 @@
                                                                         <div class="slds-float--right"></div>
                                                                     </section>
 
-                                                                    <select multiple="multiple" name="selectedOpportunities" id="selectedOpportunities" ng-model="viewState.selectedOpportunities" ng-attr-size="{{ viewState.selectedOpportunitiesSize }}" class="slds-input  slds-p-around--xx-small height100" >
+                                                                    <select multiple="multiple" name="selectedOpportunities" id="selectedOpportunities" ng-model="viewState.selectedOpportunities" ng-attr-size="{{ viewState.selectedOpportunitiesSize }}" ng-disabled="viewState.selectRelatedOpportunities" class="slds-input  slds-p-around--xx-small height100" >
                                                                         <optgroup ng-repeat="customer in data.Customers | filter : filter.opportunities.customerMatchesFilter" label="{{ customer.AccountName }}" ng-click="filter.opportunities.events.accountClicked(customer, $event)">
                                                                             <option ng-repeat="project in customer.Projects | filter : filter.opportunities.projectMatchesFilter" value="{{ project.OpportunityId }}">
                                                                                 {{ project.OpportunityName }}
