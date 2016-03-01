@@ -262,10 +262,10 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', 'PsoTable2E
 		}
 
 		console.log('checking allocation data for update');
-		console.log(project);
+		/*console.log(project);
 		console.log(resource);
 		console.log(allocationDate);
-		console.log(allocation);
+		console.log(allocation);*/
 
 		var rh4 = requestedHours * 4;
 		if (rh4 - parseInt(rh4, 10)) {
@@ -347,11 +347,23 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', 'PsoTable2E
 			resource.Staffing.push(allocation);
 		}
 
+		if (totalResourceInfo) {
+			totalResourceInfo.MonthSaldos['saldo-' + monthKey] -= delta;
+		}
+
 		if (totalDayInfo) {
 			totalDayInfo.Staff += delta;
 			totalDayInfo.total += delta;
+		} else if (totalResourceInfo) {
+			totalDayInfo = {
+				Day: dateString,
+				Staff: requestedHours,
+				total: requestedHours,
+			};
 
-			totalResourceInfo.MonthSaldos['saldo-' + monthKey] -= delta;
+			normalizeStaffing(totalDayInfo);
+
+			totalResourceInfo.StaffingByDay[dateString] = totalDayInfo;
 		}
 
 		allocation.Staff = requestedHours;
