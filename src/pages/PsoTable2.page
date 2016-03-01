@@ -525,7 +525,7 @@
                                         </th>
                                     </tr>
                                     <tr ng-repeat="resource in data.Resources" ng-class="buildResourceRowClasses(resource)">
-                                        <td ng-repeat="day in viewState.staffingDays" ng-class="buildResourceAllocationCellClasses(resource, day, allocationSummary)" class="textCenter">
+                                        <td ng-repeat="day in viewState.staffingDays" ng-class="buildResourceAllocationCellClasses(resource, day, resource.StaffingByDay[day.dateString])" class="textCenter">
                                             <span ng-if="day.isMonthSaldo">
                                                 {{ ((resource.MonthSaldos[day.dateString] || 0) / 8) | number : 2 }}
                                             </span>
