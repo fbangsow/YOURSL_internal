@@ -69,7 +69,7 @@
                                                                             <div class="slds-tile">
                                                                                 <p class="slds-text-heading--small">Select opportunities:</p>
                                                                                 <div class="slds-tile__detail slds-text-body--small">
-                                                                                    <p class="slds-text-body--small">related Opportunities: <input type="checkbox" style="width:20px;" ng-model="viewState.selectRelatedOpportunities" ng-click="filter.opportunities.selectRelatedOpportunities()"/></p>
+                                                                                    <label class="slds-text-body--small">related Opportunities: <input type="checkbox" style="width:20px;" ng-model="viewState.selectRelatedOpportunities" ng-click="filter.opportunities.selectRelatedOpportunities()"/></label>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -121,7 +121,7 @@
                                                                             <div class="slds-tile">
                                                                                 <p class="slds-text-heading--small">Select Resources:</p>
                                                                                 <div class="slds-tile__detail slds-text-body--small">
-                                                                                    <lable class="slds-text-body--small">related Resources: <input type="checkbox" style="width:20px;" ng-model="viewState.selectRelatedResources" ng-click="filter.resources.selectRelatedResources()"/></lable>
+                                                                                    <label class="slds-text-body--small">related Resources: <input type="checkbox" style="width:20px;" ng-model="viewState.selectRelatedResources" ng-click="filter.resources.selectRelatedResources()"/></label>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -408,7 +408,7 @@
                                         </td>
                                     </tr>
                                 </tbody>
-                                <tbody class="tabResources" ng-if="data.Resources.length && ($parent.viewState.selectRelatedResources || $parent.viewState.selectedResources.length)">
+                                <tbody class="Resources" ng-if="data.Resources.length && ($parent.viewState.selectRelatedResources || $parent.viewState.selectedResources.length)">
                                     <tr class="tableheader">
                                         <th colspan="5" style="border-right:1px solid #cfd7e6 !important;">
                                             <h4>Resource availability</h4>
@@ -511,14 +511,14 @@
                                         </td>
                                     </tr>
                                 </tbody>
-                                <tbody class="tabResources" ng-if="data.Resources.length && ($parent.viewState.selectRelatedResources || $parent.viewState.selectedResources.length)">
-                                    <tr class="tableheader" style="height:38px;">
+                                <tbody class="Resources" ng-if="data.Resources.length && ($parent.viewState.selectRelatedResources || $parent.viewState.selectedResources.length)">
+                                    <tr class="tableheader">
                                         <th colspan="{{ viewState.staffingColumns }}">
                                             <!-- Resource availability -->
                                             &nbsp;
                                         </th>
                                     </tr>
-                                    <tr class="tableheader" style="height:38px;">
+                                    <tr class="tableheader">
                                         <th colspan="{{ viewState.staffingColumns }}">
                                             <!-- Column captions -->
                                             &nbsp;

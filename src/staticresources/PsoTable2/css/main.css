@@ -484,7 +484,21 @@ col.hover {
 	box-shadow: #0070d2 0 0px 0 0px inset;
 }
 
-tbody.tabResources:before {
+.Resources {
+	font-size: 0.75rem;
+}
+
+.Resources.tableheader {
+	height: 35px;
+}
+
+.Resources .isNotAllocatable {
+	cursor: auto;
+	background-image: none;
+
+}
+
+tbody.Resources:before {
 	content: '';
 	display: block;
 	height: 50px;
