@@ -179,14 +179,15 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', 'PsoTable2E
 			var startDate = new Date(stat.StartDate);
 			var endDate = new Date(stat.EndDate);
 
+			var month = datepicker.formatDate('m', endDate);
 			var startWeek = datepicker.iso8601Week(startDate);
 			var endWeek = datepicker.iso8601Week(endDate);
 
-			var saldoKey = 'week-stats-' + endWeek;
+			var saldoKey = 'week-stats-' + month + '-' + endWeek;
 
 			if (startWeek !== endWeek) {
 				/* monthly stats */
-				saldoKey = 'month-stats-' + datepicker.formatDate('m', endDate);
+				saldoKey = 'month-stats-' + month;
 			}
 
 			if (!saldos[saldoKey]) {
@@ -554,7 +555,7 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', 'PsoTable2E
 				week.dayCount += 1;
 
 				$scope.viewState.staffingDays.push({
-					dateString: 'week-stats-' + week.number,
+					dateString: 'week-stats-' + month.number + '-' + week.number,
 					weekDay: 'Dw',
 					isSaldo: true,
 					isStatisticSaldo: true
