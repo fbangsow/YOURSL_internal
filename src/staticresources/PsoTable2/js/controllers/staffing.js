@@ -25,20 +25,27 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', '$timeout',
 			HoursOff: 0.75
 		 }
 		 */
-		if (!staffing.date) {
-			staffing.date = new Date(staffing.Day);
+		if (!staffing.__normalized) {
+			staffing.__normalized = true;
+
+			/* do some initial stuff here that we're allowed to do only once or at least don't need to do more often */
+
+			if (!staffing.date) {
+				staffing.date = new Date(staffing.Day);
+			}
+
+			staffing.month = datepicker.formatDate('m', staffing.date);
+
+			staffing.HoursOff = staffing.HoursOff || 0;
+
+			/*
+			 * When hoursOff are set, they are also included in the Staff attribute.
+			 * We remove them from the Staff to be able to later differentiate between both values.
+			 */
+			staffing.Staff = (staffing.Staff || 0) - staffing.HoursOff;
 		}
 
-		/*
-		 * When hoursOff are set, they are also included in the Staff attribute.
-		 * We remove them from the Staff to be able to later differentiate between both values.
-		 */
-		staffing.HoursOff = staffing.HoursOff || 0;
-		staffing.Staff = (staffing.Staff || 0) - staffing.HoursOff;
-
 		staffing.total = staffing.Staff + staffing.HoursOff;
-
-		staffing.month = datepicker.formatDate('m', staffing.date);
 		staffing.currentBooking = staffing.Staff;
 
 		/* fully booked means 80% of 8 hours */
