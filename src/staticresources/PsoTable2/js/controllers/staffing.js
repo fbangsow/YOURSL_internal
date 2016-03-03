@@ -150,7 +150,7 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', '$timeout',
 					project.BookedHoursByDay[staffing.Day] = 0;
 				}
 
-				project.BookedHoursByDay[staffing.Day] = staffing.Staff;
+				project.BookedHoursByDay[staffing.Day] += staffing.Staff;
 
 				['budget', 'saldo', 'utilization', 'booked', 'holiday'].forEach(function (saldoType) {
 					var key = saldoType + '-' + staffing.month;
@@ -814,6 +814,9 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', '$timeout',
 				console.log('Affected project resource schedule is already up to date.');
 				return;
 			}
+
+			/* update the delta to be based on our current value */
+			delta = newBookingValue - projectStaffing.Staff;
 		}
 
 		$scope.$apply(function () {

@@ -554,6 +554,7 @@ tbody.Resources:before {
 	background: white;
 	box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.16);
 	bottom: 26px;
+	color: #54698d;
 	content: attr(title);
 	line-height: 17px;
 	padding: 5px 15px;
