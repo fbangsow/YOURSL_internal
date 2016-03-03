@@ -334,7 +334,7 @@
                                 </tr>
                             </tbody>
                             <tbody data-ng-if="data.Customers.length" ng-repeat="customer in data.Customers | filter : filter.customerHasResource">
-                                <tr ng-repeat-start="project in customer.Projects | filter : filter.projectHasResource" class="project-info slds-text-body--small">
+                                <tr ng-repeat-start="project in customer.Projects | filter : filter.projectHasResource" class="project-info slds-text-body--small" style="height:43px;">
                                     <td colspan="5" style="border-right:1px solid #eef1f6 !important;">
                                         <span class="slds-icon__container slds-float--left slds-m-right--large">
                                             <a class="slds-button__icon slds-button__icon--left" href="/apex/OpportunityLineItemsEdit?id={{ project.OpportunityId }}" target="blank">

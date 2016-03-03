@@ -69,8 +69,12 @@ table {
 }
 
 td, th, .col {
-
 	position: relative;
+}
+
+td {
+	height: 35px;
+	line-height: 100%;
 }
 
 td:not([colspan]):hover::after,
