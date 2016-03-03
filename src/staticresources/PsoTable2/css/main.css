@@ -560,7 +560,7 @@ tbody.Resources:before {
 	position: absolute;
 	z-index: 98;
 	text-align: left;
-	width: 220px;
+	min-width: 220px;
 }
 
 #connection-status:hover:after {
@@ -568,4 +568,5 @@ tbody.Resources:before {
 	top: 36px;
 	left: -1px;
 	width: 184px;
+	min-width: 184px;
 }

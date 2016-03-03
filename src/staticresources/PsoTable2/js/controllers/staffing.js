@@ -1,4 +1,4 @@
-PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', 'PsoTable2Endpoint', 'datepicker', 'alert', function ($scope, $interval, sfEndpoint, datepicker, alert) {
+PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', '$timeout', 'PsoTable2Endpoint', 'datepicker', 'alert', function ($scope, $interval, $timeout, sfEndpoint, datepicker, alert) {
 	console.log('init staffing controller');
 
 	$scope.viewState = {
@@ -245,42 +245,93 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', 'PsoTable2E
 
 	$scope.staffing = {};
 
-	$scope.staffing.updateAllocation = function (project, resource, allocationDate, allocation) {
+	var parseAllocationTime = function (allocationTime) {
+		allocationTime = ((allocationTime || '0.0') + '').replace(',','.');
+
+		var minuteFormat = /^(\d{0,2}):(\d{1,2})$/.exec(allocationTime);
+
+		if (minuteFormat) {
+			allocationTime = parseInt(minuteFormat[1], 10) + (parseInt(minuteFormat[2], 10) / 60);
+		}
+
+		if (/^\.\d{1,2}$/.test(allocationTime)) {
+			allocationTime = '0' + allocationTime;
+		}
+
+		if (!/^\d{1,2}(?:\.\d{1,2})?$/.test(allocationTime)) {
+			return 'no_number';
+		}
+
+		allocationTime = parseFloat(allocationTime);
+
+		var at4 = allocationTime * 4;
+		if (at4 - parseInt(at4, 10)) {
+			return 'not_quarter_hour';
+		}
+
+		if (allocationTime < 0) {
+			return 'negative_number';
+		}
+
+		return allocationTime;
+	};
+
+	var scheduledAllocationUpdate;
+	$scope.staffing.scheduleAsyncAllocationUpdate = function (project, resource, allocationDate, allocation) {
+		if (scheduledAllocationUpdate) {
+			$timeout.cancel(scheduledAllocationUpdate);
+			scheduledAllocationUpdate = null;
+		}
+
+		allocation = allocation || {};
+		var parsedTime = parseAllocationTime(allocation.currentBooking);
+
+		if (typeof parsedTime === 'string') {
+			return;
+		}
+
+		/* ok, at least it's a valid number, schedule silent update */
+		scheduledAllocationUpdate = $timeout(function () {
+			$scope.$apply(function () {
+				$scope.staffing.updateAllocation(project, resource, allocationDate, allocation, true);
+			});
+		}, 500);
+	};
+
+	$scope.staffing.updateAllocation = function (project, resource, allocationDate, allocation, silent) {
 		allocation = allocation || {};
 
 		var isNewAllocation = !allocation.Day;
 		var dateString = datepicker.formatDate('yy-mm-dd', allocationDate);
 
-		console.log('validation entered allocation time', allocation.currentBooking);
+		console.log('validating entered allocation time', allocation.currentBooking);
 
+		var requestedHours = parseAllocationTime(allocation.currentBooking);
 		var oldHours = !isNewAllocation ? allocation.Staff : 0.0;
-		allocation.currentBooking = ((allocation.currentBooking || '0.0') + '').replace(',','.');
 
-		var minuteFormat = /^(\d{0,2}):(\d{1,2})$/.exec(allocation.currentBooking);
+		if (typeof requestedHours === 'string') {
+			if (!silent) {
+				allocation.currentBooking = oldHours;
 
-		if (minuteFormat) {
-			allocation.currentBooking = parseInt(minuteFormat[1], 10) + (parseInt(minuteFormat[2], 10) / 60);
-		}
+				switch (requestedHours) {
+					case 'not_quarter_hour':
+						alert('Hour entries must be divisible by a quarter hour. The minimum are 15 minutes (0.25 hours).');
+					case 'negative_number':
+						alert('Please enter a positive number or 0 to remove the allocation.');
+				}
+			}
 
-		if (/^\.\d{1,2}$/.test(allocation.currentBooking)) {
-			allocation.currentBooking = '0' + allocation.currentBooking;
-		}
-
-		if (!/^\d{1,2}(?:\.\d{1,2})?$/.test(allocation.currentBooking)) {
-			allocation.currentBooking = oldHours;
 			return;
 		}
 
-		var requestedHours = parseFloat(allocation.currentBooking) || 0.0;
+		if (oldHours === requestedHours) {
+			return;
+		}
 
 		var totalResourceInfo = $scope.data.ResourcesByContactId[resource.ContactId];
 		var totalDayInfo = totalResourceInfo ? totalResourceInfo.StaffingByDay[dateString] : null;
 		var hoursOff = totalDayInfo ? totalDayInfo.HoursOff : 0.0;
 		var currentTotalExcludingCurrentHours = (totalDayInfo ? totalDayInfo.Staff : 0.0) + hoursOff - oldHours;
-
-		if (oldHours === requestedHours) {
-			return;
-		}
 
 		console.log('checking allocation data for update');
 		/*console.log(project);
@@ -288,42 +339,31 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', 'PsoTable2E
 		console.log(allocationDate);
 		console.log(allocation);*/
 
-		var rh4 = requestedHours * 4;
-		if (rh4 - parseInt(rh4, 10)) {
-			allocation.currentBooking = oldHours;
-
-			alert('Hour entries must be divisible by a quarter hour. The minimum are 15 minutes (0.25 hours).');
-			return;
-		}
-
-		if (requestedHours < 0) {
-			allocation.currentBooking = oldHours;
-
-			alert('Please enter a positive number or 0 to remove the allocation.');
-			return;
-		}
-
 		delta = requestedHours - oldHours;
 
 		if (currentTotalExcludingCurrentHours + requestedHours > 8) {
 			if (currentTotalExcludingCurrentHours + requestedHours > 12) {
-				allocation.currentBooking = oldHours;
+				if (!silent) {
+					allocation.currentBooking = oldHours;
 
-				if (hoursOff) {
-					alert('This allocation will exceed the maximum allowed 12 hours per day for a resource. Please be aware of the existing PTO hours.');
-				} else {
-					alert('This allocation will exceed the maximum allowed 12 hours per day for a resource.')
+					if (hoursOff) {
+						alert('This allocation will exceed the maximum allowed 12 hours per day for a resource. Please be aware of the existing PTO hours.');
+					} else {
+						alert('This allocation will exceed the maximum allowed 12 hours per day for a resource.')
+					}
 				}
 
 				return;
 			}
 
-			var remainingHours = Math.max(8 - currentTotalExcludingCurrentHours, 0);
+			if (!silent) {
+				var remainingHours = Math.max(8 - currentTotalExcludingCurrentHours, 0);
 
-			if (currentTotalExcludingCurrentHours + oldHours <= 8) {
-				alert('This allocation will exceed 8 hours per day for this resource. You can allocate ' + remainingHours + ' hours for this project without exceeding 8 hours.');
-			} else {
-				alert('This allocation stills exceeds 8 hours per day for this resource. You can allocate ' + remainingHours + ' hours for this project without exceeding 8 hours.');
+				if (currentTotalExcludingCurrentHours + oldHours <= 8) {
+					alert('This allocation will exceed 8 hours per day for this resource. You can allocate ' + remainingHours + ' hours for this project without exceeding 8 hours.');
+				} else {
+					alert('This allocation stills exceeds 8 hours per day for this resource. You can allocate ' + remainingHours + ' hours for this project without exceeding 8 hours.');
+				}
 			}
 
 			/* do not return here, exceeding 8 hours is allowed. */
@@ -358,6 +398,7 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', 'PsoTable2E
 		}
 
 		console.log('allocation is fine, persist.');
+		allocation.currentBooking = requestedHours;
 
 		/* after validating we associate the hours and recalculate the sums */
 		if (isNewAllocation) {
@@ -425,8 +466,9 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', 'PsoTable2E
 			classes.past = !!day.isPast;
 			classes.today = !!day.isToday;
 			classes.future = !!day.isFuture;
-			classes.isAllocatable = !!day.isAllocatable;
-			classes.isNotAllocatable = !day.isAllocatable;
+
+			classes.isAllocatable = day.isAllocatable && resource.MonthToLimitMap[day.month];
+			classes.isNotAllocatable = !classes.isAllocatable;
 
 			if (day.isSaldo) {
 				classes['saldo'] = true;
@@ -463,6 +505,12 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', 'PsoTable2E
 			if (holidayAllocation) {
 				classes['has-holiday'] = !!holidayAllocation.hasHoliday;
 				classes['full-holiday'] = !!holidayAllocation.isFullHoliday;
+
+				if (classes['full-holiday'] && classes.isAllocatable) {
+					classes.isAllocatable = false;
+					classes.isNotAllocatable = true;
+				}
+
 				classes['part-holiday'] = !!holidayAllocation.isPartlyHoliday;
 			}
 		}
@@ -848,7 +896,7 @@ PsoTable2.ng.directive('navigateCellInputs', function () {
 			el.on('keydown', 'input', function (e) {
 				var arrowKey = arrowKeys.indexOf(e.which);
 
-				if (arrowKey === -1) {
+				if (e.shiftKey || arrowKey === -1) {
 					return;
 				}
 
