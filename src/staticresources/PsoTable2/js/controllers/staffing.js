@@ -13,6 +13,8 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', '$timeout',
 		projectHealthReasons: {}
 	};
 
+	$scope.filter = {};
+
 	$scope.data = {};
 
 	var normalizeStaffing = function (staffing) {
@@ -595,6 +597,20 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', '$timeout',
 
 	$scope.updateProjectStatus = function (project) {
 		sfEndpoint.updateProjectStatus(project.OpportunityId, project.ProjectStatus);
+	};
+
+	$scope.filter.customerHasResource = function (customer) {
+		for (var p = 0; p < customer.Projects.length; p++) {
+			if ($scope.filter.projectHasResource(customer.Projects[p])) {
+				return true;
+			}
+		}
+
+		return false;
+	};
+
+	$scope.filter.projectHasResource = function (project) {
+		return project.Resources && !!project.Resources.length;
 	};
 
 	var normalizeTime = function (d) {
