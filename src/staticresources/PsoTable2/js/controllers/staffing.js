@@ -362,10 +362,10 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', 'PsoTable2E
 				total: requestedHours,
 			};
 
-			normalizeStaffing(totalDayInfo);
-
-			totalResourceInfo.StaffingByDay[dateString] = totalDayInfo;
+			totalResourceInfo.Staffing.push(totalDayInfo);
 		}
+
+		normalizeResourceStaffing(totalResourceInfo);
 
 		allocation.Staff = requestedHours;
 		allocation.total += requestedHours;
@@ -382,7 +382,7 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', 'PsoTable2E
 				totalDayInfo.Staff -= delta;
 				totalDayInfo.total -= delta;
 
-				totalResourceInfo.MonthSaldos['saldo-' + monthKey] += delta;
+				normalizeResourceStaffing(totalResourceInfo);
 			}
 
 			allocation.Staff = oldHours;
