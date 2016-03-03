@@ -104,9 +104,7 @@ public without sharing class PsoToolController{
                                     (SELECT Contact__r.Name, Contact__r.Id, Contact__r.Account.Name, Contact__r.Title, Contact__r.FirstName, Contact__r.LastName, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
                                         FROM OpportunityLineItems
                                         WHERE Contact__r.LastName != 'All'
-                                        AND Unit__c = 'Manntag(e)'
-                                        AND Contact__r.Inactive__c = false
-                                        AND Contact__r.RecordTypeId = '012D0000000QokP')
+                                        AND Unit__c = 'Manntag(e)')
                                         FROM Opportunity
                                         WHERE Id IN :getOpportunitiesToShow()
                                         AND Project_Start_Date__c <= :EndDate
@@ -298,6 +296,9 @@ public without sharing class PsoToolController{
 
     @TestVisible private Resource getResource(String opp_id, OpportunityLineItem line_item){
         Resource new_resource = new Resource();
+        if(line_item.Contact__r == null)
+            new_resource.ResourceName = 'Unassigned';
+        else
         new_resource.ResourceName = line_item.Contact__r.LastName + ' ' + line_item.Contact__r.FirstName;
         new_resource.ContactId = line_item.Contact__r.Id;
         new_resource.Product = line_item.Product2.Name;
@@ -363,6 +364,9 @@ public without sharing class PsoToolController{
         for(String contact_id: contacts_to_show){
             if(!contactIdToResourceAvailabilityData.containsKey(contact_id)){
                 ResourceInfo newInfo = new ResourceInfo();
+                if(ContactIdsToContacts.get(contact_id) == null)
+                    newInfo.ResourceName = 'Unassigned';
+                else
                 newInfo.ResourceName = ContactIdsToContacts.get(contact_id).LastName + ' ' + ContactIdsToContacts.get(contact_id).FirstName;
                 newInfo.LastName = ContactIdsToContacts.get(contact_id).LastName;
                 newInfo.Title = ContactIdsToContacts.get(contact_id).Title;
