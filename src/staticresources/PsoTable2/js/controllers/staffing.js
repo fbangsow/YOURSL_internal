@@ -250,8 +250,28 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', 'PsoTable2E
 
 		var isNewAllocation = !allocation.Day;
 		var dateString = datepicker.formatDate('yy-mm-dd', allocationDate);
-		var requestedHours = parseFloat(allocation.currentBooking) || 0.0;
+
+		console.log('validation entered allocation time', allocation.currentBooking);
+
 		var oldHours = !isNewAllocation ? allocation.Staff : 0.0;
+		allocation.currentBooking = ((allocation.currentBooking || '0.0') + '').replace(',','.');
+
+		var minuteFormat = /^(\d{0,2}):(\d{1,2})$/.exec(allocation.currentBooking);
+
+		if (minuteFormat) {
+			allocation.currentBooking = parseInt(minuteFormat[1], 10) + (parseInt(minuteFormat[2], 10) / 60);
+		}
+
+		if (/^\.\d{1,2}$/.test(allocation.currentBooking)) {
+			allocation.currentBooking = '0' + allocation.currentBooking;
+		}
+
+		if (!/^\d{1,2}(?:\.\d{1,2})?$/.test(allocation.currentBooking)) {
+			allocation.currentBooking = oldHours;
+			return;
+		}
+
+		var requestedHours = parseFloat(allocation.currentBooking) || 0.0;
 
 		var totalResourceInfo = $scope.data.ResourcesByContactId[resource.ContactId];
 		var totalDayInfo = totalResourceInfo ? totalResourceInfo.StaffingByDay[dateString] : null;
