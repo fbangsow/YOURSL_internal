@@ -542,6 +542,24 @@ tbody.Resources:before {
 	background: #a5bcd0 !important
 }
 
+.very-low-utilization {
+	background: red !important;
+	color: black;
+}
+
+.low-utilization {
+	background: orange !important;
+	color: black;
+}
+
+.neutral-utilization {
+	background: yellow !important;
+}
+
+.high-utilization {
+	background: green !important;
+}
+
 .tooltip {
 	display: inline;
 	position: relative;

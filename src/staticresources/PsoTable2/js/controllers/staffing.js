@@ -473,21 +473,26 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', '$timeout',
 			if (day.isSaldo) {
 				classes['saldo'] = true;
 
+				var stats = resource.MonthSaldos[day.dateString] || 0.0;
+
 				if (day.isStatisticSaldo) {
 					/* the stats may not be generated, we need to check */
-					if (resource.MonthSaldos[day.dateString]) {
-						var stats = resource.MonthSaldos[day.dateString];
-
+					if (stats) {
 						classes['negative-saldo'] = stats.actual < stats.planned;
 						classes['positive-saldo'] = stats.actual > stats.planned;
 						classes['neutral-saldo'] = stats.actual === stats.planned;
 					} else {
 						classes['no-data'] = true;
 					}
+				} else if (day.isUtilization) {
+					classes['very-low-utilization'] = stats <= 0.4;
+					classes['low-utilization'] = stats > 0.4 && stats < 0.6;
+					classes['neutral-utilization'] = stats >= 0.6 && stats < 0.8;
+					classes['high-utilization'] = stats >= 0.8;
 				} else {
-					classes['negative-saldo'] = resource.MonthSaldos[day.dateString] && resource.MonthSaldos[day.dateString] < 0;
-					classes['positive-saldo'] = resource.MonthSaldos[day.dateString] && resource.MonthSaldos[day.dateString] > 0;
-					classes['neutral-saldo'] = !resource.MonthSaldos[day.dateString];
+					classes['negative-saldo'] = stats && stats < 0;
+					classes['positive-saldo'] = stats && stats > 0;
+					classes['neutral-saldo'] = !stats;
 				}
 			}
 		}
@@ -522,10 +527,28 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', '$timeout',
 		var classes = $scope.buildDayHeaderClasses(day);
 
 		if (project && day && day.isSaldo) {
-			if (!day.isStatisticSaldo) {
-				classes['negative-saldo'] = project.MonthSaldos[day.dateString] && project.MonthSaldos[day.dateString] < 0;
-				classes['positive-saldo'] = project.MonthSaldos[day.dateString] && project.MonthSaldos[day.dateString] > 0;
-				classes['neutral-saldo'] = !project.MonthSaldos[day.dateString];
+			classes['saldo'] = true;
+
+			var stats = project.MonthSaldos[day.dateString] || 0.0;
+
+			if (day.isStatisticSaldo) {
+				/* the stats may not be generated, we need to check */
+				if (stats) {
+					classes['negative-saldo'] = stats.actual < stats.planned;
+					classes['positive-saldo'] = stats.actual > stats.planned;
+					classes['neutral-saldo'] = stats.actual === stats.planned;
+				} else {
+					classes['no-data'] = true;
+				}
+			} else if (day.isUtilization) {
+				classes['very-low-utilization'] = stats <= 0.4;
+				classes['low-utilization'] = stats > 0.4 && stats < 0.6;
+				classes['neutral-utilization'] = stats >= 0.6 && stats < 0.8;
+				classes['high-utilization'] = stats >= 0.8;
+			} else {
+				classes['negative-saldo'] = stats && stats < 0;
+				classes['positive-saldo'] = stats && stats > 0;
+				classes['neutral-saldo'] = !stats;
 			}
 		}
 
