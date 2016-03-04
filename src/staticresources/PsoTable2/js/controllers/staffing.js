@@ -48,9 +48,8 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', '$timeout',
 		staffing.total = staffing.Staff + staffing.HoursOff;
 		staffing.currentBooking = staffing.Staff;
 
-		/* fully booked means 80% of 8 hours */
 		var hoursPerDay = 8;
-		var fullyBookedTreshold = hoursPerDay * 0.8;
+		var fullyBookedTreshold = hoursPerDay * 1;
 
 		/*
 		 * We calculate the booking state with both project allocation and holidays.
