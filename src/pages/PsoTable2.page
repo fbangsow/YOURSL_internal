@@ -327,7 +327,7 @@
                                     <th>Role</th>
                                     <th>Sold<br />days</th>
                                     <th>Planned<br />days</th>
-                                    <th style="border-right:1px solid #cfd7e6 !important;">Unplanned<br />days</th>
+                                    <th>Unplanned<br />days</th>
                                 </tr>
                             </tbody>
                             <tbody data-ng-if="data.Customers.length" ng-repeat="customer in data.Customers | filter : filter.customerHasResource">
@@ -482,13 +482,13 @@
 
                                         <input ng-if="day.isAllocatable && resource.MonthToLimitMap[day.month] && !data.ResourcesByContactId[resource.ContactId].StaffingByDay[day.dateString].isFullHoliday" ng-model="resource.StaffingByDay[day.dateString].currentBooking" ng-blur="staffing.updateAllocation(project, resource, day.date, resource.StaffingByDay[day.dateString])" ng-change="staffing.scheduleAsyncAllocationUpdate(project, resource, day.date, resource.StaffingByDay[day.dateString])" />
 
-                                        <span ng-if="day.isAllocatable && !resource.MonthToLimitMap[day.month]" class="tooltip" title="No budget available for {{ resource.ResourceName }} in this month.">
+                                        <span ng-if="day.isAllocatable && !resource.MonthToLimitMap[day.month]" class="tooltip ResourceInfo" title="No budget available for {{ resource.ResourceName }} in this month.">
                                             <svg class="slds-icon slds-icon--x-small slds-icon-text-default" style="fill: #aaa;">
                                                 <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#error')}"></use>
                                             </svg>
                                         </span>
 
-                                        <span ng-if="day.isAllocatable && resource.MonthToLimitMap[day.month] && data.ResourcesByContactId[resource.ContactId].StaffingByDay[day.dateString].isFullHoliday" class="tooltip" title="{{ resource.ResourceName }} has holiday on this day.">
+                                        <span ng-if="day.isAllocatable && resource.MonthToLimitMap[day.month] && data.ResourcesByContactId[resource.ContactId].StaffingByDay[day.dateString].isFullHoliday" class="tooltip ResourceInfo" title="{{ resource.ResourceName }} has holiday on this day.">
                                             <svg class="slds-icon slds-icon--x-small slds-icon-text-default" style="fill: #aaa;">
                                                 <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#trail')}"></use>
                                             </svg>
