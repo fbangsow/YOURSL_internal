@@ -9,6 +9,7 @@
         <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js" />
         <apex:includeScript value="{!URLFOR($Resource.PsoTable2,'js/core.js')}"/>
         <apex:includeScript value="{!URLFOR($Resource.PsoTable2,'js/controllers/root.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.PsoTable2,'js/controllers/staffing.js')}"/>
         <apex:includeScript value="{!URLFOR($Resource.PsoTable2,'js/controllers/utilization.js')}"/>
 
         <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.lightningStyle, '/assets/styles/salesforce-lightning-design-system.css')}" />
@@ -263,13 +264,13 @@
                                     <td class="padding10left">{{ resource.ResourceName }}</td>
                                     <td>{{ resource.Title }}</td>
                                     <td style="border-right:1px solid #ffffff !important;">{{ resource.AccountName}}</td>
-                                    <td ng-repeat="day in viewState.staffingDays" ng-class="buildResourceAllocationCellClasses(resource, day, resource.MonthSaldos[day.dateString])" class="textCenter">
+                                    <td ng-repeat="day in viewState.staffingDays" ng-class="buildResourceAllocationCellClasses(resource, day, resource.Saldos[day.dateString])" class="textCenter">
                                         <span ng-if="day.isMonthSaldo">
-                                            {{ ((resource.MonthSaldos[day.dateString] || 0) / 8) | number : 2 }}
+                                            {{ ((resource.Saldos[day.dateString] || 0) / 8) | number : 2 }}
                                         </span>
 
                                         <span ng-if="day.isUtilization">
-                                            {{ ((resource.MonthSaldos[day.dateString] || 0) * 100) | number : 1 }}%
+                                            {{ ((resource.Saldos[day.dateString] || 0) * 100) | number : 1 }}%
                                         </span>
                                     </td>
                                 </tr>
