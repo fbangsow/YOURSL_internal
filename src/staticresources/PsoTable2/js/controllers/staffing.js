@@ -414,6 +414,13 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', '$timeout',
 		}, 500);
 	};
 
+	$scope.staffing.clearAllocation = function (project, resource, allocationDate, allocation) {
+		allocation = allocation || {};
+		allocation.currentBooking = 0;
+
+		$scope.staffing.updateAllocation(project, resource, allocationDate, allocation);
+	};
+
 	$scope.staffing.updateAllocation = function (project, resource, allocationDate, allocation, silent) {
 		allocation = allocation || {};
 

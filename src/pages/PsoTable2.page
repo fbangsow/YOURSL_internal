@@ -482,6 +482,12 @@
 
                                         <input ng-if="day.isAllocatable && resource.MonthToLimitMap[day.month] && !data.ResourcesByContactId[resource.ContactId].StaffingByDay[day.dateString].isFullHoliday" ng-model="resource.StaffingByDay[day.dateString].currentBooking" ng-blur="staffing.updateAllocation(project, resource, day.date, resource.StaffingByDay[day.dateString])" ng-change="staffing.scheduleAsyncAllocationUpdate(project, resource, day.date, resource.StaffingByDay[day.dateString])" />
 
+                                        <span ng-if="day.isAllocatable && resource.StaffingByDay[day.dateString].Staff > 0 && data.ResourcesByContactId[resource.ContactId].StaffingByDay[day.dateString].isFullHoliday" class="tooltip ResourceInfo" title="Remove project allocation" style="bottom: auto; top: 0;" ng-click="staffing.clearAllocation(project, resource, day.date, resource.StaffingByDay[day.dateString])">
+                                            <svg class="slds-icon slds-icon--x-small slds-icon-text-default" style="fill: #aaa;">
+                                                <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#delete')}"></use>
+                                            </svg>
+                                        </span>
+
                                         <span ng-if="day.isAllocatable && !resource.MonthToLimitMap[day.month]" class="tooltip ResourceInfo" title="No budget available for {{ resource.ResourceName }} in this month.">
                                             <svg class="slds-icon slds-icon--x-small slds-icon-text-default" style="fill: #aaa;">
                                                 <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#error')}"></use>
