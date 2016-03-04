@@ -23,21 +23,28 @@ PsoTable2.ng.controller('PsoTable2Utilization', ['$scope', '$interval', 'PsoTabl
 			HoursOff: 0.75
 		 }
 		 */
-		if (!staffing.date) {
-			staffing.date = new Date(staffing.Day);
+		if (!staffing.__normalized) {
+			staffing.__normalized = true;
+
+			/* do some initial stuff here that we're allowed to do only once or at least don't need to do more often */
+
+			if (!staffing.date) {
+				staffing.date = new Date(staffing.Day);
+			}
+
+			staffing.month = datepicker.formatDate('m', staffing.date);
+			staffing.week = datepicker.iso8601Week(staffing.date);
+
+			staffing.HoursOff = staffing.HoursOff || 0;
+
+			/*
+			 * When hoursOff are set, they are also included in the Staff attribute.
+			 * We remove them from the Staff to be able to later differentiate between both values.
+			 */
+			staffing.Staff = (staffing.Staff || 0) - staffing.HoursOff;
 		}
 
-		/*
-		 * When hoursOff are set, they are also included in the Staff attribute.
-		 * We remove them from the Staff to be able to later differentiate between both values.
-		 */
-		staffing.HoursOff = staffing.HoursOff || 0;
-		staffing.Staff = (staffing.Staff || 0) - staffing.HoursOff;
-
 		staffing.total = staffing.Staff + staffing.HoursOff;
-
-		staffing.month = datepicker.formatDate('m', staffing.date);
-		staffing.week = datepicker.iso8601Week(staffing.date);
 		staffing.currentBooking = staffing.Staff;
 
 		/* fully booked means 80% of 8 hours */
@@ -176,8 +183,20 @@ PsoTable2.ng.controller('PsoTable2Utilization', ['$scope', '$interval', 'PsoTabl
 	/* restructure the staffings for each resource to be accessible by date */
 	$scope.utilization = {};
 
-	$scope.buildResourceAllocationCellClasses = function (resource, day) {
+	$scope.buildResourceAllocationCellClasses = function (resource, day, stats, type) {
 		var classes = {};
+
+		stats = stats || 0.0;
+
+		if (!type && day && day.isSaldo) {
+			type = 'saldo';
+
+			if (day.isStatisticSaldo) {
+				type = 'statistic';
+			} else if (day.isUtilization) {
+				type = 'utilization'
+			}
+		}
 
 		if (day) {
 			classes.weekend = !!day.isWeekEnd;
@@ -189,26 +208,29 @@ PsoTable2.ng.controller('PsoTable2Utilization', ['$scope', '$interval', 'PsoTabl
 
 			if (day.isSaldo) {
 				classes['saldo'] = true;
-				var stats = resource.MonthSaldos[day.dateString] || 0.0;
 
-				if (day.isStatisticSaldo) {
-					/* the stats may not be generated, we need to check */
-					if (stats) {
-						classes['negative-saldo'] = stats.actual < stats.planned;
-						classes['positive-saldo'] = stats.actual > stats.planned;
-						classes['neutral-saldo'] = stats.actual === stats.planned;
-					} else {
-						classes['no-data'] = true;
-					}
-				} else if (day.isUtilization) {
-					classes['very-low-utilization'] = stats <= 0.4;
-					classes['low-utilization'] = stats > 0.4 && stats < 0.6;
-					classes['neutral-utilization'] = stats >= 0.6 && stats < 0.8;
-					classes['high-utilization'] = stats >= 0.8;
-				} else {
-					classes['negative-saldo'] = stats && stats < 0;
-					classes['positive-saldo'] = stats && stats > 0;
-					classes['neutral-saldo'] = !stats;
+				switch (type) {
+					case 'statistic':
+						/* the stats may not be generated, we need to check */
+						if (stats) {
+							classes['negative-saldo'] = stats.actual < stats.planned;
+							classes['positive-saldo'] = stats.actual > stats.planned;
+							classes['neutral-saldo'] = stats.actual === stats.planned;
+						} else {
+							classes['no-data'] = true;
+						}
+					break;
+					case 'utilization':
+						classes['very-low-utilization'] = stats <= 0.4;
+						classes['low-utilization'] = stats > 0.4 && stats < 0.6;
+						classes['neutral-utilization'] = stats >= 0.6 && stats < 0.8;
+						classes['high-utilization'] = stats >= 0.8;
+					break;
+					case 'saldo':
+						classes['negative-saldo'] = stats && stats < 0;
+						classes['positive-saldo'] = stats && stats > 0;
+						classes['neutral-saldo'] = !stats;
+					break;
 				}
 			}
 		}
@@ -267,6 +289,8 @@ PsoTable2.ng.controller('PsoTable2Utilization', ['$scope', '$interval', 'PsoTabl
 			$scope.$parent.status.loading = true;
 			$scope.$parent.status.loaded = false;
 		}
+
+		selectedOpportunities = ['__related'];
 
 		$scope.$emit('loadStaffingData', selectedOpportunities, selectedResources, startMonth);
 
@@ -440,6 +464,69 @@ PsoTable2.ng.controller('PsoTable2Utilization', ['$scope', '$interval', 'PsoTabl
 				}
 
 				$scope.data.Resources = data.Resources;
+			}
+
+			if (data.Customers) {
+				for (var c = 0; c < data.Customers.length; c++) {
+					var customer = data.Customers[c];
+					for (var p = 0; p < customer.Projects.length; p++) {
+						var project = customer.Projects[p];
+
+						for (var r = 0; r < project.Resources.length; r++) {
+							var resource = project.Resources[r];
+
+							if (!$scope.data.ResourcesByContactId[resource.ContactId].Projects) {
+								$scope.data.ResourcesByContactId[resource.ContactId].Projects = {};
+							}
+
+							var resourceProject = {
+								AccountName: customer.AccountName,
+								OpportunityName: project.OpportunityName,
+								StaffingByDay: {}
+							};
+
+							if (!$scope.data.ResourcesByContactId[resource.ContactId].Projects[project.OpportunityId]) {
+								$scope.data.ResourcesByContactId[resource.ContactId].Projects[project.OpportunityId] = resourceProject;
+							}
+
+							for (var s = 0; s < resource.Staffing.length; s++) {
+								var staffing = resource.Staffing[s];
+								var staffingDate = new Date(staffing.Day);
+
+								var staffingWeek = datepicker.iso8601Week(staffingDate);
+								var staffingMonth = datepicker.formatDate('m', staffingDate);
+
+								var contexts = {
+									month: staffingMonth,
+									week: staffingMonth + '-' + staffingWeek
+								};
+
+								for (var contextType in contexts) {
+									if (contexts.hasOwnProperty(contextType)) {
+										var context = contexts[contextType];
+										var utilizationDateString = contextType + '-utilization-' + context;
+
+										if (!resourceProject.StaffingByDay[utilizationDateString]) {
+											resourceProject.StaffingByDay[utilizationDateString] = 0
+										}
+
+										resourceProject.StaffingByDay[utilizationDateString] += staffing.Staff;
+									}
+								}
+							}
+
+							if (resource.MonthToLimitMap) {
+								for (monthKey in resource.MonthToLimitMap) {
+									if (resource.MonthToLimitMap.hasOwnProperty(monthKey)) {
+										var budgetForMonth = parseFloat(resource.MonthToLimitMap[monthKey]) * 8;
+
+										resourceProject.StaffingByDay['month-saldo-' + monthKey] = budgetForMonth - resourceProject.StaffingByDay['month-utilization-' + monthKey];
+									}
+								}
+							}
+						}
+					}
+				}
 			}
 
 			$scope.viewState.staffingDayColumns = dayCount;

@@ -259,17 +259,27 @@
                                         {{ week.caption }}
                                     </th>
                                 </tr>
-                                <tr ng-repeat="resource in data.Resources" ng-class="buildResourceRowClasses(resource)">
+                                <tr ng-repeat-start="resource in data.Resources" ng-class="buildResourceRowClasses(resource)" ng-click="showOpportunities=!showOpportunities">
                                     <td class="padding10left">{{ resource.ResourceName }}</td>
                                     <td>{{ resource.Title }}</td>
                                     <td style="border-right:1px solid #ffffff !important;">{{ resource.AccountName}}</td>
-                                    <td ng-repeat="day in viewState.staffingDays" ng-class="buildResourceAllocationCellClasses(resource, day)" class="textCenter">
+                                    <td ng-repeat="day in viewState.staffingDays" ng-class="buildResourceAllocationCellClasses(resource, day, resource.MonthSaldos[day.dateString])" class="textCenter">
                                         <span ng-if="day.isMonthSaldo">
                                             {{ ((resource.MonthSaldos[day.dateString] || 0) / 8) | number : 2 }}
                                         </span>
 
                                         <span ng-if="day.isUtilization">
                                             {{ ((resource.MonthSaldos[day.dateString] || 0) * 100) | number : 1 }}%
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr ng-repeat="(projectId, project) in resource.Projects" ng-repeat-end="true" ng-show="showOpportunities">
+                                    <td class="padding10left" colspan="3" style="border-right:1px solid #ffffff !important;">
+                                        <b>{{ project.AccountName }}</b> &gt; {{ project.OpportunityName }}
+                                    </td>
+                                    <td ng-repeat="day in viewState.staffingDays" ng-class="buildResourceAllocationCellClasses(resource, day, project.StaffingByDay[day.dateString], 'saldo')" class="textCenter">
+                                        <span>
+                                            {{ ((project.StaffingByDay[day.dateString] || 0) / 8) | number : 2 }}
                                         </span>
                                     </td>
                                 </tr>
