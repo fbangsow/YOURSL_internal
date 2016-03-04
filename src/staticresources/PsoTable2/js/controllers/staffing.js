@@ -486,7 +486,17 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', '$timeout',
 		if (currentMonthHours + requestedHours > limit) {
 			allocation.currentBooking = oldHours;
 
-			alert('The allocation of additional ' + requestedHours + ' hours for ' + resource.ResourceName + ' exceeds the month limit of ' + resource.MonthToLimitMap[monthKey] + ' hours. The resource has ' + availableHours + ' hours left for this month.');
+			var displayLimit = limit > 16 ? limit / 8 : limit;
+			var intLimit = parseInt(displayLimit, 10);
+
+			if (!(displayLimit - intLimit)) {
+				/* it's an integer, use the non- decimal version for display */
+				displayLimit = intLimit;
+			}
+
+			displayLimit += ' ' + (limit > 16 ? 'days' : 'hours');
+
+			alert('The allocation of additional ' + requestedHours + ' hours for ' + resource.ResourceName + ' exceeds the month limit of ' + displayLimit + '. The resource has ' + availableHours + ' hours left for this month.');
 			return;
 		}
 
