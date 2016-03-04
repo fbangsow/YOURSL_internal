@@ -72,7 +72,14 @@ PsoTable2.ng.factory('PsoTable2StaffingHelper', ['datepicker', function (datepic
 
 					resource.Saldos['month-budget-' + monthKey] = budgetForMonth;
 					resource.Saldos['month-saldo-' + monthKey] = budgetForMonth;
-					resource.Saldos['month-utilization-' + monthKey] = 0;
+
+					resource.Saldos['month-utilization-' + monthKey] = {
+						value: 0,
+						booked: 0,
+						budget: 0,
+						holiday: 0
+					};
+
 					resource.Saldos['month-booked-' + monthKey] = 0;
 					resource.Saldos['month-holiday-' + monthKey] = 0;
 
@@ -100,7 +107,13 @@ PsoTable2.ng.factory('PsoTable2StaffingHelper', ['datepicker', function (datepic
 
 					resource.Saldos['week-budget-' + weekNumber] = budgetForWeek;
 					resource.Saldos['week-saldo-' + weekNumber] = budgetForWeek;
-					resource.Saldos['week-utilization-' + weekNumber] = 0;
+					resource.Saldos['week-utilization-' + weekNumber] = {
+						value: 0,
+						booked: 0,
+						budget: 0,
+						holiday: 0
+					};
+
 					resource.Saldos['week-booked-' + weekNumber] = 0;
 					resource.Saldos['week-holiday-' + weekNumber] = 0;
 
@@ -173,7 +186,7 @@ PsoTable2.ng.factory('PsoTable2StaffingHelper', ['datepicker', function (datepic
 				for (var sc = 0; sc < saldoContexts.length; sc++) {
 					var saldos = saldoContexts[sc];
 
-					[timeContext + '-budget', timeContext + '-saldo', timeContext + '-utilization', timeContext + '-booked', timeContext + '-holiday'].forEach(function (saldoType) {
+					[timeContext + '-budget', timeContext + '-saldo', timeContext + '-booked', timeContext + '-holiday'].forEach(function (saldoType) {
 						var key = saldoType + '-' + timeRange;
 
 						if (!saldos[key]) {
@@ -185,13 +198,23 @@ PsoTable2.ng.factory('PsoTable2StaffingHelper', ['datepicker', function (datepic
 					saldos[timeContext + '-booked-' + timeRange] += staffing.Staff;
 					saldos[timeContext + '-holiday-' + timeRange] += staffing.HoursOff;
 
-					var utilizationBudget = saldos[timeContext + '-budget-' + timeRange] - saldos[timeContext + '-holiday-' + timeRange];
-
-					if (utilizationBudget) {
-						saldos[timeContext + '-utilization-' + timeRange] = saldos[timeContext + '-booked-' + timeRange] / utilizationBudget;
-					} else {
-						saldos[timeContext + '-utilization-' + timeRange] = 0;
+					if (!saldos[timeContext + '-utilization-' + timeRange]) {
+						saldos[timeContext + '-utilization-' + timeRange] = {
+							value: 0,
+							booked: 0,
+							budget: 0,
+							holiday: 0
+						};
 					}
+
+					var utilization = saldos[timeContext + '-utilization-' + timeRange];
+
+					utilization.budget = saldos[timeContext + '-budget-' + timeRange];
+					utilization.holiday = saldos[timeContext + '-holiday-' + timeRange];
+					utilization.booked = saldos[timeContext + '-booked-' + timeRange];
+
+					var utilizationBudget = utilization.budget - utilization.holiday;
+					utilization.value = utilizationBudget ? (utilization.booked / utilizationBudget) : 0;
 				}
 			}
 		}
@@ -588,10 +611,12 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', '$timeout',
 						classes['no-data'] = true;
 					}
 				} else if (day.isUtilization) {
-					classes['very-low-utilization'] = stats <= 0.4;
-					classes['low-utilization'] = stats > 0.4 && stats < 0.6;
-					classes['neutral-utilization'] = stats >= 0.6 && stats < 0.8;
-					classes['high-utilization'] = stats >= 0.8;
+					var statsValue = stats ? stats.value : 0;
+
+					classes['very-low-utilization'] = statsValue <= 0.4;
+					classes['low-utilization'] = statsValue > 0.4 && statsValue < 0.6;
+					classes['neutral-utilization'] = statsValue >= 0.6 && statsValue < 0.8;
+					classes['high-utilization'] = statsValue >= 0.8;
 				} else {
 					classes['negative-saldo'] = stats && stats < 0;
 					classes['positive-saldo'] = stats && stats > 0;
@@ -644,10 +669,12 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', '$timeout',
 					classes['no-data'] = true;
 				}
 			} else if (day.isUtilization) {
-				classes['very-low-utilization'] = stats <= 0.4;
-				classes['low-utilization'] = stats > 0.4 && stats < 0.6;
-				classes['neutral-utilization'] = stats >= 0.6 && stats < 0.8;
-				classes['high-utilization'] = stats >= 0.8;
+				var statsValue = stats ? stats.value : 0;
+
+				classes['very-low-utilization'] = statsValue <= 0.4;
+				classes['low-utilization'] = statsValue > 0.4 && statsValue < 0.6;
+				classes['neutral-utilization'] = statsValue >= 0.6 && statsValue < 0.8;
+				classes['high-utilization'] = statsValue >= 0.8;
 			} else {
 				classes['negative-saldo'] = stats && stats < 0;
 				classes['positive-saldo'] = stats && stats > 0;

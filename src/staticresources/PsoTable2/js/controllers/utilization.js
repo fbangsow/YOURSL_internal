@@ -56,10 +56,12 @@ PsoTable2.ng.controller('PsoTable2Utilization', ['$scope', '$interval', 'PsoTabl
 						}
 					break;
 					case 'utilization':
-						classes['very-low-utilization'] = stats <= 0.4;
-						classes['low-utilization'] = stats > 0.4 && stats < 0.6;
-						classes['neutral-utilization'] = stats >= 0.6 && stats < 0.8;
-						classes['high-utilization'] = stats >= 0.8;
+						var statsValue = stats ? stats.value : 0;
+
+						classes['very-low-utilization'] = statsValue <= 0.4;
+						classes['low-utilization'] = statsValue > 0.4 && statsValue < 0.6;
+						classes['neutral-utilization'] = statsValue >= 0.6 && statsValue < 0.8;
+						classes['high-utilization'] = statsValue >= 0.8;
 					break;
 					case 'saldo':
 						classes['negative-saldo'] = stats && stats < 0;
@@ -307,7 +309,7 @@ PsoTable2.ng.controller('PsoTable2Utilization', ['$scope', '$interval', 'PsoTabl
 										var utilizationDateString = contextType + '-utilization-' + context;
 
 										if (!resourceProject.StaffingByDay[utilizationDateString]) {
-											resourceProject.StaffingByDay[utilizationDateString] = 0
+											resourceProject.StaffingByDay[utilizationDateString] = 0;
 										}
 
 										resourceProject.StaffingByDay[utilizationDateString] += staffing.Staff;
@@ -319,8 +321,9 @@ PsoTable2.ng.controller('PsoTable2Utilization', ['$scope', '$interval', 'PsoTabl
 								for (monthKey in resource.MonthToLimitMap) {
 									if (resource.MonthToLimitMap.hasOwnProperty(monthKey)) {
 										var budgetForMonth = parseFloat(resource.MonthToLimitMap[monthKey]) * 8;
+										var scheduledForMonth = resourceProject.StaffingByDay['month-utilization-' + monthKey] || 0;
 
-										resourceProject.StaffingByDay['month-saldo-' + monthKey] = budgetForMonth - resourceProject.StaffingByDay['month-utilization-' + monthKey];
+										resourceProject.StaffingByDay['month-saldo-' + monthKey] = budgetForMonth - scheduledForMonth;
 									}
 								}
 							}
