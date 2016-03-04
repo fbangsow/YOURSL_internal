@@ -325,9 +325,9 @@
                                 <tr class="slds-text-heading--label tableheader" style="height:146px;">
                                     <th class="padding10left">Resource</th>
                                     <th>Role</th>
-                                    <th>Sold days</th>
-                                    <th>Planned days</th>
-                                    <th style="border-right:1px solid #cfd7e6 !important;">Unplanned days</th>
+                                    <th>Sold<br />days</th>
+                                    <th>Planned<br />days</th>
+                                    <th style="border-right:1px solid #cfd7e6 !important;">Unplanned<br />days</th>
                                 </tr>
                             </tbody>
                             <tbody data-ng-if="data.Customers.length" ng-repeat="customer in data.Customers | filter : filter.customerHasResource">
@@ -385,7 +385,7 @@
                                     <td class="fixtd">
                                         {{ (resource.PlannedDays / 8) | number : 2 }}
                                     </td>
-                                    <td class="fixtd" style="border-right:1px solid #ffffff !important;">
+                                    <td class="fixtd">
                                         {{ ((resource.SoldDays - resource.PlannedDays) / 8) | number : 2 }}
                                     </td>
                                 </tr>
@@ -462,7 +462,7 @@
                                     </td>
                                 </tr>
                                 <tr><td colspan="{{ viewState.staffingColumns }}" class="shadow"></td></tr>
-                                <tr ng-repeat="resource in project.Resources" ng-class="buildResourceRowClasses(resource)" class="slds-text-body--small">
+                                <tr ng-repeat="resource in project.Resources" ng-class="buildResourceRowClasses(resource)" class="slds-text-body--small schedule">
                                     <td ng-repeat="day in viewState.staffingDays" ng-class="buildResourceAllocationCellClasses(resource, day, resource.StaffingByDay[day.dateString])" class="textCenter">
                                         <span ng-if="day.isMonthSaldo">
                                             {{ ((resource.Saldos[day.dateString] || 0) / 8) | number : 2 }}

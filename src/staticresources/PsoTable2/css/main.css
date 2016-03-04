@@ -72,9 +72,31 @@ td, th, .col {
 	position: relative;
 }
 
+.externalEmployee .padding10left {
+	background-image: linear-gradient(135deg, rgba(0, 160, 227, 0.5) 6px, transparent 6px, transparent);
+}
+
 td:not(.shadow) {
 	height: 35px;
 	line-height: 100%;
+}
+
+td:not([colspan]) .slds-icon-text-default {
+	fill: rgba(0, 0, 0, 0.3);
+
+}
+
+span.ResourceInfo svg {
+	width: 12px;
+	height: 12px;
+}
+
+span.ResourceInfo {
+	position: absolute;
+	bottom: -1px;
+	right: -1px;
+	background: rgba(255, 255, 255, 0.9);
+	border: 1px solid #d8dde6;
 }
 
 td:not([colspan]):hover::after,
@@ -173,7 +195,7 @@ td:not([colspan]):hover::after,
 	z-index: 10000 !important;
 }
 
-.billable {
+.billable:not(.schedule) {
 	border-left: 5px solid green;
 }
 
@@ -547,21 +569,27 @@ tbody.Resources:before {
 }
 
 .very-low-utilization {
-	background: red !important;
-	color: black;
+	color: red;
+	font-weight: bold;
+	font-size: 140%;
 }
 
 .low-utilization {
-	background: orange !important;
-	color: black;
+	color: #ef7f80;
+	font-weight: bold;
+	font-size: 140%;
 }
 
 .neutral-utilization {
-	background: yellow !important;
+	color: #8dcb8f;
+	font-weight: bold;
+	font-size: 140%;
 }
 
 .high-utilization {
-	background: green !important;
+	color: green;
+	font-weight: bold;
+	font-size: 140%;
 }
 
 .tooltip {
