@@ -207,7 +207,7 @@
                                         </div>
                                     </div>
 
-                                    <p class="slds-text-heading--label">{{ viewState.startMonth | date : 'MMM yyyy' }}</p>
+                                    <p class="slds-text-heading--label">{{ viewState.startMonth | date : 'MMM yyyy' }} - {{ viewState.endMonth | date : 'MMM yyyy' }}</p>
                                 </div>
 
                                 <!-- header navigation -->
@@ -243,8 +243,6 @@
                 </apex:pageBlock>
 
                 <apex:pageBlock html-data-ng-show="status.loaded" title="View utilization" html-ng-controller="PsoTable2Utilization">
-                    <h4>{{ viewState.startDate | date : 'MMM yyyy' }} - {{ viewState.endDate | date : 'MMM yyyy' }}</h4>
-
                     <section id="staffing" class="contentBox slds-m-around--medium slds-box slds-scrollable--y">
                         <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal">
                             <tbody ng-if="data.Resources.length">

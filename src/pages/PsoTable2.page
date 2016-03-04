@@ -39,8 +39,7 @@
                         <div class="slds-grid">
                             <div class="slds-media__body">
                                 <div class="slds-grid">
-                                    <h1 class="slds-text-heading--medium slds-m-right--small slds-truncate slds-align-middle" title="Record Title">Resource Planning Tool 3.0</h1>
-
+                                    <h1 class="slds-text-heading--medium slds-m-right--small slds-truncate slds-align-middle" title="Resource Planning Tool 3.0">Resource Planning Tool 3.0</h1>
                                     <div class="slds-dropdown-trigger " style="position: absolute;">
                                         <a class="button--neutral slds-button  slds-button__icon--left" aria-haspopup="true" ng-click="viewState.filterVisible=!viewState.filterVisible">
                                             <svg class="slds-icon slds-icon--x-small slds-icon-text-default slds-icon--x-smallMagrin ">
@@ -278,7 +277,7 @@
                                     </div>
                                 </div>
 
-                                <p class="slds-text-heading--label">{{ viewState.startMonth | date : 'MMM yyyy' }}</p>
+                                <p class="slds-text-heading--label">{{ viewState.startMonth | date : 'MMM yyyy' }} - {{ viewState.endMonth | date : 'MMM yyyy' }}</p>
                             </div>
 
                             <!-- header navigation -->
@@ -319,8 +318,6 @@
             </apex:pageBlock>
 
             <apex:pageBlock html-data-ng-show="status.loaded" title="Manage staffing" html-ng-controller="PsoTable2Staffing">
-                <h4>{{ viewState.startDate | date : 'MMM yyyy' }} - {{ viewState.endDate | date : 'MMM yyyy' }}</h4>
-
                 <section id="staffing" class="contentBox slds-m-around--medium slds-box slds-scrollable--y">
                     <div id="captions" class="fixed-x">
                         <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal">

@@ -72,6 +72,10 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', '$timeout',
 		resource.StaffingByDay = {};
 		resource.MonthSaldos = {};
 
+		if (!resource.AccountName && $scope.data.ResourcesByContactId[resource.ContactId] && $scope.data.ResourcesByContactId[resource.ContactId].AccountName) {
+			resource.AccountName = $scope.data.ResourcesByContactId[resource.ContactId].AccountName;
+		}
+
 		if (resource.MonthToOppLineItemIdMap) {
 			for (month in resource.MonthToOppLineItemIdMap) {
 				if (resource.MonthToOppLineItemIdMap.hasOwnProperty(month)) {
@@ -593,6 +597,8 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', '$timeout',
 		var classes = {};
 
 		classes.yourslEmployee = resource.AccountName === 'YOUR SL GmbH';
+		classes.externalEmployee = !classes.yourslEmployee;
+
 		classes.billable = resource.SalesPrice > 0;
 
 		if (!resource.SalesPrice && typeof resource.SalesPrice !== 'undefined') {

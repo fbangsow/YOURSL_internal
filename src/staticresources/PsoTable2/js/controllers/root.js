@@ -397,6 +397,9 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'alert', 'clientCa
 	};
 
 	$scope.filter.updateFilterData = function (populateStaffing) {
+		$scope.viewState.endMonth = new Date($scope.viewState.startMonth.getTime());
+		$scope.viewState.endMonth.setMonth($scope.viewState.endMonth.getMonth() + 1);
+
 		sfEndpoint.getFilterOptions($scope.viewState.startMonth).then(function (data) {
 			$scope.status.loading = false;
 			$scope.viewState.isAllowedToRunScheduler = !!data.IsAllowedToRunScript;
