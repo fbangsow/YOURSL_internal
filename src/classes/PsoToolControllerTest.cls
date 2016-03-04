@@ -1007,7 +1007,7 @@ private class PsoToolControllerTest {
             System.assertNotEquals(null, data_set_object.StartDate, 'StartDate should be set');
             System.assertNotEquals(null, data_set_object.EndDate, 'EndDate should be set');
             System.assertNotEquals(null, data_set_object.Customers);
-            System.assertEquals(2, data_set_object.Customers.size());
+            System.assertEquals(1, data_set_object.Customers.size());
             System.assertNotEquals(null, data_set_object.Resources);
             System.assertEquals(1, data_set_object.Resources.size());
         }

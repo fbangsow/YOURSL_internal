@@ -3,6 +3,7 @@ public without sharing class PsoToolController{
     @TestVisible private List<Opportunity> Opportunities;
     @TestVisible private Map<Id, Contact> ContactIdsToContacts;
     @TestVisible private Map<String, Map<String, Map<String, OpportunityLineItem>>> ContactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap;
+    private Set<Id> OppIdsToBeShown;
     @TestVisible private Date StartDate;
     @TestVisible private Date EndDate;
     @TestVisible private List<Id> OpportunitiesToShow;
@@ -104,9 +105,7 @@ public without sharing class PsoToolController{
                                     (SELECT Contact__r.Name, Contact__r.Id, Contact__r.Account.Name, Contact__r.Title, Contact__r.FirstName, Contact__r.LastName, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
                                         FROM OpportunityLineItems
                                         WHERE Contact__r.LastName != 'All'
-                                        AND Unit__c = 'Manntag(e)'
-                                        AND Contact__r.Inactive__c = false
-                                        AND Contact__r.RecordTypeId = '012D0000000QokP')
+                                        AND Unit__c = 'Manntag(e)')
                                         FROM Opportunity
                                         WHERE Id IN :getOpportunitiesToShow()
                                         AND Project_Start_Date__c <= :EndDate
@@ -169,7 +168,9 @@ public without sharing class PsoToolController{
 
     private void buildDataStructure(List<OpportunityLineItem> opportunity_line_items){
         ContactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap = new Map<String, Map<String, Map<String, OpportunityLineItem>>>();
+        OppIdsToBeShown = new Set<Id>();
         for(OpportunityLineItem item: opportunity_line_items){
+            OppIdsToBeShown.add(item.Opportunity.Id);
             if(!ContactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap.containsKey(item.Contact__r.Id)){
                 ContactIdToOpportunityIdToOpportunityLineItemIdToOpportunityLineItemsMap.put(item.Contact__r.Id, getOpportunityIdToOpportunityLineItemMap(item));
             }
@@ -246,10 +247,12 @@ public without sharing class PsoToolController{
     @TestVisible private List<Customer> getCustomers(Boolean with_resources){
         Map<Id, Customer> customers = new Map<Id, Customer>();
         for(Opportunity opp: Opportunities){
-            if(!customers.containsKey(opp.Account.Id)){
-                customers.put(opp.Account.Id, getCustomer(opp));
+            if(OppIdsToBeShown == null || OppIdsToBeShown.contains(opp.Id)){
+                if(!customers.containsKey(opp.Account.Id)){
+                    customers.put(opp.Account.Id, getCustomer(opp));
+                }
+                customers.get(opp.Account.Id).Projects.add(getProject(opp, with_resources));
             }
-            customers.get(opp.Account.Id).Projects.add(getProject(opp, with_resources));
         }
         return customers.values();
     }
@@ -298,7 +301,10 @@ public without sharing class PsoToolController{
 
     @TestVisible private Resource getResource(String opp_id, OpportunityLineItem line_item){
         Resource new_resource = new Resource();
-        new_resource.ResourceName = line_item.Contact__r.LastName + ' ' + line_item.Contact__r.FirstName;
+        if(line_item.Contact__r == null)
+            new_resource.ResourceName = 'Unassigned';
+        else
+            new_resource.ResourceName = line_item.Contact__r.LastName + ' ' + line_item.Contact__r.FirstName;
         new_resource.ContactId = line_item.Contact__r.Id;
         new_resource.Product = line_item.Product2.Name;
         new_resource.SalesPrice = line_item.UnitPrice;
@@ -363,7 +369,10 @@ public without sharing class PsoToolController{
         for(String contact_id: contacts_to_show){
             if(!contactIdToResourceAvailabilityData.containsKey(contact_id)){
                 ResourceInfo newInfo = new ResourceInfo();
-                newInfo.ResourceName = ContactIdsToContacts.get(contact_id).LastName + ' ' + ContactIdsToContacts.get(contact_id).FirstName;
+                if(ContactIdsToContacts.get(contact_id) == null)
+                    newInfo.ResourceName = 'Unassigned';
+                else
+                    newInfo.ResourceName = ContactIdsToContacts.get(contact_id).LastName + ' ' + ContactIdsToContacts.get(contact_id).FirstName;
                 newInfo.LastName = ContactIdsToContacts.get(contact_id).LastName;
                 newInfo.Title = ContactIdsToContacts.get(contact_id).Title;
                 newInfo.AccountName = ContactIdsToContacts.get(contact_id).Account.Name;
