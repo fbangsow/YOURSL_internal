@@ -564,12 +564,43 @@
                 </section>
             </apex:pageBlock>
 
+<!-- alertMessage
+<div class="alert-dialog">
+<div aria-hidden="false" role="dialog" class="slds-modal slds-modal--prompt slds-fade-in-open">
+<div class="slds-modal__container slds-modal--prompt">
+<div class="slds-modal__header slds-theme--error slds-theme--alert-texture">
+<h2 class="slds-text-heading--medium">Service Unavailable</h2>
+<button class="slds-button slds-button--icon-inverse slds-modal__close">
+<svg aria-hidden="true" class="slds-button__icon slds-button__icon--large">
+<use xlink:href="/assets/icons/action-sprite/svg/symbols.svg#close"></use>
+</svg>
+<span class="slds-assistive-text">Close</span>
+</button>
+</div>
+<div class="slds-modal__content">
+<div>
+<p> {{ alertMessage }}</p>
+</div>
+</div>
+<div class="slds-modal__footer slds-theme--default">
+<div class="slds-x-small-buttons--horizontal">
+<button class="slds-button slds-button--neutral">Okay</button>
+</div>
+</div>
+</div>
+</div>
+<div class="slds-backdrop slds-backdrop--open"></div>
+</div>
+-->
+
+            <!-- show error message popup -->
             <div class="alert-dialog">
                 <p>
                     <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
                     {{ alertMessage }}
                 </p>
             </div>
+            <!-- show error message popup end -->
         </div>
     </html>
 </apex:page>
