@@ -595,7 +595,7 @@ tbody.Resources:before {
 .tooltip {
 	display: inline;
 	position: relative;
-	font-size: 0.75rem;
+
 }
 
 .tooltip:hover:after {
@@ -612,6 +612,7 @@ tbody.Resources:before {
 	z-index: 98;
 	text-align: left;
 	min-width: 220px;
+	font-size: 0.75rem;
 }
 
 #connection-status:hover:after {

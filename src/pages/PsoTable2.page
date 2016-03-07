@@ -468,7 +468,7 @@
                                             {{ ((resource.Saldos[day.dateString] || 0) / 8) | number : 2 }}
                                         </span>
 
-                                        <span ng-if="day.isUtilization" title="{{ ((resource.Saldos[day.dateString].booked || 0) / 8) | number : 2 }} / {{ ((resource.Saldos[day.dateString].budget - resource.Saldos[day.dateString].holiday) / 8) | number : 2 }}" class="tooltip">
+                                        <span ng-if="day.isUtilization" title="{{ ((resource.Saldos[day.dateString].booked || 0) / 8) | number : 2 }} / {{ ((resource.Saldos[day.dateString].budget || 0) / 8) | number : 2 }}" class="tooltip">
                                             {{ ((resource.Saldos[day.dateString].value || 0) * 100) | number : 1 }}%
                                         </span>
 
@@ -511,7 +511,7 @@
                                             {{ ((project.Saldos[day.dateString] || 0) / 8) | number : 2 }}
                                         </span>
 
-                                        <span ng-if="day.isUtilization" title="{{ ((project.Saldos[day.dateString].booked || 0) / 8) | number : 2 }} / {{ ((project.Saldos[day.dateString].budget - project.Saldos[day.dateString].holiday) / 8) | number : 2 }}" class="tooltip">
+                                        <span ng-if="day.isUtilization" title="{{ ((project.Saldos[day.dateString].booked || 0) / 8) | number : 2 }} / {{ (project.Saldos[day.dateString].budget / 8) | number : 2 }}" class="tooltip">
                                             {{ ((project.Saldos[day.dateString].value || 0) * 100) | number : 1 }}%
                                         </span>
 
@@ -544,7 +544,7 @@
                                             {{ ((resource.Saldos[day.dateString] || 0) / 8) | number : 2 }}
                                         </span>
 
-                                        <span ng-if="day.isUtilization" title="{{ ((resource.Saldos[day.dateString].booked || 0) / 8) | number : 2 }} / {{ ((resource.Saldos[day.dateString].budget - resource.Saldos[day.dateString].holiday) / 8) | number : 2 }}" class="tooltip">
+                                        <span ng-if="day.isUtilization" title="{{ ((resource.Saldos[day.dateString].booked || 0) / 8) | number : 2 }} / ({{ (resource.Saldos[day.dateString].budget / 8) | number : 2 }} - {{ (resource.Saldos[day.dateString].holiday / 8) | number : 2 }})" class="tooltip">
                                             {{ ((resource.Saldos[day.dateString].value || 0) * 100) | number : 1 }}%
                                         </span>
 
