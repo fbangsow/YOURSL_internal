@@ -556,7 +556,7 @@
                                             {{ resource.StaffingByDay[day.dateString].total || 0 }}
                                         </span>
 
-                                        <span ng-if="!day.isSaldo && resource.StaffingByDay[day.dateString].hasHoliday" class="tooltip ResourceInfo" data-tooltip="{{ resource.ResourceName }} has holiday on this day.">
+                                        <span ng-if="!day.isSaldo && resource.StaffingByDay[day.dateString].hasHoliday" class="tooltip ResourceInfo" data-tooltip="{{ resource.ResourceName }} has {{ resource.StaffingByDay[day.dateString].isPartlyHoliday ? resource.StaffingByDay[day.dateString].HoursOff + ' hours off' : 'holiday' }} on this day.">
                                             <svg class="slds-icon slds-icon--x-small slds-icon-text-default">
                                                 <use xlink:href="{!URLFOR($Resource.PsoTable2, 'svg/icons.svg#holiday')}"></use>
                                             </svg>
