@@ -1,3 +1,9 @@
+body,
+html {
+	background: #fff;
+	font-size: 14px;
+}
+
 .utilization .weekDay,
 .month-saldo .weekDay {
 	width: 100px !important;
@@ -10,6 +16,8 @@
 	width: 100%;
 	z-index: 9999;
 }
+
+/* scrollbar */
 
 .slds-scrollable--y {
 	-webkit-overflow-scrolling: touch;
@@ -40,6 +48,8 @@
 .slds-table--bordered td {
 	border: 1px solid #d8dde6
 }
+
+/* page */
 
 .contentBox {
 	margin-top: 27px;
@@ -72,8 +82,8 @@ td, th, .col {
 	position: relative;
 }
 
-.externalEmployee .padding10left {
-	background-image: linear-gradient(135deg, rgba(0, 160, 227, 0.5) 6px, transparent 6px, transparent);
+#staffing #captions .externalEmployee {
+	background: rgba(216, 221, 230, 0.55);
 }
 
 td:not(.shadow) {
@@ -83,7 +93,6 @@ td:not(.shadow) {
 
 td:not([colspan]) .slds-icon-text-default {
 	fill: rgba(0, 0, 0, 0.3);
-
 }
 
 span.ResourceInfo svg {
@@ -99,9 +108,23 @@ span.ResourceInfo {
 	border: 1px solid #d8dde6;
 }
 
-td:not([colspan]):hover::after,
-.col:hover::after {
-	background: rgba(134, 184, 228, 0.3);
+#fixed-x td:not([colspan]):hover::after {
+	background: transparent;
+	border: 0px;
+}
+
+#captions table {
+	background: #f5f5f5;
+}
+
+#schedule table {
+	background: #fff;
+}
+
+#schedule td:not([colspan]):hover::after,
+#schedule .col:hover::after {
+	background: rgba(134, 184, 228, 0.1);
+	border: 1px solid rgba(134, 184, 228, 0.3);
 	content: '\00a0';
 	height: 100000px;
 	position: absolute;
@@ -110,7 +133,6 @@ td:not([colspan]):hover::after,
 	left: 0;
 	z-index: 1;
 	pointer-events: none;
-
 }
 
 #newpost .slds-modal__close {
@@ -129,11 +151,18 @@ td:not([colspan]):hover::after,
 	background-color: #eee;
 }
 
+.slds-button--icon-border-filled {
+	width: 2.25rem;
+	height: 2.22rem;
+}
+
+/* popup */
+
 .filterpopup {
 	position: fixed;
 	z-index: 999;
-	margin-left: -19px;
-	top: 65px;
+	margin-left: -16px;
+	top: 58px;
 	width: 900px;
 	border: 1px solid #d8dde6;
 	border-radius: 0.25rem;
@@ -146,8 +175,8 @@ td:not([colspan]):hover::after,
 .legendpopup {
 	position: fixed;
 	z-index: 9999999999999999;
-	right: 100px;
-	top: 64px;
+	right: 87px;
+	top: 58px;
 	width: 200px;
 	border: 1px solid #d8dde6;
 	border-radius: 0.25rem;
@@ -160,8 +189,8 @@ td:not([colspan]):hover::after,
 .schedulerpopup {
 	position: fixed;
 	z-index: 9999999999999999;
-	right: 50px;
-	top: 64px;
+	right: 46px;
+	top: 58px;
 	width: 300px;
 	border: 1px solid #d8dde6;
 	border-radius: 0.25rem;
@@ -180,15 +209,19 @@ td:not([colspan]):hover::after,
 .ProjectStatusVisiblepopup {
 	z-index: 9;
 	position: absolute;
-	left: 100px;
-	margin-top: -46px;
-	width: 300px;
+	left: 57px;
+	margin-top: -42px;
+	width: 230px;
 	border: 1px solid #d8dde6;
 	border-radius: 0.25rem;
 	padding: 0.25rem 0;
 	background: white;
 	box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.16);
 	transform: translateX(0%) !important;
+}
+
+.slds-has-dividers--top > .slds-list__item {
+	padding: 5px;
 }
 
 .ui-widget-overlay {
@@ -376,7 +409,9 @@ a:active {
 #staffing #captions {
 	position: fixed;
 	z-index: 100;
-	box-shadow: 2px 0px 2px #808080;
+	-webkit-box-shadow: 2px 0px 2px 0px rgba(111, 116, 148, 0.2);
+	-moz-box-shadow: 2px 0px 2px 0px rgba(111, 116, 148, 0.2);
+	box-shadow: 2px 0px 2px 0px rgba(111, 116, 148, 0.2);
 }
 
 .shadow {
@@ -427,15 +462,16 @@ background:#f8f9fb
 }
 
 .weekend {
-	background: rgba(168, 183, 199, 0.15);
+	background: rgba(168, 183, 199, 0.25);
 }
 
 .weekend:last-child {
 	border-right: 4px solid green;
 }
 
+tr td.saldo:hover::after, td.statistic:hover::after,
 td.saldo, td.statistic {
-	background: rgba(168, 183, 199, 0.31);
+	background: #cfd7e6;
 }
 
 .textCenter {
@@ -463,21 +499,18 @@ table {
 
 .slds-table:not(.slds-no-row-hover) tbody tr:hover > td,
 .slds-table:not(.slds-no-row-hover) tbody tr:hover > th {
-	background-color: rgba(0, 112, 210, 0.25) !important;
-}
 
-tr.focus {
-	background-color: rgba(0, 112, 210, 0.50) !important;
+	border: 1px solid rgba(134, 184, 228, 0.3);
 }
 
 .isNotAllocatable {
 	cursor: not-allowed;
-	background-image: linear-gradient(45deg, rgba(0, 0, 0, 0.055) 25%, transparent 25%, transparent 50%, rgba(0, 0, 0, 0.055) 50%, rgba(0, 0, 0, 0.055) 75%, transparent 75%, transparent);
+	background-image: linear-gradient(45deg, rgba(0, 0, 0, 0.035) 25%, transparent 25%, transparent 50%, rgba(0, 0, 0, 0.035) 50%, rgba(0, 0, 0, 0.035) 75%, transparent 75%, transparent);
 	background-size: 28px 28px;
 }
 
 col.hover {
-	background-color: rgba(0, 140, 203, .2);
+	background-color: rgba(0, 140, 203, .9);
 }
 
 #pso-table .slds-table--bordered {
@@ -530,89 +563,125 @@ tbody.Resources:before {
 	height: 50px;
 }
 
-/* events date*/
+/* events date */
 .holiday-info {
-	background: #ffa500 !important
+	background: rgba(255, 165, 0, 0.4)
 }
 
 .has-booking {
-	background: #fec46d !important
+	background: rgba(254, 196, 109, 0.4)
+}
+
+.has-holiday {
+	background: red !important;
 }
 
 .partly-booked {
-	background: #8dcb8f !important
+	background: rgba(141, 203, 143, 0.4)
 }
 
 .fully-booked {
-	background: green !important;
-	color: #ffffff;
+	background: rgba(141, 203, 143, 0.4);
 }
 
 .overbooked {
-	background: #ef7f80 !important
+	background: rgba(239, 127, 128, 0.4)
 }
 
 .month-saldo {
-	background: #ffffff !important
+	background: rgba(255, 255, 255, 0.4)
 }
 
 .negative-saldo {
-	background: #ed888f !important
+	background: rgba(237, 136, 143, 0.4)
 }
 
 .positive-saldo {
-	background: #8cd477 !important
+	background: rgba(140, 212, 119, 0.4)
 }
 
 .neutral-saldo {
-	background: #a5bcd0 !important
+	background: rgba(165, 188, 208, 0.4)
 }
 
 .very-low-utilization {
 	color: red;
 	font-weight: bold;
-	font-size: 140%;
 }
 
 .low-utilization {
 	color: #ef7f80;
-	font-weight: bold;
-	font-size: 140%;
+	font-weight: bold
 }
 
 .neutral-utilization {
 	color: #8dcb8f;
-	font-weight: bold;
-	font-size: 140%;
+	font-weight: bold
 }
 
 .high-utilization {
 	color: green;
-	font-weight: bold;
-	font-size: 140%;
+	font-weight: bold
 }
 
-.tooltip {
-	display: inline;
-	position: relative;
-
+/* tooltip */
+.tooltip span[rel=tooltip] {
+	display: none;
 }
 
-.tooltip:hover:after {
+.tooltip:hover span[rel=tooltip] {
+	display: block;
+	position: absolute;
+	left: -10em;
+	padding: 0.5em;
+	z-index: 100;
 	border: 1px solid #d8dde6;
 	border-radius: 0.25rem;
 	background: white;
 	box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.16);
-	bottom: 26px;
+	bottom: 1em;
 	color: #54698d;
-	content: attr(title);
 	line-height: 17px;
 	padding: 5px 15px;
 	position: absolute;
-	z-index: 98;
 	text-align: left;
 	min-width: 220px;
 	font-size: 0.75rem;
+}
+
+*
+
+/
+
+[data-tooltip] {
+	position: relative;
+}
+
+[data-tooltip]::after {
+	content: attr(data-tooltip);
+	opacity: 0;
+	pointer-events: none;
+	display: block;
+	position: absolute;
+	left: -10em;
+	padding: 0.5em;
+	z-index: 100;
+	border: 1px solid #d8dde6;
+	border-radius: 0.25rem;
+	background: white;
+	box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.16);
+	bottom: 1em;
+	color: #54698d;
+	line-height: 17px;
+	padding: 5px 15px;
+	position: absolute;
+	text-align: left;
+	min-width: 220px;
+	font-size: 0.75rem;
+}
+
+[data-tooltip]:hover::after {
+	opacity: 1;
 }
 
 #connection-status:hover:after {

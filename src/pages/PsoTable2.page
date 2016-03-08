@@ -283,11 +283,11 @@
                             <!-- header navigation -->
                             <div class="slds-col slds-no-flex ">
                                 <div class="slds-button-group" role="group">
-                                    <span id="connection-status" class="slds-button slds-button--neutral tooltip" title="Outside resource allocation changes are{{ viewState.isConnected ? ' ' : ' currently not ' }}synchronized">
+                                    <span id="connection-status" class="slds-button slds-button--neutral tooltip" data-tooltip="Outside resource allocation changes are{{ viewState.isConnected ? ' ' : ' currently not ' }}synchronized">
                                         <svg class="slds-icon slds-icon--x-small slds-icon-text-default tooltip" ng-show="viewState.isConnected" title="">
                                             <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#success')}"></use>
                                         </svg>
-                                        <svg class="slds-icon slds-icon--x-small slds-icon-text-default tooltip" ng-hide="viewState.isConnected" title="Outside resource allocation changes are currently not synchronized.">
+                                        <svg class="slds-icon slds-icon--x-small slds-icon-text-default tooltip" ng-hide="viewState.isConnected" data-tooltip="Outside resource allocation changes are currently not synchronized.">
                                             <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#offline')}"></use>
                                         </svg>
                                     </span>
@@ -320,9 +320,9 @@
             <apex:pageBlock html-data-ng-show="status.loaded" title="Manage staffing" html-ng-controller="PsoTable2Staffing">
                 <section id="staffing" class="contentBox slds-m-around--medium slds-box slds-scrollable--y">
                     <div id="captions" class="fixed-x">
-                        <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal">
+                        <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-text-heading--label">
                             <tbody>
-                                <tr class="slds-text-heading--label tableheader" style="height:146px;">
+                                <tr class=" tableheader" style="height:111px;">
                                     <th class="padding10left">Resource</th>
                                     <th>Role</th>
                                     <th>Sold<br />days</th>
@@ -356,7 +356,7 @@
 
                                         <!-- show ProjectStatus popup -->
                                         <div class="ProjectStatusVisiblepopup slds-nubbin--left-top" ng-show="ProjectStatusVisible">
-                                            <a class="slds-button slds-button--small slds-modal__close slds-icon--small" style="margin-top: 49px;" ng-click="ProjectStatusVisible=false">
+                                            <a class="slds-button slds-button--small slds-modal__close slds-icon--small" style="margin-top: 41px;" ng-click="ProjectStatusVisible=false">
                                                 <svg aria-hidden="true" class="slds-icon slds-icon--x-small slds-icon-text-default">
                                                     <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
                                                 </svg>
@@ -430,9 +430,9 @@
                         </table>
                     </div>
                     <div id="schedule" data-staffing-captions-spacing="#captions">
-                        <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal" data-navigate-cell-inputs="true">
+                        <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-text-heading--label" data-navigate-cell-inputs="true">
                             <tbody>
-                                <tr class="slds-text-heading--label tableheader">
+                                <tr class="tableheader">
                                     <th colspan="{{ month.dayCount }}" ng-repeat="month in viewState.staffingMonths">
                                         {{ month.caption }}
                                     </th>
@@ -468,7 +468,7 @@
                                             {{ ((resource.Saldos[day.dateString] || 0) / 8) | number : 2 }}
                                         </span>
 
-                                        <span ng-if="day.isUtilization" title="{{ ((resource.Saldos[day.dateString].booked || 0) / 8) | number : 2 }} / {{ ((resource.Saldos[day.dateString].budget || 0) / 8) | number : 2 }}" class="tooltip">
+                                        <span ng-if="day.isUtilization" data-tooltip="{{ ((resource.Saldos[day.dateString].booked || 0) / 8) | number : 2 }} / {{ ((resource.Saldos[day.dateString].budget || 0) / 8) | number : 2 }}" class="tooltip">
                                             {{ ((resource.Saldos[day.dateString].value || 0) * 100) | number : 1 }}%
                                         </span>
 
@@ -482,19 +482,19 @@
 
                                         <input ng-if="day.isAllocatable && resource.MonthToLimitMap[day.month] && !data.ResourcesByContactId[resource.ContactId].StaffingByDay[day.dateString].isFullHoliday" ng-model="resource.StaffingByDay[day.dateString].currentBooking" ng-blur="staffing.updateAllocation(project, resource, day.date, resource.StaffingByDay[day.dateString])" ng-change="staffing.scheduleAsyncAllocationUpdate(project, resource, day.date, resource.StaffingByDay[day.dateString])" />
 
-                                        <span ng-if="day.isAllocatable && resource.StaffingByDay[day.dateString].Staff > 0 && data.ResourcesByContactId[resource.ContactId].StaffingByDay[day.dateString].isFullHoliday" class="tooltip ResourceInfo" title="Remove project allocation" style="bottom: auto; top: 0;" ng-click="staffing.clearAllocation(project, resource, day.date, resource.StaffingByDay[day.dateString])">
+                                        <span ng-if="day.isAllocatable && resource.StaffingByDay[day.dateString].Staff > 0 && data.ResourcesByContactId[resource.ContactId].StaffingByDay[day.dateString].isFullHoliday" class="tooltip ResourceInfo" data-tooltip="Remove project allocation" style="bottom: auto; top: 0;" ng-click="staffing.clearAllocation(project, resource, day.date, resource.StaffingByDay[day.dateString])">
                                             <svg class="slds-icon slds-icon--x-small slds-icon-text-default" style="fill: #aaa;">
                                                 <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#delete')}"></use>
                                             </svg>
                                         </span>
 
-                                        <span ng-if="day.isAllocatable && !resource.MonthToLimitMap[day.month]" class="tooltip ResourceInfo" title="No budget available for {{ resource.ResourceName }} in this month.">
+                                        <span ng-if="day.isAllocatable && !resource.MonthToLimitMap[day.month]" class="tooltip ResourceInfo" data-tooltip="No budget available for {{ resource.ResourceName }} in this month.">
                                             <svg class="slds-icon slds-icon--x-small slds-icon-text-default" style="fill: #aaa;">
                                                 <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#error')}"></use>
                                             </svg>
                                         </span>
 
-                                        <span ng-if="day.isAllocatable && resource.MonthToLimitMap[day.month] && data.ResourcesByContactId[resource.ContactId].StaffingByDay[day.dateString].isFullHoliday" class="tooltip ResourceInfo" title="{{ resource.ResourceName }} has holiday on this day.">
+                                        <span ng-if="day.isAllocatable && resource.MonthToLimitMap[day.month] && data.ResourcesByContactId[resource.ContactId].StaffingByDay[day.dateString].isFullHoliday" class="tooltip ResourceInfo" data-tooltip="{{ resource.ResourceName }} has holiday on this day.">
                                             <svg class="slds-icon slds-icon--x-small slds-icon-text-default" style="fill: #aaa;">
                                                 <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#trail')}"></use>
                                             </svg>
@@ -511,7 +511,7 @@
                                             {{ ((project.Saldos[day.dateString] || 0) / 8) | number : 2 }}
                                         </span>
 
-                                        <span ng-if="day.isUtilization" title="{{ ((project.Saldos[day.dateString].booked || 0) / 8) | number : 2 }} / {{ (project.Saldos[day.dateString].budget / 8) | number : 2 }}" class="tooltip">
+                                        <span ng-if="day.isUtilization" data-tooltip="{{ ((project.Saldos[day.dateString].booked || 0) / 8) | number : 2 }} / {{ (project.Saldos[day.dateString].budget / 8) | number : 2 }}" class="tooltip">
                                             {{ ((project.Saldos[day.dateString].value || 0) * 100) | number : 1 }}%
                                         </span>
 
@@ -544,7 +544,7 @@
                                             {{ ((resource.Saldos[day.dateString] || 0) / 8) | number : 2 }}
                                         </span>
 
-                                        <span ng-if="day.isUtilization" title="{{ ((resource.Saldos[day.dateString].booked || 0) / 8) | number : 2 }} / ({{ (resource.Saldos[day.dateString].budget / 8) | number : 2 }} - {{ (resource.Saldos[day.dateString].holiday / 8) | number : 2 }})" class="tooltip">
+                                        <span ng-if="day.isUtilization" data-tooltip="{{ ((resource.Saldos[day.dateString].booked || 0) / 8) | number : 2 }} / ({{ (resource.Saldos[day.dateString].budget / 8) | number : 2 }} - {{ (resource.Saldos[day.dateString].holiday / 8) | number : 2 }})" class="tooltip">
                                             {{ ((resource.Saldos[day.dateString].value || 0) * 100) | number : 1 }}%
                                         </span>
 
@@ -556,9 +556,11 @@
                                             {{ resource.StaffingByDay[day.dateString].total || 0 }}
                                         </span>
 
-                                        <!--<span ng-if="!day.isSaldo && resource.StaffingByDay[day.dateString].hasHoliday">
-                                            ({{ resource.StaffingByDay[day.dateString].HoursOff || 0 }})
-                                        </span>-->
+                                        <span ng-if="!day.isSaldo && resource.StaffingByDay[day.dateString].hasHoliday" class="tooltip ResourceInfo" data-tooltip="{{ resource.ResourceName }} has holiday on this day.">
+                                            <svg class="slds-icon slds-icon--x-small slds-icon-text-default" style="fill: #aaa;">
+                                                <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#trail')}"></use>
+                                            </svg>
+                                        </span>
                                     </td>
                                 </tr>
                             </tbody>
