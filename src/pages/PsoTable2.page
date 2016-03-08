@@ -483,20 +483,20 @@
                                         <input ng-if="day.isAllocatable && resource.MonthToLimitMap[day.month] && !data.ResourcesByContactId[resource.ContactId].StaffingByDay[day.dateString].isFullHoliday" ng-model="resource.StaffingByDay[day.dateString].currentBooking" ng-blur="staffing.updateAllocation(project, resource, day.date, resource.StaffingByDay[day.dateString])" ng-change="staffing.scheduleAsyncAllocationUpdate(project, resource, day.date, resource.StaffingByDay[day.dateString])" />
 
                                         <span ng-if="day.isAllocatable && resource.StaffingByDay[day.dateString].Staff > 0 && data.ResourcesByContactId[resource.ContactId].StaffingByDay[day.dateString].isFullHoliday" class="tooltip ResourceInfo" data-tooltip="Remove project allocation" style="bottom: auto; top: 0;" ng-click="staffing.clearAllocation(project, resource, day.date, resource.StaffingByDay[day.dateString])">
-                                            <svg class="slds-icon slds-icon--x-small slds-icon-text-default" style="fill: #aaa;">
+                                            <svg class="slds-icon slds-icon--x-small slds-icon-text-default">
                                                 <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#delete')}"></use>
                                             </svg>
                                         </span>
 
                                         <span ng-if="day.isAllocatable && !resource.MonthToLimitMap[day.month]" class="tooltip ResourceInfo" data-tooltip="No budget available for {{ resource.ResourceName }} in this month.">
-                                            <svg class="slds-icon slds-icon--x-small slds-icon-text-default" style="fill: #aaa;">
-                                                <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#error')}"></use>
+                                            <svg class="slds-icon slds-icon--x-small slds-icon-text-default">
+                                                <use xlink:href="{!URLFOR($Resource.PsoTable2,'svg/icons.svg#no-budget')}"></use>
                                             </svg>
                                         </span>
 
                                         <span ng-if="day.isAllocatable && resource.MonthToLimitMap[day.month] && data.ResourcesByContactId[resource.ContactId].StaffingByDay[day.dateString].isFullHoliday" class="tooltip ResourceInfo" data-tooltip="{{ resource.ResourceName }} has holiday on this day.">
-                                            <svg class="slds-icon slds-icon--x-small slds-icon-text-default" style="fill: #aaa;">
-                                                <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#trail')}"></use>
+                                            <svg class="slds-icon slds-icon--x-small slds-icon-text-default">
+                                                <use xlink:href="{!URLFOR($Resource.PsoTable2, 'svg/icons.svg#holiday')}"></use>
                                             </svg>
                                         </span>
 
@@ -557,8 +557,8 @@
                                         </span>
 
                                         <span ng-if="!day.isSaldo && resource.StaffingByDay[day.dateString].hasHoliday" class="tooltip ResourceInfo" data-tooltip="{{ resource.ResourceName }} has holiday on this day.">
-                                            <svg class="slds-icon slds-icon--x-small slds-icon-text-default" style="fill: #aaa;">
-                                                <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#trail')}"></use>
+                                            <svg class="slds-icon slds-icon--x-small slds-icon-text-default">
+                                                <use xlink:href="{!URLFOR($Resource.PsoTable2, 'svg/icons.svg#holiday')}"></use>
                                             </svg>
                                         </span>
                                     </td>
