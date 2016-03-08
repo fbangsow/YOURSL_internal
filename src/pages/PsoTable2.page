@@ -284,10 +284,10 @@
                             <div class="slds-col slds-no-flex ">
                                 <div class="slds-button-group" role="group">
                                     <span id="connection-status" class="slds-button slds-button--neutral tooltip" data-tooltip="Outside resource allocation changes are{{ viewState.isConnected ? ' ' : ' currently not ' }}synchronized">
-                                        <svg class="slds-icon slds-icon--x-small slds-icon-text-default tooltip" ng-show="viewState.isConnected" title="">
+                                        <svg class="slds-icon slds-icon--x-small slds-icon-text-default" ng-show="viewState.isConnected">
                                             <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#success')}"></use>
                                         </svg>
-                                        <svg class="slds-icon slds-icon--x-small slds-icon-text-default tooltip" ng-hide="viewState.isConnected" data-tooltip="Outside resource allocation changes are currently not synchronized.">
+                                        <svg class="slds-icon slds-icon--x-small slds-icon-text-default" ng-hide="viewState.isConnected">
                                             <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#offline')}"></use>
                                         </svg>
                                     </span>

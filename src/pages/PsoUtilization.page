@@ -214,11 +214,11 @@
                                 <!-- header navigation -->
                                 <div class="slds-col slds-no-flex ">
                                     <div class="slds-button-group" role="group">
-                                        <span id="connection-status" class="slds-button slds-button--neutral tooltip" title="Outside resource allocation changes are{{ viewState.isConnected ? ' ' : ' currently not ' }}synchronized">
-                                            <svg class="slds-icon slds-icon--x-small slds-icon-text-default tooltip" ng-show="viewState.isConnected" title="">
+                                        <span id="connection-status" class="slds-button slds-button--neutral tooltip" data-tooltip="Outside resource allocation changes are{{ viewState.isConnected ? ' ' : ' currently not ' }}synchronized">
+                                            <svg class="slds-icon slds-icon--x-small slds-icon-text-default" ng-show="viewState.isConnected">
                                                 <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#success')}"></use>
                                             </svg>
-                                            <svg class="slds-icon slds-icon--x-small slds-icon-text-default tooltip" ng-hide="viewState.isConnected" title="Outside resource allocation changes are currently not synchronized.">
+                                            <svg class="slds-icon slds-icon--x-small slds-icon-text-default" ng-hide="viewState.isConnected">
                                                 <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#offline')}"></use>
                                             </svg>
                                         </span>
@@ -269,7 +269,7 @@
                                             {{ ((resource.Saldos[day.dateString] || 0) / 8) | number : 2 }}
                                         </span>
 
-                                        <span ng-if="day.isUtilization" title="{{ resource.Saldos[day.dateString].booked || 0 }} / {{ resource.Saldos[day.dateString].budget - resource.Saldos[day.dateString].holiday }}" class="tooltip">
+                                        <span ng-if="day.isUtilization" data-tooltip="{{ resource.Saldos[day.dateString].booked || 0 }} / {{ resource.Saldos[day.dateString].budget - resource.Saldos[day.dateString].holiday }}" class="tooltip">
                                             {{ ((resource.Saldos[day.dateString].value || 0) * 100) | number : 1 }}%
                                         </span>
                                     </td>
