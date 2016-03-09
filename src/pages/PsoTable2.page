@@ -325,7 +325,7 @@
 
             <apex:pageBlock html-data-ng-show="status.loaded" html-ng-controller="PsoTable2Staffing">
                 <section id="staffing" class="contentBox slds-m-around--medium slds-box slds-scrollable--y">
-                    <div id="captions" class="fixed-x">
+                    <div id="captions">
                         <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-text-heading--label">
                             <tbody>
                                 <tr class="tableheader">
