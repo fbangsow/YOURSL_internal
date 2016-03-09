@@ -8,7 +8,7 @@ public without sharing class OpportunityLineItemScheduleTracker{
     public static final String UPDATE_EVENT_TYPE = 'Update';
     public static final String INSERT_EVENT_TYPE = 'Insert';
     public static final String DELETE_EVENT_TYPE = 'Delete';
-    
+
     private OpportunityLineItemScheduleTracker(){
         OppLineIdToOpportunityLineItemScheduleWithId = new Map<Id, Map<Id, OpportunityLineItemSchedule>>();
         OppLineItemIdToContactId = new Map<Id, Id>();
@@ -33,9 +33,9 @@ public without sharing class OpportunityLineItemScheduleTracker{
     private Map<Id, Map<Id, OpportunityLineItemSchedule>> getOppLineIdToOpportunityLineItemScheduleWithIds(Set<Id> opp_line_items_to_search){
         Map<Id, Map<Id, OpportunityLineItemSchedule>> opp_line_id_to_opp_line_item_schedule = new Map<Id, Map<Id, OpportunityLineItemSchedule>>();
         Set<Id> all_schedule_ids = new Set<Id>();
-        for(OpportunityLineItemSchedule schedule: [SELECT Quantity, ScheduleDate, Id, OpportunityLineItem.Id, Description 
-                                                    FROM OpportunityLineItemSchedule 
-                                                    WHERE OpportunityLineItem.Id IN :opp_line_items_to_search 
+        for(OpportunityLineItemSchedule schedule: [SELECT Quantity, ScheduleDate, Id, OpportunityLineItem.Id, Description
+                                                    FROM OpportunityLineItemSchedule
+                                                    WHERE OpportunityLineItem.Id IN :opp_line_items_to_search
                                                     AND Description != :OpportunityLineItemScheduleChangeHandler.UNPLANNED_COMMENT
                                                     AND OpportunityLineItem.Unit__c = 'Manntag(e)']){
             if(!opp_line_id_to_opp_line_item_schedule.containsKey(schedule.OpportunityLineItem.Id))
@@ -46,7 +46,7 @@ public without sharing class OpportunityLineItemScheduleTracker{
         getRelatedResourceSchedules(all_schedule_ids);
         return opp_line_id_to_opp_line_item_schedule;
     }
-    
+
     public void createResourceScheduleEntries(){
         if(!OppLineIdToOpportunityLineItemScheduleWithId.isEmpty() && !AlreadyProcessed){
             List<Resource_Schedule__c> resources_to_upsert = new List<Resource_Schedule__c>();
@@ -84,6 +84,7 @@ public without sharing class OpportunityLineItemScheduleTracker{
         update_schedule.Scheduled_Date__c = schedule.ScheduleDate;
         update_schedule.New_value__c = String.valueOf(schedule.Quantity);
         update_schedule.OpportunityLineItemScheduleId__c = schedule.Id;
+        update_schedule.OpportunityLineItemId__c = schedule.OpportunityLineItem.Id;
         return update_schedule;
     }
 
