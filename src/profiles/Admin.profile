@@ -265,6 +265,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>PsoTable2Controller</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>PsoToolController</apexClass>
         <enabled>false</enabled>
     </classAccesses>
@@ -615,6 +619,14 @@
     </pageAccesses>
     <pageAccesses>
         <apexPage>ProductResourceForecast</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
+    <pageAccesses>
+        <apexPage>PsoTable2</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
+    <pageAccesses>
+        <apexPage>PsoUtilization</apexPage>
         <enabled>true</enabled>
     </pageAccesses>
     <pageAccesses>
