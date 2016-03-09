@@ -16,7 +16,6 @@
         <link rel="stylesheet" href="{!URLFOR($Resource.PsoTable2,'css/main.css')}" />
 
         <div data-ng-app="PsoTable2" data-ng-controller="PsoTable2" id="pso-table" ng-init="sfEndpoint.initializeBroadcastSession('{!$Api.Session_ID}')">
-
             <!-- loading -->
             <apex:pageBlock html-data-ng-if="status.loading">
                 <div aria-hidden="false" role="dialog" class="slds-modal slds-fade-in-open">
@@ -322,12 +321,21 @@
                     <div id="captions" class="fixed-x">
                         <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-text-heading--label">
                             <tbody>
-                                <tr class=" tableheader" style="height:111px;">
+                                <tr class="tableheader">
+                                    <th colspan="5" class="tableheaderBorder">&nbsp;</th>
+                                </tr>
+                                <tr class="tableheader">
+                                    <th colspan="5" class="tableheaderBorder">&nbsp;</th>
+                                </tr>
+                                <tr class="tableheader">
+                                    <th colspan="5">&nbsp;</th>
+                                </tr>
+                                <tr class="tableheader">
                                     <th class="padding10left">Resource</th>
                                     <th>Role</th>
-                                    <th>Sold<br />days</th>
-                                    <th>Planned<br />days</th>
-                                    <th>Unplanned<br />days</th>
+                                    <th data-tooltip="Sold days">SD</th>
+                                    <th data-tooltip="Planned days">PD</th>
+                                    <th data-tooltip="Unplanned days">UP</th>
                                 </tr>
                             </tbody>
                             <tbody data-ng-if="data.Customers.length" ng-repeat="customer in data.Customers | filter : filter.customerHasResource">
@@ -399,7 +407,7 @@
                                     <td class="fixtd">
                                         {{ (project.PlannedDays / 8) | number : 2 }}
                                     </td>
-                                    <td class="fixtd" style="border-right:1px solid #ffffff !important;">
+                                    <td class="fixtd">
                                         {{ ((project.SoldDays - project.PlannedDays) / 8) | number : 2 }}
                                     </td>
                                 </tr>

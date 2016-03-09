@@ -1,7 +1,7 @@
 body,
 html {
 	background: #fff;
-	font-size: 14px;
+	font-size: 12px;
 }
 
 .utilization .weekDay,
@@ -74,10 +74,6 @@ td .focus input {
 	background-color: #ffffff;
 }
 
-table {
-	overflow: hidden;
-}
-
 td, th, .col {
 	position: relative;
 }
@@ -133,6 +129,10 @@ span.ResourceInfo {
 	left: 0;
 	z-index: 1;
 	pointer-events: none;
+}
+
+#schedule table {
+	overflow: hidden
 }
 
 #newpost .slds-modal__close {
@@ -564,44 +564,54 @@ tbody.Resources:before {
 }
 
 /* events date */
-.holiday-info {
-	background: rgba(255, 165, 0, 0.4)
-}
 
-.has-booking {
-	background: rgba(254, 196, 109, 0.4)
-}
-
-.has-holiday {
-	background: red !important;
-}
-
-.partly-booked {
-	background: rgba(141, 203, 143, 0.4)
-}
-
-.fully-booked {
+.has-staffing {
 	background: rgba(141, 203, 143, 0.4);
 }
 
-.overbooked {
-	background: rgba(239, 127, 128, 0.4)
+.Resources .full-holiday {
+	background: rgba(255, 165, 0, 0.8)
+}
+
+.Resources .part-holiday {
+	background: rgba(255, 165, 0, 0.4)
+}
+
+.fully-staffed {
+	background: rgba(141, 203, 143, 0.8);
+}
+
+.overstaffed {
+	background: rgba(239, 127, 128, 0.8)
+}
+
+.partly-staffed {
+	background: rgba(141, 203, 143, 0.4)
+}
+
+.Resources .has-staffing-and-holiday {
+
+	background: rgba(255, 165, 0, 0.4); /* Old browsers */
+	background: -moz-linear-gradient(45deg, rgba(255, 165, 0, 0.4) 50%, rgba(141, 203, 143, 0.4) 50%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(45deg, rgba(255, 165, 0, 0.4) 50%, rgba(141, 203, 143, 0.4) 50%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(45deg, rgba(255, 165, 0, 0.4) 50%, rgba(141, 203, 143, 0.4) 50%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+
 }
 
 .month-saldo {
-	background: rgba(255, 255, 255, 0.4)
+	background: rgba(255, 255, 255, 0.8)
 }
 
 .negative-saldo {
-	background: rgba(237, 136, 143, 0.4)
+	background: rgba(237, 136, 143, 0.8)
 }
 
 .positive-saldo {
-	background: rgba(140, 212, 119, 0.4)
+	background: rgba(140, 212, 119, 0.8)
 }
 
 .neutral-saldo {
-	background: rgba(165, 188, 208, 0.4)
+	background: rgba(165, 188, 208, 0.8)
 }
 
 .very-low-utilization {
@@ -625,33 +635,6 @@ tbody.Resources:before {
 }
 
 /* tooltip */
-.tooltip span[rel=tooltip] {
-	display: none;
-}
-
-.tooltip:hover span[rel=tooltip] {
-	display: block;
-	position: absolute;
-	left: -10em;
-	padding: 0.5em;
-	z-index: 100;
-	border: 1px solid #d8dde6;
-	border-radius: 0.25rem;
-	background: white;
-	box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.16);
-	bottom: 1em;
-	color: #54698d;
-	line-height: 17px;
-	padding: 5px 15px;
-	position: absolute;
-	text-align: left;
-	min-width: 220px;
-	font-size: 0.75rem;
-}
-
-*
-
-/
 
 [data-tooltip] {
 	position: relative;
@@ -663,9 +646,9 @@ tbody.Resources:before {
 	pointer-events: none;
 	display: block;
 	position: absolute;
-	left: -10em;
+
 	padding: 0.5em;
-	z-index: 100;
+	z-index: 100999;
 	border: 1px solid #d8dde6;
 	border-radius: 0.25rem;
 	background: white;
@@ -676,12 +659,15 @@ tbody.Resources:before {
 	padding: 5px 15px;
 	position: absolute;
 	text-align: left;
-	min-width: 220px;
 	font-size: 0.75rem;
 }
 
 [data-tooltip]:hover::after {
 	opacity: 1;
+}
+
+.tableheaderBorder {
+	border-bottom: 1px solid #cfd7e6 !important;
 }
 
 #connection-status:hover:after {

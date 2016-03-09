@@ -42,14 +42,21 @@ PsoTable2.ng.factory('PsoTable2StaffingHelper', ['datepicker', function (datepic
 		 * should check both (Staff and HoursOff) for this. In both cases total is the number we that
 		 * provides the proper info.
 		 */
-		staffing.hasBooking = staffing.total > 0;
-		staffing.isPartlyBooked = staffing.hasBooking && staffing.total < fullyBookedTreshold;
-		staffing.isFullyBooked = staffing.total >= fullyBookedTreshold && staffing.total <= hoursPerDay;
-		staffing.isOverBooked = staffing.total > hoursPerDay;
+		staffing.hasStaffing = staffing.Staff > 0;
+		staffing.isPartlyStaffed = staffing.hasBooking && staffing.Staff < fullyBookedTreshold;
+		staffing.isFullyStaffed = staffing.Staff >= fullyBookedTreshold && staffing.Staff <= hoursPerDay;
+		staffing.isOverStaffed = staffing.Staff > hoursPerDay;
 
 		staffing.hasHoliday = staffing.HoursOff > 0;
 		staffing.isPartlyHoliday = staffing.hasHoliday && staffing.HoursOff < fullyBookedTreshold;
 		staffing.isFullHoliday = staffing.HoursOff >= fullyBookedTreshold;
+
+		staffing.hasStaffingAndHoliday = staffing.Staff > 0 && staffing.HoursOff > 0;
+		staffing.hasStaffingOrHoliday = staffing.total > 0;
+
+		staffing.isPartlyStaffedOrHoliday = staffing.hasStaffingOrHoliday && staffing.total < fullyBookedTreshold;
+		staffing.isFullyStaffedOrHoliday = staffing.total >= fullyBookedTreshold && staffing.total <= hoursPerDay;
+		staffing.isOverStaffedOrHoliday = staffing.total > hoursPerDay;
 	};
 
 	helper.normalizeResourceStaffing = function (resource, resourceSummary, project) {
@@ -636,10 +643,14 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', '$timeout',
 		}
 
 		if (allocation) {
-			classes['has-booking'] = !!allocation.hasBooking;
-			classes['partly-booked'] = !!allocation.isPartlyBooked;
-			classes['fully-booked'] = !!allocation.isFullyBooked;
-			classes['overbooked'] = !!allocation.isOverBooked;
+			classes['has-staffing'] = !!allocation.hasStaffing;
+			classes['partly-staffed'] = !!allocation.isPartlyStaffed;
+			classes['fully-staffed'] = !!allocation.isFullyStaffed;
+
+			classes['has-staffing-and-holiday'] = !!allocation.hasStaffingAndHoliday;
+
+			/* use the combination for the overstaffed as this will be the more common case when handling part time holiday */
+			classes['overstaffed'] = !!allocation.isOverStaffedOrHoliday;
 		}
 
 		if ($scope.data.ResourcesByContactId[resource.ContactId]) {
