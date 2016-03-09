@@ -660,6 +660,8 @@ tbody.Resources:before {
 	position: absolute;
 	text-align: left;
 	font-size: 0.75rem;
+
+	transition: opacity .4s linear;
 }
 
 [data-tooltip]:hover::after {

@@ -397,14 +397,27 @@ PsoTable2.ng.directive('fixedX', ['$window', function ($window) {
 	return {
 		'restrict': 'CA',
 		'link': function (scope, el, attributes) {
-			var topPosition = el.position().top;
-
 			if (el.css('position') !== 'fixed') {
 				el.css('position', 'fixed');
 			}
 
-			jWindow.scroll(function () {
+			var topPosition = 0;
+
+			var calculateDefaultPosition = function () {
+				el.css('top', '');
+				topPosition = el.position().top;
+			};
+
+			var updatePosition = function () {
 				el.css('top', topPosition - jWindow.scrollTop());
+			};
+
+			calculateDefaultPosition();
+
+			jWindow.on('scroll', updatePosition);
+			jWindow.on('resize', function () {
+				calculateDefaultPosition();
+				updatePosition();
 			});
 		}
 	};

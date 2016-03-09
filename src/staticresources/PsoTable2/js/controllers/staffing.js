@@ -771,6 +771,7 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', '$timeout',
 				$scope.viewState.staffingDays.push({
 					dateString: 'week-stats-' + month.number + '-' + week.number,
 					weekDay: 'Dw',
+					tooltip: 'Days of the week',
 					isSaldo: true,
 					isStatisticSaldo: true
 				});
@@ -787,6 +788,7 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', '$timeout',
 				$scope.viewState.staffingDays.push({
 					dateString: 'month-stats-' + month.number,
 					weekDay: 'Dm',
+					tooltip: 'Days of the month',
 					isSaldo: true,
 					isStatisticSaldo: true
 				});
@@ -1133,7 +1135,7 @@ PsoTable2.ng.directive('navigateCellInputs', function () {
 	};
 });
 
-PsoTable2.ng.directive('staffingCaptionsSpacing', ['$timeout', function ($timeout) {
+PsoTable2.ng.directive('staffingCaptionsSpacing', ['$timeout', '$window', function ($timeout, $window) {
 	return {
 		'restrict': 'A',
 		'link': function (scope, el, attributes) {
@@ -1157,6 +1159,10 @@ PsoTable2.ng.directive('staffingCaptionsSpacing', ['$timeout', function ($timeou
 					unregisterWatch();
 					$timeout(updateMargin, 0, false);
 				});
+			});
+
+			$($window).on('resize', function () {
+				updateMargin();
 			});
 
 			updateMargin();
