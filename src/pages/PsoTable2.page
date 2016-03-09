@@ -347,11 +347,14 @@
                                                     <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#cases')}"></use>
                                                 </svg>
                                             </a>
+                                            <!-- ProjectStatus popup disabled until further -->
+                                            <!--
                                             <a class="slds-button__icon slds-button__icon--left" ng-click="ProjectStatusVisible=!ProjectStatusVisible" title="Sales Price And Quantity">
                                                 <svg class=" slds-icon--x-small slds-icon-text-default ">
                                                     <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#settings')}"></use>
                                                 </svg>
                                             </a>
+                                            -->
                                         </span>
                                         <h4>
                                             <b><a href="/{{ customer.AccountId }}" target="_blank">{{ customer.AccountName }}</a></b>
@@ -362,7 +365,8 @@
                                             </span>
                                         </h4>
 
-                                        <!-- show ProjectStatus popup -->
+                                        <!-- show ProjectStatus popup, disabled until further -->
+                                        <!--
                                         <div class="ProjectStatusVisiblepopup slds-nubbin--left-top" ng-show="ProjectStatusVisible">
                                             <a class="slds-button slds-button--small slds-modal__close slds-icon--small" style="margin-top: 41px;" ng-click="ProjectStatusVisible=false">
                                                 <svg aria-hidden="true" class="slds-icon slds-icon--x-small slds-icon-text-default">
@@ -376,6 +380,7 @@
                                                 </ul>
                                             </div>
                                         </div>
+                                        -->
                                         <!-- show ProjectStatus popup ende -->
                                     </td>
                                 </tr>
