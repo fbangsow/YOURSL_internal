@@ -52,7 +52,7 @@ html {
 /* page */
 
 .contentBox {
-	margin-top: 27px;
+	margin-top: 80px;
 }
 
 .slds-table th, .slds-table td
@@ -437,7 +437,7 @@ a:active {
 
 #pso-table .slds-table th,
 #pso-table .slds-table td {
-	padding: 0.5rem;
+	padding: 0 0.5rem;
 	white-space: nowrap;
 }
 
@@ -494,7 +494,7 @@ table {
 	vertical-align: bottom;
 	font-weight: bold;
 	border: 1px solid rgba(0, 0, 0, 0.04);
-
+	padding: 5px;
 }
 
 .slds-table:not(.slds-no-row-hover) tbody tr:hover > td,
@@ -569,10 +569,12 @@ tbody.Resources:before {
 	background: rgba(141, 203, 143, 0.4);
 }
 
+.legends .full-holiday,
 .Resources .full-holiday {
 	background: rgba(255, 165, 0, 0.8)
 }
 
+.legends .part-holiday,
 .Resources .part-holiday {
 	background: rgba(255, 165, 0, 0.4)
 }
@@ -589,29 +591,30 @@ tbody.Resources:before {
 	background: rgba(141, 203, 143, 0.4)
 }
 
+.legends .has-staffing-and-holiday,
 .Resources .has-staffing-and-holiday {
-
 	background: rgba(255, 165, 0, 0.4); /* Old browsers */
 	background: -moz-linear-gradient(45deg, rgba(255, 165, 0, 0.4) 50%, rgba(141, 203, 143, 0.4) 50%); /* FF3.6-15 */
 	background: -webkit-linear-gradient(45deg, rgba(255, 165, 0, 0.4) 50%, rgba(141, 203, 143, 0.4) 50%); /* Chrome10-25,Safari5.1-6 */
 	background: linear-gradient(45deg, rgba(255, 165, 0, 0.4) 50%, rgba(141, 203, 143, 0.4) 50%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-
 }
 
 .month-saldo {
-	background: rgba(255, 255, 255, 0.8)
+	background: rgba(255, 255, 255, 1)
 }
 
 .negative-saldo {
-	background: rgba(237, 136, 143, 0.8)
+	color: red;
+!important
 }
 
-.positive-saldo {
-	background: rgba(140, 212, 119, 0.8)
+.negative-saldo {
+	color: green;
+!important
 }
 
 .neutral-saldo {
-	background: rgba(165, 188, 208, 0.8)
+	color: #54698d
 }
 
 .very-low-utilization {
@@ -646,8 +649,6 @@ tbody.Resources:before {
 	pointer-events: none;
 	display: block;
 	position: absolute;
-
-	padding: 0.5em;
 	z-index: 100999;
 	border: 1px solid #d8dde6;
 	border-radius: 0.25rem;

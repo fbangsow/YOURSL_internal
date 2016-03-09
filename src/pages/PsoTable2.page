@@ -32,7 +32,7 @@
             </apex:pageBlock>
             <!-- loading end-->
 
-            <apex:pageBlock title="Apply filters">
+            <apex:pageBlock>
                 <div id="filter" class="headerfixed">
                     <div class="slds-page-header" role="banner">
                         <div class="slds-grid">
@@ -241,14 +241,16 @@
                                                 </svg>
                                             </a>
 
-                                            <div class="slds-m-around--medium">
+                                            <div class="slds-m-around--medium legends">
                                                 <div class="slds-text-heading--label slds-m-bottom--medium">Legend</div>
                                                 <ul class="slds-list--vertical slds-has-dividers--top">
-                                                    <li class="slds-list__item"><span class="holiday-info"></span> Holiday info</li>
-                                                    <li class="slds-list__item"><span class="has-booking"></span> Has booking</li>
-                                                    <li class="slds-list__item"><span class="partly-booked"></span> Partly booked</li>
-                                                    <li class="slds-list__item"><span class="fully-booked"></span> Fully booked</li>
-                                                    <li class="slds-list__item"><span class="overbooked"></span> Overbooked</li>
+                                                    <li class="slds-list__item"><span class="partly-staffed"></span> Partly booked</li>
+                                                    <li class="slds-list__item"><span class="fully-staffed"></span> Fully booked</li>
+                                                    <li class="slds-list__item"><span class="overstaffed"></span> Overbooked</li>
+                                                    <li class="slds-list__item"><span class="has-staffing-and-holiday"></span>Has staffing and holiday</li>
+                                                    <li class="slds-list__item"><span class="full-holiday"></span>Full holiday</li>
+                                                </ul>
+                                                <ul class="slds-list--vertical slds-has-dividers--top">
                                                     <li class="slds-list__item"><span class="negative-saldo"></span> Negative saldo</li>
                                                     <li class="slds-list__item"><span class="positive-saldo"></span> Positive saldo</li>
                                                     <li class="slds-list__item"><span class="neutral-saldo"></span> Neutral saldo</li>
@@ -316,7 +318,7 @@
                 </div>
             </apex:pageBlock>
 
-            <apex:pageBlock html-data-ng-show="status.loaded" title="Manage staffing" html-ng-controller="PsoTable2Staffing">
+            <apex:pageBlock html-data-ng-show="status.loaded" html-ng-controller="PsoTable2Staffing">
                 <section id="staffing" class="contentBox slds-m-around--medium slds-box slds-scrollable--y">
                     <div id="captions" class="fixed-x">
                         <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-text-heading--label">
