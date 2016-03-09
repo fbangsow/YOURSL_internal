@@ -365,9 +365,8 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', '$timeout',
 		allocationTime = ((allocationTime || '0.0') + '').replace(',','.');
 
 		var minuteFormat = /^(\d{0,2}):(\d{1,2})$/.exec(allocationTime);
-
 		if (minuteFormat) {
-			allocationTime = parseInt(minuteFormat[1], 10) + (parseInt(minuteFormat[2], 10) / 60);
+			allocationTime = parseInt(minuteFormat[1] || '0', 10) + (parseInt(minuteFormat[2] || '0', 10) / 60);
 		}
 
 		if (/^\.\d{1,2}$/.test(allocationTime)) {
@@ -427,9 +426,8 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', '$timeout',
 		var isNewAllocation = !allocation.Day;
 		var dateString = datepicker.formatDate('yy-mm-dd', allocationDate);
 
-		console.log('validating entered allocation time', allocation.currentBooking);
-
 		var requestedHours = parseAllocationTime(allocation.currentBooking);
+
 		var oldHours = !isNewAllocation ? allocation.Staff : 0.0;
 
 		if (typeof requestedHours === 'string') {
@@ -437,10 +435,15 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', '$timeout',
 				allocation.currentBooking = oldHours;
 
 				switch (requestedHours) {
+					case 'no_number':
+						alert('Hour entries must be divisible by a quarter hour. The minimum are 15 minutes (0.25 hours).');
+						break;
 					case 'not_quarter_hour':
 						alert('Hour entries must be divisible by a quarter hour. The minimum are 15 minutes (0.25 hours).');
+						break;
 					case 'negative_number':
 						alert('Please enter a positive number or 0 to remove the allocation.');
+						break;
 				}
 			}
 
