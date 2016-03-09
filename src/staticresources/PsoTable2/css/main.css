@@ -570,14 +570,7 @@ tbody.Resources:before {
 
 /* events date */
 
-td.month-saldo span,
-td.negative-saldo span,
-td.positive-saldo span,
-td.neutral-saldo span,
-td.very-low-utilization span,
-td.low-utilization span,
-td.neutral-utilization span,
-td.high-utilization span {
+td.saldo span {
 	text-align: right;
 	padding-right: 10px;
 	display: block;
