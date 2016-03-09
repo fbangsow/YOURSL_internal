@@ -35,7 +35,7 @@
                 </apex:pageBlock>
                 <!-- loading end-->
 
-                <apex:pageBlock title="Apply filters">
+                <apex:pageBlock>
                     <div id="filter" class="headerfixed">
                         <div class="slds-page-header" role="banner">
                             <div class="slds-grid">
@@ -243,8 +243,8 @@
                     </div>
                 </apex:pageBlock>
 
-                <apex:pageBlock html-data-ng-show="status.loaded" title="View utilization" html-ng-controller="PsoTable2Utilization">
-                    <section id="staffing" class="contentBox slds-m-around--medium slds-box slds-scrollable--y">
+                <apex:pageBlock html-data-ng-show="status.loaded" html-ng-controller="PsoTable2Utilization">
+                    <section id="utilization" class="contentBox slds-m-around--medium slds-box slds-scrollable--y">
                         <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal">
                             <tbody ng-if="data.Resources.length">
                                 <tr class="slds-text-heading--label tableheader">

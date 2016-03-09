@@ -461,12 +461,9 @@ background:#f8f9fb
 	text-align: center
 }
 
+#utilization .saldo,
 .weekend {
 	background: rgba(168, 183, 199, 0.25);
-}
-
-.weekend:last-child {
-	border-right: 4px solid green;
 }
 
 tr td.saldo:hover::after, td.statistic:hover::after,
@@ -565,6 +562,21 @@ tbody.Resources:before {
 
 /* events date */
 
+td.month-saldo span,
+.negative-saldo span,
+.positive-saldo span,
+.neutral-saldo span,
+.very-low-utilization span,
+.low-utilization span,
+.neutral-utilization span,
+.high-utilization span {
+	text-align: right;
+	padding-right: 10px;
+	display: block;
+	font-weight: bolder;
+	font-size: 1.2em;
+}
+
 .has-staffing {
 	background: rgba(141, 203, 143, 0.4);
 }
@@ -600,7 +612,6 @@ tbody.Resources:before {
 }
 
 .month-saldo {
-	background: rgba(255, 255, 255, 1)
 }
 
 .negative-saldo {
@@ -608,33 +619,29 @@ tbody.Resources:before {
 !important
 }
 
-.negative-saldo {
+.positive-saldo {
 	color: green;
 !important
 }
 
 .neutral-saldo {
-	color: #54698d
+	color: #54698d;
 }
 
 .very-low-utilization {
 	color: red;
-	font-weight: bold;
 }
 
 .low-utilization {
-	color: #ef7f80;
-	font-weight: bold
+	color: orange;
 }
 
 .neutral-utilization {
 	color: #8dcb8f;
-	font-weight: bold
 }
 
 .high-utilization {
 	color: green;
-	font-weight: bold
 }
 
 /* tooltip */
@@ -661,7 +668,6 @@ tbody.Resources:before {
 	position: absolute;
 	text-align: left;
 	font-size: 0.75rem;
-
 	transition: opacity .4s linear;
 }
 

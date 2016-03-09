@@ -38,8 +38,6 @@ PsoTable2.ng.controller('PsoTable2Utilization', ['$scope', '$interval', 'PsoTabl
 			classes.past = !!day.isPast;
 			classes.today = !!day.isToday;
 			classes.future = !!day.isFuture;
-			classes.isAllocatable = !!day.isAllocatable;
-			classes.isNotAllocatable = !day.isAllocatable;
 
 			if (day.isSaldo) {
 				classes['saldo'] = true;
