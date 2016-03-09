@@ -244,16 +244,21 @@
                                             <div class="slds-m-around--medium legends">
                                                 <div class="slds-text-heading--label slds-m-bottom--medium">Legend</div>
                                                 <ul class="slds-list--vertical slds-has-dividers--top">
+                                                    <li class="slds-list__item"><b>Booking Status</b></li>
                                                     <li class="slds-list__item"><span class="partly-staffed"></span> Partly booked</li>
                                                     <li class="slds-list__item"><span class="fully-staffed"></span> Fully booked</li>
                                                     <li class="slds-list__item"><span class="overstaffed"></span> Overbooked</li>
                                                     <li class="slds-list__item"><span class="has-staffing-and-holiday"></span>Has staffing and holiday</li>
                                                     <li class="slds-list__item"><span class="full-holiday"></span>Full holiday</li>
-                                                </ul>
-                                                <ul class="slds-list--vertical slds-has-dividers--top">
-                                                    <li class="slds-list__item"><span class="negative-saldo"></span> Negative saldo</li>
-                                                    <li class="slds-list__item"><span class="positive-saldo"></span> Positive saldo</li>
+                                                    <li class="slds-list__item"><b>Saldo Status</b></li>
                                                     <li class="slds-list__item"><span class="neutral-saldo"></span> Neutral saldo</li>
+                                                    <li class="slds-list__item"><span class="positive-saldo"></span> Positive saldo</li>
+                                                    <li class="slds-list__item"><span class="negative-saldo"></span> Negative saldo</li>
+                                                    <li class="slds-list__item"><b>Utilization Status</b></li>
+                                                    <li class="slds-list__item"><span class="high-utilization"></span> High utilization</li>
+                                                    <li class="slds-list__item"><span class="neutral-utilization"></span> Neutral Utilization</li>
+                                                    <li class="slds-list__item"><span class="low-utilization"></span> Low utilization</li>
+                                                    <li class="slds-list__item"><span class="very-low-utilization"></span> Very low utilization</li>
                                                 </ul>
                                             </div>
                                         </div>
@@ -343,7 +348,7 @@
                             <tbody data-ng-if="data.Customers.length" ng-repeat="customer in data.Customers | filter : filter.customerHasResource">
                                 <tr ng-repeat-start="project in customer.Projects | filter : filter.projectHasResource" class="project-info slds-text-body--small" style="height:43px;">
                                     <td colspan="5" style="border-right:1px solid #eef1f6 !important;">
-                                        <span class="slds-icon__container slds-float--left slds-m-right--large">
+                                        <span class="slds-icon__container slds-float--left">
                                             <a class="slds-button__icon slds-button__icon--left" href="/apex/OpportunityLineItemsEdit?id={{ project.OpportunityId }}" target="blank">
                                                 <svg class="slds-icon slds-icon--x-small slds-icon-text-default ">
                                                     <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#cases')}"></use>
