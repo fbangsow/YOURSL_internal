@@ -335,7 +335,7 @@
                                     <th>Role</th>
                                     <th data-tooltip="Sold days">SD</th>
                                     <th data-tooltip="Planned days">PD</th>
-                                    <th data-tooltip="Unplanned days">UP</th>
+                                    <th data-tooltip="Unplanned days">UD</th>
                                 </tr>
                             </tbody>
                             <tbody data-ng-if="data.Customers.length" ng-repeat="customer in data.Customers | filter : filter.customerHasResource">
