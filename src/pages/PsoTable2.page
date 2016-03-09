@@ -255,10 +255,10 @@
                                                     <li class="slds-list__item"><span class="positive-saldo"></span> Positive saldo</li>
                                                     <li class="slds-list__item"><span class="negative-saldo"></span> Negative saldo</li>
                                                     <li class="slds-list__item"><b>Utilization Status</b></li>
-                                                    <li class="slds-list__item"><span class="high-utilization"></span> High utilization</li>
-                                                    <li class="slds-list__item"><span class="neutral-utilization"></span> Neutral Utilization</li>
-                                                    <li class="slds-list__item"><span class="low-utilization"></span> Low utilization</li>
-                                                    <li class="slds-list__item"><span class="very-low-utilization"></span> Very low utilization</li>
+                                                    <li class="slds-list__item"><span class="high-utilization"></span> Higher or equal 80%</li>
+                                                    <li class="slds-list__item"><span class="neutral-utilization"></span>Between 60% &amp; 80%</li>
+                                                    <li class="slds-list__item"><span class="low-utilization"></span> Between 40% &amp; 60%</li>
+                                                    <li class="slds-list__item"><span class="very-low-utilization"></span> Less 40%</li>
                                                 </ul>
                                             </div>
                                         </div>
