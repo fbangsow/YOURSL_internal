@@ -457,7 +457,7 @@
                                 </tr>
                                 <tr class="tableheader">
                                     <th ng-repeat="day in viewState.staffingDays" ng-class="buildDayHeaderClasses(day)" rowspan="{{ day.isSaldo ? 2 : 1 }}" class="textCenter col">
-                                        <div class="weekDay">
+                                        <div class="weekDay" ng-attr-data-tooltip="{{ day.tooltip }}">
                                             {{ day.weekDay }}
                                         </div>
                                     </th>
