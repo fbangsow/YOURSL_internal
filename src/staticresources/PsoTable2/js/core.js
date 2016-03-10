@@ -104,6 +104,19 @@ PsoTable2.ng.factory('PsoTable2Endpoint', ['$q', '$timeout', 'cometd', 'alert', 
 				return
 			}
 
+			if (!result || !result.IsSuccess) {
+				if (result && !result.message) {
+					result.message = result.ErrorMessage;
+
+					if (/INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE_ENTITY/i.test(result.message)) {
+						result.message = 'You don\'t have proper access to this opportunity. Please ask your management for help.';
+					}
+				}
+
+				deferred.reject(result);
+				return;
+			}
+
 			deferred.resolve(result.ReturnedResult);
 		}, {
 			buffer: true,
