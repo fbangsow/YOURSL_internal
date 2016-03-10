@@ -309,7 +309,7 @@ PsoTable2.ng.factory('PsoTable2StaffingHelper', ['datepicker', function (datepic
 	return helper;
 }]);
 
-PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', '$timeout', 'PsoTable2Endpoint', 'PsoTable2StaffingHelper', 'datepicker', 'alert', function ($scope, $interval, $timeout, sfEndpoint, staffingHelper, datepicker, alert) {
+PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', 'PsoTable2Endpoint', 'PsoTable2StaffingHelper', 'datepicker', 'alert', function ($scope, $window, $timeout, sfEndpoint, staffingHelper, datepicker, alert) {
 	console.log('init staffing controller');
 
 	$scope.viewState = {
@@ -1002,13 +1002,22 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$interval', '$timeout',
 		$scope.viewState.projectHealthReasons = reasons;
 	});
 
-	var connectionCheck = $interval(function () {
-		$scope.$parent.viewState.isConnected = sfEndpoint.isBroadcastConnected();
+	/*
+	 * We do not use Angular $interval, this would recalculate the cell classes on every call.
+	 * In production this went to 10000 function calls per second, making the page near to unusable.
+	 */
+	var connectionCheck = $window.setInterval(function () {
+		var isConnected = sfEndpoint.isBroadcastConnected();
+		if (isConnected !== $scope.$parent.viewState.isConnected) {
+			$scope.$parent.$apply(function () {
+				$scope.$parent.viewState.isConnected = isConnected;
+			});
+		}
 	}, 1000);
 
 	$scope.$on('$destroy', function() {
 		if (connectionCheck) {
-			$interval.cancel(connectionCheck);
+			$window.clearInterval(connectionCheck);
 			connectionCheck = null;
 		}
 	});
