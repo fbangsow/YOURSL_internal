@@ -74,9 +74,9 @@
                                                                 </section>
 
                                                                 <select multiple="multiple" name="selectedOpportunities" id="selectedOpportunities" ng-model="viewState.selectedOpportunities" ng-attr-size="{{ viewState.selectedOpportunitiesSize }}" ng-disabled="viewState.selectRelatedOpportunities" class="slds-input  slds-p-around--xx-small height100" >
-                                                                    <optgroup ng-repeat="customer in data.Customers | filter : filter.opportunities.customerMatchesFilter" label="{{ customer.AccountName }}" ng-click="filter.opportunities.events.accountClicked(customer, $event)">
-                                                                        <option ng-repeat="project in customer.Projects | filter : filter.opportunities.projectMatchesFilter" value="{{ project.OpportunityId }}">
-                                                                            {{ project.OpportunityName }}
+                                                                    <optgroup ng-repeat="customer in data.Customers track by customer.AccountId | filter : filter.opportunities.customerMatchesFilter" label="{{ ::customer.AccountName }}" ng-click="filter.opportunities.events.accountClicked(customer, $event)">
+                                                                        <option ng-repeat="project in customer.Projects track by project.OpportunityId | filter : filter.opportunities.projectMatchesFilter" value="{{ ::project.OpportunityId }}">
+                                                                            {{ ::project.OpportunityName }}
                                                                         </option>
                                                                     </optgroup>
                                                                 </select>
@@ -126,9 +126,9 @@
                                                                 </section>
 
                                                                 <select multiple="multiple" name="selectedResources" id="selectedResources" ng-model="viewState.selectedResources" ng-attr-size="{{ viewState.selectedResourcesSize }}" ng-disabled="viewState.selectRelatedResources" class="slds-input  slds-p-around--xx-small height100" >
-                                                                    <optgroup ng-repeat="role in data.Resources | filter : filter.resources.roleMatchesFilter" label="{{ role.Role }}" ng-click="filter.resources.events.roleClicked(role, $event)">
-                                                                        <option ng-repeat="resource in role | filter : filter.resources.resourceMatchesFilter" value="{{ resource.ContactId }}">
-                                                                            {{ resource.ResourceName }}
+                                                                    <optgroup ng-repeat="role in data.Resources track by role.Role | filter : filter.resources.roleMatchesFilter" label="{{ ::role.Role }}" ng-click="filter.resources.events.roleClicked(role, $event)">
+                                                                        <option ng-repeat="resource in role track by resource.ContactId | filter : filter.resources.resourceMatchesFilter" value="{{ ::resource.ContactId }}">
+                                                                            {{ ::resource.ResourceName }}
                                                                         </option>
                                                                     </optgroup>
                                                                 </select>
@@ -345,8 +345,8 @@
                                     <th data-tooltip="Unplanned days">UD</th>
                                 </tr>
                             </tbody>
-                            <tbody data-ng-if="data.Customers.length" ng-repeat="customer in data.Customers">
-                                <tr ng-repeat-start="project in customer.Projects" class="project-info slds-text-body--small" style="height:43px;">
+                            <tbody data-ng-if="data.Customers.length" ng-repeat="customer in data.Customers track by customer.AccountId">
+                                <tr ng-repeat-start="project in customer.Projects track by project.OpportunityId" class="project-info slds-text-body--small" style="height:43px;">
                                     <td colspan="5" style="border-right:1px solid #eef1f6 !important;">
                                         <span class="slds-icon__container slds-float--left">
                                             <a class="slds-button__icon slds-button__icon--left" href="/apex/OpportunityLineItemsEdit?id={{ ::project.OpportunityId }}" target="blank">
@@ -392,7 +392,7 @@
                                     </td>
                                 </tr>
                                 <tr><td colspan="5" class="shadow"></td></tr>
-                                <tr ng-repeat="resource in project.Resources" ng-class="buildResourceRowClasses(resource)" class="slds-text-body--small">
+                                <tr ng-repeat="resource in project.Resources track by resource.ContactId" ng-class="buildResourceRowClasses(resource)" class="slds-text-body--small">
                                     <td class="fixtd">
                                         <a href="/{{ ::resource.ContactId }}" target="_blank">{{ ::resource.ResourceName }}</a>
                                     </td>
@@ -441,7 +441,7 @@
                                         Account name
                                     </th>
                                 </tr>
-                                <tr ng-repeat="resource in data.Resources" ng-class="buildResourceRowClasses(resource)">
+                                <tr ng-repeat="resource in data.Resources track by resource.ContactId" ng-class="buildResourceRowClasses(resource)">
                                     <td class="padding10left">{{ ::resource.ResourceName }}</td>
                                     <td>{{ ::resource.Title }}</td>
                                     <td colspan="3" style="border-right:1px solid #ffffff !important;">{{ ::resource.AccountName}}</td>
@@ -453,37 +453,37 @@
                         <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-text-heading--label" data-navigate-cell-inputs="true">
                             <tbody>
                                 <tr class="tableheader">
-                                    <th colspan="{{ ::month.dayCount }}" ng-repeat="month in viewState.staffingMonths">
+                                    <th colspan="{{ ::month.dayCount }}" ng-repeat="month in viewState.staffingMonths track by month.number">
                                         {{ ::month.caption }}
                                     </th>
                                 </tr>
                                 <tr class="tableheader">
-                                    <th colspan="{{ ::week.dayCount }}" ng-repeat="week in viewState.staffingWeeks" class="padding10left">
+                                    <th colspan="{{ ::week.dayCount }}" ng-repeat="week in viewState.staffingWeeks track by week.number" class="padding10left">
                                         CW-{{ ::week.number }}
                                     </th>
                                 </tr>
                                 <tr class="tableheader">
-                                    <th ng-repeat="day in viewState.staffingDays" ng-class="buildDayHeaderClasses(day)" rowspan="{{ ::day.isSaldo ? 2 : 1 }}" class="textCenter col">
+                                    <th ng-repeat="day in viewState.staffingDays track by day.dateString" ng-class="buildDayHeaderClasses(day)" rowspan="{{ ::day.isSaldo ? 2 : 1 }}" class="textCenter col">
                                         <div class="weekDay" ng-attr-data-tooltip="{{ ::day.tooltip }}">
                                             {{ ::day.weekDay }}
                                         </div>
                                     </th>
                                 </tr>
                                 <tr class="tableheader">
-                                    <th ng-repeat="day in viewState.staffingDays" ng-class="buildDayHeaderClasses(day)" ng-if="!day.isSaldo" class="textCenter">
+                                    <th ng-repeat="day in viewState.staffingDays track by day.dateString" ng-class="buildDayHeaderClasses(day)" ng-if="!day.isSaldo" class="textCenter">
                                         {{ ::day.day }}
                                     </th>
                                 </tr>
                             </tbody>
-                            <tbody data-ng-if="data.Customers.length" ng-repeat="customer in data.Customers">
-                                <tr ng-repeat-start="project in customer.Projects" class="project-info slds-text-body--small" style="height:43px;">
+                            <tbody data-ng-if="data.Customers.length" ng-repeat="customer in data.Customers track by customer.AccountId">
+                                <tr ng-repeat-start="project in customer.Projects track by project.OpportunityId" class="project-info slds-text-body--small" style="height:43px;">
                                     <td colspan="{{ viewState.staffingColumns }}">
                                         &nbsp;
                                     </td>
                                 </tr>
                                 <tr><td colspan="{{ viewState.staffingColumns }}" class="shadow"></td></tr>
-                                <tr ng-repeat="resource in project.Resources" ng-class="buildResourceRowClasses(resource)" class="slds-text-body--small schedule">
-                                    <td ng-repeat="day in viewState.staffingDays" ng-class="buildResourceAllocationCellClasses(resource, day, resource.StaffingByDay[day.dateString])" class="textCenter">
+                                <tr ng-repeat="resource in project.Resources track by resource.ContactId" ng-class="buildResourceRowClasses(resource)" class="slds-text-body--small schedule">
+                                    <td ng-repeat="day in viewState.staffingDays track by day.dateString" ng-class="buildResourceAllocationCellClasses(resource, day, resource.StaffingByDay[day.dateString])" class="textCenter">
                                         <span ng-if="day.isMonthSaldo">
                                             {{ ((resource.Saldos[day.dateString] || 0) / 8) | number : 2 }}
                                         </span>
@@ -526,7 +526,7 @@
                                     </td>
                                 </tr>
                                 <tr ng-repeat-end="true" class="slds-text-body--small sum-up" style="border-top:2px solid #ccc">
-                                    <td ng-repeat="day in viewState.staffingDays" ng-class="buildProjectDayCellClasses(project, day)" class="textCenter">
+                                    <td ng-repeat="day in viewState.staffingDays track by day.dateString" ng-class="buildProjectDayCellClasses(project, day)" class="textCenter">
                                         <span ng-if="day.isMonthSaldo">
                                             {{ ((project.Saldos[day.dateString] || 0) / 8) | number : 2 }}
                                         </span>
@@ -558,8 +558,8 @@
                                         &nbsp;
                                     </th>
                                 </tr>
-                                <tr ng-repeat="resource in data.Resources" ng-class="buildResourceRowClasses(resource)">
-                                    <td ng-repeat="day in viewState.staffingDays" ng-class="buildResourceAllocationCellClasses(resource, day, resource.StaffingByDay[day.dateString])" class="textCenter">
+                                <tr ng-repeat="resource in data.Resources track by resource.ContactId" ng-class="buildResourceRowClasses(resource)">
+                                    <td ng-repeat="day in viewState.staffingDays track by day.dateString" ng-class="buildResourceAllocationCellClasses(resource, day, resource.StaffingByDay[day.dateString])" class="textCenter">
                                         <span ng-if="day.isMonthSaldo">
                                             {{ ((resource.Saldos[day.dateString] || 0) / 8) | number : 2 }}
                                         </span>
