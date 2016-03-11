@@ -237,52 +237,55 @@
 
                                 <p class="slds-text-heading--label">{{ viewState.startMonth | date : 'MMM yyyy' }} - {{ viewState.endMonth | date : 'MMM yyyy' }}</p>
                             </div>
-                                        <!-- run scheduler popup -->
-                                        <div class="schedulerpopup slds-nubbin--top-right" id="scheduler" ng-show="viewState.schedulerVisible" ng-if="viewState.isAllowedToRunScheduler">
-                                            <a class="slds-button slds-button--small slds-modal__close slds-icon--small " ng-click="viewState.schedulerVisible=false">
-                                                <svg aria-hidden="true" class="slds-icon slds-icon--x-small slds-icon-text-default closeButton">
-                                                    <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
-                                                </svg>
-                                            </a>
 
-                                            <div class="slds-m-around--medium">
-                                                <div class="slds-text-heading--label slds-m-bottom--medium">Rerun PSO statistics aggregation</div>
-                                                Please select the week / month to run the aggregation for.
-                                                <div data-show-week-or-month-picker="viewState.schedulerVisible" data-select-date="prepareSchedulerRun(selectedDate)">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- run scheduler popup end -->
-<!-- show legend popup -->
-                                        <div class="legendpopup slds-nubbin--top-right" id="legend" ng-show="viewState.legendVisible">
-                                            <a class="slds-button slds-button--small slds-modal__close slds-icon--small posIcon" ng-click="viewState.legendVisible=false">
-                                                <svg aria-hidden="true" class="slds-icon slds-icon--x-small slds-icon-text-default">
-                                                    <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
-                                                </svg>
-                                            </a>
+                            <!-- run scheduler popup -->
+                            <div class="schedulerpopup slds-nubbin--top-right" id="scheduler" ng-show="viewState.schedulerVisible" ng-if="viewState.isAllowedToRunScheduler">
+                                <a class="slds-button slds-button--small slds-modal__close slds-icon--small " ng-click="viewState.schedulerVisible=false">
+                                    <svg aria-hidden="true" class="slds-icon slds-icon--x-small slds-icon-text-default closeButton">
+                                        <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                                    </svg>
+                                </a>
 
-                                            <div class="slds-m-around--medium legends">
-                                                <div class="slds-text-heading--label slds-m-bottom--medium">Legend</div>
-                                                <ul class="slds-list--vertical slds-has-dividers--top">
-                                                    <li class="slds-list__item"><b>Booking Status</b></li>
-                                                    <li class="slds-list__item"><span class="partly-staffed"></span> Partly booked</li>
-                                                    <li class="slds-list__item"><span class="fully-staffed"></span> Fully booked</li>
-                                                    <li class="slds-list__item"><span class="overstaffed"></span> Overbooked</li>
-                                                    <li class="slds-list__item"><span class="has-staffing-and-holiday"></span>Has staffing and holiday</li>
-                                                    <li class="slds-list__item"><span class="full-holiday"></span>Full holiday</li>
-                                                    <li class="slds-list__item"><b>Saldo Status</b></li>
-                                                    <li class="slds-list__item"><span class="neutral-saldo"></span> Neutral saldo</li>
-                                                    <li class="slds-list__item"><span class="positive-saldo"></span> Positive saldo</li>
-                                                    <li class="slds-list__item"><span class="negative-saldo"></span> Negative saldo</li>
-                                                    <li class="slds-list__item"><b>Utilization Status</b></li>
-                                                    <li class="slds-list__item"><span class="high-utilization"></span> Higher or equal 80%</li>
-                                                    <li class="slds-list__item"><span class="neutral-utilization"></span>Between 60% &amp; 80%</li>
-                                                    <li class="slds-list__item"><span class="low-utilization"></span> Between 40% &amp; 60%</li>
-                                                    <li class="slds-list__item"><span class="very-low-utilization"></span> Less 40%</li>
-                                                </ul>
-                                            </div>
-                                        </div>
-<!-- show legend popup ende -->
+                                <div class="slds-m-around--medium">
+                                    <div class="slds-text-heading--label slds-m-bottom--medium">Rerun PSO statistics aggregation</div>
+                                    Please select the week / month to run the aggregation for.
+                                    <div data-show-week-or-month-picker="viewState.schedulerVisible" data-select-date="prepareSchedulerRun(selectedDate)">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- run scheduler popup end -->
+
+                            <!-- show legend popup -->
+                            <div class="legendpopup slds-nubbin--top-right" id="legend" ng-show="viewState.legendVisible">
+                                <a class="slds-button slds-button--small slds-modal__close slds-icon--small posIcon" ng-click="viewState.legendVisible=false">
+                                    <svg aria-hidden="true" class="slds-icon slds-icon--x-small slds-icon-text-default">
+                                        <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                                    </svg>
+                                </a>
+
+                                <div class="slds-m-around--medium legends">
+                                    <div class="slds-text-heading--label slds-m-bottom--medium">Legend</div>
+                                    <ul class="slds-list--vertical slds-has-dividers--top">
+                                        <li class="slds-list__item"><b>Booking Status</b></li>
+                                        <li class="slds-list__item"><span class="partly-staffed"></span> Partly booked</li>
+                                        <li class="slds-list__item"><span class="fully-staffed"></span> Fully booked</li>
+                                        <li class="slds-list__item"><span class="overstaffed"></span> Overbooked</li>
+                                        <li class="slds-list__item"><span class="has-staffing-and-holiday"></span>Has staffing and holiday</li>
+                                        <li class="slds-list__item"><span class="full-holiday"></span>Full holiday</li>
+                                        <li class="slds-list__item"><b>Saldo Status</b></li>
+                                        <li class="slds-list__item"><span class="neutral-saldo"></span> Neutral saldo</li>
+                                        <li class="slds-list__item"><span class="positive-saldo"></span> Positive saldo</li>
+                                        <li class="slds-list__item"><span class="negative-saldo"></span> Negative saldo</li>
+                                        <li class="slds-list__item"><b>Utilization Status</b></li>
+                                        <li class="slds-list__item"><span class="high-utilization"></span> Higher or equal 80%</li>
+                                        <li class="slds-list__item"><span class="neutral-utilization"></span>Between 60% &amp; 80%</li>
+                                        <li class="slds-list__item"><span class="low-utilization"></span> Between 40% &amp; 60%</li>
+                                        <li class="slds-list__item"><span class="very-low-utilization"></span> Less 40%</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- show legend popup ende -->
+
                             <!-- header navigation -->
                             <div class="slds-col slds-no-flex ">
                                 <div class="slds-button-group" role="group">
