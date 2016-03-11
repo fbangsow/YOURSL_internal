@@ -324,7 +324,6 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', '
 		projectHealthReasons: {}
 	};
 
-	$scope.filter = {};
 	$scope.data = {};
 
 	var initializeResourceContext = function (context, leaveCurrentValues) {
@@ -713,20 +712,6 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', '
 		sfEndpoint.updateProjectStatus(project.OpportunityId, project.ProjectStatus);
 	};
 
-	$scope.filter.customerHasResource = function (customer) {
-		for (var p = 0; p < customer.Projects.length; p++) {
-			if ($scope.filter.projectHasResource(customer.Projects[p])) {
-				return true;
-			}
-		}
-
-		return false;
-	};
-
-	$scope.filter.projectHasResource = function (project) {
-		return project.Resources && !!project.Resources.length;
-	};
-
 	/* functions for the staffing table */
 	$scope.$on('updateStaffing', function (event, selectedOpportunities, selectedResources, startMonth) {
 		if ($scope.$parent.status) {
@@ -908,14 +893,28 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', '
 			}
 
 			if (data.Customers) {
+				var normalizedCustomers = [];
 				for (var c = 0; c < data.Customers.length; c++) {
 					var customer = data.Customers[c];
+					var normalizedProjects = [];
+
 					for (var p = 0; p < customer.Projects.length; p++) {
-						normalizeProjectHours(customer.Projects[p]);
+						var project = customer.Projects[p];
+
+						if (project.Resources && project.Resources.length) {
+							normalizeProjectHours(project);
+							normalizedProjects.push(project);
+						}
+					}
+
+					if (normalizedProjects.length) {
+						customer.Projects = normalizedProjects;
+
+						normalizedCustomers.push(customer);
 					}
 				}
 
-				$scope.data.Customers = data.Customers;
+				$scope.data.Customers = normalizedCustomers;
 			}
 
 			$scope.viewState.staffingDayColumns = dayCount;
@@ -926,7 +925,7 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', '
 				$scope.$parent.status.loaded = true;
 			}
 
-			$scope.$emit('updatedStaffingData', data, selectedOpportunities, selectedResources, startMonth);
+			$scope.$emit('updatedStaffingData', $scope.data, selectedOpportunities, selectedResources, startMonth);
 
 			console.log('finished data update');
 		}, function (response) {
@@ -1031,6 +1030,8 @@ PsoTable2.ng.directive('navigateCellInputs', function () {
 	return {
 		restrict: 'A',
 		link: function (scope, el, attributes) {
+			console.log('initialize cell input navigation');
+
 			el.on('focus', 'input', function (e) {
 				var target = $(e.target);
 
