@@ -10,9 +10,6 @@ html {
 }
 
 .headerfixed {
-	position: fixed;
-	left: 0;
-	top: 0;
 	width: 100%;
 	z-index: 9999;
 }
@@ -51,10 +48,6 @@ html {
 
 /* page */
 
-.contentBox {
-	margin-top: 80px;
-}
-
 .slds-table th,
 .slds-table td:focus {
 	outline: 0;
@@ -73,6 +66,15 @@ td .focus input {
 	background-color: #ffffff;
 }
 
+input.checkbox {
+	width: 20px !important;
+}
+
+.posIcon {
+	margin-right: 170px;
+	margin-top: 17px;
+}
+
 td,
 th,
 .col {
@@ -83,9 +85,36 @@ th,
 	background: rgba(216, 221, 230, 0.55);
 }
 
+#filter .slds-dropdown-trigger {
+	position: absolute;
+}
+
 td:not(.shadow) {
 	height: 35px;
 	line-height: 100%;
+}
+
+.tableheader th {
+	border-right: 1px solid #cfd7e6 !important;
+}
+
+.tr.slds-text-body--small sum-up {
+}
+
+#captions tr.slds-text-body--small {
+	height: 35px;
+}
+
+#captions tr.slds-text-body--small td.tdslds-text-body--smal {
+	border: 0px;
+	position: absolute;
+	height: 34px;
+	line-height: 37px;
+}
+
+#pso-table .slds-x-small-buttons--stacked {
+	width: 100px;
+	margin: auto;
 }
 
 td:not([colspan]) .slds-icon-text-default {
@@ -106,7 +135,7 @@ span.ResourceInfo {
 }
 
 #captions table {
-	background: #f5f5f5;
+	background: #fff;
 }
 
 #schedule table {
@@ -123,7 +152,7 @@ span.ResourceInfo {
 	top: -5000px;
 	width: 100%;
 	left: 0;
-	z-index: 1;
+	z-index: 99999;
 	pointer-events: none;
 }
 
@@ -155,10 +184,10 @@ span.ResourceInfo {
 /* popup */
 
 .filterpopup {
-	position: fixed;
+	position: absolute;
 	z-index: 999;
-	margin-left: -16px;
-	top: 58px;
+	margin-left: -13px;
+	top: 30px;
 	width: 900px;
 	border: 1px solid #d8dde6;
 	border-radius: 0.25rem;
@@ -169,10 +198,10 @@ span.ResourceInfo {
 }
 
 .legendpopup {
-	position: fixed;
+	position: absolute;
 	z-index: 9999999999999999;
-	right: 77px;
-	top: 58px;
+	right: 58px;
+	top: 30px;
 	width: 200px;
 	border: 1px solid #d8dde6;
 	border-radius: 0.25rem;
@@ -183,10 +212,10 @@ span.ResourceInfo {
 }
 
 .schedulerpopup {
-	position: fixed;
+	position: absolute;
 	z-index: 9999999999999999;
-	right: 46px;
-	top: 58px;
+	right: 21px;
+	top: 30px;
 	width: 300px;
 	border: 1px solid #d8dde6;
 	border-radius: 0.25rem;
@@ -200,6 +229,11 @@ span.ResourceInfo {
 	border: 0px solid #ddd;
 	background: none;
 	color: #333;
+}
+
+.schedulerpopup a {
+	margin-right: 270px;
+	margin-top: 18px;
 }
 
 .ProjectStatusVisiblepopup {
@@ -410,15 +444,15 @@ a:active {
 #staffing #captions {
 	position: absolute;
 	z-index: 100;
-	-webkit-box-shadow: 2px 0px 2px 0px rgba(111, 116, 148, 0.2);
-	-moz-box-shadow: 2px 0px 2px 0px rgba(111, 116, 148, 0.2);
-	box-shadow: 2px 0px 2px 0px rgba(111, 116, 148, 0.2);
+	-webkit-box-shadow: 2px 0px 2px 0px rgba(111, 116, 148, 0.4);
+	-moz-box-shadow: 2px 0px 2px 0px rgba(111, 116, 148, 0.4);
+	box-shadow: 2px 0px 2px 0px rgba(111, 116, 148, 0.4);
 }
 
 .shadow {
-	-webkit-box-shadow: 0px 2px 1px 1px rgba(111, 116, 148, 0.2);
-	-moz-box-shadow: 0px 2px 1px 1px rgba(111, 116, 148, 0.2);
-	box-shadow: 0px 2px 1px 1px rgba(111, 116, 148, 0.2);
+	-webkit-box-shadow: 0px 2px 1px 1px rgba(111, 116, 148, 0.4);
+	-moz-box-shadow: 0px 2px 1px 1px rgba(111, 116, 148, 0.4);
+	box-shadow: 0px 2px 1px 1px rgba(111, 116, 148, 0.4);
 	padding: 0px !important;
 	position: relative;
 }
@@ -482,12 +516,25 @@ td.statistic {
 
 #pso-table tr.project-info > td:hover,
 #pso-table tr.project-info > td {
-	background: #eef1f6 !important;
-	border-bottom: 0px solid rgb(207, 215, 230);
+	background: #fff !important;
+	border: 0px;
 }
 
 table {
 	position: relative;
+}
+
+#schedule th:first-child,
+#schedule tr:first-child,
+#schedule td:first-child {
+	border-left: 0px !important;
+}
+
+#captions th:last-child,
+#captions tr:last-child,
+#captions td:last-child {
+	border-right: 0px !important;
+	border-left: 0px !important;
 }
 
 #pso-table tbody tr.tableheader > th:hover,
@@ -495,7 +542,7 @@ table {
 	background: #cfd7e6 !important;
 	vertical-align: bottom;
 	font-weight: bold;
-	border: 1px solid rgba(0, 0, 0, 0.04);
+	border: 1px solid #a8b7c7;
 	padding: 5px;
 }
 
@@ -560,7 +607,7 @@ col.hover {
 tbody.Resources:before {
 	content: '';
 	display: block;
-	height: 50px;
+	height: 30px;
 }
 
 /* events date */
