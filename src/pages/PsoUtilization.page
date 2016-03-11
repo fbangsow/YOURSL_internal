@@ -248,19 +248,19 @@
                         <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal">
                             <tbody ng-if="data.Resources.length">
                                 <tr class="slds-text-heading--label tableheader">
-                                    <th class="padding10left" rowspan="2">Resource</th>
-                                    <th rowspan="2">Title</th>
-                                    <th rowspan="2" style="border-right:1px solid #ffffff !important;">Account name</th>
+                                    <th class="padding10left" rowspan="2" ng-click="orderResourcesBy('ResourceName')" ng-class="{'sort-asc':viewState.orderResources==='ResourceName' && !viewState.orderResourcesDescending, 'sort-desc':viewState.orderResources==='ResourceName' && viewState.orderResourcesDescending}">Resource</th>
+                                    <th rowspan="2" ng-click="orderResourcesBy('Title')" ng-class="{'sort-asc':viewState.orderResources==='Title' && !viewState.orderResourcesDescending, 'sort-desc':viewState.orderResources==='Title' && viewState.orderResourcesDescending}">Title</th>
+                                    <th rowspan="2" style="border-right:1px solid #ffffff !important;" ng-click="orderResourcesBy('AccountName')" ng-class="{'sort-asc':viewState.orderResources==='AccountName' && !viewState.orderResourcesDescending, 'sort-desc':viewState.orderResources==='AccountName' && viewState.orderResourcesDescending}">Account name</th>
                                     <th colspan="{{ ::month.dayCount }}" ng-repeat="month in viewState.staffingMonths">
                                         {{ ::month.caption }}
                                     </th>
                                 </tr>
                                 <tr class="tableheader">
-                                    <th colspan="{{ ::week.dayCount }}" ng-repeat="week in viewState.staffingWeeks" class="textCenter">
+                                    <th colspan="{{ ::week.dayCount }}" ng-repeat="week in viewState.staffingWeeks" class="textCenter" ng-click="orderResourcesBy(week.dateString)" ng-class="{'sort-asc': viewState.orderResources === week.dateString && !viewState.orderResourcesDescending, 'sort-desc': viewState.orderResources === week.dateString && viewState.orderResourcesDescending}">
                                         {{ ::week.caption }}
                                     </th>
                                 </tr>
-                                <tr ng-repeat-start="resource in data.Resources" ng-class="buildResourceRowClasses(resource)" ng-click="showOpportunities=!showOpportunities">
+                                <tr ng-repeat-start="resource in data.Resources | orderBy : getResourceOrderPredicate : viewState.orderResourcesDescending" ng-class="buildResourceRowClasses(resource)" ng-click="showOpportunities=!showOpportunities">
                                     <td class="padding10left">{{ ::resource.ResourceName }}</td>
                                     <td>{{ ::resource.Title }}</td>
                                     <td style="border-right:1px solid #ffffff !important;">{{ ::resource.AccountName}}</td>

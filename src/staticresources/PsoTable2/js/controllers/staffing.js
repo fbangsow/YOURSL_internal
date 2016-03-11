@@ -143,17 +143,21 @@ PsoTable2.ng.factory('PsoTable2StaffingHelper', ['datepicker', function (datepic
 		/* float values including decimals are not converted to float, but string */
 		if (resource.SoldDays) {
 			resource.SoldDays = parseFloat((resource.SoldDays + "").replace(',', '.'));
+			resource.UnplannedDays = resource.SoldDays;
 
 			if (project) {
 				project.SoldDays += resource.SoldDays;
+				project.UnplannedDays += resource.UnplannedDays;
 			}
 		}
 
 		if (resource.PlannedDays) {
 			resource.PlannedDays = parseFloat((resource.PlannedDays + "").replace(',', '.'));
+			resource.UnplannedDays -= resource.PlannedDays;
 
 			if (project) {
 				project.PlannedDays += resource.PlannedDays;
+				project.UnplannedDays -= resource.PlannedDays;
 			}
 		}
 
@@ -321,7 +325,11 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', '
 		staffingMonths: [],
 		staffingWeeks: [],
 		staffingDays: [],
-		projectHealthReasons: {}
+		projectHealthReasons: {},
+		orderProjectResources: 'ResourceName',
+		orderProjectResourcesDescending: false,
+		orderResources: 'ResourceName',
+		orderResourcesDescending: false
 	};
 
 	$scope.data = {};
@@ -333,6 +341,10 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', '
 
 		if (!leaveCurrentValues || !context.PlannedDays) {
 			context.PlannedDays = 0;
+		}
+
+		if (!leaveCurrentValues || !context.UnplannedDays) {
+			context.UnplannedDays = 0;
 		}
 
 		if (!leaveCurrentValues || !context.BookedHoursByDay) {
@@ -598,6 +610,24 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', '
 				alert('An error occured during the allocation update:' + "\n" + response.message + "\n" + "Your changes were rolled back. Please reload the page if the error remains.");
 			}
 		});
+	};
+
+	$scope.staffing.orderResourcesBy = function (column) {
+		if ($scope.viewState.orderResources === column) {
+			$scope.viewState.orderResourcesDescending = !$scope.viewState.orderResourcesDescending;
+		} else {
+			$scope.viewState.orderResources = column;
+			$scope.viewState.orderResourcesDescending = false;
+		}
+	};
+
+	$scope.staffing.orderProjectResourcesBy = function (column) {
+		if ($scope.viewState.orderProjectResources === column) {
+			$scope.viewState.orderProjectResourcesDescending = !$scope.viewState.orderProjectResourcesDescending;
+		} else {
+			$scope.viewState.orderProjectResources = column;
+			$scope.viewState.orderProjectResourcesDescending = false;
+		}
 	};
 
 	$scope.buildResourceAllocationCellClasses = function (resource, day, allocation) {
