@@ -10,7 +10,9 @@ PsoTable2.ng.controller('PsoTable2Utilization', ['$scope', '$interval', 'PsoTabl
 		staffingMonths: [],
 		staffingWeeks: [],
 		staffingDays: [],
-		projectHealthReasons: {}
+		projectHealthReasons: {},
+		orderResources: 'ResourceName',
+		orderResourcesDescending: false
 	};
 
 	$scope.data = {};
@@ -76,6 +78,33 @@ PsoTable2.ng.controller('PsoTable2Utilization', ['$scope', '$interval', 'PsoTabl
 	$scope.buildDayHeaderClasses = staffingHelper.buildDayHeaderClasses;
 	$scope.buildResourceRowClasses = staffingHelper.buildResourceRowClasses;
 
+	$scope.orderResourcesBy = function (column) {
+		if ($scope.viewState.orderResources === column) {
+			$scope.viewState.orderResourcesDescending = !$scope.viewState.orderResourcesDescending;
+		} else {
+			$scope.viewState.orderResources = column;
+			$scope.viewState.orderResourcesDescending = false;
+		}
+	};
+
+	$scope.getResourceOrderPredicate = function (resource) {
+		var column = $scope.viewState.orderResources;
+
+		if (resource[column]) {
+			return resource[column];
+		}
+
+		if (/-saldo-/.test(column)) {
+			return resource.Saldos[column] || 0;
+		}
+
+		if (/-utilization-/.test(column)) {
+			return (resource.Saldos[column] || {value:0}).value || 0;
+		}
+
+		return 0;
+	};
+
 	/* functions for the staffing table */
 	$scope.$on('updateStaffing', function (event, selectedOpportunities, selectedResources, startMonth) {
 		if ($scope.$parent.status) {
@@ -137,12 +166,14 @@ PsoTable2.ng.controller('PsoTable2Utilization', ['$scope', '$interval', 'PsoTabl
 				createWeekStatsColumn(month, month.weeks[month.weeks.length - 1]);
 
 				$scope.viewState.staffingWeeks.push({
+					dateString: 'month-utilization-' + month.number,
 					dayCount: 1,
 					caption: 'Total',
 					isSaldo: true
 				});
 
 				$scope.viewState.staffingWeeks.push({
+					dateString: 'month-saldo-' + month.number,
 					dayCount: 1,
 					caption: 'Remaining',
 					isSaldo: true
@@ -208,8 +239,9 @@ PsoTable2.ng.controller('PsoTable2Utilization', ['$scope', '$interval', 'PsoTabl
 
 				if (!lastWeek || lastWeek.number !== dateInfo.week) {
 					lastWeek = {
+						dateString: 'week-utilization-' + dateInfo.month + '-' + dateInfo.week,
 						number: dateInfo.week,
-						month: lastMonth.number,
+						month: dateInfo.month,
 						days: [],
 						dayCount: 0,
 						workDayCount: 0

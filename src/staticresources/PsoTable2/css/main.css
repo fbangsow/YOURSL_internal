@@ -301,6 +301,14 @@ span.ResourceInfo {
 	padding-left: 10px !important;
 }
 
+#pso-table .sort-asc::after {
+	content: "▲";
+}
+
+#pso-table .sort-desc::after {
+	content: "▼";
+}
+
 #pso-table .slds-page-header .ui-widget-header {
 	border: 0px;
 	background: none;
@@ -700,12 +708,11 @@ td.saldo span {
 	position: relative;
 }
 
-[data-tooltip]::after {
+[data-tooltip]::before {
 	content: attr(data-tooltip);
 	opacity: 0;
 	pointer-events: none;
 	display: block;
-	position: absolute;
 	z-index: 1000;
 	border: 1px solid #d8dde6;
 	border-radius: 0.25rem;
@@ -721,7 +728,7 @@ td.saldo span {
 	transition: opacity .4s linear;
 }
 
-[data-tooltip]:hover::after {
+[data-tooltip]:hover::before {
 	opacity: 1;
 }
 
