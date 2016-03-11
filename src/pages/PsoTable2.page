@@ -392,7 +392,7 @@
                                     </td>
                                 </tr>
                                 <tr><td colspan="5" class="shadow"></td></tr>
-                                <tr ng-repeat="resource in project.Resources | orderBy : viewState.orderProjectResources : viewState.orderProjectResourcesDescending track by resource.ContactId" ng-class="buildResourceRowClasses(resource)" class="slds-text-body--small">
+                                <tr ng-repeat="resource in project.Resources | orderBy : viewState.orderProjectResources : viewState.orderProjectResourcesDescending" ng-class="buildResourceRowClasses(resource)" class="slds-text-body--small">
                                     <td class="fixtd">
                                         <a href="/{{ ::resource.ContactId }}" target="_blank">{{ ::resource.ResourceName }}</a>
                                     </td>
@@ -482,7 +482,7 @@
                                     </td>
                                 </tr>
                                 <tr><td colspan="{{ viewState.staffingColumns }}" class="shadow"></td></tr>
-                                <tr ng-repeat="resource in project.Resources | orderBy : viewState.orderProjectResources : viewState.orderProjectResourcesDescending track by resource.ContactId" ng-class="buildResourceRowClasses(resource)" class="slds-text-body--small schedule">
+                                <tr ng-repeat="resource in project.Resources | orderBy : viewState.orderProjectResources : viewState.orderProjectResourcesDescending" ng-class="buildResourceRowClasses(resource)" class="slds-text-body--small schedule">
                                     <td ng-repeat="day in viewState.staffingDays track by day.dateString" ng-class="buildResourceAllocationCellClasses(resource, day, resource.StaffingByDay[day.dateString])" class="textCenter">
                                         <span ng-if="day.isMonthSaldo">
                                             {{ ((resource.Saldos[day.dateString] || 0) / 8) | number : 2 }}
