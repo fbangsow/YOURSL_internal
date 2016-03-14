@@ -66,7 +66,7 @@
                                                                         <div class="slds-tile">
                                                                             <p class="slds-text-heading--small">Select opportunities:</p>
                                                                             <div class="slds-tile__detail slds-text-body--small">
-                                                                                <label class="slds-text-body--small">related Opportunities: <input type="checkbox" class="checkbox" ng-model="viewState.selectRelatedOpportunities" ng-click="filter.opportunities.selectRelatedOpportunities()"/></label>
+                                                                                <label class="slds-text-body--small">related opportunities: <input type="checkbox" class="checkbox" ng-model="viewState.selectRelatedOpportunities" ng-click="filter.opportunities.selectRelatedOpportunities()"/></label>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -118,7 +118,9 @@
                                                                         <div class="slds-tile">
                                                                             <p class="slds-text-heading--small">Select Resources:</p>
                                                                             <div class="slds-tile__detail slds-text-body--small">
-                                                                                <label class="slds-text-body--small">related Resources: <input type="checkbox" class="checkbox" ng-model="viewState.selectRelatedResources" ng-click="filter.resources.selectRelatedResources()"/></label>
+                                                                                <label class="slds-text-body--small">related resources: <input type="checkbox" class="checkbox" ng-model="viewState.selectRelatedResources" ng-click="filter.resources.selectRelatedResources()"/></label>
+                                                                                <br />
+                                                                                <label class="slds-text-body--small">hide resources without budget: <input type="checkbox" class="checkbox" ng-model="viewState.hideNoBudgetResources" /></label>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -392,7 +394,7 @@
                                     </td>
                                 </tr>
                                 <tr><td colspan="5" class="shadow"></td></tr>
-                                <tr ng-repeat="resource in project.Resources | orderBy : viewState.orderProjectResources : viewState.orderProjectResourcesDescending" ng-class="buildResourceRowClasses(resource)" class="slds-text-body--small">
+                                <tr ng-repeat="resource in project.Resources | filter : viewState.filterProjectResource | orderBy : viewState.orderProjectResources : viewState.orderProjectResourcesDescending" ng-class="buildResourceRowClasses(resource)" class="slds-text-body--small">
                                     <td class="fixtd">
                                         <a href="/{{ ::resource.ContactId }}" target="_blank">{{ ::resource.ResourceName }}</a>
                                     </td>
@@ -482,7 +484,7 @@
                                     </td>
                                 </tr>
                                 <tr><td colspan="{{ viewState.staffingColumns }}" class="shadow"></td></tr>
-                                <tr ng-repeat="resource in project.Resources | orderBy : viewState.orderProjectResources : viewState.orderProjectResourcesDescending" ng-class="buildResourceRowClasses(resource)" class="slds-text-body--small schedule">
+                                <tr ng-repeat="resource in project.Resources | filter : viewState.filterProjectResource | orderBy : viewState.orderProjectResources : viewState.orderProjectResourcesDescending" ng-class="buildResourceRowClasses(resource)" class="slds-text-body--small schedule">
                                     <td ng-repeat="day in viewState.staffingDays track by day.dateString" ng-class="buildResourceAllocationCellClasses(resource, day, resource.StaffingByDay[day.dateString])" class="textCenter">
                                         <span ng-if="day.isMonthSaldo">
                                             {{ ((resource.Saldos[day.dateString] || 0) / 8) | number : 2 }}

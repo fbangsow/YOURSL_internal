@@ -31,6 +31,7 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'alert', 'clientCa
 
 		selectRelatedResources: storedFilter.selectRelatedResources !== false,
 		selectRelatedOpportunities: !!storedFilter.selectRelatedOpportunities,
+		hideNoBudgetResources: !!storedFilter.hideNoBudgetResources,
 
 		filterVisible: !hadStoredFilter,
 		isAllowedToRunScheduler: false
@@ -506,14 +507,22 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'alert', 'clientCa
 			selectedResources: $scope.viewState.selectedResources,
 			resourcesFilterText: $scope.viewState.resourcesFilterText,
 			selectRelatedResources: $scope.viewState.selectRelatedResources,
-			selectRelatedOpportunities: $scope.viewState.selectRelatedOpportunities
+			selectRelatedOpportunities: $scope.viewState.selectRelatedOpportunities,
+			hideNoBudgetResources: $scope.viewState.hideNoBudgetResources
 		}));
 
 		$scope.$broadcast(
 			'updateStaffing',
-			$scope.viewState.selectRelatedOpportunities ? ['__related'] : $scope.viewState.selectedOpportunities,
-			$scope.viewState.selectRelatedResources ? ['__related'] : $scope.viewState.selectedResources,
-			$scope.viewState.startMonth
+			{
+				'opportunities': $scope.viewState.selectRelatedOpportunities ? ['__related'] : $scope.viewState.selectedOpportunities,
+				'resources': $scope.viewState.selectRelatedResources ? ['__related'] : $scope.viewState.selectedResources,
+				'startMonth': $scope.viewState.startMonth,
+				'options': {
+					'selectRelatedResources' : $scope.viewState.selectRelatedResources,
+					'selectRelatedOpportunities': $scope.viewState.selectRelatedOpportunities,
+					'hideNoBudgetResources': $scope.viewState.hideNoBudgetResources
+				}
+			}
 		);
 	};
 
