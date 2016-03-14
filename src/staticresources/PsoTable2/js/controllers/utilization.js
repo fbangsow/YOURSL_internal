@@ -307,8 +307,7 @@ PsoTable2.ng.controller('PsoTable2Utilization', ['$scope', '$interval', 'PsoTabl
 						for (var r = 0; r < project.Resources.length; r++) {
 							var resource = project.Resources[r];
 
-							if ($scope.data.ResourcesByContactId[resource.ContactId]) {
-								console.warn('Project resource not found in overview', resource, project, customer);
+							if (!resource.ContactId) {
 								continue;
 							}
 
