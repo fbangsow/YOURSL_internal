@@ -736,10 +736,10 @@ td.saldo span {
 	border-bottom: 1px solid #cfd7e6 !important;
 }
 
-#connection-status:hover:after {
+#connection-status:hover:before {
 	bottom: auto;
-	top: 36px;
+	top: 29px;
 	left: -1px;
-	width: 161px;
-	min-width: 161px;
+	width: 139px;
+	min-width: 139px;
 }
