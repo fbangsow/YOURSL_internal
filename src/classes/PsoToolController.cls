@@ -102,7 +102,7 @@ public without sharing class PsoToolController{
 
     private void getOpportunities(){
         Opportunities = [SELECT Id, Name, Account.Name, Account.Id, Projektleiter_YOUR_SL__r.Name, Projektstatus__c,
-                                    (SELECT Contact__r.Name, Contact__r.Id, Contact__r.Inactive__c, Contact__r.Account.Name, Contact__r.Title, Contact__r.FirstName, Contact__r.LastName, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
+                                    (SELECT Contact__r.Name, Contact__r.Id, Contact__r.Inactive__c, Contact__r.PSO_Member__c, Contact__r.Account.Name, Contact__r.Title, Contact__r.FirstName, Contact__r.LastName, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
                                         FROM OpportunityLineItems
                                         WHERE Contact__r.LastName != 'All'
                                         AND Unit__c = 'Manntag(e)')
@@ -187,13 +187,13 @@ public without sharing class PsoToolController{
 
     private void buildContactIdsToContactsMap(){
         if((ShowAllContacts && !ShowAllOpportunities && OpportunitiesToShow.isEmpty()) || !ContactsToShow.isEmpty()){
-            for(Contact single_contact: [SELECT Id, Name, FirstName, LastName, Title, Account.Name FROM Contact WHERE Inactive__c = false AND LastName != 'All' AND RecordTypeId = '012D0000000QokP'])
+            for(Contact single_contact: [SELECT Id, Name, FirstName, LastName, Title, Account.Name FROM Contact WHERE Inactive__c = false AND LastName != 'All' AND RecordTypeId = '012D0000000QokP' AND PSO_Member__c = true])
                 ContactIdsToContacts.put(single_contact.Id, single_contact);
         }
         else{
             for(Opportunity opp: Opportunities)
                 for(OpportunityLineItem line_item: opp.OpportunityLineItems)
-                    if(line_item.Contact__r != null && line_item.Contact__r.Inactive__c == false)
+                    if(line_item.Contact__r != null && line_item.Contact__r.Inactive__c == false && line_item.Contact__r.PSO_Member__c == true)
                         ContactIdsToContacts.put(line_item.Contact__r.Id, line_item.Contact__r);
         }
     }
