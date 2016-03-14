@@ -313,7 +313,7 @@ PsoTable2.ng.factory('PsoTable2StaffingHelper', ['datepicker', function (datepic
 	return helper;
 }]);
 
-PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', 'PsoTable2Endpoint', 'PsoTable2StaffingHelper', 'datepicker', 'alert', function ($scope, $window, $timeout, sfEndpoint, staffingHelper, datepicker, alert) {
+PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', 'PsoTable2Endpoint', 'PsoTable2StaffingHelper', 'datepicker', 'alert', 'confirm', function ($scope, $window, $timeout, sfEndpoint, staffingHelper, datepicker, alert, confirm) {
 	console.log('init staffing controller');
 
 	$scope.viewState = {
@@ -450,7 +450,7 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', '
 		$scope.staffing.updateAllocation(project, resource, allocationDate, allocation);
 	};
 
-	$scope.staffing.updateAllocation = function (project, resource, allocationDate, allocation, silent) {
+	$scope.staffing.updateAllocation = function (project, resource, allocationDate, allocation, silent, exceedConfirmed) {
 		allocation = allocation || {};
 
 		var isNewAllocation = !allocation.Day;
@@ -488,6 +488,7 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', '
 		var totalDayInfo = totalResourceInfo ? totalResourceInfo.StaffingByDay[dateString] : null;
 		var hoursOff = totalDayInfo ? totalDayInfo.HoursOff : 0.0;
 		var currentTotalExcludingCurrentHours = (totalDayInfo ? totalDayInfo.Staff : 0.0) + hoursOff - oldHours;
+		var newTotal = currentTotalExcludingCurrentHours + requestedHours;
 
 		console.log('checking allocation data for update');
 		/*console.log(project);
@@ -497,32 +498,66 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', '
 
 		delta = requestedHours - oldHours;
 
-		if (currentTotalExcludingCurrentHours + requestedHours > 8) {
-			if (currentTotalExcludingCurrentHours + requestedHours > 12) {
+		if (newTotal > 8 && requestedHours > 0) {
+			if (newTotal > 12) {
 				if (!silent) {
 					allocation.currentBooking = oldHours;
 
+					var remainingHours = Math.max(12 - currentTotalExcludingCurrentHours, 0);
+
+					var message = 'This allocation will exceed the maximum allowed 12 hours per day for a resource. You can allocate ' + remainingHours + ' hours for this project without exceeding 12 hours.';
+
 					if (hoursOff) {
-						alert('This allocation will exceed the maximum allowed 12 hours per day for a resource. Please be aware of the existing PTO hours.');
-					} else {
-						alert('This allocation will exceed the maximum allowed 12 hours per day for a resource.')
+						message += 'Please be aware of the existing PTO hours.';
 					}
+
+					alert(message);
 				}
 
 				return;
 			}
 
-			if (!silent) {
-				var remainingHours = Math.max(8 - currentTotalExcludingCurrentHours, 0);
+			if (!exceedConfirmed) {
+				if (!silent) {
+					var remainingHours = Math.max(8 - currentTotalExcludingCurrentHours, 0);
+					var message = 'This allocation will exceed 8 hours per day (' + newTotal + 'h) for this resource. You can allocate ' + remainingHours + ' hours for this project without exceeding 8 hours.';
 
-				if (currentTotalExcludingCurrentHours + oldHours <= 8) {
-					alert('This allocation will exceed 8 hours per day for this resource. You can allocate ' + remainingHours + ' hours for this project without exceeding 8 hours.');
-				} else {
-					alert('This allocation stills exceeds 8 hours per day for this resource. You can allocate ' + remainingHours + ' hours for this project without exceeding 8 hours.');
+					if (currentTotalExcludingCurrentHours + oldHours > 8) {
+						message = 'This allocation stills exceeds 8 hours per day (' + newTotal + 'h) for this resource. You can allocate ' + remainingHours + ' hours for this project without exceeding 8 hours.';
+					}
+
+					var buttons = {};
+
+					var useRequestedHoursButtonCaption = 'Use ' + requestedHours + 'h';
+					buttons[useRequestedHoursButtonCaption] = true;
+
+					var useRemainingHoursButtonCaption = '';
+
+					if (remainingHours !== oldHours) {
+						useRemainingHoursButtonCaption = 'Use ' + remainingHours + 'h';
+						buttons[useRemainingHoursButtonCaption] = true;
+					}
+
+					buttons['Cancel'] = false;
+
+					confirm(message, buttons).then(function (button) {
+						switch (button) {
+							case useRequestedHoursButtonCaption:
+								$scope.staffing.updateAllocation(project, resource, allocationDate, allocation, false, true);
+							break;
+							case useRemainingHoursButtonCaption:
+								allocation.currentBooking = remainingHours;
+								$scope.staffing.updateAllocation(project, resource, allocationDate, allocation, false, true);
+							break;
+						}
+					}, function (button) {
+						/* user cancelled the action */
+						allocation.currentBooking = oldHours;
+					});
 				}
-			}
 
-			/* do not return here, exceeding 8 hours is allowed. */
+				return;
+			}
 		}
 
 		var monthKey = datepicker.formatDate('m', allocationDate);
