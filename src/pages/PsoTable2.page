@@ -334,7 +334,7 @@
                                 <tr class="tableheader">
                                     <th colspan="5" class="tableheaderBorder">&nbsp;</th>
                                 </tr>
-                                <tr class="tableheader">
+                                <tr class="tableheader" ng-if="data.Customers.length">
                                     <th colspan="5">
                                         <label class="slds-text-body--small">
                                             <input type="checkbox" class="checkbox" ng-model="viewState.filter.hideNoBudgetResources" />
@@ -342,7 +342,7 @@
                                         </label>
                                     </th>
                                 </tr>
-                                <tr class="tableheader">
+                                <tr class="tableheader" ng-if="data.Customers.length">
                                     <th class="padding10left" ng-click="staffing.orderProjectResourcesBy('ResourceName')" ng-class="{'sort-asc':viewState.orderProjectResources==='ResourceName' && !viewState.orderProjectResourcesDescending, 'sort-desc':viewState.orderProjectResources==='ResourceName' && viewState.orderProjectResourcesDescending}">Resource</th>
                                     <th ng-click="staffing.orderProjectResourcesBy('Role')" ng-class="{'sort-asc':viewState.orderProjectResources==='Role' && !viewState.orderProjectResourcesDescending, 'sort-desc':viewState.orderProjectResources==='Role' && viewState.orderProjectResourcesDescending}">Role</th>
                                     <th ng-click="staffing.orderProjectResourcesBy('SoldDays')" ng-class="{'sort-asc':viewState.orderProjectResources==='SoldDays' && !viewState.orderProjectResourcesDescending, 'sort-desc':viewState.orderProjectResources==='SoldDays' && viewState.orderProjectResourcesDescending}" data-tooltip="Sold days">SD</th>
@@ -429,9 +429,9 @@
                                     </td>
                                 </tr>
                             </tbody>
-                            <tbody class="Resources" ng-if="data.Resources.length && ($parent.viewState.selectRelatedResources || $parent.viewState.selectedResources.length)">
+                            <tbody class="Resources" ng-class="{'single-view': !data.Customers.length}" ng-if="data.Resources.length && ($parent.viewState.selectRelatedResources || $parent.viewState.selectedResources.length)">
                                 <tr class="tableheader">
-                                    <th colspan="5" class="firsttableheader">
+                                    <th colspan="5">
                                         <h4>Resource availability</h4>
                                     </th>
                                 </tr>
@@ -550,16 +550,16 @@
                                     </td>
                                 </tr>
                             </tbody>
-                            <tbody class="Resources" ng-if="data.Resources.length && ($parent.viewState.selectRelatedResources || $parent.viewState.selectedResources.length)">
-                                <tr class="tableheader">
+                            <tbody class="Resources" ng-class="{'single-view': !data.Customers.length}" ng-if="data.Resources.length && ($parent.viewState.selectRelatedResources || $parent.viewState.selectedResources.length)">
+                                <tr class="tableheader" ng-if="data.Customers.length">
                                     <th colspan="{{ viewState.staffingColumns }}">
-                                        <!-- Resource availability -->
+                                        <!-- Resource availability in combined (projects + availability) view -->
                                         &nbsp;
                                     </th>
                                 </tr>
-                                <tr class="tableheader">
+                                <tr class="tableheader" ng-if="data.Customers.length">
                                     <th colspan="{{ viewState.staffingColumns }}">
-                                        <!-- Column captions -->
+                                        <!-- Column captions in combined (projects + availability) view -->
                                         &nbsp;
                                     </th>
                                 </tr>

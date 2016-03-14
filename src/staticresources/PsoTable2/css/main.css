@@ -98,10 +98,6 @@ td:not(.shadow) {
 	border-top: 2px solid #ccc
 }
 
-.firsttableheader {
-	border-right: 1px solid #cfd7e6 !important;
-}
-
 #captions tr.slds-text-body--small {
 	height: 35px;
 }
@@ -614,7 +610,7 @@ col.hover {
 	background-image: none;
 }
 
-tbody.Resources:before {
+tbody.Resources:not(.single-view):before {
 	content: '';
 	display: block;
 	height: 30px;
