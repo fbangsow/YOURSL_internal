@@ -329,7 +329,19 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', '
 		orderProjectResources: 'ResourceName',
 		orderProjectResourcesDescending: false,
 		orderResources: 'ResourceName',
-		orderResourcesDescending: false
+		orderResourcesDescending: false,
+		filter: {
+			hideNoBudgetResources: false
+		},
+		filterProjectResource: function (resource) {
+			if ($scope.viewState.filter.hideNoBudgetResources) {
+				if (!resource.MonthToLimitMap || $.isEmptyObject(resource.MonthToLimitMap)) {
+					return false;
+				}
+			}
+
+			return true;
+		}
 	};
 
 	$scope.data = {};
@@ -743,13 +755,21 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', '
 	};
 
 	/* functions for the staffing table */
-	$scope.$on('updateStaffing', function (event, selectedOpportunities, selectedResources, startMonth) {
+	$scope.$on('updateStaffing', function (event, filter) {
 		if ($scope.$parent.status) {
 			$scope.$parent.status.loading = true;
 			$scope.$parent.status.loaded = false;
 		}
 
-		$scope.$emit('loadStaffingData', selectedOpportunities, selectedResources, startMonth);
+		filter.options = filter.options || {};
+
+		console.log('update staffing with filter', filter);
+
+		$scope.viewState.filter.hideNoBudgetResources = !!filter.options.hideNoBudgetResources;
+
+		var selectedOpportunities = filter.opportunities || [];
+		var selectedResources = filter.resources || [];
+		var startMonth = filter.startMonth || new Date();
 
 		sfEndpoint.getProjectStaffing(selectedOpportunities, selectedResources, startMonth).then(function (data) {
 			console.log('received data for project staffing:', data);

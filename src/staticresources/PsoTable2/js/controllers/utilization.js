@@ -106,15 +106,17 @@ PsoTable2.ng.controller('PsoTable2Utilization', ['$scope', '$interval', 'PsoTabl
 	};
 
 	/* functions for the staffing table */
-	$scope.$on('updateStaffing', function (event, selectedOpportunities, selectedResources, startMonth) {
+	$scope.$on('updateStaffing', function (event, filter) {
 		if ($scope.$parent.status) {
 			$scope.$parent.status.loading = true;
 			$scope.$parent.status.loaded = false;
 		}
 
-		selectedOpportunities = ['__related'];
+		filter.opportunities = ['__related'];
 
-		$scope.$emit('loadStaffingData', selectedOpportunities, selectedResources, startMonth);
+		var selectedOpportunities = filter.opportunities || [];
+		var selectedResources = filter.resources || [];
+		var startMonth = filter.startMonth || new Date();
 
 		sfEndpoint.getProjectStaffing(selectedOpportunities, selectedResources, startMonth).then(function (data) {
 			console.log('received data for project utilization:', data);
