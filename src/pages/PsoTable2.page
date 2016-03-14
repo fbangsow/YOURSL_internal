@@ -119,8 +119,6 @@
                                                                             <p class="slds-text-heading--small">Select Resources:</p>
                                                                             <div class="slds-tile__detail slds-text-body--small">
                                                                                 <label class="slds-text-body--small">related resources: <input type="checkbox" class="checkbox" ng-model="viewState.selectRelatedResources" ng-click="filter.resources.selectRelatedResources()"/></label>
-                                                                                <br />
-                                                                                <label class="slds-text-body--small">hide resources without budget: <input type="checkbox" class="checkbox" ng-model="viewState.hideNoBudgetResources" /></label>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -337,7 +335,12 @@
                                     <th colspan="5" class="tableheaderBorder">&nbsp;</th>
                                 </tr>
                                 <tr class="tableheader">
-                                    <th colspan="5">&nbsp;</th>
+                                    <th colspan="5">
+                                        <label class="slds-text-body--small">
+                                            <input type="checkbox" class="checkbox" ng-model="viewState.filter.hideNoBudgetResources" />
+                                            hide resources without budget
+                                        </label>
+                                    </th>
                                 </tr>
                                 <tr class="tableheader">
                                     <th class="padding10left" ng-click="staffing.orderProjectResourcesBy('ResourceName')" ng-class="{'sort-asc':viewState.orderProjectResources==='ResourceName' && !viewState.orderProjectResourcesDescending, 'sort-desc':viewState.orderProjectResources==='ResourceName' && viewState.orderProjectResourcesDescending}">Resource</th>

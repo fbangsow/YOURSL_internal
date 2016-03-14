@@ -31,7 +31,6 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'alert', 'clientCa
 
 		selectRelatedResources: storedFilter.selectRelatedResources !== false,
 		selectRelatedOpportunities: !!storedFilter.selectRelatedOpportunities,
-		hideNoBudgetResources: !!storedFilter.hideNoBudgetResources,
 
 		filterVisible: !hadStoredFilter,
 		isAllowedToRunScheduler: false
@@ -507,8 +506,7 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'alert', 'clientCa
 			selectedResources: $scope.viewState.selectedResources,
 			resourcesFilterText: $scope.viewState.resourcesFilterText,
 			selectRelatedResources: $scope.viewState.selectRelatedResources,
-			selectRelatedOpportunities: $scope.viewState.selectRelatedOpportunities,
-			hideNoBudgetResources: $scope.viewState.hideNoBudgetResources
+			selectRelatedOpportunities: $scope.viewState.selectRelatedOpportunities
 		}));
 
 		$scope.$broadcast(
@@ -519,8 +517,7 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'alert', 'clientCa
 				'startMonth': $scope.viewState.startMonth,
 				'options': {
 					'selectRelatedResources' : $scope.viewState.selectRelatedResources,
-					'selectRelatedOpportunities': $scope.viewState.selectRelatedOpportunities,
-					'hideNoBudgetResources': $scope.viewState.hideNoBudgetResources
+					'selectRelatedOpportunities': $scope.viewState.selectRelatedOpportunities
 				}
 			}
 		);

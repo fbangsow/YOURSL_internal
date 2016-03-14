@@ -800,8 +800,6 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', '
 
 		console.log('update staffing with filter', filter);
 
-		$scope.viewState.filter.hideNoBudgetResources = !!filter.options.hideNoBudgetResources;
-
 		var selectedOpportunities = filter.opportunities || [];
 		var selectedResources = filter.resources || [];
 		var startMonth = filter.startMonth || new Date();
