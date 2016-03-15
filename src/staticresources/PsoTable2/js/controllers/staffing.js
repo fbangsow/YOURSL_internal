@@ -690,6 +690,21 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', '
 		});
 	};
 
+	$scope.staffing.getInputTooltip = function (resource, day) {
+		var dateString = day.dateString;
+
+		var totalResourceInfo = $scope.data.ResourcesByContactId[resource.ContactId];
+		var totalDayInfo = totalResourceInfo ? totalResourceInfo.StaffingByDay[dateString] : null;
+		var hoursOff = totalDayInfo ? totalDayInfo.HoursOff : 0.0;
+		var currentHours = resource.StaffingByDay[dateString] ? (resource.StaffingByDay[dateString].currentBooking || 0.0) : 0.0;
+		var totalHours = 8 - hoursOff;
+		var currentTotalExcludingCurrentHours = (totalDayInfo ? totalDayInfo.Staff : 0.0) + hoursOff - currentHours;
+
+		var remainingHours = Math.max(totalHours - currentTotalExcludingCurrentHours, 0);
+
+		return remainingHours + ' of ' + totalHours + 'h left';
+	};
+
 	$scope.staffing.orderResourcesBy = function (column) {
 		if ($scope.viewState.orderResources === column) {
 			$scope.viewState.orderResourcesDescending = !$scope.viewState.orderResourcesDescending;
