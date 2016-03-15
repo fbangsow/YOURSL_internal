@@ -275,8 +275,12 @@
                                             {{ ((resource.Saldos[day.dateString] || 0) / 8) | number : 2 }}
                                         </span>
 
-                                        <span ng-if="day.isUtilization" data-tooltip="{{ resource.Saldos[day.dateString].booked || 0 }} / {{ resource.Saldos[day.dateString].budget - resource.Saldos[day.dateString].holiday }}" class="tooltip">
+                                        <span ng-if="day.isUtilization && (!resource.Saldos[day.dateString].holiday || resource.Saldos[day.dateString].holiday !== resource.Saldos[day.dateString].budget)" data-tooltip="{{ ((resource.Saldos[day.dateString].booked || 0) / 8) | number : 2 }} / ({{ (resource.Saldos[day.dateString].budget / 8) | number : 2 }} - {{ (resource.Saldos[day.dateString].holiday / 8) | number : 2 }})" class="tooltip">
                                             {{ ((resource.Saldos[day.dateString].value || 0) * 100) | number : 1 }}%
+                                        </span>
+
+                                        <span ng-if="day.isUtilization && resource.Saldos[day.dateString].holiday && resource.Saldos[day.dateString].holiday === resource.Saldos[day.dateString].budget" data-tooltip="{{ ((resource.Saldos[day.dateString].booked || 0) / 8) | number : 2 }} / ({{ (resource.Saldos[day.dateString].budget / 8) | number : 2 }} - {{ (resource.Saldos[day.dateString].holiday / 8) | number : 2 }})" class="tooltip">
+                                            H
                                         </span>
                                     </td>
                                 </tr>

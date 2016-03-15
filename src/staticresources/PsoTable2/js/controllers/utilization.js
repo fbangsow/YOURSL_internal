@@ -62,6 +62,8 @@ PsoTable2.ng.controller('PsoTable2Utilization', ['$scope', '$interval', 'PsoTabl
 						classes['low-utilization'] = statsValue > 0.4 && statsValue < 0.6;
 						classes['neutral-utilization'] = statsValue >= 0.6 && statsValue < 0.8;
 						classes['high-utilization'] = statsValue >= 0.8;
+
+						classes['full-holiday'] = stats.holiday && stats.budget === stats.holiday;
 					break;
 					case 'saldo':
 						classes['negative-saldo'] = stats && stats < 0;
