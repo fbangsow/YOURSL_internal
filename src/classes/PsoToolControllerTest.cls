@@ -215,7 +215,7 @@ private class PsoToolControllerTest {
             setup_data.createTestData();
             new_instance.queryData();
             Opportunity opp = [SELECT Id, Name, Account.Name, Account.Id, Projektleiter_YOUR_SL__r.Name, Projektstatus__c,
-                                    (SELECT Contact__r.Name, Contact__r.Inactive__c, Contact__r.FirstName, Contact__r.LastName, Contact__r.Id, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
+                                    (SELECT Contact__r.Name, Contact__r.Inactive__c, Contact__r.PSO_Member__c, Contact__r.FirstName, Contact__r.LastName, Contact__r.Id, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
                                         FROM OpportunityLineItems)
                                         FROM Opportunity
                                         WHERE Id =: setup_data.FirstOpportunity.Id];
@@ -240,7 +240,7 @@ private class PsoToolControllerTest {
             setup_data.createTestData();
             new_instance.queryData();
             Opportunity opp = [SELECT Id, Name, Account.Name, Account.Id, Projektleiter_YOUR_SL__r.Name,
-                                    (SELECT Contact__r.Inactive__c, Contact__r.Name, Contact__r.LastName, Contact__r.FirstName, Contact__r.Id, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
+                                    (SELECT Contact__r.Inactive__c, Contact__r.PSO_Member__c, Contact__r.Name, Contact__r.LastName, Contact__r.FirstName, Contact__r.Id, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
                                         FROM OpportunityLineItems)
                                         FROM Opportunity
                                         WHERE Id =: setup_data.SecondOpportunity.Id];
@@ -386,7 +386,7 @@ private class PsoToolControllerTest {
             setup_data.createActualStatisticalData();
             new_instance.queryData();
             Opportunity opp = [SELECT Id, Name, Account.Name, Account.Id, Projektleiter_YOUR_SL__r.Name,
-                        (SELECT Contact__r.Inactive__c, Contact__r.Name, Contact__r.FirstName, Contact__r.LastName, Contact__r.Id, Contact__r.Account.Name, Contact__r.Title, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
+                        (SELECT Contact__r.Inactive__c, Contact__r.PSO_Member__c, Contact__r.Name, Contact__r.FirstName, Contact__r.LastName, Contact__r.Id, Contact__r.Account.Name, Contact__r.Title, Quantity, Product2.Name, ServiceDate, UnitPrice, LastModifiedDate
                             FROM OpportunityLineItems)
                             FROM Opportunity
                             WHERE Id =: setup_data.SecondOpportunity.Id];

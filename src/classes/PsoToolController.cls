@@ -280,7 +280,7 @@ public without sharing class PsoToolController{
     @TestVisible private List<Resource> getResources(Opportunity opp){
         Map<String, Resource> resources = new Map<String, Resource> ();
         for(OpportunityLineItem line_item: opp.OpportunityLineItems){
-            if((!ContactsToShow.isEmpty() && !ContactsToShow.contains(line_item.Contact__r.Id)) ||  line_item.Contact__r.Inactive__c == true)
+            if((!ContactsToShow.isEmpty() && !ContactsToShow.contains(line_item.Contact__r.Id)) || line_item.Contact__r.Inactive__c || !line_item.Contact__r.PSO_Member__c)
                 continue;
             String key_for_map = line_item.Contact__r.Name + line_item.Product2.Name;
             if(!resources.containsKey(key_for_map)){
