@@ -503,15 +503,45 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', '
 				if (!silent) {
 					allocation.currentBooking = oldHours;
 
-					var remainingHours = Math.max(12 - currentTotalExcludingCurrentHours, 0);
+					var remainingHours12 = Math.max(12 - currentTotalExcludingCurrentHours, 0);
+					var remainingHours8 = Math.max(8 - currentTotalExcludingCurrentHours, 0);
 
-					var message = 'This allocation will exceed the maximum allowed 12 hours per day for a resource. You can allocate ' + remainingHours + ' hours for this project without exceeding 12 hours.';
+					buttons = {};
 
-					if (hoursOff) {
-						message += 'Please be aware of the existing PTO hours.';
+					var useRemainingHours12ButtonCaption = 'Use ' + remainingHours12 + 'h';
+					buttons[useRemainingHours12ButtonCaption] = true;
+
+					var message = 'This allocation will exceed the maximum allowed 12 hours per day for a resource. You can allocate ' + remainingHours12 + ' hours for this project without exceeding 12 hours';
+
+					if (remainingHours8 !== oldHours) {
+						message += 'or allocate ' + remainingHours8 + ' hours without exceeding 8 hours.';
+
+						useRemainingHours8ButtonCaption = 'Use ' + remainingHours8 + 'h';
+						buttons[useRemainingHours8ButtonCaption] = true;
+					} else {
+						message += '.';
 					}
 
-					alert(message);
+					if (hoursOff) {
+						message += ' Please be aware of the existing PTO hours (' + hoursOff + 'h).';
+					}
+
+					buttons['Cancel'] = false;
+
+					confirm(message, buttons).then(function (button) {
+						switch (button) {
+							case useRemainingHours12ButtonCaption:
+								allocation.currentBooking = remainingHours12;
+							break;
+							case useRemainingHours8ButtonCaption:
+								allocation.currentBooking = remainingHours8;
+							break;
+						}
+
+						$scope.staffing.updateAllocation(project, resource, allocationDate, allocation, false, true);
+					}, function (button) {
+						/* user cancelled the action, nothing to do, the hours are already reset */
+					});
 				}
 
 				return;
@@ -543,13 +573,14 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', '
 					confirm(message, buttons).then(function (button) {
 						switch (button) {
 							case useRequestedHoursButtonCaption:
-								$scope.staffing.updateAllocation(project, resource, allocationDate, allocation, false, true);
+								/* nothing to do, the allocation already contains the requested hours */
 							break;
 							case useRemainingHoursButtonCaption:
 								allocation.currentBooking = remainingHours;
-								$scope.staffing.updateAllocation(project, resource, allocationDate, allocation, false, true);
 							break;
 						}
+
+						$scope.staffing.updateAllocation(project, resource, allocationDate, allocation, false, true);
 					}, function (button) {
 						/* user cancelled the action */
 						allocation.currentBooking = oldHours;
