@@ -349,6 +349,12 @@ public without sharing class TimeEntry4UserExtension {
 
         //options.sort();
         SelectOptionSorter.doSort(options, SelectOptionSorter.FieldToSort.Label);
+
+        if (options.size() == 2) {
+            /* only one option apart from 'Please select', autoselect */
+            selectedOpp = options[1].getValue();
+        }
+
         return options;
     }
 
@@ -432,6 +438,12 @@ public without sharing class TimeEntry4UserExtension {
 
         //options.sort();
         SelectOptionSorter.doSort(options, SelectOptionSorter.FieldToSort.Label);
+
+        if (options.size() == 2) {
+            /* only one option apart from 'Please select', autoselect */
+            selectedTask = options[1].getValue();
+        }
+
         return options;
     }// END public List<SelectOption> getOpportunityLineItemList()
 
@@ -464,7 +476,7 @@ public without sharing class TimeEntry4UserExtension {
             dummyContact = [SELECT Id, Name, Firstname, LastName FROM Contact WHERE Lastname = 'All' LIMIT 1];
             //objTimeEntry.Contact__c = currentcontact.Id;
             System.debug('@@@ DEBUG currentContact:' + currentcontact.Name);
-        } catch (System.DmlException ex) {
+        } catch (System.QueryException ex) {
             objTimeEntry.addError('Sorry, for you is no contact created');
             ApexPages.addMessages(ex);
         }
