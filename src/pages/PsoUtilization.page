@@ -11,6 +11,7 @@
         <apex:includeScript value="{!URLFOR($Resource.PsoTable2,'js/controllers/root.js')}"/>
         <apex:includeScript value="{!URLFOR($Resource.PsoTable2,'js/controllers/staffing.js')}"/>
         <apex:includeScript value="{!URLFOR($Resource.PsoTable2,'js/controllers/utilization.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.PsoTable2,'js/vendor/excellentexport.min.js')}"/>
 
         <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.lightningStyle, '/assets/styles/salesforce-lightning-design-system.css')}" />
         <link rel="stylesheet" href="{!URLFOR($Resource.jQuery_ui_1_11_4,'jquery-ui.min.css')}" />
@@ -225,6 +226,11 @@
                                         <a class="slds-button slds-button--neutral" href="#" ng-click="viewState.legendVisible=!viewState.legendVisible">
                                             <svg class="slds-icon slds-icon--x-small slds-icon-text-default ">
                                                 <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#question')}"></use>
+                                            </svg>
+                                        </a>
+                                        <a class="slds-button slds-button--neutral" download="utilization.xls" data-export-to-excel="Utilization">
+                                            <svg class="slds-icon slds-icon--x-small slds-icon-text-default ">
+                                                <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#filter')}"></use>
                                             </svg>
                                         </a>
                                         <div class="slds-button--last">

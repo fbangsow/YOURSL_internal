@@ -593,3 +593,44 @@ PsoTable2.ng.directive('showWeekOrMonthPicker', ['$timeout', function ($timeout)
 		}
 	};
 }]);
+
+PsoTable2.ng.directive('exportToExcel', ['$document', function ($document) {
+	return {
+		restrict: 'A',
+		link: function (scope, el, attributes) {
+			el.on('click', function () {
+				var document = $document[0];
+
+				var target = document.createElement('table');
+				var rows = [];
+
+				$(attributes.exportToExcelSource || 'table').each(function (index, table) {
+					$('tr', table).each(function (rowIndex, row) {
+						var targetRow;
+
+						if (rowIndex >= rows.length) {
+							targetRow = document.createElement('tr');
+							rows.push(targetRow);
+						} else {
+							targetRow = rows[rowIndex];
+						}
+
+						$('th,td', row).each(function (cellIndex, cell) {
+							var targetCell = document.createElement(cell.nodeName);
+
+							targetCell.innerText = cell.innerText.trim();
+							targetCell.rowSpan = cell.rowSpan;
+							targetCell.colSpan = cell.colSpan;
+
+							targetRow.appendChild(targetCell);
+						});
+
+						target.appendChild(targetRow);
+					});
+				});
+
+				ExcellentExport.excel(el[0], target, attributes.exportToExcel);
+			});
+		}
+	};
+}]);

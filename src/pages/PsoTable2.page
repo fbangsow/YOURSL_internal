@@ -10,6 +10,7 @@
         <apex:includeScript value="{!URLFOR($Resource.PsoTable2,'js/core.js')}"/>
         <apex:includeScript value="{!URLFOR($Resource.PsoTable2,'js/controllers/root.js')}"/>
         <apex:includeScript value="{!URLFOR($Resource.PsoTable2,'js/controllers/staffing.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.PsoTable2,'js/vendor/excellentexport.min.js')}"/>
 
         <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.lightningStyle, '/assets/styles/salesforce-lightning-design-system.css')}" />
         <link rel="stylesheet" href="{!URLFOR($Resource.jQuery_ui_1_11_4,'jquery-ui.min.css')}" />
@@ -307,6 +308,11 @@
                                             <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#clock')}"></use>
                                         </svg>
                                     </a>
+                                    <a class="slds-button slds-button--neutral" download="staffing.xls" data-export-to-excel="Staffing" data-export-to-excel-source="#staffing table">
+                                        <svg class="slds-icon slds-icon--x-small slds-icon-text-default ">
+                                            <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#filter')}"></use>
+                                        </svg>
+                                    </a>
                                     <div class="slds-button--last">
                                         <a class="slds-button slds-button--icon-border-filled" href="/home/home.jsp">
                                             <svg class="slds-icon slds-icon--x-small slds-icon-text-default ">
@@ -442,7 +448,7 @@
                                     <th ng-click="staffing.orderResourcesBy('Title')" ng-class="{'sort-asc':viewState.orderResources==='Title' && !viewState.orderResourcesDescending, 'sort-desc':viewState.orderResources==='Title' && viewState.orderResourcesDescending}">
                                         Title
                                     </th>
-                                    <th colspan="3" class="firsttableheader" ng-click="staffing.orderResourcesBy('AccountName')" ng-class="{'sort-asc':viewState.orderResources==='AccountName' && !viewState.orderResourcesDescending, 'sort-desc':viewState.orderResources==='AccountName' && viewState.orderResourcesDescending}">
+                                    <th colspan="3" ng-click="staffing.orderResourcesBy('AccountName')" ng-class="{'sort-asc':viewState.orderResources==='AccountName' && !viewState.orderResourcesDescending, 'sort-desc':viewState.orderResources==='AccountName' && viewState.orderResourcesDescending}">
                                         Account name
                                     </th>
                                 </tr>
