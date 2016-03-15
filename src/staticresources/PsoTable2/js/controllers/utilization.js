@@ -12,7 +12,8 @@ PsoTable2.ng.controller('PsoTable2Utilization', ['$scope', '$interval', 'PsoTabl
 		staffingDays: [],
 		projectHealthReasons: {},
 		orderResources: 'ResourceName',
-		orderResourcesDescending: false
+		orderResourcesDescending: false,
+		viewResourceProjects: {}
 	};
 
 	$scope.data = {};
@@ -278,6 +279,7 @@ PsoTable2.ng.controller('PsoTable2Utilization', ['$scope', '$interval', 'PsoTabl
 
 					resource.MonthToLimitMap = {};
 					resource.WeekToLimitMap = {};
+					resource.hasProjects = false;
 
 					for (var m = 0; m < $scope.viewState.staffingMonths.length; m++) {
 						var month = $scope.viewState.staffingMonths[m];
@@ -316,6 +318,7 @@ PsoTable2.ng.controller('PsoTable2Utilization', ['$scope', '$interval', 'PsoTabl
 							}
 
 							if (!$scope.data.ResourcesByContactId[resource.ContactId].Projects) {
+								$scope.data.ResourcesByContactId[resource.ContactId].hasProjects = true;
 								$scope.data.ResourcesByContactId[resource.ContactId].Projects = {};
 							}
 
