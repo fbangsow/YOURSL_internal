@@ -330,6 +330,7 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', '
 		orderProjectResourcesDescending: false,
 		orderResources: 'ResourceName',
 		orderResourcesDescending: false,
+		highlightedResources: [],
 		filter: {
 			hideNoBudgetResources: false
 		},
@@ -341,6 +342,21 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', '
 			}
 
 			return true;
+		}
+	};
+
+	$scope.viewState.highlightResource = function (resource) {
+		//console.log('highlight resource', resource);
+
+		if (!resource.ContactId) {
+			return;
+		}
+
+		var currentIndex = $scope.viewState.highlightedResources.indexOf(resource.ContactId);
+		if (currentIndex > -1) {
+			$scope.viewState.highlightedResources.splice(currentIndex, 1);
+		} else {
+			$scope.viewState.highlightedResources.push(resource.ContactId);
 		}
 	};
 
