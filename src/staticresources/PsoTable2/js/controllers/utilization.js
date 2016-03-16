@@ -1,6 +1,9 @@
 PsoTable2.ng.controller('PsoTable2Utilization', ['$scope', '$interval', 'PsoTable2Endpoint', 'PsoTable2StaffingHelper', 'datepicker', 'alert', function ($scope, $interval, sfEndpoint, staffingHelper, datepicker, alert) {
 	console.log('init utilization controller');
 
+	$scope.$parent.defaultFilter.selectRelatedResources = false;
+	$scope.$parent.viewState.selectRelatedResources = false;
+
 	$scope.viewState = {
 		startDate: null,
 		endDate: null,
@@ -44,6 +47,18 @@ PsoTable2.ng.controller('PsoTable2Utilization', ['$scope', '$interval', 'PsoTabl
 
 			if (day.isSaldo) {
 				classes['saldo'] = true;
+
+				if (day.isWeekUtilization) {
+					classes['week-utilization'] = true;
+				}
+
+				if (day.isMonthUtilization) {
+					classes['month-utilization'] = true;
+				}
+
+				if (day.isMonthSaldo) {
+					classes['month-saldo'] = true;
+				}
 
 				switch (type) {
 					case 'statistic':
@@ -157,7 +172,8 @@ PsoTable2.ng.controller('PsoTable2Utilization', ['$scope', '$interval', 'PsoTabl
 					dateString: 'week-utilization-' + month.number + '-' + week.number,
 					weekDay: 'Uw',
 					isSaldo: true,
-					isUtilization: true
+					isUtilization: true,
+					isWeekUtilization: true
 				});
 
 				week.caption = week.days[0].day + '. - ' + week.days[week.days.length - 1].day + '.';
@@ -188,7 +204,8 @@ PsoTable2.ng.controller('PsoTable2Utilization', ['$scope', '$interval', 'PsoTabl
 					dateString: 'month-utilization-' + month.number,
 					weekDay: 'Total',
 					isSaldo: true,
-					isUtilization: true
+					isUtilization: true,
+					isMonthUtilization: true
 				});
 
 				$scope.viewState.staffingDays.push({
