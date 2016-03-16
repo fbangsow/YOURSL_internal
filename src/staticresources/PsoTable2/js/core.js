@@ -2,6 +2,13 @@ window.PsoTable2 = window.PsoTable2 || {};
 
 PsoTable2.ng = angular.module('PsoTable2', []);
 
+PsoTable2.ng.config(['$locationProvider', function($locationProvider) {
+	$locationProvider.html5Mode({
+		enabled: true,
+		requireBase: false
+	});
+}]);
+
 PsoTable2.ng.factory('datepicker', function () {
 	return $.datepicker;
 });

@@ -1,39 +1,169 @@
-PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'alert', 'clientCache', 'PsoTable2Endpoint', function ($scope, $rootScope, alert, clientCache, sfEndpoint) {
+PsoTable2.ng.controller('PsoTable2', ['$location', '$scope', '$rootScope', 'alert', 'PsoTable2Endpoint', function ($location, $scope, $rootScope, alert, sfEndpoint) {
 	$scope.status = {
 		loading: true,
-		error: null
+		error: null,
+		updatingLocation: false,
+		updatingViewState: false
 	};
 
 	$scope.sfEndpoint = sfEndpoint;
 
-	var storedFilter = clientCache.getItem('filter') || '';
-	var hadStoredFilter = !!storedFilter;
+	$scope.defaultFilter = {
+		startMonth: new Date(),
 
-	if (storedFilter) {
-		storedFilter = JSON.parse(storedFilter);
-	}
+		selectedOpportunities: [],
+		selectRelatedOpportunities: false,
+		opportunitiesFilterText: '',
 
-	storedFilter = storedFilter || {};
+		selectedResources: [],
+		selectRelatedResources: true,
+		resourcesFilterText: ''
+	};
 
-	$scope.viewState = {
+	$scope.viewState = $.extend({}, $scope.defaultFilter, {
 		today: new Date(),
-		startMonth: storedFilter.startMonth ? new Date(storedFilter.startMonth) : new Date(),
 		minStartMonth: new Date(),
 		maxStartMonth: new Date(),
 
-		selectedOpportunities: storedFilter.selectedOpportunities || [],
-		selectedOpportunitiesSize: 2,
-		opportunitiesFilterText: storedFilter.opportunitiesFilterText || '',
-
-		selectedResources: storedFilter.selectedResources || [],
-		selectedResourcesSize: 2,
-		resourcesFilterText: storedFilter.resourcesFilterText || '',
-
-		selectRelatedResources: storedFilter.selectRelatedResources !== false,
-		selectRelatedOpportunities: !!storedFilter.selectRelatedOpportunities,
-
-		filterVisible: !hadStoredFilter,
+		filterVisible: false,
 		isAllowedToRunScheduler: false
+	});
+
+	var initializeViewStateFromLocation = function (forceFilterUpdate) {
+		//console.log('initializeViewStateFromLocation');
+
+		var arraysEqual = function (a1, a2) {
+			if (!a1 || !a2) {
+				return false;
+			}
+
+			var a1length = a1.length;
+
+			if (a1length !== a2.length) {
+				return false;
+			}
+
+			for (var i = a1length - 1; i >= 0; --i) {
+				if (a2.indexOf(a1[i]) === -1) {
+					return false;
+				}
+			}
+
+			return true;
+		};
+
+		var currentSearch = $location.search();
+
+		var hasLocationFilter = false;
+		var hasChanges = false;
+
+		var newFilter = $.extend({}, $scope.defaultFilter);
+
+		if (currentSearch.d) {
+			hasLocationFilter = true;
+			newFilter.startMonth = new Date(currentSearch.d);
+		}
+
+		if (currentSearch.o && !currentSearch.sro) {
+			hasLocationFilter = true;
+			newFilter.selectedOpportunities = currentSearch.o.split(',');
+		}
+
+		if (currentSearch.r && !currentSearch.srr) {
+			hasLocationFilter = true;
+			newFilter.selectedResources = currentSearch.r.split(',');
+		}
+
+		if (currentSearch.of) {
+			hasLocationFilter = true;
+			newFilter.opportunitiesFilterText = currentSearch.of;
+		}
+
+		if (currentSearch.rf) {
+			hasLocationFilter = true;
+			newFilter.resourcesFilterText = currentSearch.rf;
+		}
+
+		if (currentSearch.sro) {
+			hasLocationFilter = true;
+			newFilter.selectRelatedOpportunities = true;
+			newFilter.selectedOpportunities = [];
+		}
+
+		if (currentSearch.srr) {
+			hasLocationFilter = true;
+			newFilter.selectRelatedResources = true;
+			newFilter.selectedResources = [];
+		}
+
+		var oldDate = $scope.viewState.startMonth;
+
+		if (oldDate.getMonth() !== newFilter.startMonth.getMonth() || oldDate.getFullYear() !== newFilter.startMonth.getFullYear()) {
+			hasChanges = true;
+
+			oldDate.setMonth(newFilter.startMonth.getMonth());
+			oldDate.setFullYear(newFilter.startMonth.getFullYear());
+		}
+
+		if (!arraysEqual(newFilter.selectedOpportunities, $scope.viewState.selectedOpportunities)) {
+			//console.log('opps differ', newFilter.selectedOpportunities, $scope.viewState.selectedOpportunities);
+
+			hasChanges = true;
+			$scope.viewState.selectedOpportunities.splice(0, $scope.viewState.selectedOpportunities.length);
+
+			/* add by hand, do not alter the array reference! */
+			for (var i = 0; i < newFilter.selectedOpportunities.length; i++) {
+				$scope.viewState.selectedOpportunities.push(newFilter.selectedOpportunities[i]);
+			}
+		}
+
+		if (!arraysEqual(newFilter.selectedResources, $scope.viewState.selectedResources)) {
+			//console.log('resources differ', newFilter.selectedResources, $scope.viewState.selectedResources);
+
+			hasChanges = true;
+			$scope.viewState.selectedResources.splice(0, $scope.viewState.selectedResources.length);
+
+			/* add by hand, do not alter the array reference! */
+			for (var i = 0; i < newFilter.selectedResources.length; i++) {
+				$scope.viewState.selectedResources.push(newFilter.selectedResources[i]);
+			}
+		}
+
+		if (newFilter.opportunitiesFilterText !== $scope.viewState.opportunitiesFilterText) {
+			//console.log('of differs', newFilter.opportunitiesFilterText, $scope.viewState.opportunitiesFilterText);
+
+			hasChanges = true;
+			$scope.viewState.opportunitiesFilterText = newFilter.opportunitiesFilterText;
+		}
+
+		if (newFilter.resourcesFilterText !== $scope.viewState.resourcesFilterText) {
+			//console.log('rf differs', newFilter.resourcesFilterText, $scope.viewState.resourcesFilterText);
+
+			hasChanges = true;
+			$scope.viewState.resourcesFilterText = newFilter.resourcesFilterText;
+		}
+
+		if (newFilter.selectRelatedOpportunities !== $scope.viewState.selectRelatedOpportunities) {
+			//console.log('sro differs', newFilter.selectRelatedOpportunities, $scope.viewState.selectRelatedOpportunities);
+
+			hasChanges = true;
+			$scope.viewState.selectRelatedOpportunities = newFilter.selectRelatedOpportunities;
+		}
+
+		if (newFilter.selectRelatedResources !== $scope.viewState.selectRelatedResources) {
+			//console.log('srr differs', newFilter.selectRelatedResources, $scope.viewState.selectRelatedResources);
+
+			hasChanges = true;
+			$scope.viewState.selectRelatedResources = newFilter.selectRelatedResources;
+		}
+
+		//console.log('hasChanges', hasChanges);
+		//console.log('forceFilterUpdate', forceFilterUpdate);
+		//console.log('hasLocationFilter', hasLocationFilter);
+
+		$scope.status.loaded = false;
+		$scope.viewState.filterVisible = !hasLocationFilter;
+		$scope.filter.updateFilterData(hasLocationFilter);
 	};
 
 	[$scope.viewState.today, $scope.viewState.startMonth, $scope.viewState.minStartMonth, $scope.viewState.maxStartMonth].forEach(function (d, index) {
@@ -499,15 +629,40 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'alert', 'clientCa
 	};
 
 	$scope.updateStaffing = function () {
-		clientCache.setItem('filter', JSON.stringify({
-			startMonth: $scope.viewState.startMonth,
-			selectedOpportunities: $scope.viewState.selectedOpportunities,
-			opportunitiesFilterText: $scope.viewState.opportunitiesFilterText,
-			selectedResources: $scope.viewState.selectedResources,
-			resourcesFilterText: $scope.viewState.resourcesFilterText,
-			selectRelatedResources: $scope.viewState.selectRelatedResources,
-			selectRelatedOpportunities: $scope.viewState.selectRelatedOpportunities
-		}));
+		var locationSearchParams = {
+			d: JSON.stringify($scope.viewState.startMonth).replace(/^"(.*)"$/, '$1')
+		}
+
+		if ($scope.viewState.selectRelatedOpportunities) {
+			locationSearchParams.sro = 1;
+		} else {
+			locationSearchParams.o = $scope.viewState.selectedOpportunities.join(',');
+		}
+
+		if ($scope.viewState.selectRelatedResources) {
+			locationSearchParams.srr = 1;
+		} else {
+			locationSearchParams.r = $scope.viewState.selectedResources.join(',');
+		}
+
+		if ($scope.viewState.opportunitiesFilterText) {
+			locationSearchParams.of = $scope.viewState.opportunitiesFilterText;
+		}
+
+		if ($scope.viewState.resourcesFilterText) {
+			locationSearchParams.rf = $scope.viewState.resourcesFilterText;
+		}
+
+		//console.log('updating location to include current filter', !$scope.status.updatingViewState);
+
+		/*
+		 * use the negation of the updatingViewState, which means we were
+		 * already triggered by the location change event and do not need to catch this
+		 */
+		$scope.status.updatingLocation = !$scope.status.updatingViewState;
+		$scope.status.updatingViewState = false;
+
+		$location.search(locationSearchParams);
 
 		$scope.$broadcast(
 			'updateStaffing',
@@ -549,7 +704,21 @@ PsoTable2.ng.controller('PsoTable2', ['$scope', '$rootScope', 'alert', 'clientCa
 	};
 
 	/* initialize data */
-	$scope.filter.updateFilterData(hadStoredFilter);
+	initializeViewStateFromLocation(true);
+
+	$scope.$on('$locationChangeSuccess', function (e, newUrl, oldUrl) {
+		//console.log('location change event', !$scope.status.updatingLocation, newUrl, oldUrl);
+
+		if ($scope.status.updatingLocation) {
+			$scope.status.updatingLocation = false;
+			return;
+		}
+
+		if (newUrl !== oldUrl) {
+			$scope.status.updatingViewState = true;
+			initializeViewStateFromLocation();
+		}
+	});
 }]);
 
 PsoTable2.ng.directive('showWeekOrMonthPicker', ['$timeout', function ($timeout) {
