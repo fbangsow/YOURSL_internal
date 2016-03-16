@@ -696,13 +696,14 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', '
 		var totalResourceInfo = $scope.data.ResourcesByContactId[resource.ContactId];
 		var totalDayInfo = totalResourceInfo ? totalResourceInfo.StaffingByDay[dateString] : null;
 		var hoursOff = totalDayInfo ? totalDayInfo.HoursOff : 0.0;
-		var currentHours = resource.StaffingByDay[dateString] ? (resource.StaffingByDay[dateString].currentBooking || 0.0) : 0.0;
-		var totalHours = 8 - hoursOff;
-		var currentTotalExcludingCurrentHours = (totalDayInfo ? totalDayInfo.Staff : 0.0) + hoursOff - currentHours;
+		var currentHours = resource.StaffingByDay[dateString] ? (resource.StaffingByDay[dateString].Staff || 0.0) : 0.0;
 
-		var remainingHours = Math.max(totalHours - currentTotalExcludingCurrentHours, 0);
+		var available = 8 - hoursOff;
+		var current = (totalDayInfo ? totalDayInfo.Staff : 0.0) + hoursOff;
 
-		return remainingHours + ' of ' + totalHours + 'h left';
+		var remaining = Math.max(available - current, 0);
+
+		return remaining + ' of ' + available + 'h left';
 	};
 
 	$scope.staffing.orderResourcesBy = function (column) {
