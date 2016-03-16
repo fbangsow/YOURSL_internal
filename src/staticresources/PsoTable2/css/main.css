@@ -127,6 +127,7 @@ span.ResourceInfo {
 	position: absolute;
 	bottom: -1px;
 	right: -1px;
+	width: 15px;
 	background: rgba(255, 255, 255, 0.9);
 	border: 1px solid #d8dde6;
 }
@@ -629,6 +630,9 @@ tbody.Resources:not(.single-view):before {
 }
 
 /* events date */
+#pso-table td.weekend {
+	background: rgba(111, 116, 148, 0.1);
+}
 
 #pso-table #schedule td.saldo span {
 	text-align: right;
@@ -776,4 +780,13 @@ td.statistic {
 #utilization td.month-utilization,
 #utilization td.month-saldo {
 	background: #fff;
+}
+
+#utilization #schedule td.saldo span {
+	font-weight: normal
+}
+
+#utilization td.month-utilization span,
+#utilization td.month-saldo span {
+	font-weight: bolder !important
 }
