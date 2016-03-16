@@ -400,13 +400,17 @@ span.ResourceInfo {
 	float: right
 }
 
-#pso-table .slds-table th.today:hover,
-#pso-table .slds-table th.today {
+div.today:hover,
+div.today {
 	background-image: linear-gradient(45deg, rgba(84, 105, 141, 1.035) 35%, rgba(255, 255, 255, 0) 17%, transparent 33%, rgba(35, 95, 170, 0.035) 62%, rgba(35, 95, 170, -0.965) 84%, transparent 48%, transparent) !important;
 	background-size: 50px 26px !important;
+	position: absolute;
+	width: 10px;
+	height: 10px;
+	bottom: 1px;
+	left: 1px;
 }
 
-}
 .project-info a {
 	color: #4f6a92;
 	line-height: 26px;
@@ -455,6 +459,7 @@ a:active {
 
 /*table*/
 
+#utilization #captions,
 #staffing #captions {
 	position: absolute;
 	z-index: 1050;
@@ -512,8 +517,7 @@ a:active {
 	text-align: center
 }
 
-#utilization .saldo,
-.weekend {
+#utilization .saldo {
 	background: rgba(168, 183, 199, 0.25);
 }
 
@@ -626,7 +630,7 @@ tbody.Resources:not(.single-view):before {
 
 /* events date */
 
-td.saldo span {
+#pso-table #schedule td.saldo span {
 	text-align: right;
 	padding-right: 10px;
 	display: block;
@@ -746,4 +750,30 @@ td.saldo span {
 	left: -1px;
 	width: 139px;
 	min-width: 139px;
+}
+
+/* PSOUtilization */
+
+div.unit {
+	float: right;
+}
+
+td:not([colspan]) .slds-icon-text-default2 {
+	fill: #54698d;
+}
+
+.projectDetails {
+	background: rgba(216, 221, 230, 0.55);
+}
+
+tr td.saldo:hover::after,
+td.statistic:hover::after,
+td.saldo,
+td.statistic {
+	background: #fff;
+}
+
+#utilization td.month-utilization,
+#utilization td.month-saldo {
+	background: #fff;
 }
