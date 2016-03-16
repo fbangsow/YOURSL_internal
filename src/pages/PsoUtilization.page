@@ -42,7 +42,7 @@
                             <div class="slds-grid">
                                 <div class="slds-media__body">
                                     <div class="slds-grid">
-                                        <h1 class="slds-text-heading--medium slds-m-right--small slds-truncate slds-align-middle" title="Record Title">Resource Utilization 1.0</h1>
+                                        <h1 class="slds-text-heading--medium slds-m-right--small slds-truncate slds-align-middle">Resource Utilization 1.1</h1>
 
                                         <div class="slds-dropdown-trigger " style="position: absolute;">
                                             <a class="button--neutral slds-button  slds-button__icon--left" aria-haspopup="true" ng-click="viewState.filterVisible=!viewState.filterVisible">

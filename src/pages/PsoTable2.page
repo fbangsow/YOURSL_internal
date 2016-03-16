@@ -39,7 +39,7 @@
                         <div class="slds-grid">
                             <div class="slds-media__body">
                                 <div class="slds-grid">
-                                    <h1 class="slds-text-heading--medium slds-m-right--small slds-truncate slds-align-middle" title="Resource Planning Tool 3.0">Resource Planning Tool 3.0</h1>
+                                    <h1 class="slds-text-heading--medium slds-m-right--small slds-truncate slds-align-middle" title="Resource Planning Tool 3.1">Resource Planning Tool 3.1</h1>
                                     <div class="slds-dropdown-trigger " >
                                         <a class="button--neutral slds-button  slds-button__icon--left" aria-haspopup="true" ng-click="viewState.filterVisible=!viewState.filterVisible">
                                             <svg class="slds-icon slds-icon--x-small slds-icon-text-default slds-icon--x-smallMagrin ">
