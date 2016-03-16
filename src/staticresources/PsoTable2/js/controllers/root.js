@@ -1,4 +1,4 @@
-PsoTable2.ng.controller('PsoTable2', ['$location', '$scope', '$rootScope', 'alert', 'PsoTable2Endpoint', function ($location, $scope, $rootScope, alert, sfEndpoint) {
+PsoTable2.ng.controller('PsoTable2', ['$location', '$window', '$scope', '$rootScope', 'alert', 'PsoTable2Endpoint', function ($location, $window, $scope, $rootScope, alert, sfEndpoint) {
 	$scope.status = {
 		loading: true,
 		error: null,
@@ -706,8 +706,11 @@ PsoTable2.ng.controller('PsoTable2', ['$location', '$scope', '$rootScope', 'aler
 	/* initialize data */
 	initializeViewStateFromLocation(true);
 
+	var basePath = null;
 	$scope.$on('$locationChangeSuccess', function (e, newUrl, oldUrl) {
-		//console.log('location change event', !$scope.status.updatingLocation, newUrl, oldUrl);
+		if (!basePath) {
+			basePath = $location.path();
+		}
 
 		if ($scope.status.updatingLocation) {
 			$scope.status.updatingLocation = false;
@@ -715,6 +718,11 @@ PsoTable2.ng.controller('PsoTable2', ['$location', '$scope', '$rootScope', 'aler
 		}
 
 		if (newUrl !== oldUrl) {
+			if ($location.path() !== basePath) {
+				$window.location.href = newUrl;
+				return;
+			}
+
 			$scope.status.updatingViewState = true;
 			initializeViewStateFromLocation();
 		}
