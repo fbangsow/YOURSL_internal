@@ -288,21 +288,6 @@ PsoTable2.ng.factory('PsoTable2StaffingHelper', ['datepicker', function (datepic
 		return classes;
 	};
 
-	helper.buildResourceRowClasses = function (resource) {
-		var classes = {};
-
-		classes.yourslEmployee = resource.AccountName === 'YOUR SL GmbH';
-		classes.externalEmployee = !classes.yourslEmployee;
-
-		classes.billable = resource.SalesPrice > 0;
-
-		if (!resource.SalesPrice && typeof resource.SalesPrice !== 'undefined') {
-			classes.unbillable = !resource.SalesPrice;
-		}
-
-		return classes;
-	};
-
 	helper.normalizeTime = function (d) {
 		d.setHours(0);
 		d.setMinutes(0);
@@ -846,7 +831,31 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', '
 	};
 
 	$scope.buildDayHeaderClasses = staffingHelper.buildDayHeaderClasses;
-	$scope.buildResourceRowClasses = staffingHelper.buildResourceRowClasses;
+
+	$scope.buildResourceRowClasses = function (resource) {
+		var classes = {};
+
+		classes.yourslEmployee = resource.AccountName === 'YOUR SL GmbH';
+		classes.externalEmployee = !classes.yourslEmployee;
+
+		classes.billable = resource.SalesPrice > 0;
+
+		if (!resource.SalesPrice && typeof resource.SalesPrice !== 'undefined') {
+			classes.unbillable = !resource.SalesPrice;
+		}
+
+		if (resource.ContactId) {
+			if ($scope.viewState.highlightedResources.indexOf(resource.ContactId) > -1) {
+				classes.highlight = true;
+			}
+
+			if ($scope.viewState.focusedResource === resource.ContactId) {
+				classes.focusedResource = true;
+			}
+		}
+
+		return classes;
+	};
 
 	$scope.updateProjectStatus = function (project) {
 		sfEndpoint.updateProjectStatus(project.OpportunityId, project.ProjectStatus);

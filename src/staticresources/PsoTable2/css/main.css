@@ -1,3 +1,27 @@
+
+[data-focused-resource] tr[data-resource-id],
+[data-highlighted-resources] tr[data-resource-id] {
+	opacity: 0.2;
+}
+
+[data-focused-resource] tr.focusedResource,
+[data-highlighted-resources] tr.highlight {
+	opacity: 1;
+}
+
+[data-focused-resource] tr.focusedResource .highlight-toggle svg,
+[data-highlighted-resources] tr.highlight .highlight-toggle svg {
+	fill: #54698d;
+}
+
+.overflow {
+	text-overflow: ellipsis;
+	width: 360px;
+	white-space: nowrap;
+	overflow: hidden;
+
+}
+
 body,
 html {
 	background: #fff;
@@ -731,7 +755,7 @@ tbody.Resources:not(.single-view):before {
 	border-radius: 0.25rem;
 	background: white;
 	box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.16);
-	bottom: 1em;
+	bottom: 2em;
 	color: #54698d;
 	line-height: 17px;
 	padding: 5px 15px;
@@ -770,11 +794,20 @@ td:not([colspan]) .slds-icon-text-default2 {
 	background: rgba(216, 221, 230, 0.55);
 }
 
+.border2 {
+	border-top: 2px solid #ccc
+}
+
 tr td.saldo:hover::after,
 td.statistic:hover::after,
 td.saldo,
 td.statistic {
 	background: #fff;
+}
+
+.positionBottom {
+	bottom: auto;
+	top: 0;
 }
 
 #utilization td.month-utilization,
@@ -789,4 +822,9 @@ td.statistic {
 #utilization td.month-utilization span,
 #utilization td.month-saldo span {
 	font-weight: bolder !important
+}
+
+.alertMessage {
+	float: left;
+	margin: 0 7px 20px 0;
 }
