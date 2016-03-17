@@ -601,33 +601,36 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', '
 			return;
 		}
 
-		/* the currentMonthHours will contain the project bookings without the currently affected day */
-		var currentMonthHours = 0;
-		for (var s = 0; s < resource.Staffing.length; s++) {
-			var staffing = resource.Staffing[s];
-			if (staffing !== allocation && staffing.month === monthKey) {
-				currentMonthHours += staffing.Staff;
-			}
-		}
-
-		var limit = parseFloat(resource.MonthToLimitMap[monthKey]) * 8;
-		var availableHours = Math.round(Math.max(0, limit - currentMonthHours) * 100) / 100;
-
-		if (currentMonthHours + requestedHours > limit) {
-			allocation.currentBooking = oldHours;
-
-			var displayLimit = limit > 16 ? limit / 8 : limit;
-			var intLimit = parseInt(displayLimit, 10);
-
-			if (!(displayLimit - intLimit)) {
-				/* it's an integer, use the non- decimal version for display */
-				displayLimit = intLimit;
+		if (delta > 0) {
+			/* the currentMonthHours will contain the project bookings without the currently affected day */
+			var currentMonthHours = 0;
+			for (var s = 0; s < resource.Staffing.length; s++) {
+				var staffing = resource.Staffing[s];
+				if (staffing !== allocation && staffing.month === monthKey) {
+					currentMonthHours += staffing.Staff;
+				}
 			}
 
-			displayLimit += ' ' + (limit > 16 ? 'days' : 'hours');
+			var limit = parseFloat(resource.MonthToLimitMap[monthKey]) * 8;
 
-			alert('The allocation of additional ' + requestedHours + ' hours for ' + resource.ResourceName + ' exceeds the month limit of ' + displayLimit + '. The resource has ' + availableHours + ' hours left for this month.');
-			return;
+			if (currentMonthHours + requestedHours > limit) {
+				var availableHours = Math.round(Math.max(0, limit - (currentMonthHours + oldHours)) * 100) / 100;
+
+				allocation.currentBooking = oldHours;
+
+				var displayLimit = limit > 16 ? limit / 8 : limit;
+				var intLimit = parseInt(displayLimit, 10);
+
+				if (!(displayLimit - intLimit)) {
+					/* it's an integer, use the non- decimal version for display */
+					displayLimit = intLimit;
+				}
+
+				displayLimit += ' ' + (limit > 16 ? 'days' : 'hours');
+
+				alert('The allocation of additional ' + delta + ' hours for ' + resource.ResourceName + ' exceeds the month limit of ' + displayLimit + '. The resource has ' + availableHours + ' hours left for this month.');
+				return;
+			}
 		}
 
 		console.log('allocation is fine, persist.');
