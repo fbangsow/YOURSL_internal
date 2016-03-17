@@ -275,8 +275,10 @@
                                         <td>{{ ::resource.AccountName}}</td>
                                     </tr>
                                     <tr ng-repeat="(projectId, project) in resource.Projects" ng-repeat-end="true" ng-show="viewState.viewResourceProjects[resource.ContactId]" class="projectDetails tableheader">
-                                        <td class="padding10left " colspan="3" >
-                                            <b>{{ ::project.AccountName }}</b> &gt; {{ ::project.OpportunityName }}
+                                        <td class="padding10left" colspan="3" data-tooltip="{{ ::project.AccountName }} > {{ ::project.OpportunityName }}">
+                                            <div class="overflow">
+                                                <b>{{ ::project.AccountName }}</b> &gt; {{ ::project.OpportunityName }}
+                                            </div>
                                         </td>
                                     </tr>
                                 </tbody>
