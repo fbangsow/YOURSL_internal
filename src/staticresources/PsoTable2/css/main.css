@@ -14,6 +14,10 @@
 	fill: #54698d;
 }
 
+.hide-no-budget-resources .missingBudget {
+	display: none;
+}
+
 .overflow {
 	text-overflow: ellipsis;
 	width: 360px;

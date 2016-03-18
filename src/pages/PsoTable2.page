@@ -331,7 +331,7 @@
 
             <apex:pageBlock html-data-ng-show="status.loaded" html-ng-controller="PsoTable2Staffing">
                 <!-- inline to use angular bindings -->
-                <section id="staffing" class="contentBox slds-m-around--medium slds-box slds-scrollable--y" ng-attr-data-focused-resource="{{ viewState.focusedResource }}" ng-attr-data-highlighted-resources="{{ viewState.highlightedResources.length || undefined }}">
+                <section id="staffing" class="contentBox slds-m-around--medium slds-box slds-scrollable--y" ng-attr-data-focused-resource="{{ viewState.focusedResource }}" ng-attr-data-highlighted-resources="{{ viewState.highlightedResources.length || undefined }}" ng-class="{'hide-no-budget-resources':viewState.filter.hideNoBudgetResources}">
                     <div id="captions">
                         <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-text-heading--label">
                             <tbody>
@@ -404,7 +404,7 @@
                                     </td>
                                 </tr>
                                 <tr><td colspan="5" class="shadow"></td></tr>
-                                <tr ng-repeat="resource in project.Resources | filter : viewState.filterProjectResource | orderBy : viewState.orderProjectResources : viewState.orderProjectResourcesDescending" ng-class="buildResourceRowClasses(resource)" class="slds-text-body--small" data-resource-id="{{ resource.ContactId }}">
+                                <tr ng-repeat="resource in project.Resources | orderBy : viewState.orderProjectResources : viewState.orderProjectResourcesDescending" ng-class="buildResourceRowClasses(resource)" class="slds-text-body--small" data-resource-id="{{ resource.ContactId }}">
                                     <td class="fixtd">
                                         <a class=" highlight-toggle" href="#" ng-click="viewState.highlightResource(resource)">
                                             <svg class="slds-icon slds-icon--small slds-icon-text-default slds-m-right--x-small">
@@ -506,7 +506,7 @@
                                     </td>
                                 </tr>
                                 <tr><td colspan="{{ viewState.staffingColumns }}" class="shadow"></td></tr>
-                                <tr ng-repeat="resource in project.Resources | filter : viewState.filterProjectResource | orderBy : viewState.orderProjectResources : viewState.orderProjectResourcesDescending" ng-class="buildResourceRowClasses(resource)" class="slds-text-body--small schedule" data-resource-id="{{ resource.ContactId }}">
+                                <tr ng-repeat="resource in project.Resources | orderBy : viewState.orderProjectResources : viewState.orderProjectResourcesDescending" ng-class="buildResourceRowClasses(resource)" class="slds-text-body--small schedule" data-resource-id="{{ resource.ContactId }}">
                                     <td ng-repeat="day in viewState.staffingDays track by day.dateString" ng-class="buildResourceAllocationCellClasses(resource, day, resource.StaffingByDay[day.dateString])" class="textCenter">
                                         <span ng-if="day.isMonthSaldo">
                                             {{ ((resource.Saldos[day.dateString] || 0) / 8) | number : 2 }}

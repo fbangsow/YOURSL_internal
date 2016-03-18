@@ -318,15 +318,6 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', '
 		highlightedResources: [],
 		filter: {
 			hideNoBudgetResources: false
-		},
-		filterProjectResource: function (resource) {
-			if ($scope.viewState.filter.hideNoBudgetResources) {
-				if (!resource.MonthToLimitMap || $.isEmptyObject(resource.MonthToLimitMap)) {
-					return false;
-				}
-			}
-
-			return true;
 		}
 	};
 
@@ -842,6 +833,7 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', '
 		classes.externalEmployee = !classes.yourslEmployee;
 
 		classes.billable = resource.SalesPrice > 0;
+		classes.missingBudget = !resource.MonthToLimitMap || $.isEmptyObject(resource.MonthToLimitMap);
 
 		if (!resource.SalesPrice && typeof resource.SalesPrice !== 'undefined') {
 			classes.unbillable = !resource.SalesPrice;
