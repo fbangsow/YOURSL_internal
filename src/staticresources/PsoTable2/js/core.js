@@ -2,6 +2,13 @@ window.PsoTable2 = window.PsoTable2 || {};
 
 PsoTable2.ng = angular.module('PsoTable2', []);
 
+PsoTable2.ng.config(['$locationProvider', function($locationProvider) {
+	$locationProvider.html5Mode({
+		enabled: true,
+		requireBase: false
+	});
+}]);
+
 PsoTable2.ng.factory('datepicker', function () {
 	return $.datepicker;
 });
@@ -374,31 +381,112 @@ PsoTable2.ng.factory('PsoTable2Endpoint', ['$q', '$timeout', 'cometd', 'alert', 
 	return instance;
 }]);
 
-PsoTable2.ng.factory('alert', ['$rootScope', function ($rootScope) {
+PsoTable2.ng.factory('alert', ['$rootScope', '$q', function ($rootScope, $q) {
 	return function (message) {
-		//alert(message);
-		$rootScope.$emit('alertMessage', message);
+		var deferred = $q.defer();
+
+		$rootScope.$emit('alertMessage', message, {
+			buttons: {
+				'OK': function () {
+					deferred.resolve('OK');
+				}
+			}
+		});
+
+		return deferred.promise;
+	};
+}]);
+
+PsoTable2.ng.factory('confirm', ['$rootScope', '$q', function($rootScope, $q) {
+	var makeButtonFunction = function (caption, resolveOrReject, promise) {
+		var resolveMethod = resolveOrReject ? 'resolve' : 'reject';
+		var resolveArgument = caption;
+
+		return function () {
+			promise[resolveMethod](resolveArgument);
+		}
+	};
+
+	return function (message, buttons) {
+		var deferred = $q.defer();
+
+		if (!buttons) {
+			buttons = {
+				'Confirm': function () {
+					deferred.resolve('Confirm');
+				},
+				'Cancel': function () {
+					deferred.reject('Cancel');
+				}
+			};
+		} else {
+			for (b in buttons) {
+				if (buttons.hasOwnProperty(b) && typeof buttons[b] !== 'function') {
+					buttons[b] = makeButtonFunction(b, buttons[b], deferred);
+				}
+			}
+		}
+
+		$rootScope.$emit('alertMessage', message, {
+			buttons: buttons
+		});
+
+		return deferred.promise;
 	};
 }]);
 
 PsoTable2.ng.directive('alertDialog', ['$rootScope', function ($rootScope) {
+	var makeDialogButtonFunction = function (callback) {
+		var doCallback = callback;
+
+		return function () {
+			$( this ).dialog('close');
+
+			if (typeof doCallback === 'function') {
+				doCallback();
+			}
+		}
+	};
+
 	return {
 		restrict: 'C',
 		link: function (scope, el, attributes) {
+			var defaultDialogOptions = {
+				buttons: {
+					OK: true
+				}
+			};
+
+			var mandatoryOptions = {
+				autoOpen: false,
+				resizable: false,
+				modal: true
+			};
+
+			$rootScope.$on('alertMessage', function (event, message, dialogOptions) {
+				scope.alertMessage = message;
+
+				dialogOptions = dialogOptions || {};
+
+				var finalOptions = $.extend({}, defaultDialogOptions, dialogOptions, mandatoryOptions);
+
+				if (finalOptions.buttons) {
+					for (b in finalOptions.buttons) {
+						if (finalOptions.buttons.hasOwnProperty(b)) {
+							finalOptions.buttons[b] = makeDialogButtonFunction(finalOptions.buttons[b]);
+						}
+					}
+				}
+
+				el.dialog(finalOptions);
+				el.dialog('open');
+			});
+
+			/* initialize once to update the html */
 			el.dialog({
 				autoOpen: false,
 				resizable: false,
-				modal: true,
-				buttons: {
-					OK: function() {
-						$( this ).dialog( "close" );
-					}
-				}
-			});
-
-			$rootScope.$on('alertMessage', function (event, message) {
-				scope.alertMessage = message;
-				el.dialog('open');
+				modal: true
 			});
 		}
 	};

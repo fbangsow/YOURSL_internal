@@ -1,3 +1,31 @@
+
+[data-focused-resource] tr[data-resource-id],
+[data-highlighted-resources] tr[data-resource-id] {
+	opacity: 0.2;
+}
+
+[data-focused-resource] tr.focusedResource,
+[data-highlighted-resources] tr.highlight {
+	opacity: 1;
+}
+
+[data-focused-resource] tr.focusedResource .highlight-toggle svg,
+[data-highlighted-resources] tr.highlight .highlight-toggle svg {
+	fill: #54698d;
+}
+
+.hide-no-budget-resources .missingBudget {
+	display: none;
+}
+
+.overflow {
+	text-overflow: ellipsis;
+	width: 360px;
+	white-space: nowrap;
+	overflow: hidden;
+
+}
+
 body,
 html {
 	background: #fff;
@@ -98,10 +126,6 @@ td:not(.shadow) {
 	border-top: 2px solid #ccc
 }
 
-.firsttableheader {
-	border-right: 1px solid #cfd7e6 !important;
-}
-
 #captions tr.slds-text-body--small {
 	height: 35px;
 }
@@ -131,6 +155,7 @@ span.ResourceInfo {
 	position: absolute;
 	bottom: -1px;
 	right: -1px;
+	width: 15px;
 	background: rgba(255, 255, 255, 0.9);
 	border: 1px solid #d8dde6;
 }
@@ -404,6 +429,17 @@ span.ResourceInfo {
 	float: right
 }
 
+div.today:hover,
+div.today {
+	background-image: linear-gradient(45deg, rgba(84, 105, 141, 1.035) 35%, rgba(255, 255, 255, 0) 17%, transparent 33%, rgba(35, 95, 170, 0.035) 62%, rgba(35, 95, 170, -0.965) 84%, transparent 48%, transparent) !important;
+	background-size: 50px 26px !important;
+	position: absolute;
+	width: 10px;
+	height: 10px;
+	bottom: 1px;
+	left: 1px;
+}
+
 .project-info a {
 	color: #4f6a92;
 	line-height: 26px;
@@ -412,7 +448,8 @@ span.ResourceInfo {
 /*form*/
 
 #filter input {
-	width: 270px;
+	width: 277px;
+	margin-bottom: 10px;
 }
 
 #staffing table input {
@@ -451,6 +488,7 @@ a:active {
 
 /*table*/
 
+#utilization #captions,
 #staffing #captions {
 	position: absolute;
 	z-index: 1050;
@@ -508,8 +546,7 @@ a:active {
 	text-align: center
 }
 
-#utilization .saldo,
-.weekend {
+#utilization .saldo {
 	background: rgba(168, 183, 199, 0.25);
 }
 
@@ -614,15 +651,18 @@ col.hover {
 	background-image: none;
 }
 
-tbody.Resources:before {
+tbody.Resources:not(.single-view):before {
 	content: '';
 	display: block;
 	height: 30px;
 }
 
 /* events date */
+#pso-table td.weekend {
+	background: rgba(111, 116, 148, 0.1);
+}
 
-td.saldo span {
+#pso-table #schedule td.saldo span {
 	text-align: right;
 	padding-right: 10px;
 	display: block;
@@ -713,16 +753,16 @@ td.saldo span {
 	opacity: 0;
 	pointer-events: none;
 	display: block;
+	position: absolute;
 	z-index: 1000;
 	border: 1px solid #d8dde6;
 	border-radius: 0.25rem;
 	background: white;
 	box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.16);
-	bottom: 1em;
+	bottom: 2em;
 	color: #54698d;
 	line-height: 17px;
 	padding: 5px 15px;
-	position: absolute;
 	text-align: left;
 	font-size: 0.75rem;
 	transition: opacity .4s linear;
@@ -736,10 +776,59 @@ td.saldo span {
 	border-bottom: 1px solid #cfd7e6 !important;
 }
 
-#connection-status:hover:after {
+#connection-status:hover:before {
 	bottom: auto;
-	top: 36px;
+	top: 29px;
 	left: -1px;
-	width: 161px;
-	min-width: 161px;
+	width: 139px;
+	min-width: 139px;
+}
+
+/* PSOUtilization */
+
+div.unit {
+	float: right;
+}
+
+td:not([colspan]) .slds-icon-text-default2 {
+	fill: #54698d;
+}
+
+.projectDetails {
+	background: rgba(216, 221, 230, 0.55);
+}
+
+.border2 {
+	border-top: 2px solid #ccc
+}
+
+tr td.saldo:hover::after,
+td.statistic:hover::after,
+td.saldo,
+td.statistic {
+	background: #fff;
+}
+
+.positionBottom {
+	bottom: auto;
+	top: 0;
+}
+
+#utilization td.month-utilization,
+#utilization td.month-saldo {
+	background: #fff;
+}
+
+#utilization #schedule td.saldo span {
+	font-weight: normal
+}
+
+#utilization td.month-utilization span,
+#utilization td.month-saldo span {
+	font-weight: bolder !important
+}
+
+.alertMessage {
+	float: left;
+	margin: 0 7px 20px 0;
 }

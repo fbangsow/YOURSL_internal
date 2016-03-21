@@ -288,21 +288,6 @@ PsoTable2.ng.factory('PsoTable2StaffingHelper', ['datepicker', function (datepic
 		return classes;
 	};
 
-	helper.buildResourceRowClasses = function (resource) {
-		var classes = {};
-
-		classes.yourslEmployee = resource.AccountName === 'YOUR SL GmbH';
-		classes.externalEmployee = !classes.yourslEmployee;
-
-		classes.billable = resource.SalesPrice > 0;
-
-		if (!resource.SalesPrice && typeof resource.SalesPrice !== 'undefined') {
-			classes.unbillable = !resource.SalesPrice;
-		}
-
-		return classes;
-	};
-
 	helper.normalizeTime = function (d) {
 		d.setHours(0);
 		d.setMinutes(0);
@@ -313,7 +298,7 @@ PsoTable2.ng.factory('PsoTable2StaffingHelper', ['datepicker', function (datepic
 	return helper;
 }]);
 
-PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', 'PsoTable2Endpoint', 'PsoTable2StaffingHelper', 'datepicker', 'alert', function ($scope, $window, $timeout, sfEndpoint, staffingHelper, datepicker, alert) {
+PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', 'PsoTable2Endpoint', 'PsoTable2StaffingHelper', 'datepicker', 'alert', 'confirm', function ($scope, $window, $timeout, sfEndpoint, staffingHelper, datepicker, alert, confirm) {
 	console.log('init staffing controller');
 
 	$scope.viewState = {
@@ -330,17 +315,24 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', '
 		orderProjectResourcesDescending: false,
 		orderResources: 'ResourceName',
 		orderResourcesDescending: false,
+		highlightedResources: [],
 		filter: {
 			hideNoBudgetResources: false
-		},
-		filterProjectResource: function (resource) {
-			if ($scope.viewState.filter.hideNoBudgetResources) {
-				if (!resource.MonthToLimitMap || $.isEmptyObject(resource.MonthToLimitMap)) {
-					return false;
-				}
-			}
+		}
+	};
 
-			return true;
+	$scope.viewState.highlightResource = function (resource) {
+		//console.log('highlight resource', resource);
+
+		if (!resource.ContactId) {
+			return;
+		}
+
+		var currentIndex = $scope.viewState.highlightedResources.indexOf(resource.ContactId);
+		if (currentIndex > -1) {
+			$scope.viewState.highlightedResources.splice(currentIndex, 1);
+		} else {
+			$scope.viewState.highlightedResources.push(resource.ContactId);
 		}
 	};
 
@@ -450,7 +442,7 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', '
 		$scope.staffing.updateAllocation(project, resource, allocationDate, allocation);
 	};
 
-	$scope.staffing.updateAllocation = function (project, resource, allocationDate, allocation, silent) {
+	$scope.staffing.updateAllocation = function (project, resource, allocationDate, allocation, silent, exceedConfirmed) {
 		allocation = allocation || {};
 
 		var isNewAllocation = !allocation.Day;
@@ -488,6 +480,7 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', '
 		var totalDayInfo = totalResourceInfo ? totalResourceInfo.StaffingByDay[dateString] : null;
 		var hoursOff = totalDayInfo ? totalDayInfo.HoursOff : 0.0;
 		var currentTotalExcludingCurrentHours = (totalDayInfo ? totalDayInfo.Staff : 0.0) + hoursOff - oldHours;
+		var newTotal = currentTotalExcludingCurrentHours + requestedHours;
 
 		console.log('checking allocation data for update');
 		/*console.log(project);
@@ -497,32 +490,97 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', '
 
 		delta = requestedHours - oldHours;
 
-		if (currentTotalExcludingCurrentHours + requestedHours > 8) {
-			if (currentTotalExcludingCurrentHours + requestedHours > 12) {
+		if (newTotal > 8 && requestedHours > 0) {
+			if (newTotal > 12) {
 				if (!silent) {
 					allocation.currentBooking = oldHours;
 
-					if (hoursOff) {
-						alert('This allocation will exceed the maximum allowed 12 hours per day for a resource. Please be aware of the existing PTO hours.');
+					var remainingHours12 = Math.max(12 - currentTotalExcludingCurrentHours, 0);
+					var remainingHours8 = Math.max(8 - currentTotalExcludingCurrentHours, 0);
+
+					buttons = {};
+
+					var useRemainingHours12ButtonCaption = 'Use ' + remainingHours12 + 'h';
+					buttons[useRemainingHours12ButtonCaption] = true;
+
+					var message = 'This allocation will exceed the maximum allowed 12 hours per day for a resource. You can allocate ' + remainingHours12 + ' hours for this project without exceeding 12 hours';
+
+					if (remainingHours8 !== oldHours) {
+						message += 'or allocate ' + remainingHours8 + ' hours without exceeding 8 hours.';
+
+						useRemainingHours8ButtonCaption = 'Use ' + remainingHours8 + 'h';
+						buttons[useRemainingHours8ButtonCaption] = true;
 					} else {
-						alert('This allocation will exceed the maximum allowed 12 hours per day for a resource.')
+						message += '.';
 					}
+
+					if (hoursOff) {
+						message += ' Please be aware of the existing PTO hours (' + hoursOff + 'h).';
+					}
+
+					buttons['Cancel'] = false;
+
+					confirm(message, buttons).then(function (button) {
+						switch (button) {
+							case useRemainingHours12ButtonCaption:
+								allocation.currentBooking = remainingHours12;
+							break;
+							case useRemainingHours8ButtonCaption:
+								allocation.currentBooking = remainingHours8;
+							break;
+						}
+
+						$scope.staffing.updateAllocation(project, resource, allocationDate, allocation, false, true);
+					}, function (button) {
+						/* user cancelled the action, nothing to do, the hours are already reset */
+					});
 				}
 
 				return;
 			}
 
-			if (!silent) {
-				var remainingHours = Math.max(8 - currentTotalExcludingCurrentHours, 0);
+			if (!exceedConfirmed) {
+				if (!silent) {
+					var remainingHours = Math.max(8 - currentTotalExcludingCurrentHours, 0);
+					var message = 'This allocation will exceed 8 hours per day (' + newTotal + 'h) for this resource. You can allocate ' + remainingHours + ' hours for this project without exceeding 8 hours.';
 
-				if (currentTotalExcludingCurrentHours + oldHours <= 8) {
-					alert('This allocation will exceed 8 hours per day for this resource. You can allocate ' + remainingHours + ' hours for this project without exceeding 8 hours.');
-				} else {
-					alert('This allocation stills exceeds 8 hours per day for this resource. You can allocate ' + remainingHours + ' hours for this project without exceeding 8 hours.');
+					if (currentTotalExcludingCurrentHours + oldHours > 8) {
+						message = 'This allocation stills exceeds 8 hours per day (' + newTotal + 'h) for this resource. You can allocate ' + remainingHours + ' hours for this project without exceeding 8 hours.';
+					}
+
+					var buttons = {};
+
+					var useRequestedHoursButtonCaption = 'Use ' + requestedHours + 'h';
+					buttons[useRequestedHoursButtonCaption] = true;
+
+					var useRemainingHoursButtonCaption = '';
+
+					if (remainingHours !== oldHours) {
+						useRemainingHoursButtonCaption = 'Use ' + remainingHours + 'h';
+						buttons[useRemainingHoursButtonCaption] = true;
+					}
+
+					buttons['Cancel'] = false;
+
+					confirm(message, buttons).then(function (button) {
+						switch (button) {
+							case useRequestedHoursButtonCaption:
+								/* nothing to do, the allocation already contains the requested hours */
+							break;
+							case useRemainingHoursButtonCaption:
+								allocation.currentBooking = remainingHours;
+							break;
+						}
+
+						$scope.staffing.updateAllocation(project, resource, allocationDate, allocation, false, true);
+					}, function (button) {
+						/* user cancelled the action */
+						allocation.currentBooking = oldHours;
+					});
 				}
-			}
 
-			/* do not return here, exceeding 8 hours is allowed. */
+				return;
+			}
 		}
 
 		var monthKey = datepicker.formatDate('m', allocationDate);
@@ -534,33 +592,36 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', '
 			return;
 		}
 
-		/* the currentMonthHours will contain the project bookings without the currently affected day */
-		var currentMonthHours = 0;
-		for (var s = 0; s < resource.Staffing.length; s++) {
-			var staffing = resource.Staffing[s];
-			if (staffing !== allocation && staffing.month === monthKey) {
-				currentMonthHours += staffing.Staff;
-			}
-		}
-
-		var limit = parseFloat(resource.MonthToLimitMap[monthKey]) * 8;
-		var availableHours = Math.round(Math.max(0, limit - currentMonthHours) * 100) / 100;
-
-		if (currentMonthHours + requestedHours > limit) {
-			allocation.currentBooking = oldHours;
-
-			var displayLimit = limit > 16 ? limit / 8 : limit;
-			var intLimit = parseInt(displayLimit, 10);
-
-			if (!(displayLimit - intLimit)) {
-				/* it's an integer, use the non- decimal version for display */
-				displayLimit = intLimit;
+		if (delta > 0) {
+			/* the currentMonthHours will contain the project bookings without the currently affected day */
+			var currentMonthHours = 0;
+			for (var s = 0; s < resource.Staffing.length; s++) {
+				var staffing = resource.Staffing[s];
+				if (staffing !== allocation && staffing.month === monthKey) {
+					currentMonthHours += staffing.Staff;
+				}
 			}
 
-			displayLimit += ' ' + (limit > 16 ? 'days' : 'hours');
+			var limit = parseFloat(resource.MonthToLimitMap[monthKey]) * 8;
 
-			alert('The allocation of additional ' + requestedHours + ' hours for ' + resource.ResourceName + ' exceeds the month limit of ' + displayLimit + '. The resource has ' + availableHours + ' hours left for this month.');
-			return;
+			if (currentMonthHours + requestedHours > limit) {
+				var availableHours = Math.round(Math.max(0, limit - (currentMonthHours + oldHours)) * 100) / 100;
+
+				allocation.currentBooking = oldHours;
+
+				var displayLimit = limit > 16 ? limit / 8 : limit;
+				var intLimit = parseInt(displayLimit, 10);
+
+				if (!(displayLimit - intLimit)) {
+					/* it's an integer, use the non- decimal version for display */
+					displayLimit = intLimit;
+				}
+
+				displayLimit += ' ' + (limit > 16 ? 'days' : 'hours');
+
+				alert('The allocation of additional ' + delta + ' hours for ' + resource.ResourceName + ' exceeds the month limit of ' + displayLimit + '. The resource has ' + availableHours + ' hours left for this month.');
+				return;
+			}
 		}
 
 		console.log('allocation is fine, persist.');
@@ -622,6 +683,22 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', '
 				alert('An error occured during the allocation update:' + "\n" + response.message + "\n" + "Your changes were rolled back. Please reload the page if the error remains.");
 			}
 		});
+	};
+
+	$scope.staffing.getInputTooltip = function (resource, day) {
+		var dateString = day.dateString;
+
+		var totalResourceInfo = $scope.data.ResourcesByContactId[resource.ContactId];
+		var totalDayInfo = totalResourceInfo ? totalResourceInfo.StaffingByDay[dateString] : null;
+		var hoursOff = totalDayInfo ? totalDayInfo.HoursOff : 0.0;
+		var currentHours = resource.StaffingByDay[dateString] ? (resource.StaffingByDay[dateString].Staff || 0.0) : 0.0;
+
+		var available = 8 - hoursOff;
+		var current = (totalDayInfo ? totalDayInfo.Staff : 0.0) + hoursOff;
+
+		var remaining = Math.max(available - current, 0);
+
+		return remaining + ' of ' + available + 'h left';
 	};
 
 	$scope.staffing.orderResourcesBy = function (column) {
@@ -748,7 +825,32 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', '
 	};
 
 	$scope.buildDayHeaderClasses = staffingHelper.buildDayHeaderClasses;
-	$scope.buildResourceRowClasses = staffingHelper.buildResourceRowClasses;
+
+	$scope.buildResourceRowClasses = function (resource) {
+		var classes = {};
+
+		classes.yourslEmployee = resource.AccountName === 'YOUR SL GmbH';
+		classes.externalEmployee = !classes.yourslEmployee;
+
+		classes.billable = resource.SalesPrice > 0;
+		classes.missingBudget = !resource.MonthToLimitMap || $.isEmptyObject(resource.MonthToLimitMap);
+
+		if (!resource.SalesPrice && typeof resource.SalesPrice !== 'undefined') {
+			classes.unbillable = !resource.SalesPrice;
+		}
+
+		if (resource.ContactId) {
+			if ($scope.viewState.highlightedResources.indexOf(resource.ContactId) > -1) {
+				classes.highlight = true;
+			}
+
+			if ($scope.viewState.focusedResource === resource.ContactId) {
+				classes.focusedResource = true;
+			}
+		}
+
+		return classes;
+	};
 
 	$scope.updateProjectStatus = function (project) {
 		sfEndpoint.updateProjectStatus(project.OpportunityId, project.ProjectStatus);
@@ -764,8 +866,6 @@ PsoTable2.ng.controller('PsoTable2Staffing', ['$scope', '$window', '$timeout', '
 		filter.options = filter.options || {};
 
 		console.log('update staffing with filter', filter);
-
-		$scope.viewState.filter.hideNoBudgetResources = !!filter.options.hideNoBudgetResources;
 
 		var selectedOpportunities = filter.opportunities || [];
 		var selectedResources = filter.resources || [];

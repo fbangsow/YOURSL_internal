@@ -10,6 +10,7 @@
         <apex:includeScript value="{!URLFOR($Resource.PsoTable2,'js/core.js')}"/>
         <apex:includeScript value="{!URLFOR($Resource.PsoTable2,'js/controllers/root.js')}"/>
         <apex:includeScript value="{!URLFOR($Resource.PsoTable2,'js/controllers/staffing.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.PsoTable2,'js/vendor/excellentexport.min.js')}"/>
 
         <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.lightningStyle, '/assets/styles/salesforce-lightning-design-system.css')}" />
         <link rel="stylesheet" href="{!URLFOR($Resource.jQuery_ui_1_11_4,'jquery-ui.min.css')}" />
@@ -38,7 +39,7 @@
                         <div class="slds-grid">
                             <div class="slds-media__body">
                                 <div class="slds-grid">
-                                    <h1 class="slds-text-heading--medium slds-m-right--small slds-truncate slds-align-middle" title="Resource Planning Tool 3.0">Resource Planning Tool 3.0</h1>
+                                    <h1 class="slds-text-heading--medium slds-m-right--small slds-truncate slds-align-middle" title="Resource Planning Tool 3.1">Resource Planning Tool 3.1</h1>
                                     <div class="slds-dropdown-trigger " >
                                         <a class="button--neutral slds-button  slds-button__icon--left" aria-haspopup="true" ng-click="viewState.filterVisible=!viewState.filterVisible">
                                             <svg class="slds-icon slds-icon--x-small slds-icon-text-default slds-icon--x-smallMagrin ">
@@ -119,8 +120,6 @@
                                                                             <p class="slds-text-heading--small">Select Resources:</p>
                                                                             <div class="slds-tile__detail slds-text-body--small">
                                                                                 <label class="slds-text-body--small">related resources: <input type="checkbox" class="checkbox" ng-model="viewState.selectRelatedResources" ng-click="filter.resources.selectRelatedResources()"/></label>
-                                                                                <br />
-                                                                                <label class="slds-text-body--small">hide resources without budget: <input type="checkbox" class="checkbox" ng-model="viewState.hideNoBudgetResources" /></label>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -309,6 +308,11 @@
                                             <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#clock')}"></use>
                                         </svg>
                                     </a>
+                                    <a class="slds-button slds-button--neutral" download="staffing.xls" data-export-to-excel="Staffing" data-export-to-excel-source="#staffing table">
+                                        <svg class="slds-icon slds-icon--x-small slds-icon-text-default ">
+                                            <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#filter')}"></use>
+                                        </svg>
+                                    </a>
                                     <div class="slds-button--last">
                                         <a class="slds-button slds-button--icon-border-filled" href="/home/home.jsp">
                                             <svg class="slds-icon slds-icon--x-small slds-icon-text-default ">
@@ -326,7 +330,8 @@
             </apex:pageBlock>
 
             <apex:pageBlock html-data-ng-show="status.loaded" html-ng-controller="PsoTable2Staffing">
-                <section id="staffing" class="contentBox slds-m-around--medium slds-box slds-scrollable--y">
+                <!-- inline to use angular bindings -->
+                <section id="staffing" class="contentBox slds-m-around--medium slds-box slds-scrollable--y" ng-attr-data-focused-resource="{{ viewState.focusedResource }}" ng-attr-data-highlighted-resources="{{ viewState.highlightedResources.length || undefined }}" ng-class="{'hide-no-budget-resources':viewState.filter.hideNoBudgetResources}">
                     <div id="captions">
                         <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-text-heading--label">
                             <tbody>
@@ -336,10 +341,15 @@
                                 <tr class="tableheader">
                                     <th colspan="5" class="tableheaderBorder">&nbsp;</th>
                                 </tr>
-                                <tr class="tableheader">
-                                    <th colspan="5">&nbsp;</th>
+                                <tr class="tableheader" ng-if="data.Customers.length">
+                                    <th colspan="5">
+                                        <label class="slds-text-body--small">
+                                            <input type="checkbox" class="checkbox" ng-model="viewState.filter.hideNoBudgetResources" />
+                                            hide resources without budget
+                                        </label>
+                                    </th>
                                 </tr>
-                                <tr class="tableheader">
+                                <tr class="tableheader" ng-if="data.Customers.length">
                                     <th class="padding10left" ng-click="staffing.orderProjectResourcesBy('ResourceName')" ng-class="{'sort-asc':viewState.orderProjectResources==='ResourceName' && !viewState.orderProjectResourcesDescending, 'sort-desc':viewState.orderProjectResources==='ResourceName' && viewState.orderProjectResourcesDescending}">Resource</th>
                                     <th ng-click="staffing.orderProjectResourcesBy('Role')" ng-class="{'sort-asc':viewState.orderProjectResources==='Role' && !viewState.orderProjectResourcesDescending, 'sort-desc':viewState.orderProjectResources==='Role' && viewState.orderProjectResourcesDescending}">Role</th>
                                     <th ng-click="staffing.orderProjectResourcesBy('SoldDays')" ng-class="{'sort-asc':viewState.orderProjectResources==='SoldDays' && !viewState.orderProjectResourcesDescending, 'sort-desc':viewState.orderProjectResources==='SoldDays' && viewState.orderProjectResourcesDescending}" data-tooltip="Sold days">SD</th>
@@ -394,8 +404,13 @@
                                     </td>
                                 </tr>
                                 <tr><td colspan="5" class="shadow"></td></tr>
-                                <tr ng-repeat="resource in project.Resources | filter : viewState.filterProjectResource | orderBy : viewState.orderProjectResources : viewState.orderProjectResourcesDescending" ng-class="buildResourceRowClasses(resource)" class="slds-text-body--small">
+                                <tr ng-repeat="resource in project.Resources | orderBy : viewState.orderProjectResources : viewState.orderProjectResourcesDescending" ng-class="buildResourceRowClasses(resource)" class="slds-text-body--small" data-resource-id="{{ resource.ContactId }}">
                                     <td class="fixtd">
+                                        <a class=" highlight-toggle" href="#" ng-click="viewState.highlightResource(resource)">
+                                            <svg class="slds-icon slds-icon--small slds-icon-text-default slds-m-right--x-small">
+                                                <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#preview')}"></use>
+                                            </svg>
+                                        </a>
                                         <a href="/{{ ::resource.ContactId }}" target="_blank">{{ ::resource.ResourceName }}</a>
                                     </td>
                                     <td class="fixtd">
@@ -411,7 +426,7 @@
                                         {{ (resource.UnplannedDays / 8) | number : 2 }}
                                     </td>
                                 </tr>
-                                <tr ng-repeat-end="true" class="slds-text-body--small sum-up">
+                                <tr ng-repeat-end="true" class="slds-text-body--small sum-up border2">
                                     <td colspan="2" class="fixtd">
                                         Total
                                     </td>
@@ -426,9 +441,9 @@
                                     </td>
                                 </tr>
                             </tbody>
-                            <tbody class="Resources" ng-if="data.Resources.length && ($parent.viewState.selectRelatedResources || $parent.viewState.selectedResources.length)">
+                            <tbody class="Resources" ng-class="{'single-view': !data.Customers.length}" ng-if="data.Resources.length && ($parent.viewState.selectRelatedResources || $parent.viewState.selectedResources.length)">
                                 <tr class="tableheader">
-                                    <th colspan="5" class="firsttableheader">
+                                    <th colspan="5">
                                         <h4>Resource availability</h4>
                                     </th>
                                 </tr>
@@ -439,12 +454,19 @@
                                     <th ng-click="staffing.orderResourcesBy('Title')" ng-class="{'sort-asc':viewState.orderResources==='Title' && !viewState.orderResourcesDescending, 'sort-desc':viewState.orderResources==='Title' && viewState.orderResourcesDescending}">
                                         Title
                                     </th>
-                                    <th colspan="3" class="firsttableheader" ng-click="staffing.orderResourcesBy('AccountName')" ng-class="{'sort-asc':viewState.orderResources==='AccountName' && !viewState.orderResourcesDescending, 'sort-desc':viewState.orderResources==='AccountName' && viewState.orderResourcesDescending}">
+                                    <th colspan="3" ng-click="staffing.orderResourcesBy('AccountName')" ng-class="{'sort-asc':viewState.orderResources==='AccountName' && !viewState.orderResourcesDescending, 'sort-desc':viewState.orderResources==='AccountName' && viewState.orderResourcesDescending}">
                                         Account name
                                     </th>
                                 </tr>
-                                <tr ng-repeat="resource in data.Resources | orderBy : viewState.orderResources : viewState.orderResourcesDescending track by resource.ContactId" ng-class="buildResourceRowClasses(resource)">
-                                    <td class="padding10left">{{ ::resource.ResourceName }}</td>
+                                <tr ng-repeat="resource in data.Resources | orderBy : viewState.orderResources : viewState.orderResourcesDescending track by resource.ContactId" ng-class="buildResourceRowClasses(resource)" data-resource-id="{{ resource.ContactId }}">
+                                    <td class="padding10left">
+                                        <a class="highlight-toggle" href="#" ng-click="viewState.highlightResource(resource)">
+                                            <svg class="slds-icon slds-icon--small slds-icon-text-default slds-m-right--x-small">
+                                                <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#preview')}"></use>
+                                            </svg>
+                                        </a>
+                                        {{ ::resource.ResourceName }}
+                                    </td>
                                     <td>{{ ::resource.Title }}</td>
                                     <td colspan="3" style="border-right:1px solid #ffffff !important;">{{ ::resource.AccountName}}</td>
                                 </tr>
@@ -473,7 +495,7 @@
                                 </tr>
                                 <tr class="tableheader">
                                     <th ng-repeat="day in viewState.staffingDays track by day.dateString" ng-class="buildDayHeaderClasses(day)" ng-if="!day.isSaldo" class="textCenter">
-                                        {{ ::day.day }}
+                                        <div ng-class="buildDayHeaderClasses(day)" ></div>{{ ::day.day }}
                                     </th>
                                 </tr>
                             </tbody>
@@ -484,7 +506,7 @@
                                     </td>
                                 </tr>
                                 <tr><td colspan="{{ viewState.staffingColumns }}" class="shadow"></td></tr>
-                                <tr ng-repeat="resource in project.Resources | filter : viewState.filterProjectResource | orderBy : viewState.orderProjectResources : viewState.orderProjectResourcesDescending" ng-class="buildResourceRowClasses(resource)" class="slds-text-body--small schedule">
+                                <tr ng-repeat="resource in project.Resources | orderBy : viewState.orderProjectResources : viewState.orderProjectResourcesDescending" ng-class="buildResourceRowClasses(resource)" class="slds-text-body--small schedule" data-resource-id="{{ resource.ContactId }}">
                                     <td ng-repeat="day in viewState.staffingDays track by day.dateString" ng-class="buildResourceAllocationCellClasses(resource, day, resource.StaffingByDay[day.dateString])" class="textCenter">
                                         <span ng-if="day.isMonthSaldo">
                                             {{ ((resource.Saldos[day.dateString] || 0) / 8) | number : 2 }}
@@ -502,9 +524,11 @@
                                             {{ resource.StaffingByDay[day.dateString].Staff }}
                                         </span>
 
-                                        <input ng-if="day.isAllocatable && resource.MonthToLimitMap[day.month] && !data.ResourcesByContactId[resource.ContactId].StaffingByDay[day.dateString].isFullHoliday" ng-model="resource.StaffingByDay[day.dateString].currentBooking" ng-blur="staffing.updateAllocation(project, resource, day.date, resource.StaffingByDay[day.dateString])" ng-change="staffing.scheduleAsyncAllocationUpdate(project, resource, day.date, resource.StaffingByDay[day.dateString])" />
+                                        <span ng-attr-data-tooltip="{{ staffing.getInputTooltip(resource, day) }}" data-placement="bottom">
+                                            <input ng-if="day.isAllocatable && resource.MonthToLimitMap[day.month] && !data.ResourcesByContactId[resource.ContactId].StaffingByDay[day.dateString].isFullHoliday" ng-model="resource.StaffingByDay[day.dateString].currentBooking" ng-focus="viewState.focusedResource=resource.ContactId" ng-blur="viewState.focusedResource=undefined;staffing.updateAllocation(project, resource, day.date, resource.StaffingByDay[day.dateString])" ng-change="staffing.scheduleAsyncAllocationUpdate(project, resource, day.date, resource.StaffingByDay[day.dateString])" />
+                                        </span>
 
-                                        <span ng-if="day.isAllocatable && resource.StaffingByDay[day.dateString].Staff > 0 && data.ResourcesByContactId[resource.ContactId].StaffingByDay[day.dateString].isFullHoliday" class="tooltip ResourceInfo" data-tooltip="Remove project allocation" style="bottom: auto; top: 0;" ng-click="staffing.clearAllocation(project, resource, day.date, resource.StaffingByDay[day.dateString])">
+                                        <span ng-if="day.isAllocatable && resource.StaffingByDay[day.dateString].Staff > 0 && data.ResourcesByContactId[resource.ContactId].StaffingByDay[day.dateString].isFullHoliday" class="tooltip ResourceInfo positionBottom" data-tooltip="Remove project allocation" ng-click="staffing.clearAllocation(project, resource, day.date, resource.StaffingByDay[day.dateString])">
                                             <svg class="slds-icon slds-icon--x-small slds-icon-text-default">
                                                 <use xlink:href="{!URLFOR($Resource.lightningStyle, '/assets/icons/utility-sprite/svg/symbols.svg#delete')}"></use>
                                             </svg>
@@ -527,7 +551,7 @@
                                         </span>-->
                                     </td>
                                 </tr>
-                                <tr ng-repeat-end="true" class="slds-text-body--small sum-up" style="border-top:2px solid #ccc">
+                                <tr ng-repeat-end="true" class="slds-text-body--small sum-up border2">
                                     <td ng-repeat="day in viewState.staffingDays track by day.dateString" ng-class="buildProjectDayCellClasses(project, day)" class="textCenter">
                                         <span ng-if="day.isMonthSaldo">
                                             {{ ((project.Saldos[day.dateString] || 0) / 8) | number : 2 }}
@@ -547,20 +571,20 @@
                                     </td>
                                 </tr>
                             </tbody>
-                            <tbody class="Resources" ng-if="data.Resources.length && ($parent.viewState.selectRelatedResources || $parent.viewState.selectedResources.length)">
-                                <tr class="tableheader">
+                            <tbody class="Resources" ng-class="{'single-view': !data.Customers.length}" ng-if="data.Resources.length && ($parent.viewState.selectRelatedResources || $parent.viewState.selectedResources.length)">
+                                <tr class="tableheader" ng-if="data.Customers.length">
                                     <th colspan="{{ viewState.staffingColumns }}">
-                                        <!-- Resource availability -->
+                                        <!-- Resource availability in combined (projects + availability) view -->
                                         &nbsp;
                                     </th>
                                 </tr>
-                                <tr class="tableheader">
+                                <tr class="tableheader" ng-if="data.Customers.length">
                                     <th colspan="{{ viewState.staffingColumns }}">
-                                        <!-- Column captions -->
+                                        <!-- Column captions in combined (projects + availability) view -->
                                         &nbsp;
                                     </th>
                                 </tr>
-                                <tr ng-repeat="resource in data.Resources | orderBy : viewState.orderResources : viewState.orderResourcesDescending track by resource.ContactId" ng-class="buildResourceRowClasses(resource)">
+                                <tr ng-repeat="resource in data.Resources | orderBy : viewState.orderResources : viewState.orderResourcesDescending track by resource.ContactId" ng-class="buildResourceRowClasses(resource)" data-resource-id="{{ resource.ContactId }}">
                                     <td ng-repeat="day in viewState.staffingDays track by day.dateString" ng-class="buildResourceAllocationCellClasses(resource, day, resource.StaffingByDay[day.dateString])" class="textCenter">
                                         <span ng-if="day.isMonthSaldo">
                                             {{ ((resource.Saldos[day.dateString] || 0) / 8) | number : 2 }}
@@ -623,7 +647,7 @@
             <!-- show error message popup -->
             <div class="alert-dialog">
                 <p>
-                    <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
+                    <span class="ui-icon ui-icon-alert alertMessage"></span>
                     {{ alertMessage }}
                 </p>
             </div>
