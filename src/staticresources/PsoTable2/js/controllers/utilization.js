@@ -1,6 +1,9 @@
 PsoTable2.ng.controller('PsoTable2Utilization', ['$scope', '$interval', 'PsoTable2Endpoint', 'PsoTable2StaffingHelper', 'datepicker', 'alert', function ($scope, $interval, sfEndpoint, staffingHelper, datepicker, alert) {
 	console.log('init utilization controller');
 
+	$scope.$parent.defaultFilter.selectRelatedResources = false;
+	$scope.$parent.viewState.selectRelatedResources = false;
+
 	$scope.viewState = {
 		startDate: null,
 		endDate: null,
@@ -12,7 +15,8 @@ PsoTable2.ng.controller('PsoTable2Utilization', ['$scope', '$interval', 'PsoTabl
 		staffingDays: [],
 		projectHealthReasons: {},
 		orderResources: 'ResourceName',
-		orderResourcesDescending: false
+		orderResourcesDescending: false,
+		viewResourceProjects: {}
 	};
 
 	$scope.data = {};
@@ -44,6 +48,18 @@ PsoTable2.ng.controller('PsoTable2Utilization', ['$scope', '$interval', 'PsoTabl
 			if (day.isSaldo) {
 				classes['saldo'] = true;
 
+				if (day.isWeekUtilization) {
+					classes['week-utilization'] = true;
+				}
+
+				if (day.isMonthUtilization) {
+					classes['month-utilization'] = true;
+				}
+
+				if (day.isMonthSaldo) {
+					classes['month-saldo'] = true;
+				}
+
 				switch (type) {
 					case 'statistic':
 						/* the stats may not be generated, we need to check */
@@ -62,6 +78,8 @@ PsoTable2.ng.controller('PsoTable2Utilization', ['$scope', '$interval', 'PsoTabl
 						classes['low-utilization'] = statsValue > 0.4 && statsValue < 0.6;
 						classes['neutral-utilization'] = statsValue >= 0.6 && statsValue < 0.8;
 						classes['high-utilization'] = statsValue >= 0.8;
+
+						classes['full-holiday'] = stats.holiday && stats.budget === stats.holiday;
 					break;
 					case 'saldo':
 						classes['negative-saldo'] = stats && stats < 0;
@@ -154,7 +172,8 @@ PsoTable2.ng.controller('PsoTable2Utilization', ['$scope', '$interval', 'PsoTabl
 					dateString: 'week-utilization-' + month.number + '-' + week.number,
 					weekDay: 'Uw',
 					isSaldo: true,
-					isUtilization: true
+					isUtilization: true,
+					isWeekUtilization: true
 				});
 
 				week.caption = week.days[0].day + '. - ' + week.days[week.days.length - 1].day + '.';
@@ -185,7 +204,8 @@ PsoTable2.ng.controller('PsoTable2Utilization', ['$scope', '$interval', 'PsoTabl
 					dateString: 'month-utilization-' + month.number,
 					weekDay: 'Total',
 					isSaldo: true,
-					isUtilization: true
+					isUtilization: true,
+					isMonthUtilization: true
 				});
 
 				$scope.viewState.staffingDays.push({
@@ -276,6 +296,7 @@ PsoTable2.ng.controller('PsoTable2Utilization', ['$scope', '$interval', 'PsoTabl
 
 					resource.MonthToLimitMap = {};
 					resource.WeekToLimitMap = {};
+					resource.hasProjects = false;
 
 					for (var m = 0; m < $scope.viewState.staffingMonths.length; m++) {
 						var month = $scope.viewState.staffingMonths[m];
@@ -314,6 +335,7 @@ PsoTable2.ng.controller('PsoTable2Utilization', ['$scope', '$interval', 'PsoTabl
 							}
 
 							if (!$scope.data.ResourcesByContactId[resource.ContactId].Projects) {
+								$scope.data.ResourcesByContactId[resource.ContactId].hasProjects = true;
 								$scope.data.ResourcesByContactId[resource.ContactId].Projects = {};
 							}
 
