@@ -237,7 +237,6 @@ public class StatisticsCalculator {
 
     private void sendNotification(){
         EmailUtility.getInstance().setSendTo(UserInfo.getUserEmail())
-                                    .setCcTo('c.leffin@yoursl.de')
                                     .setReplyTo('no_reply@yoursl.de')
                                     .setSenderDisplayName('PsoTool Team')
                                     .setSubject('Manual Run Completed')
